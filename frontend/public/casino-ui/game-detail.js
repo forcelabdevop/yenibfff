@@ -21,6 +21,16 @@ window.createGameDetail = function createGameDetail(ctx) {
   const launchTheatre = ref(false)
   const gameFavorite = ref(false)
 
+  // --- Referans tasarimin arayuz durumu ---
+  // Demo modu backend'de desteklenmiyor (GetGameUrl'in demo parametresi yok),
+  // bu yuzden varsayilan Real Play. Kullanici Demo'ya basarsa durumu bildiriyoruz.
+  const demoMode = ref(false)
+  const detailsOpen = ref(false)
+  const bestOffset = ref(0)
+  const popularOffset = ref(0)
+  const gameToast = ref("")
+  let toastTimer = null
+
   const detailGame = computed(() => (gameDetail.value ? gameDetail.value.game : null))
 
   const detailProviderName = computed(() => {
@@ -185,7 +195,75 @@ window.createGameDetail = function createGameDetail(ctx) {
     launchTheatre.value = !launchTheatre.value
   }
 
+  function notifyGame(message) {
+    gameToast.value = message
+    window.clearTimeout(toastTimer)
+    toastTimer = window.setTimeout(() => {
+      gameToast.value = ""
+    }, 2600)
+  }
+
+  // Demo modu saglayici tarafinda desteklenmedigi icin gercekten acilamiyor;
+  // sahte bir demo baslatmak yerine durumu durust sekilde bildiriyoruz.
+  function setDemoMode(next) {
+    if (next) {
+      demoMode.value = false
+      notifyGame("Demo mode is not available for this game yet — it opens with your real balance.")
+      return
+    }
+    demoMode.value = false
+  }
+
+  // --- Karusel: CSS'teki kart genisligi + bosluk ile ayni adim ---
+  function railPitch() {
+    return window.innerWidth <= 700 ? 172 : 211
+  }
+
+  function railViewport() {
+    // .gl-catalog__shell max-width:1035px, kucuk ekranlarda viewport genisligi
+    return Math.max(200, Math.min(1035, window.innerWidth - 32))
+  }
+
+  // Son kart gorunur olana kadar kaydirilabilecek en fazla mesafe
+  function railMax(count) {
+    const pitch = railPitch()
+    const visible = Math.max(1, Math.floor(railViewport() / pitch))
+    return Math.max(0, (Number(count) || 0) - visible) * pitch
+  }
+
+  function slideRail(which, direction) {
+    const isBest = which === "best"
+    const target = isBest ? bestOffset : popularOffset
+    const detail = gameDetail.value
+    const list = detail ? (isBest ? detail.providerGames : detail.popularGames) : []
+    const max = railMax(list ? list.length : 0)
+    target.value = Math.max(0, Math.min(max, target.value + direction * railPitch()))
+  }
+
+  async function openGameFullscreen() {
+    const viewport = document.getElementById("glViewport")
+    if (!document.fullscreenElement && viewport && viewport.requestFullscreen) {
+      try {
+        await viewport.requestFullscreen()
+      } catch (error) {
+        launchTheatre.value = true
+      }
+    } else if (document.exitFullscreen) {
+      await document.exitFullscreen()
+    }
+  }
+
   return {
+    demoMode,
+    detailsOpen,
+    bestOffset,
+    popularOffset,
+    gameToast,
+    notifyGame,
+    setDemoMode,
+    slideRail,
+    railMax,
+    openGameFullscreen,
     isGamePage,
     gameDetail,
     gameDetailLoading,

@@ -14,6 +14,7 @@
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
 <style>
     /* Tailwind Play CDN kaldirildi (production icin uygun degil).
        Arayuzde kullanilan tek iki utility burada duz CSS olarak tanimli. */
@@ -576,40 +577,136 @@
     @keyframes game-spin { to { transform:rotate(360deg); } }
     .game-page-loading { display:flex; min-height:340px; flex-direction:column; align-items:center; justify-content:center; gap:14px; color:#94a3b5; }
 
-    .game-breadcrumb { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:16px; font-size:13px; }
-    .game-breadcrumb button { border:0; background:none; padding:0; color:#8fa0b4; font-size:13px; cursor:pointer; }
-    .game-breadcrumb button:hover { color:#fff; }
-    .game-breadcrumb__current { color:#fff; font-weight:600; }
-    .game-breadcrumb__sep { font-size:9px; color:#4b5c70; }
-
-    .game-stage { border:1px solid #223140; border-radius:18px; background:#101c28; overflow:hidden; }
-    .game-stage--theatre { position:fixed; inset:0; z-index:90; border:0; border-radius:0; }
-    .game-stage__screen { position:relative; aspect-ratio:16/9; background:#0a131e; }
-    .game-stage--theatre .game-stage__screen { height:calc(100% - 52px); aspect-ratio:auto; }
-    .game-stage__frame { width:100%; height:100%; border:0; display:block; }
-    .game-stage__cover { position:absolute; inset:0; overflow:hidden; }
-    .game-stage__bg { width:100%; height:100%; object-fit:cover; filter:blur(22px) saturate(1.1); transform:scale(1.12); }
-    .game-stage__shade { position:absolute; inset:0; background:radial-gradient(ellipse at center,rgba(10,19,30,.66),rgba(6,11,18,.94)); }
-    .game-stage__cover-inner { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:24px; text-align:center; }
-    .game-stage__thumb { width:132px; height:174px; object-fit:cover; border-radius:13px; box-shadow:0 18px 44px rgba(0,0,0,.5); }
-    .game-stage__title { margin:6px 0 0; color:#fff; font-size:26px; letter-spacing:-.5px; }
-    .game-stage__provider { margin:0; color:#8fa0b4; font-size:14px; }
-    .game-stage__error { display:flex; align-items:center; gap:8px; margin:0; padding:9px 14px; border-radius:11px; background:rgba(255,23,79,.14); color:#ff8ba6; font-size:13px; max-width:440px; }
-    .game-stage__actions { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:6px; }
     .game-cta { display:inline-flex; align-items:center; gap:9px; padding:12px 26px; border:0; border-radius:11px; font-size:14px; font-weight:700; cursor:pointer; }
     .game-cta--primary { background:#ff174f; color:#fff; }
     .game-cta--primary:hover { background:#e40f43; }
     .game-cta--ghost { background:#1c2a3a; color:#aab7c8; }
     .game-cta:disabled { opacity:.55; cursor:not-allowed; }
-    .game-stage__bar { display:flex; align-items:center; justify-content:space-between; gap:14px; height:52px; padding:0 14px; background:#152230; }
-    .game-stage__bar-left, .game-stage__bar-right { display:flex; align-items:center; gap:10px; min-width:0; }
-    .game-stage__name { color:#fff; font-size:14px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .game-stage__rtp { padding:5px 10px; border-radius:16px; background:#1c2a3a; color:#8fa0b4; font-size:11px; font-weight:600; white-space:nowrap; }
-    .game-tool { display:inline-flex; width:34px; height:34px; align-items:center; justify-content:center; border:0; border-radius:9px; background:#1c2a3a; color:#aab7c8; cursor:pointer; }
-    .game-tool:hover { color:#fff; }
-    .game-tool.active { color:#ff174f; }
 
-    .game-info-grid { display:grid; grid-template-columns:1fr; gap:16px; margin-top:24px; }
+    /* ===== Oyun launch sayfasi — referans tasarim (birebir olculer) ===== */
+    .gl-page { --gl-card-w:195px; --gl-card-h:257.5px; --gl-card-gap:16px; font-family:'Poppins','Montserrat',Arial,sans-serif; font-weight:500; letter-spacing:normal; }
+    .gl-area { padding-top:42px; }
+    .gl-shell { width:100%; max-width:1294px; margin-inline:auto; transition:max-width .25s ease; }
+    .gl-shell.theater { max-width:1460px; }
+
+    .gl-toolbar { height:20px; display:flex; align-items:center; justify-content:space-between; line-height:1; }
+    .gl-toolbar__left, .gl-toolbar__right, .gl-mode { display:flex; align-items:center; }
+    .gl-toolbar__left { gap:0; white-space:nowrap; }
+    .gl-rtp { display:flex; align-items:baseline; gap:5px; font-size:15px; font-weight:700; letter-spacing:-.2px; }
+    .gl-rtp__value { color:#f6a83f; }
+    .gl-help { width:14px; height:14px; margin-left:6px; display:inline-grid; place-items:center; border:1.5px solid #5c6e88; border-radius:999px; background:none; color:#5c6e88; font-family:inherit; font-size:9px; font-weight:700; line-height:1; cursor:pointer; }
+    .gl-divider { width:1px; height:16px; margin:0 12px; background:#334052; }
+    .gl-mode { gap:7px; }
+    .gl-mode__label { border:0; padding:0; color:#5f708a; background:transparent; font-family:inherit; font-size:13px; font-weight:700; line-height:20px; cursor:pointer; transition:color .2s ease; }
+    .gl-mode__label.active { color:#f4f5f7; }
+    .gl-mode__switch { position:relative; width:34px; height:20px; border:0; border-radius:999px; background:#2c3340; box-shadow:inset 0 0 0 1px rgba(255,255,255,.015); cursor:pointer; }
+    .gl-mode__knob { position:absolute; top:2px; left:2px; width:16px; height:16px; border-radius:999px; background:#b8bdc4; box-shadow:0 1px 2px rgba(0,0,0,.2); transition:transform .2s ease, background .2s ease; }
+    .gl-mode__switch.real .gl-mode__knob { transform:translateX(14px); background:#f6a83f; }
+    .gl-toolbar__right { height:20px; gap:14px; margin-right:6px; color:#5c6e88; }
+    .gl-icon { height:22px; min-width:20px; border:0; padding:0; display:inline-grid; place-items:center; color:inherit; background:transparent; font-size:20px; cursor:pointer; transition:color .18s ease, transform .18s ease; }
+    .gl-icon:hover { color:#91a2ba; transform:translateY(-1px); }
+    .gl-icon .fas.fa-heart { color:#f51e50; }
+    .gl-icon--expand { font-size:19px; }
+    .gl-screen-icon { width:22px; height:14px; border:2px solid currentColor; border-radius:2px; }
+
+    .gl-viewport { position:relative; width:100%; aspect-ratio:2590/1374; margin-top:24px; overflow:hidden; border-radius:14px; background:#0a131e; isolation:isolate; }
+    .gl-viewport__media { position:absolute; inset:0; width:100%; height:100%; display:block; border:0; }
+    .gl-cover { position:absolute; inset:0; overflow:hidden; }
+    .gl-cover__bg { width:100%; height:100%; object-fit:cover; filter:blur(18px) saturate(1.1); transform:scale(1.12); }
+    .gl-cover__shade { position:absolute; inset:0; background:radial-gradient(ellipse at center,rgba(10,19,30,.62),rgba(6,11,18,.93)); }
+    .gl-cover__inner { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:24px; text-align:center; }
+    .gl-cover__thumb { width:132px; height:174px; object-fit:cover; border-radius:13px; box-shadow:0 18px 44px rgba(0,0,0,.5); }
+    .gl-cover__title { margin:0; color:#fff; font-size:22px; font-weight:700; letter-spacing:-.4px; }
+    .gl-cover__provider { margin:0; color:#9fb0c6; font-size:13px; font-weight:600; }
+    .gl-cover__error { display:flex; align-items:center; gap:8px; max-width:440px; margin:0; padding:9px 14px; border-radius:11px; background:rgba(255,23,79,.16); color:#ff8ba6; font-size:13px; }
+    .gl-cover__play { display:inline-grid; place-items:center; width:74px; height:74px; border:0; border-radius:50%; background:linear-gradient(1turn,#c4003b .8%,#fb1949); box-shadow:0 3px 18px rgba(255,35,65,.5), inset 0 4px 3px rgba(255,255,255,.3); color:#fff; font-size:25px; cursor:pointer; transition:transform .14s ease, box-shadow .14s ease; }
+    .gl-cover__play:hover:not(:disabled) { transform:scale(1.06); box-shadow:0 3px 22px rgba(255,35,65,.62), inset 0 4px 4px rgba(255,255,255,.37); }
+    .gl-cover__play:disabled { cursor:progress; opacity:.72; }
+    .gl-cover__play i { margin-left:3px; }
+
+    .gl-meta { width:100%; height:72px; margin-top:20px; padding:0 17px; display:flex; align-items:center; justify-content:space-between; border:0; border-radius:12px 12px 0 0; color:#f5f6f8; background:#18222f; font-family:inherit; text-align:left; cursor:pointer; }
+    .gl-meta__copy { display:flex; align-items:baseline; min-width:0; gap:11px; }
+    .gl-meta__title { font-size:18px; line-height:1.25; font-weight:700; letter-spacing:-.35px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .gl-meta__provider { color:#858b96; font-size:14px; line-height:1.25; font-weight:700; white-space:nowrap; }
+    .gl-meta__chevron { margin-right:10px; color:#89909a; font-size:14px; transition:transform .2s ease; }
+    .gl-meta__chevron.open { transform:rotate(180deg); }
+    .gl-details { width:100%; padding:17px 20px 20px; background:#141d29; }
+    .gl-showmore { width:130px; height:23px; margin:0 auto; padding:0 13px 0 16px; display:flex; align-items:center; justify-content:space-between; border:0; border-radius:0 0 8px 8px; color:#e6e8eb; background:#2d333d; font-family:inherit; font-size:14px; font-weight:700; line-height:23px; cursor:pointer; }
+    .gl-showmore i { margin-left:8px; color:#8b9097; font-size:12px; transition:transform .2s ease; }
+    .gl-showmore i.open { transform:rotate(180deg); }
+
+    .gl-catalog { margin-top:28px; }
+    .gl-catalog__shell { width:100%; max-width:1035px; margin-inline:auto; }
+    .gl-head { width:100%; height:24px; display:flex; align-items:center; justify-content:space-between; }
+    .gl-head h2 { margin:0; color:#f0f1f3; font-size:18px; line-height:24px; font-weight:700; letter-spacing:-.45px; }
+    .gl-arrows { display:flex; align-items:center; gap:21px; color:#5b6c86; }
+    .gl-arrow { width:13px; height:24px; border:0; padding:0; display:grid; place-items:center; color:inherit; background:transparent; font-size:14px; cursor:pointer; transition:color .18s ease, transform .18s ease; }
+    .gl-arrow:hover:not(:disabled) { color:#9ba8bb; transform:scale(1.08); }
+    .gl-arrow:disabled { opacity:.32; cursor:default; }
+    .gl-clip { margin-top:16px; margin-left:-8px; padding:9px 0 12px 8px; overflow:hidden; }
+    .gl-track { width:max-content; display:grid; grid-auto-flow:column; grid-auto-columns:var(--gl-card-w); gap:var(--gl-card-gap); will-change:transform; transition:transform .42s cubic-bezier(.22,.72,.2,1); }
+    .gl-track .casino-game-card { flex:0 0 auto; width:var(--gl-card-w); height:var(--gl-card-h); }
+    .gl-popular { margin-top:65px; }
+
+    .gl-crumbs { min-height:24px; margin-top:91px; display:flex; align-items:center; flex-wrap:wrap; gap:8px 10px; color:#7d8189; font-size:14px; line-height:24px; font-weight:700; }
+    .gl-crumbs button { border:0; padding:0; background:none; color:inherit; font:inherit; cursor:pointer; transition:color .18s ease; }
+    .gl-crumbs button:hover { color:#b7bdc6; }
+    .gl-crumbs i { color:#505963; font-size:11px; }
+    .gl-crumbs .current { color:#d9dadd; }
+
+    .gl-toast { position:fixed; z-index:120; left:50%; bottom:30px; padding:10px 16px; transform:translateX(-50%); border:1px solid #2b3b4f; border-radius:9px; color:#edf0f4; background:rgba(20,29,41,.96); box-shadow:0 10px 30px rgba(0,0,0,.35); font-size:13px; font-weight:600; }
+    .gl-fade-enter-active, .gl-fade-leave-active { transition:opacity .18s ease, transform .18s ease; }
+    .gl-fade-enter-from, .gl-fade-leave-to { opacity:0; transform:translate(-50%,8px); }
+
+    @media (max-width:1100px) {
+      .gl-area { padding-top:28px; }
+      .gl-viewport { margin-top:19px; }
+      .gl-catalog__shell { max-width:none; }
+    }
+
+    @media (max-width:700px) {
+      .gl-page { --gl-card-w:160px; --gl-card-h:211.5px; --gl-card-gap:12px; }
+      .gl-area { padding-top:18px; }
+      .gl-rtp { font-size:12px; gap:3px; }
+      .gl-help { margin-left:4px; }
+      .gl-divider { margin-inline:7px; }
+      .gl-mode { gap:5px; }
+      .gl-mode__label { font-size:11px; }
+      .gl-mode__switch { width:30px; height:18px; }
+      .gl-mode__knob { width:14px; height:14px; }
+      .gl-mode__switch.real .gl-mode__knob { transform:translateX(12px); }
+      .gl-toolbar__right { gap:10px; }
+      .gl-icon { min-width:16px; font-size:17px; }
+      .gl-icon--expand { font-size:16px; }
+      .gl-screen-icon { width:19px; height:12px; }
+      .gl-viewport { margin-top:16px; border-radius:10px; }
+      .gl-cover__thumb { width:104px; height:137px; }
+      .gl-cover__title { font-size:18px; }
+      .gl-cover__play { width:62px; height:62px; font-size:21px; }
+      .gl-meta { height:60px; margin-top:12px; padding-inline:13px; }
+      .gl-meta__title { font-size:14px; }
+      .gl-meta__provider { font-size:11px; }
+      .gl-meta__copy { gap:7px; }
+      .gl-meta__chevron { margin-right:1px; }
+      .gl-details { padding:14px 14px 16px; }
+      .gl-showmore { width:120px; font-size:12px; }
+      .gl-catalog { margin-top:25px; }
+      .gl-head h2 { font-size:16px; letter-spacing:-.25px; }
+      .gl-arrows { gap:17px; }
+      .gl-clip { margin-left:0; padding-left:0; }
+      .gl-popular { margin-top:51px; }
+      .gl-crumbs { margin-top:60px; font-size:12px; gap:5px 8px; }
+    }
+
+    @media (max-width:420px) {
+      .gl-meta__provider { display:none; }
+      .gl-toolbar__right { gap:8px; }
+      .gl-divider { margin-inline:5px; }
+      .gl-mode__label { font-size:10px; }
+      .gl-rtp { font-size:11px; }
+    }
+
+    .gl-info-grid { display:grid; grid-template-columns:1fr; gap:16px; }
     .game-panel { padding:22px; border:1px solid #223140; border-radius:16px; background:#131e2a; }
     .game-panel__title { display:flex; align-items:center; gap:9px; margin:0 0 16px; color:#fff; font-size:17px; }
     .game-panel__title>i { color:#ff174f; font-size:15px; }
@@ -629,7 +726,7 @@
     .game-review { margin-top:16px; }
     .game-review p { margin:0 0 12px; color:#94a3b5; font-size:14px; line-height:1.7; }
     .game-review p:last-child { margin-bottom:0; }
-    @media (min-width:900px) { .game-info-grid { grid-template-columns:1fr 1fr; } }
+    @media (min-width:900px) { .gl-info-grid { grid-template-columns:1fr 1fr; } }
 
     .casino-rail { margin-top:34px; }
     .casino-rail-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:15px; }
@@ -1344,91 +1441,135 @@
   <div class="game-page-loading" v-if="gameDetailLoading"><span class="game-spinner"></span><p>Loading game…</p></div>
   <div class="empty-panel" v-else-if="gameDetailError || !detailGame"><div class="empty-panel-inner"><span class="empty-icon"><i class="fas fa-triangle-exclamation"></i></span><h2>Game unavailable</h2><p>{{gameDetailError || 'Bu oyun şu an bulunamadı.'}}</p><button @click="navigate('/casino')" class="game-cta game-cta--ghost">Back to lobby</button></div></div>
   <template v-else>
-  <nav aria-label="Breadcrumb" class="game-breadcrumb">
-    <template v-for="(crumb,index) in detailBreadcrumb" :key="'crumb-'+index">
-      <button @click="navigate(crumb.path)" v-if="crumb.path">{{crumb.label}}</button>
-      <span aria-current="page" class="game-breadcrumb__current" v-else>{{crumb.label}}</span>
-      <i class="fas fa-chevron-right game-breadcrumb__sep" v-if="index < detailBreadcrumb.length - 1"></i>
-    </template>
-  </nav>
+  <div class="gl-page">
+  <section aria-label="Game" class="gl-area">
+    <div :class="{theater: launchTheatre}" class="gl-shell">
+      <div class="gl-toolbar">
+        <div class="gl-toolbar__left">
+          <div class="gl-rtp"><span>RTP</span><span class="gl-rtp__value">{{detailRtp ? detailRtp + '%' : '—'}}</span></div>
+          <button @click="notifyGame('RTP is the provider long-term average, not a per-session guarantee.')" aria-label="RTP information" class="gl-help" type="button">?</button>
+          <span aria-hidden="true" class="gl-divider"></span>
+          <div aria-label="Play mode" class="gl-mode">
+            <button :class="{active: demoMode}" @click="setDemoMode(true)" class="gl-mode__label" type="button">Demo Play</button>
+            <button :aria-checked="!demoMode" :class="{real: !demoMode}" @click="setDemoMode(!demoMode)" aria-label="Toggle real play" class="gl-mode__switch" role="switch" type="button"><span class="gl-mode__knob"></span></button>
+            <button :class="{active: !demoMode}" @click="setDemoMode(false)" class="gl-mode__label" type="button">Real Play</button>
+          </div>
+        </div>
+        <div class="gl-toolbar__right">
+          <button :aria-pressed="gameFavorite" @click="gameFavorite = !gameFavorite" aria-label="Add game to favorites" class="gl-icon" type="button"><i :class="gameFavorite ? 'fas fa-heart' : 'far fa-heart'"></i></button>
+          <button @click="openGameFullscreen" aria-label="Enter fullscreen" class="gl-icon gl-icon--expand" type="button"><i class="fas fa-expand"></i></button>
+          <button :aria-pressed="launchTheatre" @click="toggleTheatre" aria-label="Toggle theater mode" class="gl-icon" type="button"><span aria-hidden="true" class="gl-screen-icon"></span></button>
+        </div>
+      </div>
 
-  <section :class="{'game-stage--theatre': launchTheatre}" class="game-stage">
-    <div class="game-stage__screen">
-      <iframe :src="launchUrl" :title="detailGame.game_name" allow="autoplay; fullscreen" class="game-stage__frame" v-if="launchState === 'ready'"></iframe>
-      <div class="game-stage__cover" v-else>
-        <img :alt="''" :src="detailGame.background || detailGame.banner" class="game-stage__bg" v-if="detailGame.background || detailGame.banner"/>
-        <span class="game-stage__shade"></span>
-        <div class="game-stage__cover-inner">
-          <img :alt="detailGame.game_name + ' thumbnail'" :src="detailGame.banner" class="game-stage__thumb" v-if="detailGame.banner"/>
-          <h1 class="game-stage__title">{{detailGame.game_name}}</h1>
-          <p class="game-stage__provider">{{detailProviderName}}</p>
-          <p class="game-stage__error" v-if="launchState === 'error'"><i class="fas fa-circle-exclamation"></i> {{launchError}}</p>
-          <div class="game-stage__actions">
-            <button :disabled="launchState === 'loading'" @click="startGame" class="game-cta game-cta--primary">
-              <span class="game-spinner game-spinner--sm" v-if="launchState === 'loading'"></span>
+      <div class="gl-viewport" id="glViewport">
+        <iframe :src="launchUrl" :title="detailGame.game_name" allow="autoplay; fullscreen" class="gl-viewport__media" v-if="launchState === 'ready'"></iframe>
+        <div class="gl-cover" v-else>
+          <img alt="" :src="detailGame.background || detailGame.banner" class="gl-cover__bg" v-if="detailGame.background || detailGame.banner"/>
+          <span class="gl-cover__shade"></span>
+          <div class="gl-cover__inner">
+            <img :alt="detailGame.game_name" :src="detailGame.banner" class="gl-cover__thumb" v-if="detailGame.banner"/>
+            <h1 class="gl-cover__title">{{detailGame.game_name}}</h1>
+            <p class="gl-cover__provider" v-if="detailProviderName">{{detailProviderName}}</p>
+            <p class="gl-cover__error" v-if="launchState === 'error'"><i class="fas fa-circle-exclamation"></i> {{launchError}}</p>
+            <button :aria-label="'Play ' + detailGame.game_name" :disabled="launchState === 'loading'" @click="startGame" class="gl-cover__play" type="button">
+              <span class="game-spinner" v-if="launchState === 'loading'"></span>
               <i class="fas fa-play" v-else></i>
-              {{launchState === 'loading' ? 'Starting…' : (launchState === 'error' ? 'Try again' : 'Real Play')}}
             </button>
-            <button class="game-cta game-cta--ghost" disabled title="Demo mode is currently disabled"><i class="fas fa-lock"></i> Demo Play</button>
           </div>
         </div>
       </div>
-    </div>
-    <div class="game-stage__bar">
-      <div class="game-stage__bar-left">
-        <button :class="{active: gameFavorite}" @click="gameFavorite = !gameFavorite" class="game-tool" type="button"><i class="fas fa-heart"></i><span class="sr-only">Favourite</span></button>
-        <span class="game-stage__name">{{detailGame.game_name}}</span>
-        <span class="game-stage__rtp" v-if="detailRtp">RTP {{detailRtp}}%</span>
-      </div>
-      <div class="game-stage__bar-right">
-        <button @click="exitGame" class="game-tool" type="button" v-if="launchState === 'ready'"><i class="fas fa-xmark"></i><span class="sr-only">Close game</span></button>
-        <button @click="toggleTheatre" class="game-tool" type="button"><i :class="launchTheatre ? 'fas fa-compress' : 'fas fa-expand'"></i><span class="sr-only">Theatre mode</span></button>
-      </div>
-    </div>
-  </section>
 
-  <div class="game-info-grid">
-    <section class="game-panel" v-if="detailAttributes.length">
-      <h2 class="game-panel__title"><i class="fas fa-sliders"></i> Game Attributes</h2>
-      <dl class="game-attrs">
-        <div :key="'attr-'+row.label" class="game-attrs__row" v-for="row in detailAttributes">
-          <dt>{{row.label}}</dt><dd>{{row.value}}</dd>
+      <button :aria-expanded="detailsOpen" @click="detailsOpen = !detailsOpen" class="gl-meta" type="button">
+        <span class="gl-meta__copy">
+          <span class="gl-meta__title">{{detailGame.game_name}}</span>
+          <span class="gl-meta__provider" v-if="detailProviderName">By {{detailProviderName}}</span>
+        </span>
+        <i :class="{open: detailsOpen}" aria-hidden="true" class="fas fa-chevron-up gl-meta__chevron"></i>
+      </button>
+
+      <div class="gl-details" v-if="detailsOpen">
+        <div class="gl-info-grid">
+          <section class="game-panel" v-if="detailAttributes.length">
+            <h2 class="game-panel__title"><i class="fas fa-sliders"></i> Game Attributes</h2>
+            <dl class="game-attrs">
+              <div :key="'attr-'+row.label" class="game-attrs__row" v-for="row in detailAttributes"><dt>{{row.label}}</dt><dd>{{row.value}}</dd></div>
+            </dl>
+          </section>
+          <section class="game-panel">
+            <h2 class="game-panel__title"><i class="fas fa-trophy"></i> Top 3 wins</h2>
+            <ol class="game-wins" v-if="gameDetail.topWins.length">
+              <li :key="'win-'+index" class="game-wins__row" v-for="(win,index) in gameDetail.topWins">
+                <span class="game-wins__rank">{{index + 1}}</span>
+                <span class="game-wins__user">{{win.username}}</span>
+                <span class="game-wins__mult" v-if="win.multiplier">{{win.multiplier}}x</span>
+                <span class="game-wins__amount">{{formatWinAmount(win.win_money)}}</span>
+              </li>
+            </ol>
+            <p class="game-panel__empty" v-else>No recorded wins for this game yet. Be the first one on the board.</p>
+          </section>
         </div>
-      </dl>
-    </section>
-    <section class="game-panel">
-      <h2 class="game-panel__title"><i class="fas fa-trophy"></i> Top 3 wins</h2>
-      <ol class="game-wins" v-if="gameDetail.topWins.length">
-        <li :key="'win-'+index" class="game-wins__row" v-for="(win,index) in gameDetail.topWins">
-          <span class="game-wins__rank">{{index + 1}}</span>
-          <span class="game-wins__user">{{win.username}}</span>
-          <span class="game-wins__mult" v-if="win.multiplier">{{win.multiplier}}x</span>
-          <span class="game-wins__amount">{{formatWinAmount(win.win_money)}}</span>
-        </li>
-      </ol>
-      <p class="game-panel__empty" v-else>No recorded wins for this game yet. Be the first one on the board.</p>
-    </section>
+        <section class="game-panel game-review">
+          <h2 class="game-panel__title"><i class="fas fa-book-open"></i> {{detailGame.game_name}} review</h2>
+          <p v-if="detailGame.description">{{detailGame.description}}</p>
+          <template v-else>
+            <p>{{detailGame.game_name}} is a {{(detailGame.game_type || 'casino').toLowerCase()}} title from {{detailProviderName || 'its studio'}}, available to play directly at {{websiteName}}. Rounds are processed by the provider, so every spin resolves on the studio&apos;s own certified engine.</p>
+            <p v-if="detailRtp">The published return to player figure for this release is {{detailRtp}}%, measured over a long-term simulation by the provider. Short sessions will always deviate from that number — treat it as a statistical average, never as a guarantee for a single session.</p>
+            <p>Press play above to open the game with your active {{websiteName}} wallet. Balance changes are settled through the provider in real time, and your session history stays available in your account.</p>
+          </template>
+        </section>
+      </div>
+    </div>
+    <button :aria-expanded="detailsOpen" @click="detailsOpen = !detailsOpen" class="gl-showmore" type="button">
+      <span>{{detailsOpen ? 'Show Less' : 'Show More'}}</span>
+      <i :class="{open: detailsOpen}" aria-hidden="true" class="fas fa-chevron-down"></i>
+    </button>
+  </section>
+
+  <section aria-label="Game recommendations" class="gl-catalog">
+    <div class="gl-catalog__shell">
+      <section class="gl-block" v-if="gameDetail.providerGames.length">
+        <div class="gl-head">
+          <h2>Best {{detailProviderName || 'provider'}} games</h2>
+          <div class="gl-arrows">
+            <button :disabled="bestOffset <= 0" @click="slideRail('best',-1)" aria-label="Previous games" class="gl-arrow" type="button"><i class="fas fa-chevron-left"></i></button>
+            <button :disabled="bestOffset >= railMax(gameDetail.providerGames.length)" @click="slideRail('best',1)" aria-label="Next games" class="gl-arrow" type="button"><i class="fas fa-chevron-right"></i></button>
+          </div>
+        </div>
+        <div class="gl-clip">
+          <div :style="{transform:'translateX(-'+bestOffset+'px)'}" class="gl-track">
+            <game-card :game="game" :key="'prov-'+(game._id || game.game_code)" @demo="selectGame(game, true)" @select="selectGame(game)" v-for="game in gameDetail.providerGames"></game-card>
+          </div>
+        </div>
+      </section>
+
+      <section class="gl-block gl-popular" v-if="gameDetail.popularGames.length">
+        <div class="gl-head">
+          <h2>Most popular games</h2>
+          <div class="gl-arrows">
+            <button :disabled="popularOffset <= 0" @click="slideRail('popular',-1)" aria-label="Previous popular games" class="gl-arrow" type="button"><i class="fas fa-chevron-left"></i></button>
+            <button :disabled="popularOffset >= railMax(gameDetail.popularGames.length)" @click="slideRail('popular',1)" aria-label="Next popular games" class="gl-arrow" type="button"><i class="fas fa-chevron-right"></i></button>
+          </div>
+        </div>
+        <div class="gl-clip">
+          <div :style="{transform:'translateX(-'+popularOffset+'px)'}" class="gl-track">
+            <game-card :game="game" :key="'pop-'+(game._id || game.game_code)" @demo="selectGame(game, true)" @select="selectGame(game)" v-for="game in gameDetail.popularGames"></game-card>
+          </div>
+        </div>
+      </section>
+
+      <nav aria-label="Breadcrumb" class="gl-crumbs">
+        <template v-for="(crumb,index) in detailBreadcrumb" :key="'crumb-'+index">
+          <button @click="navigate(crumb.path)" type="button" v-if="crumb.path">{{crumb.label}}</button>
+          <span aria-current="page" class="current" v-else>{{crumb.label}}</span>
+          <i aria-hidden="true" class="fas fa-chevron-right" v-if="index < detailBreadcrumb.length - 1"></i>
+        </template>
+      </nav>
+    </div>
+  </section>
+
+  <transition name="gl-fade"><div class="gl-toast" role="status" v-if="gameToast">{{gameToast}}</div></transition>
   </div>
-
-  <section class="game-panel game-review">
-    <h2 class="game-panel__title"><i class="fas fa-book-open"></i> {{detailGame.game_name}} review</h2>
-    <p v-if="detailGame.description">{{detailGame.description}}</p>
-    <template v-else>
-      <p>{{detailGame.game_name}} is a {{(detailGame.game_type || 'casino').toLowerCase()}} title from {{detailProviderName || 'its studio'}}, available to play directly at {{websiteName}}. Rounds are processed by the provider, so every spin resolves on the studio&apos;s own certified engine.</p>
-      <p v-if="detailRtp">The published return to player figure for this release is {{detailRtp}}%, measured over a long-term simulation by the provider. Short sessions will always deviate from that number — treat it as a statistical average, never as a guarantee for a single session.</p>
-      <p>Press Real Play above to open the game with your active {{websiteName}} wallet. Balance changes are settled through the provider in real time, and your session history stays available in your account.</p>
-    </template>
-  </section>
-
-  <section class="casino-rail" v-if="gameDetail.providerGames.length">
-    <div class="casino-rail-head"><h2><i class="fas fa-stamp"></i> Best {{detailProviderName}} games <mark>{{gameDetail.providerGames.length}} games</mark></h2><span><i class="fas fa-chevron-left"></i><i class="fas fa-chevron-right"></i></span></div>
-    <div class="casino-game-row no-scrollbar"><game-card :game="game" :key="'prov-'+(game._id || game.game_code)" @demo="selectGame(game, true)" @select="selectGame(game)" v-for="game in gameDetail.providerGames"></game-card></div>
-  </section>
-
-  <section class="casino-rail" v-if="gameDetail.popularGames.length">
-    <div class="casino-rail-head"><h2><i class="fas fa-fire"></i> Most popular games <mark>{{gameDetail.popularGames.length}} games</mark></h2><span><i class="fas fa-chevron-left"></i><i class="fas fa-chevron-right"></i></span></div>
-    <div class="casino-game-row no-scrollbar"><game-card :game="game" :key="'pop-'+(game._id || game.game_code)" @demo="selectGame(game, true)" @select="selectGame(game)" v-for="game in gameDetail.popularGames"></game-card></div>
-  </section>
   </template>
 </template>
 <div class="route-hero" v-else><div><span class="route-kicker">{{pageContent.kicker}}</span><h1>{{pageContent.title}}</h1><p>{{pageContent.description}}</p></div><span class="route-badge">{{pageContent.badge}}</span></div>
