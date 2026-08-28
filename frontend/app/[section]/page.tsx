@@ -3,8 +3,10 @@ import { notFound } from "next/navigation"
 import { CasinoFrame } from "@/components/casino-shell/casino-frame"
 import { WEBSITE_NAME } from "@/lib/config"
 
+// NOT: "casino" burada YOK — /casino rotasi app/casino/page.tsx tarafindan
+// karsilanir. Iki yerde tanimlanmasi trailingSlash ile sonsuz yonlendirme
+// dongusune (ERR_TOO_MANY_REDIRECTS) yol aciyordu.
 const sections = {
-  casino: "Casino",
   slots: "Slots",
   originals: `${WEBSITE_NAME} Originals`,
   "live-casino": "Live Casino",

@@ -20,8 +20,9 @@ if (process.env.NODE_ENV === "production" && missingPublicEnv.length) {
 
 const nextConfig = {
   // Frontend yalnızca statik dosya olarak yayınlanır.
+  // output: "export" ciktisi standart "out/" klasorune yazilir; Vercel'in
+  // Next.js preset'i bunu otomatik bulur. Ozel distDir vermiyoruz.
   output: "export",
-  distDir: "dist",
   trailingSlash: true,
 
   // Deployment'ın server-side env adlarını static browser bundle'ına aktar.
