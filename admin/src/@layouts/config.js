@@ -1,0 +1,42 @@
+import {
+	AppContentLayoutNav,
+	ContentWidth,
+	FooterType,
+	NavbarType,
+} from "@layouts/enums";
+import { breakpointsVuetify } from "@vueuse/core";
+import { WEBSITE_NAME } from "@/config/appConfig";
+
+export const config = {
+	app: {
+		title: WEBSITE_NAME,
+		// ℹ️ Default fallback logo. The actual logo used at runtime comes from
+		// `themeConfig.js` (`app.logo`), which overrides this value via `createLayouts`.
+		logo: h("div", { style: { width: "28px", height: "28px" } }),
+		contentWidth: ref(ContentWidth.Boxed),
+		contentLayoutNav: ref(AppContentLayoutNav.Vertical),
+		overlayNavFromBreakpoint: breakpointsVuetify.md,
+		enableI18n: true,
+		isRtl: ref(false),
+	},
+	navbar: {
+		type: ref(NavbarType.Sticky),
+		navbarBlur: ref(true),
+	},
+	footer: { type: ref(FooterType.Static) },
+	verticalNav: {
+		isVerticalNavCollapsed: ref(false),
+		defaultNavItemIconProps: { icon: "tabler-circle" },
+	},
+	horizontalNav: {
+		type: ref("sticky"),
+	},
+	icons: {
+		chevronDown: { icon: "tabler-chevron-down" },
+		chevronRight: { icon: "tabler-chevron-right" },
+		close: { icon: "tabler-x" },
+		verticalNavPinned: { icon: "tabler-circle-dot" },
+		verticalNavUnPinned: { icon: "tabler-circle" },
+		sectionTitlePlaceholder: { icon: "tabler-minus" },
+	},
+};

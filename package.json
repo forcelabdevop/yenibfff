@@ -1,0 +1,13 @@
+{
+  "name": "forcelabproce",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Forcelab — frontend (Next.js) + admin (Vue 3) + backend (Express). Her alt proje kendi bağımlılıklarını yönetir.",
+  "scripts": {
+    "dev": "pnpm --dir frontend dev",
+    "build": "pnpm --dir frontend build",
+    "start": "pnpm --dir frontend start",
+    "dev:admin": "pnpm --dir admin dev",
+    "dev:backend": "pnpm --dir backend dev"
+  }
+}

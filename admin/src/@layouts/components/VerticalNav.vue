@@ -1,0 +1,291 @@
+<script setup>
+import { injectionKeyIsVerticalNavHovered, useLayouts } from "@layouts";
+import {
+	VerticalNavGroup,
+	VerticalNavLink,
+	VerticalNavSectionTitle,
+} from "@layouts/components";
+import { config } from "@layouts/config";
+import { PerfectScrollbar } from "vue3-perfect-scrollbar";
+import { VNodeRenderer } from "./VNodeRenderer";
+import { PROJECT_ID, WEBSITE_NAME } from "@/config/appConfig";
+
+const props = defineProps({
+	tag: {
+		type: [String, null],
+		required: false,
+		default: "aside",
+	},
+	navItems: {
+		type: null,
+		required: true,
+	},
+	isOverlayNavActive: {
+		type: Boolean,
+		required: true,
+	},
+	toggleIsOverlayNavActive: {
+		type: Function,
+		required: true,
+	},
+});
+
+const refNav = ref();
+const { width: windowWidth } = useWindowSize();
+const isHovered = useElementHover(refNav);
+
+provide(injectionKeyIsVerticalNavHovered, isHovered);
+
+const {
+	isVerticalNavCollapsed: isCollapsed,
+	isLessThanOverlayNavBreakpoint,
+	isVerticalNavMini,
+	isAppRtl,
+} = useLayouts();
+
+const hideTitleAndIcon = isVerticalNavMini(windowWidth, isHovered);
+
+const resolveNavItemComponent = (item) => {
+	if ("heading" in item) return VerticalNavSectionTitle;
+	if ("children" in item) return VerticalNavGroup;
+
+	return VerticalNavLink;
+};
+
+const route = useRoute();
+
+watch(
+	() => route.name,
+	() => {
+		props.toggleIsOverlayNavActive(false);
+	},
+);
+
+const isVerticalNavScrolled = ref(false);
+const updateIsVerticalNavScrolled = (val) =>
+	(isVerticalNavScrolled.value = val);
+
+const handleNavScroll = (evt) => {
+	isVerticalNavScrolled.value = evt.target.scrollTop > 0;
+};
+</script>
+
+<template>
+	<Component
+		:is="props.tag"
+		ref="refNav"
+		class="layout-vertical-nav"
+		:class="[
+			{
+				'overlay-nav': isLessThanOverlayNavBreakpoint(windowWidth),
+				hovered: isHovered,
+				visible: isOverlayNavActive,
+				scrolled: isVerticalNavScrolled,
+			},
+		]"
+	>
+		<!-- 👉 Header -->
+		<div class="nav-header">
+			<slot name="nav-header">
+				<RouterLink
+					to="/"
+					class="app-logo d-flex align-center gap-x-3 app-title-wrapper"
+				>
+					<div class="app-logo-icon flex-shrink-0">
+						<VNodeRenderer :nodes="config.app.logo" />
+					</div>
+
+					<Transition name="vertical-nav-app-title">
+						<div v-show="!hideTitleAndIcon" class="app-title-block">
+							<h1
+								class="app-title font-weight-bold text-capitalize leading-normal"
+							>
+								Forcelab BackOffice
+							</h1>
+							<div class="app-meta-row">
+								<span class="app-site-name">{{ WEBSITE_NAME }}</span>
+								<span class="app-project-no">Proje No: {{ PROJECT_ID }}</span>
+							</div>
+						</div>
+					</Transition>
+				</RouterLink>
+				<!-- 👉 Vertical nav actions -->
+				<!-- Show toggle collapsible in >md and close button in <md -->
+				<template v-if="!isLessThanOverlayNavBreakpoint(windowWidth)">
+					<Component
+						:is="config.app.iconRenderer || 'div'"
+						v-show="isCollapsed && !hideTitleAndIcon"
+						class="header-action"
+						v-bind="config.icons.verticalNavUnPinned"
+						@click="isCollapsed = !isCollapsed"
+					/>
+					<Component
+						:is="config.app.iconRenderer || 'div'"
+						v-show="!isCollapsed && !hideTitleAndIcon"
+						class="header-action"
+						v-bind="config.icons.verticalNavPinned"
+						@click="isCollapsed = !isCollapsed"
+					/>
+				</template>
+				<template v-else>
+					<Component
+						:is="config.app.iconRenderer || 'div'"
+						class="header-action"
+						v-bind="config.icons.close"
+						@click="toggleIsOverlayNavActive(false)"
+					/>
+				</template>
+			</slot>
+		</div>
+		<slot name="before-nav-items">
+			<div class="vertical-nav-items-shadow" />
+		</slot>
+		<slot
+			name="nav-items"
+			:update-is-vertical-nav-scrolled="updateIsVerticalNavScrolled"
+		>
+			<PerfectScrollbar
+				:key="isAppRtl"
+				tag="ul"
+				class="nav-items"
+				:options="{ wheelPropagation: false }"
+				@ps-scroll-y="handleNavScroll"
+			>
+				<Component
+					:is="resolveNavItemComponent(item)"
+					v-for="(item, index) in navItems"
+					:key="index"
+					:item="item"
+				/>
+			</PerfectScrollbar>
+		</slot>
+	</Component>
+</template>
+
+<style lang="scss">
+@use "@configured-variables" as variables;
+@use "@layouts/styles/mixins";
+
+// 👉 Vertical Nav
+.layout-vertical-nav {
+	position: fixed;
+	z-index: variables.$layout-vertical-nav-z-index;
+	display: flex;
+	flex-direction: column;
+	block-size: 100%;
+	inline-size: variables.$layout-vertical-nav-width;
+	inset-block-start: 0;
+	inset-inline-start: 0;
+	transition:
+		transform 0.25s ease-in-out,
+		inline-size 0.25s ease-in-out,
+		box-shadow 0.25s ease-in-out;
+	will-change: transform, inline-size;
+
+	.nav-header {
+		display: flex;
+		align-items: center;
+
+		.header-action {
+			cursor: pointer;
+		}
+	}
+
+	.app-title-wrapper {
+		min-inline-size: 0;
+		margin-inline-end: auto;
+	}
+
+	.app-logo-icon {
+		display: flex;
+		flex-shrink: 0;
+		align-items: center;
+	}
+
+	.app-title-block {
+		display: flex;
+		overflow: hidden;
+		flex-direction: column;
+		min-inline-size: 0;
+		line-height: 1.2;
+	}
+
+	// ℹ️ font-size, @core/scss/template/_vertical-nav.scss içindeki
+	// `.app-logo .app-title` kuralında tanımlı (daha yüksek specificity).
+	.app-title {
+		overflow: hidden;
+		min-inline-size: 0;
+		letter-spacing: 0;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.app-meta-row {
+		display: flex;
+		overflow: hidden;
+		align-items: center;
+		gap: 0.25rem;
+		margin-block-start: 0.125rem;
+	}
+
+	.app-site-name,
+	.app-project-no {
+		overflow: hidden;
+		border-radius: 0.5rem;
+		font-size: 0.625rem;
+		font-weight: 500;
+		letter-spacing: 0.02em;
+		line-height: 1.6;
+		padding-block: 0;
+		padding-inline: 0.375rem;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.app-site-name {
+		background-color: rgba(var(--v-theme-primary), 0.16);
+		color: rgb(var(--v-theme-primary));
+	}
+
+	.app-project-no {
+		flex-shrink: 0;
+		background-color: rgba(var(--v-theme-on-surface), 0.08);
+		color: rgba(var(--v-theme-on-surface), 0.7);
+	}
+
+	.nav-items {
+		block-size: 100%;
+
+		// ℹ️ We no loner needs this overflow styles as perfect scrollbar applies it
+		// overflow-x: hidden;
+
+		// // ℹ️ We used `overflow-y` instead of `overflow` to mitigate overflow x. Revert back if any issue found.
+		// overflow-y: auto;
+	}
+
+	.nav-item-title {
+		overflow: hidden;
+		margin-inline-end: auto;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	// 👉 Collapsed
+	.layout-vertical-nav-collapsed & {
+		&:not(.hovered) {
+			inline-size: variables.$layout-vertical-nav-collapsed-width;
+		}
+	}
+
+	// 👉 Overlay nav
+	&.overlay-nav {
+		&:not(.visible) {
+			transform: translateX(-#{variables.$layout-vertical-nav-width});
+
+			@include mixins.rtl {
+				transform: translateX(variables.$layout-vertical-nav-width);
+			}
+		}
+	}
+}
+</style>

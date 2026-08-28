@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+/**
+ * Site marka teması — referans casino arayüzü'in görsel diline (koyu lacivert
+ * zemin + kırmızı/pembe gradyan imza rengi) hizalanır, marka adı ve logo
+ * korunur.
+ *
+ * Palet (5 renk): mürekkep lacivert zemin, yükseltilmiş yüzey, soğuk beyaz
+ * metin, kırmızı/pembe imza rengi (CTA + aktif durumlar), mavi ikincil
+ * vurgu (bakiye/bilgi rozetleri).
+ */
+@theme inline {
+	--font-sans: "Montserrat", "Montserrat Fallback", ui-sans-serif, system-ui, sans-serif;
+	--font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;
+
+	--color-background: #0d131c;
+	--color-foreground: #f4f7fb;
+
+	--color-card: #111923;
+	--color-card-foreground: #f4f7fb;
+
+	--color-popover: #19212d;
+	--color-popover-foreground: #f4f7fb;
+
+	--color-muted: #29313d;
+	--color-muted-foreground: #a7b5ca;
+
+	--color-primary: #fa1749;
+	--color-primary-foreground: #ffffff;
+
+	--color-secondary: #19212d;
+	--color-secondary-foreground: #f1f4f9;
+
+	--color-accent: #2f7bf5;
+	--color-accent-foreground: #ffffff;
+
+	--color-destructive: #ef4444;
+	--color-destructive-foreground: #fef2f2;
+
+	--color-border: #212c3d;
+	--color-input: #212c3d;
+	--color-ring: #fb1949;
+
+	/* İmza kırmızı/pembe gradyan — 3D CTA butonları ve rozetler için. */
+	--gradient-primary: linear-gradient(180deg, #fb1949 0%, #c4003b 100%);
+	--gradient-primary-hover: linear-gradient(180deg, #ff3563 0%, #d4004a 100%);
+
+	--radius: 0.75rem;
+}
+
+@layer base {
+	* {
+		border-color: var(--color-border);
+	}
+
+	body {
+		background-color: var(--color-background);
+		color: var(--color-foreground);
+		-webkit-font-smoothing: antialiased;
+	}
+
+	/* Bakiye, oran ve çarpan gibi sayısal değerler hizalı kalsın. */
+	.tabular {
+		font-variant-numeric: tabular-nums;
+		font-feature-settings: "tnum";
+	}
+
+	/* İmza "3D" CTA butonu: gradyan zemin + üstte ince ışık kenarı, referans casino arayüzü'nin
+     Sign Up butonundaki kabarık his için. */
+	.btn-3d-primary {
+		background-image: var(--gradient-primary);
+		box-shadow:
+			inset 0 1px 0 0 rgba(255, 255, 255, 0.25),
+			inset 0 -2px 0 0 rgba(0, 0, 0, 0.2),
+			0 4px 10px -2px rgba(251, 25, 73, 0.45);
+	}
+	.btn-3d-primary:hover {
+		background-image: var(--gradient-primary-hover);
+	}
+	.btn-3d-primary:active {
+		box-shadow:
+			inset 0 1px 0 0 rgba(255, 255, 255, 0.15),
+			inset 0 1px 3px 0 rgba(0, 0, 0, 0.35);
+		transform: translateY(1px);
+	}
+
+	/* Yatay kaydırılan raflar/carousel'lerde scrollbar'ı gizler ama klavye/tekerlek
+     kaydırmayı bozmaz. */
+	.scrollbar-hidden {
+		scrollbar-width: none;
+	}
+	.scrollbar-hidden::-webkit-scrollbar {
+		display: none;
+	}
+
+	/* Casino sayfasındaki "oyun seç" bannerının makara sütunları: içerik iki kez
+     basılır ve %50 kaydırılarak kesintisiz döngü elde edilir. */
+	@keyframes casino-reel {
+		from {
+			transform: translateY(0);
+		}
+		to {
+			transform: translateY(-50%);
+		}
+	}
+	.animate-casino-reel {
+		animation: casino-reel linear infinite;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.animate-casino-reel {
+			animation: none;
+		}
+	}
+}

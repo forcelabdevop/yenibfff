@@ -1,0 +1,36 @@
+{
+  "name": "forcelab-web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "PORT=5173 node server.dev.js",
+    "build": "next build --webpack",
+    "start": "pnpm dlx serve@14.2.5 dist -l 5173",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@next/env": "^16.0.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "http-proxy": "^1.18.1",
+    "lucide-react": "^0.548.0",
+    "next": "^16.0.0",
+    "next-themes": "^0.4.6",
+    "radix-ui": "^1.6.7",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "socket.io-client": "^4.8.1",
+    "sonner": "^2.0.8",
+    "swr": "^2.3.4",
+    "tailwind-merge": "^3.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.13",
+    "@types/node": "^22.15.3",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.13",
+    "typescript": "^5.9.2"
+  }
+}
