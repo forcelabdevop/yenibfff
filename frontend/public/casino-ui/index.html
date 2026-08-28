@@ -8,6 +8,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://registry.npmmirror.com/vue/3.3.11/files/dist/vue.global.js"></script>
 <script src="https://registry.npmmirror.com/socket.io-client/4.7.5/files/dist/socket.io.min.js"></script>
+<script src="./game-detail.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -2670,6 +2671,14 @@
         function navigate(path) {
           window.parent.postMessage({source:'casino-frame',type:'navigate',path}, window.location.origin);
         }
+        // Oyun detay sayfasi mantigi ayri dosyada: casino-ui/game-detail.js
+        const gamePage = window.createGameDetail({
+          ref, computed, currentPage, runtimeParams, apiUrl, backendAssetUrl,
+          websiteName: WEBSITE_NAME, knownRtp: KNOWN_RTP, normalizeGameName,
+          authUser, readAuthToken,
+        });
+        const isGamePage = gamePage.isGamePage;
+
         async function loadCasinoGames() {
           try {
             const response = await fetch(apiUrl('/public/games/categories/with-games'), {credentials:'include'});
