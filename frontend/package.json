@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "PORT=5173 node server.dev.js",
-    "build": "next build --webpack",
+    "build": "pnpm run casino-ui:css && next build --webpack",
     "start": "pnpm dlx serve@14.2.5 dist -l 5173",
-    "lint": "next lint"
+    "lint": "next lint",
+    "casino-ui:css": "tailwindcss -i ./styles/casino-ui.tailwind.css -o ./public/casino-ui/tailwind.css --minify"
   },
   "dependencies": {
     "@next/env": "^16.0.0",
@@ -25,6 +26,7 @@
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
     "@tailwindcss/postcss": "^4.1.13",
     "@types/node": "^22.15.3",
     "@types/react": "^19.2.0",
