@@ -1623,7 +1623,9 @@
     <div class="acct-grid" v-else-if="accountPageKey==='profile'">
       <div class="acct-card acct-card--wide" v-if="profile">
         <div class="acct-identity">
-          <img class="acct-avatar" :src="profile.avatar || 'assets/avatar.png'" :alt="(profile.username || 'Player') + ' avatar'"/>
+          <!-- assets/avatar.png diye bir dosya YOK; header ile ayni varsayilan
+               avatari kullaniyoruz (backend avatar: null dondurebilir). -->
+          <img class="acct-avatar" :src="profile.avatar || 'assets/user-avatar-raccoon.png'" :alt="(profile.username || 'Player') + ' avatar'"/>
           <div>
             <strong class="acct-identity__name">{{profile.username || profile.name || 'Player'}}</strong>
             <span class="acct-sub">Member since {{accountFormatDateOnly(profile.createdAt)}}</span>
@@ -1691,7 +1693,13 @@
               <td class="acct-muted">{{accountFormatDate(row.created_at)}}</td>
               <td>
                 <span class="acct-strong">{{row.game_name}}</span>
-                <span class="acct-sub" v-if="row.provider">{{row.provider}}</span>
+                <!-- row.provider BASILMAZ: /game-history bu alani populate
+                     etmeden dondurur, yani degeri saglayici adi degil duz bir
+                     ObjectId'dir (backend/routes/index.js ~782 + Game
+                     semasindaki provider ref'i). Saglayici adini burada
+                     gostermek icin once backend payload'ina provider_code
+                     eklenmeli — ayrinti: MOCK-BACKEND.md -->
+                <span class="acct-sub" v-if="row.provider_code">{{row.provider_code}}</span>
               </td>
               <td class="acct-num">{{accountFormatMoney(row.bet_money, activeCurrency)}}</td>
               <td class="acct-num acct-strong" :class="Number(row.win_money) > 0 ? 'acct-pos' : 'acct-muted'">{{accountFormatMoney(row.win_money, activeCurrency)}}</td>
@@ -1791,7 +1799,7 @@
 </div>
 <div class="horizontal-strip top-slot-strip no-scrollbar" id="top-slot-strip">
 <button :key="game._id || game.name" @click="selectGame(game)" class="top-slot-card" v-for="game in topSlots">
-<img :alt="game.game_name || game.name" :src="game.banner || game.background || game.image"/><span class="top-pill">TOP</span><span class="provider">{{game.provider?.name || game.provider || game.provider_code || 'CASINO'}}</span>
+<img :alt="game.game_name || game.name" :src="game.banner || game.background || game.image"/><span class="top-pill">TOP</span><span class="provider">{{game.provider?.name || game.provider_code || 'CASINO'}}</span>
 </button>
 </div>
 </section>
@@ -2241,7 +2249,12 @@
         const favorite = ref(false);
         const name = computed(() => props.game.game_name || props.game.name || 'Game');
         const provider = computed(() => {
-          const raw = (props.game.provider && props.game.provider.name) || props.game.provider_code || props.game.provider || 'Casino';
+          // `provider` populate edilmisse nesnedir (.name), edilmemisse duz
+          // ObjectId string'idir. ObjectId'yi ASLA etiket olarak basmiyoruz:
+          // 24 haneli hex kullaniciya hicbir sey anlatmaz. Sirasiyla
+          // populate edilmis ad -> provider_code -> 'Casino'.
+          const populated = props.game.provider && props.game.provider.name;
+          const raw = populated || props.game.provider_code || 'Casino';
           return String(raw)
             .replace(/^(slot|live|casino|table)[-_]/i, '')
             .replace(/[-_]+/g, ' ')

@@ -29,12 +29,24 @@ const proxy = httpProxy.createProxyServer({
   changeOrigin: true,
 })
 
-proxy.on("error", (err, _req, res) => {
+// DİKKAT: websocket upgrade'i başarısız olduğunda http-proxy bu handler'a
+// üçüncü argüman olarak bir ServerResponse DEĞİL, çıplak net.Socket geçirir.
+// Orada res.writeHead() çağırmak TypeError fırlatır; handler'ın kendisi
+// uncaughtException ürettiği için tüm dev sunucusu düşer ve ardından her
+// sayfa `.next/dev/required-server-files.json` ENOENT ile 500 döner.
+// Bu yüzden iki durumu ayrı ayrı ele alıyoruz.
+proxy.on("error", (err, _req, resOrSocket) => {
   console.error("[socket-proxy] error:", err.message)
-  if (res && !res.headersSent) {
-    res.writeHead(502)
-    res.end("socket proxy error")
+  if (!resOrSocket) return
+  if (typeof resOrSocket.writeHead === "function") {
+    if (!resOrSocket.headersSent) {
+      resOrSocket.writeHead(502)
+      resOrSocket.end("socket proxy error")
+    }
+    return
   }
+  // net.Socket dalı: sadece sessizce kapat.
+  if (typeof resOrSocket.destroy === "function") resOrSocket.destroy()
 })
 
 app.prepare().then(() => {

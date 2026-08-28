@@ -156,13 +156,19 @@
 
   const makeGame = (seed, index) => {
     const [game_name, game_code, provider_code, game_type, rtp] = seed
-    const provider = PROVIDERS.find((p) => p.code === provider_code)
     return {
       _id: "mockgame" + String(index).padStart(16, "0"),
       game_name,
       game_code,
       provider_code,
-      provider: { _id: "mockprov-" + provider_code, name: provider ? provider.name : provider_code },
+      // DIKKAT: Game.provider semada GameProvider'a ObjectId ref'tir ve
+      // /game-history ile /public/games/* uclarinda POPULATE EDILMEZ; yani
+      // gercek backend burada duz bir ObjectId string'i dondurur, saglayici
+      // adi DEGIL. Mock'u bilerek ayni sekilde tutuyoruz — aksi halde
+      // frontend saglayici adini burada varsayar ve backend'e baglanildiginda
+      // ekranda 24 haneli hex gorunur. Insan-okunur ad icin provider_code
+      // kullanilir (PROVIDERS tablosu).
+      provider: "aaaaaaaaaaaaaaaa" + String(PROVIDERS.findIndex((p) => p.code === provider_code) + 1).padStart(8, "0"),
       banner: asset(THUMBS[index % THUMBS.length]),
       background: asset(THUMBS[(index + 3) % THUMBS.length]),
       game_type,
@@ -249,7 +255,10 @@
       game_name: game.game_name,
       game_type: game.game_type,
       banner: game.banner,
+      // backend/routes/index.js ile ayni: `provider` populate edilmemis
+      // ObjectId, gosterilebilir etiket `provider_code`.
       provider: game.provider,
+      provider_code: game.provider_code,
     }
   })
 

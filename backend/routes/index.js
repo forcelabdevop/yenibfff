@@ -775,11 +775,15 @@ router.get("/game-history/:identifier", authorizeUser(true), async (req, res) =>
 				txn_type: tx.txn_type,
 				game_code: tx.game_code,
 
-				// Game’den gelen alanlar
-				game_name: game.game_name || "Unknown",
-				game_type: game.game_type || "other",
-				banner: game.banner || null,
-				provider: game.provider || null,
+					// Game’den gelen alanlar
+					game_name: game.game_name || "Unknown",
+					game_type: game.game_type || "other",
+					banner: game.banner || null,
+					// NOT: `provider` bir GameProvider ObjectId ref'idir ve burada
+					// populate EDILMEZ — arayuzde gosterilemez. Insan-okunur
+					// saglayici etiketi icin `provider_code` doner.
+					provider: game.provider || null,
+					provider_code: game.provider_code || null,
 			};
 		});
 
