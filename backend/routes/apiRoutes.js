@@ -72,6 +72,7 @@ router.get("/games/category/:slug", controller.getGamesByCategorySlug);
 router.get("/games/search", controller.searchGames);
 router.get("/games/featured/list", controller.getFeaturedGames);
 router.get("/games/categories/with-games", controller.getCategoriesWithGames);
+router.get("/games/detail/:code", controller.getGameDetailByCode);
 router.get("/providers/category/:slug", controller.getProvidersByCategorySlug);
 
 router.get("/shop/items", async (req, res) => {
