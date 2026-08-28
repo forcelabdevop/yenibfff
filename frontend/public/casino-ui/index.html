@@ -7,6 +7,10 @@
 <title>Crypto Casino &amp; Sports Betting</title>
 <script src="https://registry.npmmirror.com/vue/3.3.11/files/dist/vue.global.prod.js"></script>
 <script src="https://registry.npmmirror.com/socket.io-client/4.7.5/files/dist/socket.io.min.js"></script>
+<!-- GECICI: offline/mock backend katmani. socket.io'dan SONRA, uygulama
+     script'inden ONCE yuklenmeli (window.fetch ve window.io'yu sarar).
+     Backend'e geri baglanirken bu satir silinir — bkz. MOCK-BACKEND.md -->
+<script src="./mock-backend.js"></script>
 <script src="./game-detail.js"></script>
 <script src="./account-pages.js"></script>
 <link href="./tailwind.css" rel="stylesheet"/>
