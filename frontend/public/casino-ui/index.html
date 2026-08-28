@@ -475,6 +475,68 @@
     .casino-search i { font-size:18px; color:#93acd3; }
     .casino-search input { width:100%; min-width:0; outline:none; border:0; color:#fff; background:transparent; font-family:inherit; font-size:14px; font-weight:600; letter-spacing:-.02em; line-height:18px; }
     .casino-search input::placeholder { color:#93acd3; font-weight:600; }
+    /* ===== Oyun detay sayfasi (/game/?code=...) ===== */
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    .game-spinner { width:20px; height:20px; border-radius:50%; border:2px solid rgba(255,255,255,.22); border-top-color:#ff174f; animation:game-spin .7s linear infinite; display:inline-block; }
+    .game-spinner--sm { width:14px; height:14px; border-width:2px; }
+    @keyframes game-spin { to { transform:rotate(360deg); } }
+    .game-page-loading { display:flex; min-height:340px; flex-direction:column; align-items:center; justify-content:center; gap:14px; color:#94a3b5; }
+
+    .game-breadcrumb { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:16px; font-size:13px; }
+    .game-breadcrumb button { border:0; background:none; padding:0; color:#8fa0b4; font-size:13px; cursor:pointer; }
+    .game-breadcrumb button:hover { color:#fff; }
+    .game-breadcrumb__current { color:#fff; font-weight:600; }
+    .game-breadcrumb__sep { font-size:9px; color:#4b5c70; }
+
+    .game-stage { border:1px solid #223140; border-radius:18px; background:#101c28; overflow:hidden; }
+    .game-stage--theatre { position:fixed; inset:0; z-index:90; border:0; border-radius:0; }
+    .game-stage__screen { position:relative; aspect-ratio:16/9; background:#0a131e; }
+    .game-stage--theatre .game-stage__screen { height:calc(100% - 52px); aspect-ratio:auto; }
+    .game-stage__frame { width:100%; height:100%; border:0; display:block; }
+    .game-stage__cover { position:absolute; inset:0; overflow:hidden; }
+    .game-stage__bg { width:100%; height:100%; object-fit:cover; filter:blur(22px) saturate(1.1); transform:scale(1.12); }
+    .game-stage__shade { position:absolute; inset:0; background:radial-gradient(ellipse at center,rgba(10,19,30,.66),rgba(6,11,18,.94)); }
+    .game-stage__cover-inner { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:24px; text-align:center; }
+    .game-stage__thumb { width:132px; height:174px; object-fit:cover; border-radius:13px; box-shadow:0 18px 44px rgba(0,0,0,.5); }
+    .game-stage__title { margin:6px 0 0; color:#fff; font-size:26px; letter-spacing:-.5px; }
+    .game-stage__provider { margin:0; color:#8fa0b4; font-size:14px; }
+    .game-stage__error { display:flex; align-items:center; gap:8px; margin:0; padding:9px 14px; border-radius:11px; background:rgba(255,23,79,.14); color:#ff8ba6; font-size:13px; max-width:440px; }
+    .game-stage__actions { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:6px; }
+    .game-cta { display:inline-flex; align-items:center; gap:9px; padding:12px 26px; border:0; border-radius:11px; font-size:14px; font-weight:700; cursor:pointer; }
+    .game-cta--primary { background:#ff174f; color:#fff; }
+    .game-cta--primary:hover { background:#e40f43; }
+    .game-cta--ghost { background:#1c2a3a; color:#aab7c8; }
+    .game-cta:disabled { opacity:.55; cursor:not-allowed; }
+    .game-stage__bar { display:flex; align-items:center; justify-content:space-between; gap:14px; height:52px; padding:0 14px; background:#152230; }
+    .game-stage__bar-left, .game-stage__bar-right { display:flex; align-items:center; gap:10px; min-width:0; }
+    .game-stage__name { color:#fff; font-size:14px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .game-stage__rtp { padding:5px 10px; border-radius:16px; background:#1c2a3a; color:#8fa0b4; font-size:11px; font-weight:600; white-space:nowrap; }
+    .game-tool { display:inline-flex; width:34px; height:34px; align-items:center; justify-content:center; border:0; border-radius:9px; background:#1c2a3a; color:#aab7c8; cursor:pointer; }
+    .game-tool:hover { color:#fff; }
+    .game-tool.active { color:#ff174f; }
+
+    .game-info-grid { display:grid; grid-template-columns:1fr; gap:16px; margin-top:24px; }
+    .game-panel { padding:22px; border:1px solid #223140; border-radius:16px; background:#131e2a; }
+    .game-panel__title { display:flex; align-items:center; gap:9px; margin:0 0 16px; color:#fff; font-size:17px; }
+    .game-panel__title>i { color:#ff174f; font-size:15px; }
+    .game-panel__empty { margin:0; color:#8fa0b4; font-size:14px; line-height:1.6; }
+    .game-attrs { display:flex; flex-direction:column; gap:0; margin:0; }
+    .game-attrs__row { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:11px 0; border-bottom:1px solid #1e2c3b; }
+    .game-attrs__row:last-child { border-bottom:0; }
+    .game-attrs dt { color:#8fa0b4; font-size:13px; }
+    .game-attrs dd { margin:0; color:#fff; font-size:13px; font-weight:600; text-align:right; }
+    .game-wins { display:flex; flex-direction:column; gap:9px; margin:0; padding:0; list-style:none; }
+    .game-wins__row { display:flex; align-items:center; gap:12px; padding:11px 13px; border-radius:11px; background:#0f1a25; }
+    .game-wins__rank { display:inline-flex; width:24px; height:24px; flex:0 0 auto; align-items:center; justify-content:center; border-radius:50%; background:#1c2a3a; color:#aab7c8; font-size:12px; font-weight:700; }
+    .game-wins__row:first-child .game-wins__rank { background:#ff174f; color:#fff; }
+    .game-wins__user { flex:1 1 auto; min-width:0; color:#fff; font-size:13px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .game-wins__mult { padding:4px 9px; border-radius:14px; background:#1c2a3a; color:#8fa0b4; font-size:11px; font-weight:700; }
+    .game-wins__amount { color:#22c55e; font-size:13px; font-weight:700; white-space:nowrap; }
+    .game-review { margin-top:16px; }
+    .game-review p { margin:0 0 12px; color:#94a3b5; font-size:14px; line-height:1.7; }
+    .game-review p:last-child { margin-bottom:0; }
+    @media (min-width:900px) { .game-info-grid { grid-template-columns:1fr 1fr; } }
+
     .casino-rail { margin-top:34px; }
     .casino-rail-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:15px; }
     .casino-rail-head h2 { color:#fff; font-size:21px; }
@@ -1184,8 +1246,99 @@
 <div class="casino-game-row no-scrollbar"><game-card :badge="index<4 ? (index===3?'HOT':'TOP') : ''" :game="game" :key="category.slug+'-'+(game._id || game.game_code)" @demo="selectGame(game, true)" @select="selectGame(game)" v-for="(game,index) in category.games.slice(0,12)"></game-card></div>
 </section>
 </template>
+<template v-else-if="isGamePage">
+  <div class="game-page-loading" v-if="gameDetailLoading"><span class="game-spinner"></span><p>Loading game…</p></div>
+  <div class="empty-panel" v-else-if="gameDetailError || !detailGame"><div class="empty-panel-inner"><span class="empty-icon"><i class="fas fa-triangle-exclamation"></i></span><h2>Game unavailable</h2><p>{{gameDetailError || 'Bu oyun şu an bulunamadı.'}}</p><button @click="navigate('/casino')" class="game-cta game-cta--ghost">Back to lobby</button></div></div>
+  <template v-else>
+  <nav aria-label="Breadcrumb" class="game-breadcrumb">
+    <template v-for="(crumb,index) in detailBreadcrumb" :key="'crumb-'+index">
+      <button @click="navigate(crumb.path)" v-if="crumb.path">{{crumb.label}}</button>
+      <span aria-current="page" class="game-breadcrumb__current" v-else>{{crumb.label}}</span>
+      <i class="fas fa-chevron-right game-breadcrumb__sep" v-if="index < detailBreadcrumb.length - 1"></i>
+    </template>
+  </nav>
+
+  <section :class="{'game-stage--theatre': launchTheatre}" class="game-stage">
+    <div class="game-stage__screen">
+      <iframe :src="launchUrl" :title="detailGame.game_name" allow="autoplay; fullscreen" class="game-stage__frame" v-if="launchState === 'ready'"></iframe>
+      <div class="game-stage__cover" v-else>
+        <img :alt="''" :src="detailGame.background || detailGame.banner" class="game-stage__bg" v-if="detailGame.background || detailGame.banner"/>
+        <span class="game-stage__shade"></span>
+        <div class="game-stage__cover-inner">
+          <img :alt="detailGame.game_name + ' thumbnail'" :src="detailGame.banner" class="game-stage__thumb" v-if="detailGame.banner"/>
+          <h1 class="game-stage__title">{{detailGame.game_name}}</h1>
+          <p class="game-stage__provider">{{detailProviderName}}</p>
+          <p class="game-stage__error" v-if="launchState === 'error'"><i class="fas fa-circle-exclamation"></i> {{launchError}}</p>
+          <div class="game-stage__actions">
+            <button :disabled="launchState === 'loading'" @click="startGame" class="game-cta game-cta--primary">
+              <span class="game-spinner game-spinner--sm" v-if="launchState === 'loading'"></span>
+              <i class="fas fa-play" v-else></i>
+              {{launchState === 'loading' ? 'Starting…' : (launchState === 'error' ? 'Try again' : 'Real Play')}}
+            </button>
+            <button class="game-cta game-cta--ghost" disabled title="Demo mode is currently disabled"><i class="fas fa-lock"></i> Demo Play</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="game-stage__bar">
+      <div class="game-stage__bar-left">
+        <button :class="{active: gameFavorite}" @click="gameFavorite = !gameFavorite" class="game-tool" type="button"><i class="fas fa-heart"></i><span class="sr-only">Favourite</span></button>
+        <span class="game-stage__name">{{detailGame.game_name}}</span>
+        <span class="game-stage__rtp" v-if="detailRtp">RTP {{detailRtp}}%</span>
+      </div>
+      <div class="game-stage__bar-right">
+        <button @click="exitGame" class="game-tool" type="button" v-if="launchState === 'ready'"><i class="fas fa-xmark"></i><span class="sr-only">Close game</span></button>
+        <button @click="toggleTheatre" class="game-tool" type="button"><i :class="launchTheatre ? 'fas fa-compress' : 'fas fa-expand'"></i><span class="sr-only">Theatre mode</span></button>
+      </div>
+    </div>
+  </section>
+
+  <div class="game-info-grid">
+    <section class="game-panel" v-if="detailAttributes.length">
+      <h2 class="game-panel__title"><i class="fas fa-sliders"></i> Game Attributes</h2>
+      <dl class="game-attrs">
+        <div :key="'attr-'+row.label" class="game-attrs__row" v-for="row in detailAttributes">
+          <dt>{{row.label}}</dt><dd>{{row.value}}</dd>
+        </div>
+      </dl>
+    </section>
+    <section class="game-panel">
+      <h2 class="game-panel__title"><i class="fas fa-trophy"></i> Top 3 wins</h2>
+      <ol class="game-wins" v-if="gameDetail.topWins.length">
+        <li :key="'win-'+index" class="game-wins__row" v-for="(win,index) in gameDetail.topWins">
+          <span class="game-wins__rank">{{index + 1}}</span>
+          <span class="game-wins__user">{{win.username}}</span>
+          <span class="game-wins__mult" v-if="win.multiplier">{{win.multiplier}}x</span>
+          <span class="game-wins__amount">{{formatWinAmount(win.win_money)}}</span>
+        </li>
+      </ol>
+      <p class="game-panel__empty" v-else>No recorded wins for this game yet. Be the first one on the board.</p>
+    </section>
+  </div>
+
+  <section class="game-panel game-review">
+    <h2 class="game-panel__title"><i class="fas fa-book-open"></i> {{detailGame.game_name}} review</h2>
+    <p v-if="detailGame.description">{{detailGame.description}}</p>
+    <template v-else>
+      <p>{{detailGame.game_name}} is a {{(detailGame.game_type || 'casino').toLowerCase()}} title from {{detailProviderName || 'its studio'}}, available to play directly at {{websiteName}}. Rounds are processed by the provider, so every spin resolves on the studio&apos;s own certified engine.</p>
+      <p v-if="detailRtp">The published return to player figure for this release is {{detailRtp}}%, measured over a long-term simulation by the provider. Short sessions will always deviate from that number — treat it as a statistical average, never as a guarantee for a single session.</p>
+      <p>Press Real Play above to open the game with your active {{websiteName}} wallet. Balance changes are settled through the provider in real time, and your session history stays available in your account.</p>
+    </template>
+  </section>
+
+  <section class="casino-rail" v-if="gameDetail.providerGames.length">
+    <div class="casino-rail-head"><h2><i class="fas fa-stamp"></i> Best {{detailProviderName}} games <mark>{{gameDetail.providerGames.length}} games</mark></h2><span><i class="fas fa-chevron-left"></i><i class="fas fa-chevron-right"></i></span></div>
+    <div class="casino-game-row no-scrollbar"><game-card :game="game" :key="'prov-'+(game._id || game.game_code)" @demo="selectGame(game, true)" @select="selectGame(game)" v-for="game in gameDetail.providerGames"></game-card></div>
+  </section>
+
+  <section class="casino-rail" v-if="gameDetail.popularGames.length">
+    <div class="casino-rail-head"><h2><i class="fas fa-fire"></i> Most popular games <mark>{{gameDetail.popularGames.length}} games</mark></h2><span><i class="fas fa-chevron-left"></i><i class="fas fa-chevron-right"></i></span></div>
+    <div class="casino-game-row no-scrollbar"><game-card :game="game" :key="'pop-'+(game._id || game.game_code)" @demo="selectGame(game, true)" @select="selectGame(game)" v-for="game in gameDetail.popularGames"></game-card></div>
+  </section>
+  </template>
+</template>
 <div class="route-hero" v-else><div><span class="route-kicker">{{pageContent.kicker}}</span><h1>{{pageContent.title}}</h1><p>{{pageContent.description}}</p></div><span class="route-badge">{{pageContent.badge}}</span></div>
-<div class="empty-panel" v-if="!isCasinoPage"><div class="empty-panel-inner"><span class="empty-icon"><i :class="pageContent.icon"></i></span><h2>{{pageContent.emptyTitle}}</h2><p>{{pageContent.emptyText}}</p></div></div>
+<div class="empty-panel" v-if="!isCasinoPage && !isGamePage"><div class="empty-panel-inner"><span class="empty-icon"><i :class="pageContent.icon"></i></span><h2>{{pageContent.emptyTitle}}</h2><p>{{pageContent.emptyText}}</p></div></div>
 </section>
 <template v-else>
 <section class="hero" id="home">
@@ -2476,7 +2629,8 @@
             toastMessage((game && game.name ? game.name : 'Game') + ' is coming soon');
             return;
           }
-          window.parent.postMessage({source:'casino-frame',type:'launch-game',game,demo:!!demo}, window.location.origin);
+          // Oyun artik modal yerine kendi sayfasinda acilir (/game/?code=...).
+          navigate('/game/?code=' + encodeURIComponent(game.game_code));
         }
         function gamesForPage(categories) {
           const matcher = currentPage === 'slots' ? /slot/i : currentPage === 'originals' ? /original|crash|instant/i : currentPage === 'live-casino' ? /live|table/i : null;
@@ -2633,7 +2787,8 @@
         function handleKeydown(event){ if (event.key === 'Escape' && searchOpen.value) closeSearchModal(); }
         onMounted(()=>{ window.addEventListener('resize',handleResize); window.addEventListener('keydown',handleKeydown); window.addEventListener('storage',handleStorageSync); loadCasinoGames(); startPromoAutoplay(); refreshAuthUser(); });
         onBeforeUnmount(()=>{ window.removeEventListener('resize',handleResize); window.removeEventListener('keydown',handleKeydown); window.removeEventListener('storage',handleStorageSync); clearTimeout(searchTimer); clearInterval(promoTimer); });
-        return {websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout};
+        return {websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
+          isGamePage,gameDetail,gameDetailLoading,gameDetailError,detailGame,detailProviderName,detailRtp,detailAttributes,detailBreadcrumb,launchState,launchUrl,launchError,launchTheatre,gameFavorite,startGame,exitGame,toggleTheatre,formatWinAmount};
       }
     }).component('game-card', GameCard).mount('#app');
   </script>

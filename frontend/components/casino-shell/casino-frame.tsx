@@ -14,9 +14,11 @@ type FrameMessage =
 
 interface CasinoFrameProps {
   page?: string
+  /** Sayfaya özel ek query parametreleri (örn. oyun sayfası için { code }). */
+  extraParams?: Record<string, string>
 }
 
-export function CasinoFrame({ page = "home" }: CasinoFrameProps) {
+export function CasinoFrame({ page = "home", extraParams }: CasinoFrameProps) {
   const router = useRouter()
   const [selectedGame, setSelectedGame] = useState<CasinoGame | null>(null)
   const [authMode, setAuthMode] = useState<"login" | "register">("login")
@@ -27,7 +29,10 @@ export function CasinoFrame({ page = "home" }: CasinoFrameProps) {
     socketUrl: SOCKET_URL,
     storageNamespace: STORAGE_NAMESPACE,
     websiteName: WEBSITE_NAME,
+    ...extraParams,
   })
+  // Oyun kodu değiştiğinde iframe'in baştan kurulması gerekir.
+  const frameKey = `${page}:${extraParams?.code ?? ""}`
 
   useEffect(() => {
     function handleMessage(event: MessageEvent<FrameMessage>) {
@@ -48,7 +53,7 @@ export function CasinoFrame({ page = "home" }: CasinoFrameProps) {
   return (
     <main className="h-dvh w-full overflow-hidden bg-[#0a131e]">
       <iframe
-        key={page}
+        key={frameKey}
         src={`/casino-ui/index.html?${frameParams.toString()}`}
         title={`${WEBSITE_NAME} — ${page}`}
         className="h-full w-full border-0"
