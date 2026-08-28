@@ -78,6 +78,7 @@ router.use("/battlepass", battlepassRoutes);
 router.use("/wallet", Wallet);
 router.use("/wingo", wingoRoutes);
 router.use("/user", userRoutes);
+router.use("/account", require("./account"));
 
 router.use("/chat", require("./chatConfig"));
 router.use("/settings", require("./settings"));
@@ -705,13 +706,16 @@ router.get(
 	},
 );
 
-router.get("/game-history/:identifier", async (req, res) => {
+router.get("/game-history/:identifier", authorizeUser(true), async (req, res) => {
 	try {
 		const { identifier } = req.params;
 		let { page = 1, limit = 20 } = req.query;
 
 		page = parseInt(page) || 1;
 		limit = parseInt(limit) || 20;
+		// Sayfa boyutunu sınırla (kaynak tüketimi koruması)
+		limit = Math.min(Math.max(limit, 1), 100);
+		page = Math.max(page, 1);
 
 		let userId = null;
 
@@ -725,6 +729,15 @@ router.get("/game-history/:identifier", async (req, res) => {
 			return res
 				.status(404)
 				.json({ error: "User not found" });
+		}
+
+		// ⚠️ GÜVENLİK: Kullanıcı sadece kendi oyun geçmişini görebilir (IDOR koruması).
+		// Kardeş uçlar (/transaction-history, /bonus-history) ile aynı davranış.
+		if (String(req.user?._id || "") !== String(userId)) {
+			return res.status(403).json({
+				success: false,
+				error: "Yalnızca kendi oyun geçmişinizi görüntüleyebilirsiniz.",
+			});
 		}
 
 		// 2) Toplam kayıt sayısı
