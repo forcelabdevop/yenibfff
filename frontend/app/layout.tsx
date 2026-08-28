@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from "next"
+import Script from "next/script"
 import { Montserrat, Geist_Mono } from "next/font/google"
 import { AppProviders } from "@/providers/app-providers"
-import { WEBSITE_NAME } from "@/lib/config"
+import { API_BASE, STORAGE_NAMESPACE, WEBSITE_NAME } from "@/lib/config"
 import "./globals.css"
 
 const _montserrat = Montserrat({ subsets: ["latin"], variable: "--font-montserrat" })
@@ -33,6 +34,22 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className="bg-background">
+      <head>
+        {/*
+          GEÇİCİ: offline/mock backend katmanı. Backend'e erişilemediği için
+          giriş yapılamıyor ve oturum gerektiren sayfalar boş kalıyordu.
+          `beforeInteractive` şarttır — window.fetch, herhangi bir bileşen
+          istek atmadan önce sarılmalı.
+          Backend'e geri bağlanırken bu <Script> bloğu silinir; ayrıntılı
+          kontrol listesi: MOCK-BACKEND.md
+        */}
+        <Script
+          src="/casino-ui/mock-backend.js"
+          strategy="beforeInteractive"
+          data-api-base={API_BASE}
+          data-storage-namespace={STORAGE_NAMESPACE}
+        />
+      </head>
       <body className="font-sans antialiased">
         <AppProviders>{children}</AppProviders>
       </body>

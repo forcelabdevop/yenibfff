@@ -31,11 +31,45 @@ const pool = new Map<string, Socket>()
  * Namespace başına tek socket tutar. Oyun sayfaları kendi namespace'ini
  * açar; sayfa değişince release() ile bırakır.
  */
+/**
+ * GEÇİCİ: offline/mock backend modunda socket sunucusu yoktur; io() sonsuz
+ * yeniden bağlanma döngüsüne girip konsolu doldurur. Bu yüzden hiç bağlanmayan
+ * sessiz bir stub döndürüyoruz — çağıran bileşenler değişmeden çalışır, sadece
+ * canlı akış (chat, online sayacı, canlı bahisler) gelmez.
+ * Backend'e geri bağlanınca mock-backend.js kapatılır ve bu dal hiç çalışmaz.
+ * Bkz. MOCK-BACKEND.md
+ */
+function createOfflineSocket(): Socket {
+  const stub = {
+    id: "offline",
+    connected: false,
+    disconnected: true,
+    on: () => stub,
+    once: () => stub,
+    off: () => stub,
+    emit: () => stub,
+    removeAllListeners: () => stub,
+    disconnect: () => stub,
+    connect: () => stub,
+  }
+  return stub as unknown as Socket
+}
+
+function mockBackendActive(): boolean {
+  return typeof window !== "undefined" && (window as { __MOCK_BACKEND__?: boolean }).__MOCK_BACKEND__ === true
+}
+
 export function getSocket(namespace: Namespace, userId?: string): Socket {
   const token = getToken()
   const key = `${namespace}::${userId ?? "guest"}`
   const existing = pool.get(key)
   if (existing) return existing
+
+  if (mockBackendActive()) {
+    const offline = createOfflineSocket()
+    pool.set(key, offline)
+    return offline
+  }
 
   const socket = io(`${SOCKET_URL}${namespace === "/" ? "" : namespace}`, {
     // Namespace middleware'leri handshake.auth.token'ı JWT olarak doğrular
