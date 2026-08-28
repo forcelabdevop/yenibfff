@@ -275,6 +275,9 @@
       { username: "luc***07", bet_money: 5, win_money: 5 * (90 + base), multiplier: 90 + base, created_at: ISO(1, 4) },
       { username: "kaz***33", bet_money: 50, win_money: 50 * (12 + base), multiplier: 12 + base, created_at: ISO(2, 9) },
     ]
+      // Gercek uc `.sort({ win_money: -1 })` ile doner; frontend siralamayi
+      // kendisi yapmadigi icin mock da azalan siralamak ZORUNDA.
+      .sort((a, b) => b.win_money - a.win_money)
   }
 
   // ---------------------------------------------------------------------------
@@ -338,7 +341,13 @@
             providerGames: GAMES.filter(
               (g) => g.provider_code === game.provider_code && g.game_code !== game.game_code,
             ),
-            popularGames: GAMES.filter((g) => g.game_code !== game.game_code).slice(0, 12),
+            // Gercek uc bu listeyi `views` azalan siralar; ayni saglayiciyla
+          // sinirli DEGILDIR. Mock'ta da farkli bir sira uretiyoruz, aksi
+          // halde iki karusel birebir ayni gorunup "bozuk" izlenimi veriyor.
+          popularGames: GAMES.filter((g) => g.game_code !== game.game_code)
+            .slice()
+            .sort((a, b) => (b.views || 0) - (a.views || 0))
+            .slice(0, 12),
           },
         })
       },
@@ -480,6 +489,19 @@
       return null
     }
   })()
+
+  // Teshis kancasi: konsoldan `__MOCK_DEBUG__.match('GET','/account/vault')`
+  // ile bir ucun mocklanip mocklanmadigi kontrol edilebilir.
+  window.__MOCK_DEBUG__ = {
+    API_BASE,
+    API_ORIGIN,
+    ORIGIN,
+    get routeCount() {
+      return ROUTES.length
+    },
+    match: (method, pathname) =>
+      ROUTES.some(([m, p]) => m === String(method).toUpperCase() && p.test(pathname)),
+  }
 
   const warned = new Set()
   const warnOnce = (key, ...rest) => {

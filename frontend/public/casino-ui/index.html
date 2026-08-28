@@ -1730,7 +1730,7 @@
       <div class="acct-card acct-card--feature">
         <span class="acct-label">In vault</span>
         <strong class="acct-figure">{{accountFormatMoney(vaultData && vaultData.total, activeCurrency)}}</strong>
-        <span class="acct-sub">Wallet: {{accountFormatMoney(vaultData && vaultData.activeBalance, activeCurrency)}}</span>
+        <span class="acct-sub">Wallet: {{accountFormatMoney(vaultWalletBalance, activeCurrency)}}</span>
         <span class="acct-status acct-status--bad" v-if="vaultData && vaultData.locked"><i class="fas fa-lock"></i> Vault locked</span>
       </div>
 

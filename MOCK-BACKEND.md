@@ -147,3 +147,30 @@ birebir alındı:
   `{ history, pagination }` — ikisi farklı.
 - Hesap uçları **userId'yi URL'den almaz**, `req.user._id`'den alır (IDOR
   koruması). Mock da aynı davranır.
+- `/account/overview` yanıtındaki `vault` nesnesi `/account/vault` yanıtından
+  **daha azdır**: `activeBalance` / `activeWallet` içermez. İkisi de aynı
+  `vaultData` state'ine yazıldığı için kasa sayfasında yarış koşulu vardı —
+  hangi istek sonra dönerse "Wallet" değeri 0 görünüyordu. Çözüm:
+  `loadOverview()` artık üzerine yazmak yerine birleştiriyor ve şablon
+  `vaultWalletBalance` computed'ını kullanıyor (`account-pages.js`).
+  **Bu gerçek backend'de de olan bir hataydı, mock'a özgü değil.**
+
+## 6. Mock'u ayıklamak
+
+`window.__MOCK_DEBUG__` konsoldan erişilebilir:
+
+```js
+__MOCK_DEBUG__.API_BASE           // mock'un dinlediği origin
+__MOCK_DEBUG__.routeCount         // tablodaki uç sayısı
+__MOCK_DEBUG__.match('GET', '/account/vault')   // bu uç mocklandı mı?
+```
+
+Kesilmeyen bir istek varsa ilk bakılacak yer `API_BASE`: mock **yalnızca**
+kendi `API_BASE` origin'ine giden istekleri ele alır. Next tarafında bu değer
+`data-api-base` (yani `NEXT_PUBLIC_API_BASE_URL`), iframe'de `?apiBase`
+parametresidir; ikisi farklıysa istek mock'a hiç uğramaz.
+
+> Sandbox uyarısı: `agent-browser eval` içine **elle yazılan**
+> `http://localhost:5000/...` adresleri önizleme origin'ine (`:5173`) yeniden
+> yazılır; bu yüzden manuel probe'lar mock'a düşmez ve Next'in 404 HTML'i döner.
+> Probe ederken adresi koddan üret: `fetch(__MOCK_DEBUG__.API_BASE + '/...')`.

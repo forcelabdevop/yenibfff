@@ -86,6 +86,18 @@ window.createAccountPages = function createAccountPages(ctx) {
       .filter((row) => row.amount > 0)
   })
 
+  /**
+   * Kasa sayfasindaki "Wallet" rakami. Tek dogruluk kaynagi /account/vault'un
+   * `activeBalance` alanidir; yoksa overview'in cuzdan bloguna duseriz. Boylece
+   * yukleyicilerin donus sirasi ekrandaki degeri etkilemez.
+   */
+  const vaultWalletBalance = computed(() => {
+    const fromVault = vaultData.value && vaultData.value.activeBalance
+    if (fromVault != null) return fromVault
+    const wallet = walletState.value
+    return (wallet && wallet.activeBalance) != null ? wallet.activeBalance : null
+  })
+
   /** Account sayfasindaki dogrulama kontrol listesi. */
   const verificationRows = computed(() => {
     const p = profile.value
@@ -184,7 +196,14 @@ window.createAccountPages = function createAccountPages(ctx) {
     profile.value = data.profile || null
     security.value = data.security || null
     walletState.value = data.wallet || null
-    vaultData.value = data.vault || null
+    // DIKKAT: /account/overview'in `vault` nesnesi /account/vault'unkinden
+    // DAHA AZ alan icerir — `activeBalance`/`activeWallet` yoktur. Duz atama
+    // yapinca iki yukleyici (loadOverview + loadVault) paralel kostugu icin
+    // hangisi sonra donerse kazaniyor ve kasa sayfasindaki "Wallet" degeri
+    // rastgele 0'a dusuyordu. Bu yuzden mevcut alanlari koruyarak birlestir.
+    if (data.vault) {
+      vaultData.value = Object.assign({}, vaultData.value || {}, data.vault)
+    }
   }
 
   async function loadTransactions() {
@@ -299,6 +318,7 @@ window.createAccountPages = function createAccountPages(ctx) {
     sessions,
     vaultData,
     vaultRows,
+    vaultWalletBalance,
     vaultAmount,
     vaultBusy,
     vaultMessage,
