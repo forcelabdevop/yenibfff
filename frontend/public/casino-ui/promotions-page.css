@@ -10,6 +10,9 @@
   --pr-dim: #61738e;
   margin: -34px -32px 0;
   padding-bottom: 30px;
+  /* Az kart varken sayfa arka plani ile .route-page arasinda ton farki
+     (#0a111b / #0c1520) seklinde bir dikis gorunmesin diye. */
+  min-height: calc(100vh - 63px);
   background: var(--pr-page-bg);
   color: #f7f9fc;
   font-family: "Montserrat Variable", "Montserrat", Arial, sans-serif;
@@ -122,7 +125,9 @@
   .pr-inner { width: calc(100% - 70px); max-width: none; }
 }
 @media (max-width: 760px) {
-  .pr-page { margin: -20px -16px 0; }
+  /* .route-page mobilde 14px/12px padding kullanir — negatif marj birebir ayni
+     olmazsa sayfa yatayda tasar (scrollWidth > innerWidth). */
+  .pr-page { margin: -14px -12px 0; min-height: auto; }
   .pr-inner { width: calc(100% - 28px); padding-top: 24px; }
   .pr-title-row { height: auto; gap: 15px; }
   .pr-title { font-size: 23px; }
