@@ -123,39 +123,44 @@
     }
     .search-popover { position: fixed; z-index: 90; top: 58px; left: 356px; width: 280px; padding: 10px; border: 1px solid #263648; background: #152230; border-radius: 11px; box-shadow: 0 18px 50px rgba(0,0,0,.45); }
     .search-popover input { width: 100%; height: 38px; border: 0; outline: 0; border-radius: 8px; color: white; background: #0b151f; padding: 0 13px; font-size: 13px; }
-    .bonus-overlay { position:fixed; inset:63px 0 0 0; z-index:88; }
-    .bonus-panel { position:absolute; top:0; display:flex; width:min(360px, calc(100vw - 24px)); max-height:calc(100vh - 80px); flex-direction:column; border-radius:0 0 14px 14px; background:#171f2a; box-shadow:0 28px 64px rgba(0,0,0,.55); }
-    .bonus-panel__body { min-height:0; padding:18px 16px 12px; overflow-y:auto; }
-    .bonus-panel__head { display:flex; align-items:center; gap:10px; }
-    .bonus-panel__head h3 { color:#fff; font-size:24px; font-weight:800; letter-spacing:-.6px; }
-    .bonus-panel__count { padding:3px 9px; border-radius:7px; background:#2a3442; color:#9fb2c9; font-size:13px; font-weight:700; }
-    .bonus-promo { display:flex; margin-top:14px; align-items:center; gap:8px; padding:0 6px 0 12px; border-radius:10px; background:#232c38; }
-    .bonus-promo > i { color:#6f8299; font-size:14px; }
-    .bonus-promo input { flex:1; min-width:0; height:44px; border:0; background:transparent; color:#fff; font-size:14px; outline:none; }
-    .bonus-promo input::placeholder { color:#6f8299; }
-    .bonus-promo__btn { padding:8px 14px; border-radius:8px; background:#33404f; color:#fff; font-size:14px; font-weight:700; }
-    .bonus-promo__btn:hover { background:#3d4c5e; }
-    .bonus-list { display:flex; margin-top:10px; flex-direction:column; gap:8px; }
-    .bonus-item { display:flex; padding:8px 10px 8px 8px; align-items:center; gap:10px; border-radius:11px; background:#232c39; }
-    .bonus-item--progress { align-items:flex-start; padding-top:10px; padding-bottom:10px; }
-    .bonus-item__ic { width:44px; height:44px; flex:none; border-radius:9px; object-fit:cover; }
-    .bonus-item__text { display:flex; min-width:0; flex:1; flex-direction:column; gap:2px; }
-    .bonus-item__title { color:#fff; font-size:15px; font-weight:800; letter-spacing:-.2px; }
-    .bonus-item__meta { display:flex; align-items:center; gap:6px; color:#8ea0b6; font-size:13px; font-weight:600; }
-    .bonus-item__meta.green, .bonus-item__meta .green { color:#3ec172; }
-    .bonus-info { width:16px; height:16px; display:grid; flex:none; place-items:center; border-radius:50%; background:#3a4757; color:#c3d2e4; font-size:8px; }
-    .bonus-info:hover { background:#48586b; }
-    .bonus-action { min-width:88px; padding:9px 12px; flex:none; border-radius:9px; background:linear-gradient(180deg,#f0455c,#cf2036); color:#fff; font-size:14px; font-weight:800; box-shadow:0 6px 14px rgba(207,32,54,.32); }
-    .bonus-action:hover { filter:brightness(1.07); }
-    .bonus-timer { min-width:88px; padding:9px 12px; flex:none; border-radius:9px; background:#2b3543; color:#93a7c0; font-size:14px; font-weight:700; text-align:center; }
-    .bonus-bar { display:block; height:4px; margin-top:6px; overflow:hidden; border-radius:2px; background:#33404f; }
-    .bonus-bar > span { display:block; height:100%; border-radius:2px; background:#3ec172; }
-    .bonus-item__reward { width:26px; height:26px; flex:none; border-radius:6px; object-fit:cover; }
-    .bonus-item__reward-wrap { display:flex; flex:none; align-items:center; gap:6px; }
-    .bonus-item__prize { color:#fff; font-size:14px; font-weight:800; }
-    .bonus-panel__foot { padding:12px 16px 16px; border-top:1px solid #232c39; }
-    .bonus-viewall { width:100%; padding:14px; border-radius:11px; background:#1a7ef4; color:#fff; font-size:15px; font-weight:800; }
-    .bonus-viewall:hover { background:#2b8afa; }
+  .bonus-overlay { position:fixed; inset:63px 0 0; z-index:88; background:rgba(4,10,16,.18); }
+  .bonus-panel { position:absolute; top:0; display:flex; width:min(520px,calc(100vw - 20px)); max-height:calc(100vh - 75px); flex-direction:column; overflow:hidden; border-radius:0 0 23px 0; background:#151f2d; box-shadow:18px 30px 60px rgba(0,0,0,.48); }
+  .bonus-panel__body { min-height:0; padding:27px 23px 18px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:#344256 transparent; }
+  .bonus-panel__head { display:flex; align-items:center; gap:9px; }
+  .bonus-panel__head h3 { margin:0; color:#f8f8fa; font-size:34px; line-height:40px; font-weight:900; letter-spacing:-1px; }
+  .bonus-panel__count { min-width:62px; height:35px; display:inline-flex; align-items:center; justify-content:center; padding:0 7px; border-radius:10px; background:#1c2837; color:#718097; font-size:18px; font-weight:900; }
+  .bonus-panel__count b { color:#14c93f; }
+  .bonus-panel__count i { margin:0 3px; color:#596a82; font-style:normal; }
+  .bonus-promo { height:52px; display:flex; margin-top:18px; align-items:center; gap:10px; padding:0 5px 0 15px; overflow:hidden; border:2px solid #2d3d53; border-radius:12px; background:#101925; }
+  .bonus-promo > i { color:#64758e; font-size:20px; transform:rotate(-8deg); }
+  .bonus-promo input { flex:1; min-width:0; height:100%; border:0; background:transparent; color:#dce3ed; font-size:17px; font-weight:800; outline:none; }
+  .bonus-promo input::placeholder { color:#65758e; opacity:1; }
+  .bonus-promo__btn { width:106px; height:40px; flex:none; border-radius:9px; background:#343c48; color:#dedfe3; font-size:17px; font-weight:900; }
+  .bonus-promo__btn:hover { filter:brightness(1.1); }
+  .bonus-list { display:flex; margin-top:17px; flex-direction:column; gap:11px; }
+  .bonus-item { position:relative; min-height:80px; display:flex; padding:11px 12px; align-items:center; gap:13px; overflow:hidden; border-radius:16px; background:#1e2a3a; }
+  .bonus-item--progress { min-height:91px; align-items:flex-start; }
+  .bonus-item__ic { width:57px; height:57px; flex:none; object-fit:contain; }
+  .bonus-item__text { display:flex; min-width:0; flex:1; align-self:center; flex-direction:column; justify-content:center; gap:1px; }
+  .bonus-item__title { overflow:hidden; color:#f8f8fb; font-size:20px; line-height:25px; font-weight:900; letter-spacing:-.4px; text-overflow:ellipsis; white-space:nowrap; }
+  .bonus-item__meta { display:flex; align-items:center; gap:6px; color:#a9b5c9; font-size:17px; line-height:22px; font-weight:800; white-space:nowrap; }
+  .bonus-item__meta.green, .bonus-item__meta .green { color:#14c93f; }
+  .bonus-info { width:24px; height:24px; display:grid; flex:none; place-items:center; border:2px solid #66768e; border-radius:50%; background:transparent; color:#8290a5; font-size:11px; }
+  .bonus-info:hover { background:#344256; }
+  .bonus-action { width:142px; height:52px; flex:none; border-radius:13px; background:linear-gradient(180deg,#ff315f,#ed0648 60%,#d5003c); color:#fff; font-size:19px; font-weight:900; box-shadow:inset 0 3px 0 rgba(255,104,134,.75),0 5px 0 #a60031,0 0 17px rgba(255,30,79,.28); }
+  .bonus-action:hover { filter:brightness(1.07); }
+  .bonus-action:active { transform:translateY(3px); box-shadow:inset 0 3px 0 rgba(255,104,134,.7),0 2px 0 #a60031; }
+  .bonus-timer { width:137px; height:52px; display:grid; flex:none; place-items:center; overflow:hidden; border:2px solid #3a4859; border-radius:12px; background:#273342; color:#a9bad4; font-size:18px; font-weight:900; white-space:nowrap; }
+  .bonus-timer--empty { justify-content:start; padding-left:11px; }
+  .bonus-bar { position:absolute; left:82px; right:12px; bottom:12px; height:8px; overflow:hidden; border-radius:6px; background:#344252; }
+  .bonus-bar > span { display:block; height:100%; min-width:4px; border-radius:6px; background:#12ce43; }
+  .bonus-item__reward { width:32px; height:32px; flex:none; object-fit:contain; }
+  .bonus-item__reward-wrap { display:flex; flex:none; align-items:center; gap:5px; }
+  .bonus-item__prize { color:#fff; font-size:19px; font-weight:900; }
+  .bonus-panel__foot { padding:16px 23px 22px; border-top:1px solid #223145; background:#172231; }
+  .bonus-viewall { width:100%; height:62px; border-radius:13px; background:linear-gradient(180deg,#28b0ff,#0b7bff 35%,#0962fb); color:#fff; font-size:20px; font-weight:900; box-shadow:inset 0 2px 0 rgba(134,216,255,.75),0 6px 0 #074bc7,0 0 20px rgba(31,142,255,.34); }
+  .bonus-viewall:hover { filter:brightness(1.08); }
+  @media(max-width:600px){.bonus-panel{width:100vw;border-radius:0}.bonus-panel__body{padding:22px 14px 14px}.bonus-panel__head h3{font-size:28px}.bonus-item{gap:9px}.bonus-item__ic{width:50px;height:50px}.bonus-item__title{font-size:17px}.bonus-item__meta{font-size:14px}.bonus-action,.bonus-timer{width:102px;font-size:16px}.bonus-panel__foot{padding:14px}}
     .user-menu-wrap { position: relative; }
     .user-dropdown { position: absolute; top: calc(100% + 10px); right: 0; z-index: 90; width: 240px; padding: 16px 12px 12px; background: #1c2532; border-radius: 16px; box-shadow: 0 24px 60px rgba(0,0,0,.55); display: flex; flex-direction: column; }
     .user-dropdown::before { content: ''; position: absolute; left: 0; right: 0; top: -12px; height: 12px; }
@@ -1807,7 +1812,7 @@
 <img alt="" src="assets/menu-toggle.png"/>
 </button>
 <button @click="navigate('/')" :aria-label="websiteName + ' home'"><img :alt="websiteName" class="brand-logo" src="/logo.svg"/></button>
-<button :aria-expanded="bonusPanelOpen" :class="{'is-active': !!authUser}" @click="toggleBonusPanel($event)" class="top-button bonus-button"><span class="chest-wrap"><img :src="authUser ? 'assets/treasure-opened.png' : 'assets/treasure-closed.webp'" alt="" class="chest"/><span class="badge-dot" v-if="authUser && bonusCount > 0">{{bonusCount}}</span></span><span>Bonuses</span></button>
+<button :aria-expanded="bonusPanelOpen" :class="{'is-active': !!authUser}" @click="toggleBonusPanel($event)" class="top-button bonus-button"><span class="chest-wrap"><img :src="authUser ? 'assets/ref-bonus-nav-chest.png' : 'assets/treasure-closed.webp'" alt="" class="chest"/><span class="badge-dot" v-if="authUser && bonusCount > 0">{{bonusCount}}</span></span><span>Bonuses</span></button>
 <button @click="openSearchModal" aria-label="Search" class="top-button search-button"><i class="fas fa-search"></i></button>
 </div>
 <div class="header-right" v-if="!isAuthenticated">
@@ -1856,7 +1861,7 @@
 <div class="bonus-panel__body">
 <div class="bonus-panel__head">
 <h3>Available Bonuses</h3>
-<span class="bonus-panel__count">{{bonusCount}} / 10</span>
+<span aria-label="2 of 10 bonuses" class="bonus-panel__count"><b>{{bonusCount}}</b><i>/</i>10</span>
 </div>
 <form @submit.prevent="activatePromo" class="bonus-promo">
 <i class="fas fa-tag"></i>
@@ -1865,56 +1870,36 @@
 </form>
 <div class="bonus-list">
 <div class="bonus-item">
-<img alt="" class="bonus-item__ic" src="assets/bonus-rakeback.png"/>
-<div class="bonus-item__text">
-<span class="bonus-item__title">Rakeback</span>
-<span class="bonus-item__meta"><span class="green">$0.00</span><button @click="toastMessage('Rakeback returns a share of every bet you make')" aria-label="About rakeback" class="bonus-info" type="button"><i class="fas fa-question"></i></button></span>
-</div>
-<button @click="claimBonus('Rakeback')" class="bonus-action" type="button">Claim</button>
+<img alt="" class="bonus-item__ic" src="assets/ref-bonus-wheel.png"/>
+<div class="bonus-item__text"><span class="bonus-item__title">Free Fury Wheel</span><span class="bonus-item__meta green">Available to spin</span></div>
+<button @click="claimBonus('Free Fury Wheel')" class="bonus-action" type="button">Spin</button>
 </div>
 <div class="bonus-item">
-<img alt="" class="bonus-item__ic" src="assets/bonus-wheel.png"/>
-<div class="bonus-item__text">
-<span class="bonus-item__title">Free Bonus Wheel</span>
-<span class="bonus-item__meta green">Available to spin</span>
-</div>
-<button @click="claimBonus('Free Bonus Wheel')" class="bonus-action" type="button">Spin</button>
-</div>
-<div class="bonus-item">
-<img alt="" class="bonus-item__ic" src="assets/bonus-freespins.png"/>
-<div class="bonus-item__text">
-<span class="bonus-item__title">50 Free Spins</span>
-<span class="bonus-item__meta">Sugar Rush<button @click="toastMessage('Deposit to unlock 50 free spins on Sugar Rush')" aria-label="About free spins" class="bonus-info" type="button"><i class="fas fa-info"></i></button></span>
-</div>
+<img alt="" class="bonus-item__ic" src="assets/ref-bonus-freespins.png"/>
+<div class="bonus-item__text"><span class="bonus-item__title">50 Free Spins</span><span class="bonus-item__meta">Fruit Million<button @click="toastMessage('Deposit to unlock 50 free spins on Fruit Million')" aria-label="About free spins" class="bonus-info" type="button"><i class="fas fa-info"></i></button></span></div>
 <button @click="claimBonus('50 Free Spins')" class="bonus-action" type="button">Deposit</button>
 </div>
 <div class="bonus-item">
-<img alt="" class="bonus-item__ic" src="assets/bonus-calendar.png"/>
-<div class="bonus-item__text"><span class="bonus-item__title">Calendar Bonus</span></div>
-<span class="bonus-timer">{{calendarTimer}}</span>
+<img alt="" class="bonus-item__ic" src="assets/ref-bonus-calendar.png"/>
+<div class="bonus-item__text"><span class="bonus-item__title">Calendar Bonus</span></div><span class="bonus-timer">{{calendarTimer}}</span>
 </div>
 <div class="bonus-item">
-<img alt="" class="bonus-item__ic" src="assets/bonus-cashback.png"/>
-<div class="bonus-item__text"><span class="bonus-item__title">Cashback</span></div>
-<span class="bonus-timer">{{cashbackTimer}}</span>
+<img alt="" class="bonus-item__ic" src="assets/ref-bonus-rakeback.png"/>
+<div class="bonus-item__text"><span class="bonus-item__title">Rakeback</span></div><span class="bonus-timer bonus-timer--empty">No rewards...</span>
+</div>
+<div class="bonus-item">
+<img alt="" class="bonus-item__ic" src="assets/ref-bonus-cashback.png"/>
+<div class="bonus-item__text"><span class="bonus-item__title">Cashback</span></div><span class="bonus-timer">{{cashbackTimer}}</span>
 </div>
 <div class="bonus-item bonus-item--progress">
-<img alt="" class="bonus-item__ic" src="assets/bonus-weekly.png"/>
-<div class="bonus-item__text">
-<span class="bonus-item__title">Weekly Bonus</span>
-<span class="bonus-item__meta">$0.05 / $150.00</span>
-<span class="bonus-bar"><span :style="{width: '0.5%'}"></span></span>
-</div>
-<img alt="" class="bonus-item__reward" src="assets/treasure-opened.png"/>
+<img alt="" class="bonus-item__ic" src="assets/ref-bonus-weekly.png"/>
+<div class="bonus-item__text"><span class="bonus-item__title">Weekly Bonus</span><span class="bonus-item__meta">$0.00 / $150.00</span><span class="bonus-bar"><span style="width:.5%"></span></span></div>
+<img alt="" class="bonus-item__reward" src="assets/ref-bonus-reward-chest.png"/>
 </div>
 <div class="bonus-item bonus-item--progress">
-<img alt="" class="bonus-item__ic" src="assets/bonus-sport.png"/>
-<div class="bonus-item__text">
-<span class="bonus-item__title">Weekly Sport Bonus</span>
-<span class="bonus-item__meta">$0.00 / $150.00</span>
-<span class="bonus-bar"><span :style="{width: '1%'}"></span></span>
-</div>
-<span class="bonus-item__reward-wrap"><span class="bonus-item__prize">$3</span><img alt="" class="bonus-item__reward" src="assets/bonus-freebet.png"/></span>
+<img alt="" class="bonus-item__ic" src="assets/ref-bonus-sport.png"/>
+<div class="bonus-item__text"><span class="bonus-item__title">Weekly Sport Bonus</span><span class="bonus-item__meta">$0.00 / $150.00</span><span class="bonus-bar"><span style="width:1%"></span></span></div>
+<span class="bonus-item__reward-wrap"><span class="bonus-item__prize">$3</span><img alt="" class="bonus-item__reward" src="assets/ref-bonus-freebet.png"/></span>
 </div>
 </div>
 </div>
