@@ -1282,6 +1282,8 @@
     .wm-chev { margin-left:auto; color:#a9bbd1; font-size:13px; }
 
     .wm-field { height:58px; border:1px solid #2b3b50; border-radius:10px; background:#0b121a; display:flex; align-items:center; overflow:hidden; }
+    /* Para birimi listesi acikken tasmayi serbest birak, aksi halde .wm-pop kirpilir */
+    .wm-field:has(.wm-pop) { overflow:visible; }
     .wm-currency-btn { position:relative; height:42px; min-width:98px; margin-left:7px; border:0; border-radius:7px; background:#1a2635; display:flex; align-items:center; gap:7px; padding:0 10px; color:#fbfbfd; font-size:14px; font-weight:600; cursor:pointer; }
     .wm-coin { width:21px; height:21px; object-fit:contain; flex:0 0 21px; }
     .wm-input { min-width:0; flex:1; padding:0 8px; border:0; background:transparent; color:#fff; font-size:15px; font-weight:600; outline:none; }
