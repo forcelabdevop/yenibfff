@@ -665,8 +665,8 @@
     .gl-meta__provider { color:#858b96; font-size:14px; line-height:1.25; font-weight:700; white-space:nowrap; }
     .gl-meta__chevron { margin-right:10px; color:#89909a; font-size:14px; transition:transform .2s ease; }
     .gl-meta__chevron.open { transform:rotate(180deg); }
-    .gl-details { width:100%; padding:17px 20px 20px; background:#141d29; }
-    .gl-showmore { width:130px; height:23px; margin:0 auto; padding:0 13px 0 16px; display:flex; align-items:center; justify-content:space-between; border:0; border-radius:0 0 8px 8px; color:#e6e8eb; background:#2d333d; font-family:inherit; font-size:14px; font-weight:700; line-height:23px; cursor:pointer; }
+    .gl-details { width:100%; padding:17px 20px 22px; background:#18222f; border-radius:0 0 12px 12px; }
+    .gl-showmore { min-width:130px; height:34px; margin:16px auto 0; padding:0 16px; display:flex; align-items:center; justify-content:center; gap:9px; border:0; border-radius:9px; color:#e6e8eb; background:#2d333d; font-family:inherit; font-size:15px; font-weight:800; line-height:34px; cursor:pointer; }
     .gl-showmore i { margin-left:8px; color:#8b9097; font-size:12px; transition:transform .2s ease; }
     .gl-showmore i.open { transform:rotate(180deg); }
 
@@ -760,7 +760,10 @@
     .game-wins__amount { display:flex; align-items:center; gap:10px; color:#f4f5f7; font-size:15px; font-weight:900; white-space:nowrap; }
     .game-wins__flag { position:relative; width:20px; height:20px; flex:none; overflow:hidden; border:1px solid rgba(255,255,255,.7); border-radius:50%; background:repeating-linear-gradient(to bottom,#d62538 0 2.4px,#fff 2.4px 4.8px); }
     .game-wins__flag::before { content:""; position:absolute; top:0; left:0; width:10px; height:10px; background:#2856a8; }
-    .game-review { margin-top:20px; }
+    .gl-review { width:100%; margin-top:18px; }
+  .game-review { margin-top:0; }
+  .game-review__title { margin:0 0 12px; color:#fbfbfc; font-size:21px; line-height:1.28; font-weight:900; letter-spacing:-.25px; }
+  .game-review__title:not(:first-child) { margin-top:17px; }
     .game-review .game-panel__title { padding-bottom:0; border-bottom:0; margin-bottom:12px; font-size:21px; line-height:1.28; }
     .game-review p { margin:0 0 16px; color:#adbad0; font-size:15px; line-height:1.55; font-weight:600; }
     .game-review p:last-child { margin-bottom:0; }
@@ -2064,26 +2067,32 @@
       <div class="gl-details" v-if="detailsOpen">
         <div class="gl-info-grid">
           <section class="game-panel" v-if="detailAttributes.length">
-            <h2 class="game-panel__title"><i class="fas fa-sliders"></i> Game Attributes</h2>
+            <h2 class="game-panel__title">Game Attributes</h2>
             <dl class="game-attrs">
               <div :key="'attr-'+row.label" class="game-attrs__row" v-for="row in detailAttributes"><dt>{{row.label}}</dt><dd>{{row.value}}</dd></div>
             </dl>
           </section>
           <section class="game-panel">
-            <h2 class="game-panel__title"><i class="fas fa-trophy"></i> Top 3 wins</h2>
+            <h2 class="game-panel__title">Top 3 wins</h2>
             <ol class="game-wins" v-if="gameDetail.topWins.length">
               <li :key="'win-'+index" class="game-wins__row" v-for="(win,index) in gameDetail.topWins">
-                <span class="game-wins__rank">{{index + 1}}</span>
-                <span class="game-wins__user">{{win.username}}</span>
-                <span class="game-wins__mult" v-if="win.multiplier">{{win.multiplier}}x</span>
-                <span class="game-wins__amount">{{formatWinAmount(win.win_money)}}</span>
+                <div class="game-wins__person">
+                  <span aria-hidden="true" class="game-wins__avatar">{{(win.username || '?').charAt(0)}}</span>
+                  <span class="game-wins__user">{{win.username}}</span>
+                </div>
+                <div class="game-wins__amount">
+                  <span aria-hidden="true" class="game-wins__flag"></span>
+                  <span>{{formatWinAmount(win.win_money)}}</span>
+                </div>
               </li>
             </ol>
             <p class="game-panel__empty" v-else>No recorded wins for this game yet. Be the first one on the board.</p>
           </section>
         </div>
-        <section class="game-panel game-review">
-          <h2 class="game-panel__title"><i class="fas fa-book-open"></i> {{detailGame.game_name}} review</h2>
+      </div>
+      <div class="gl-review" v-if="detailsOpen">
+        <section class="game-review">
+          <h2 class="game-review__title">{{detailGame.game_name}} review</h2>
           <p v-if="detailGame.description">{{detailGame.description}}</p>
           <template v-else>
             <p>{{detailGame.game_name}} is a {{(detailGame.game_type || 'casino').toLowerCase()}} title from {{detailProviderName || 'its studio'}}, available to play directly at {{websiteName}}. Rounds are processed by the provider, so every spin resolves on the studio&apos;s own certified engine.</p>
