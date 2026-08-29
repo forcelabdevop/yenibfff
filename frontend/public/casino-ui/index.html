@@ -31,6 +31,7 @@
     :root {
       --drawer-w: 358px;
       --chat-w: 332px;
+      --notif-w: 325px;
       --header: #0d1923;
       --sidebar: #0f1b26;
       --page: #0a131e;
@@ -825,6 +826,49 @@
     /* Global chat drawer */
     .chat-drawer { position:fixed; z-index:130; top:64px; right:0; bottom:0; width:var(--chat-w); display:flex; flex-direction:column; border-left:1px solid #263545; background:#0d1924; box-shadow:-22px 0 48px rgba(0,0,0,.38); transform:translateX(105%); transition:transform .25s ease; }
     .chat-drawer.open { transform:translateX(0); }
+      /* Notification drawer */
+      .notif-drawer { position:fixed; z-index:135; top:64px; right:0; bottom:0; width:var(--notif-w); display:flex; flex-direction:column; border-left:1px solid #263545; background:#0d1722; box-shadow:-22px 0 48px rgba(0,0,0,.4); transform:translateX(105%); transition:transform .25s ease; }
+      .notif-drawer.open { transform:translateX(0); }
+      .notif-scroll { flex:1; overflow-y:auto; overflow-x:hidden; padding-bottom:16px; scrollbar-width:none; }
+      .notif-scroll::-webkit-scrollbar { display:none; }
+      .notif-toolbar { position:relative; display:flex; align-items:center; gap:12px; padding:16px 16px 0; white-space:nowrap; }
+      .notif-toolbar h2 { margin:0; font-size:17px; font-weight:900; letter-spacing:.2px; }
+      .notif-sep { width:1px; height:16px; background:#3a4757; }
+      .notif-viewall { display:flex; align-items:center; gap:8px; border:0; padding:0; background:transparent; color:#f5f7fa; font-size:13px; font-weight:800; cursor:pointer; }
+      .notif-viewall i { color:#7d8da3; font-size:11px; }
+      .notif-close { margin-left:auto; width:30px; height:30px; border:0; border-radius:8px; background:transparent; color:#9fb0c7; font-size:18px; cursor:pointer; }
+      .notif-close:hover { background:#1a2836; }
+      .notif-viewmenu { position:absolute; z-index:3; top:44px; left:96px; width:150px; border:1px solid #2e3d4f; border-radius:11px; padding:6px; background:#1a2635; box-shadow:0 12px 28px rgba(0,0,0,.4); }
+      .notif-viewmenu button { display:block; width:100%; border:0; border-radius:8px; padding:8px 10px; color:#dce4ee; background:transparent; text-align:left; font-size:13px; font-weight:700; cursor:pointer; }
+      .notif-viewmenu button:hover { background:#243244; }
+      .notif-tabs { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin:14px 16px 0; padding:6px; border-radius:14px; background:#152130; }
+      .notif-tab { display:flex; align-items:center; justify-content:center; gap:9px; height:40px; border:0; border-radius:11px; background:transparent; color:#65748d; font-size:14px; font-weight:900; cursor:pointer; transition:background .18s ease,color .18s ease; }
+      .notif-tab.active { color:#fff; background:var(--blue); }
+      .notif-tab-count { min-width:24px; height:22px; padding:0 7px; border-radius:8px; background:#2b87ee; color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:900; }
+      .notif-tab.active .notif-tab-count { color:#217ee3; background:#fff; }
+      .notif-list { margin:14px 16px 0; display:flex; flex-direction:column; gap:12px; }
+      .notif-card { border-radius:14px; background:#17222f; overflow:hidden; }
+      .notif-card__head { padding:14px 14px 0; }
+      .notif-card__date { color:var(--dim); font-size:12px; font-weight:700; letter-spacing:.4px; }
+      .notif-card__title { margin:6px 0 0; font-size:16px; font-weight:900; }
+      .notif-card__banner { margin:12px 14px 0; height:118px; border-radius:11px; overflow:hidden; background:#111d29; }
+      .notif-card__banner img { width:100%; height:100%; object-fit:cover; display:block; }
+      .notif-card__desc { position:relative; padding:12px 14px 14px; max-height:74px; overflow:hidden; color:var(--body-text); font-size:13px; line-height:1.5; font-weight:600; transition:max-height .22s ease; }
+      .notif-card.expanded .notif-card__desc { max-height:420px; }
+      .notif-card__desc p { margin:0; }
+      .notif-card__desc strong { font-weight:900; color:#eef2f8; }
+      .notif-showall { position:absolute; right:14px; bottom:10px; display:flex; align-items:center; gap:8px; border:0; padding:0 0 0 30px; color:#fff; background:linear-gradient(90deg,rgba(23,34,47,0) 0,#17222f 26px,#17222f 100%); font-size:13px; font-weight:800; cursor:pointer; }
+      .notif-showall i { font-size:10px; transition:transform .16s ease; }
+      .notif-card.expanded .notif-showall { position:static; padding-left:0; margin:2px 14px 12px; background:none; }
+      .notif-card.expanded .notif-showall i { transform:rotate(180deg); }
+      .notif-card__action { display:flex; align-items:center; gap:9px; width:100%; height:52px; border:0; border-top:1px solid var(--line); padding:0 14px; color:var(--blue); background:#1b2836; font-size:14px; font-weight:800; cursor:pointer; }
+      .notif-card__action i { font-size:11px; }
+      .notif-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; height:220px; margin:14px 16px 0; border-radius:14px; color:#7d8da3; background:#17222f; font-size:14px; font-weight:700; }
+      .notif-empty i { font-size:30px; }
+      .notif-markread { display:flex; align-items:center; justify-content:center; gap:9px; margin:16px; height:52px; border:1px solid #33414f; border-radius:14px; color:#b3c0d1; background:#232f3c; font-size:14px; font-weight:800; cursor:pointer; }
+      .notif-markread:hover { background:#2a3745; }
+      .notif-markread i { font-size:16px; }
+      @media (max-width:860px){ .notif-drawer{ top:62px; width:min(var(--notif-w),100vw); } }
 
     .chat-head { position:relative; display:flex; height:46px; padding:0 11px 0 14px; align-items:center; gap:8px; background:#17212e; border-bottom:1px solid #243140; flex:0 0 auto; }
     .chat-room { display:flex; align-items:center; gap:8px; margin-right:auto; color:#f5f7fb; font-size:15px; font-weight:800; letter-spacing:-.23px; }
@@ -1881,7 +1925,7 @@
 </div>
 </div>
 <button @click="toastMessage('Language: English')" class="top-button locale-button"><img alt="English" class="flag" src="assets/flag-en.svg"/><span class="divider"></span><i class="fas fa-cog" style="font-size:20px"></i></button>
-<button @click="toastMessage('Notifications opened')" aria-label="Notifications" class="top-button notif-top"><i class="fas fa-bell"></i><span class="badge-dot">11</span></button>
+<button :class="{active:notifOpen}" @click="toggleNotif" aria-label="Notifications" class="top-button notif-top"><i class="fas fa-bell"></i><span class="badge-dot">11</span></button>
 <button :class="{active:chatOpen}" @click="toggleChat" aria-label="Messages" class="top-button chat-top"><img alt="" class="chat-icon" src="assets/icon-chat.svg"/></button>
 </div>
 </header>
@@ -2804,6 +2848,40 @@
 </form>
 </div>
 </aside>
+<aside :class="{open:notifOpen}" aria-label="Notifications panel" class="notif-drawer">
+<div class="notif-scroll">
+<div class="notif-toolbar">
+<h2>Notifications</h2>
+<span aria-hidden="true" class="notif-sep"></span>
+<button @click="notifViewMenuOpen=!notifViewMenuOpen" class="notif-viewall" type="button"><span>View All</span><i class="fas fa-chevron-down"></i></button>
+<button @click="notifOpen=false" aria-label="Close notifications" class="notif-close" type="button"><i class="fas fa-times"></i></button>
+<div class="notif-viewmenu" v-if="notifViewMenuOpen">
+<button @click="notifChooseView('All')" type="button">All notifications</button>
+<button @click="notifChooseView('Unread')" type="button">Unread only</button>
+</div>
+</div>
+<div class="notif-tabs" role="tablist">
+<button :class="{active:notifTab==='platform'}" @click="notifTab='platform'" class="notif-tab" role="tab" type="button"><span>Platform</span><span class="notif-tab-count">{{notifCards.length}}</span></button>
+<button :class="{active:notifTab==='personal'}" @click="notifTab='personal'" class="notif-tab" role="tab" type="button"><span>Personal</span><span class="notif-tab-count">0</span></button>
+</div>
+<div class="notif-list" v-if="notifTab==='platform'">
+<article :class="{expanded:card.expanded}" :key="card.title" class="notif-card" v-for="card in notifCards">
+<div class="notif-card__head">
+<div class="notif-card__date">{{card.date}}</div>
+<h3 class="notif-card__title">{{card.title}}</h3>
+</div>
+<div class="notif-card__banner"><img :alt="card.title" :src="card.image"/></div>
+<div class="notif-card__desc">
+<p v-html="card.description"></p>
+<button @click="card.expanded=!card.expanded" class="notif-showall" type="button"><span>{{card.expanded?'Show less':'Show all'}}</span><i class="fas fa-chevron-down"></i></button>
+</div>
+<button @click="toastMessage(card.action + ' opened')" class="notif-card__action" type="button"><span>{{card.action}}</span><i class="fas fa-chevron-right"></i></button>
+</article>
+</div>
+<div class="notif-empty" v-else><i class="fas fa-bell-slash"></i><span>No personal notifications</span></div>
+<button @click="notifMarkAllRead" class="notif-markread" type="button"><span>Mark all as read</span><i class="far fa-check-circle"></i></button>
+</div>
+</aside>
 <div :class="{'chat-open':chatOpen}" class="edge-rewards"><button @click="tournamentOpen=true;chatOpen=false" aria-label="Open tournaments"><img alt="" src="assets/contests/contests-tournament.png"/></button><button @click="toastMessage('Leaderboard opened')" aria-label="Open leaderboard"><img alt="" src="assets/contests/contests-leaderboard.webp"/></button></div>
 <button :class="{'chat-open':chatOpen}" @click="toastMessage('Live Support opened')" aria-label="Live support" class="support-button"><i class="fas fa-headset"></i></button>
 <div @click.self="closeSearchModal" class="search-backdrop" v-if="searchOpen">
@@ -3484,6 +3562,14 @@
         const tournamentOpen = ref(false);
         const rulesOpen = ref(false);
         const chatOpen = ref(false);
+        const notifOpen = ref(false);
+        const notifTab = ref('platform');
+        const notifViewMenuOpen = ref(false);
+        const notifCards = ref([
+          { date:'08/27/26, 06:07 PM', title:'Share & Win Is Now Bigger!', image:'banners/banner-1.webp', description:'Your favorite contest just got an upgrade.<br>Join the refreshed <strong>Share & Win</strong> contest and win even bigger rewards.', action:'Share & Win', expanded:false },
+          { date:'08/27/26, 06:07 PM', title:'Missions Aren\u2019t Over Yet', image:'banners/banner-2.webp', description:'There\u2019s still time to finish your <strong>Missions.</strong><br>Complete challenges in <strong>Originals</strong> and unlock your rewards before they\u2019re gone.', action:'Finish Missions', expanded:false },
+          { date:'08/19/26, 03:48 PM', title:'Clear 7 Missions & Grab up to $14', image:'banners/banner-3.webp', description:'Complete seven daily missions and grab your reward.<br>Finish every challenge before time runs out.', action:'View Missions', expanded:false },
+        ]);
         const chatMuted = ref(false);
         const websiteName = WEBSITE_NAME;
         const websiteEmailDomain = WEBSITE_NAME.toLowerCase().replace(/[^a-z0-9.-]+/g, '') || 'example';
@@ -3888,6 +3974,12 @@
             scrollChatToEnd();
           }
         };
+        const toggleNotif = () => {
+          notifOpen.value = !notifOpen.value;
+          if (notifOpen.value) { chatOpen.value = false; tournamentOpen.value = false; }
+        };
+        const notifMarkAllRead = () => { toastMessage('All notifications marked as read'); };
+        const notifChooseView = (v) => { notifViewMenuOpen.value = false; toastMessage(v === 'All' ? 'Showing all notifications' : 'Showing unread notifications'); };
         const toggleChatLike = (message) => {
           message.liked = !message.liked;
           message.likes += message.liked ? 1 : -1;
@@ -4375,7 +4467,7 @@
           watch(authUser, (u) => { if (u) accountPages.loadAccountPage(); }, { immediate: true });
         }
         onBeforeUnmount(()=>{ window.removeEventListener('resize',handleResize); window.removeEventListener('keydown',handleKeydown); window.removeEventListener('storage',handleStorageSync); document.removeEventListener('click',handleDocumentClick); clearTimeout(searchTimer); clearInterval(promoTimer); });
-        return {websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
+        return {websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,notifTab,notifViewMenuOpen,notifCards,toggleNotif,notifMarkAllRead,notifChooseView,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
           ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage};
       }
     }).component('game-card', GameCard).mount('#app');
