@@ -812,8 +812,8 @@
     .casino-rail-head .rail-arrows button { background:none; border:none; color:#aab7c8; cursor:pointer; font-size:15px; padding:0; display:grid; place-items:center; width:26px; height:26px; border-radius:8px; transition:.2s; }
     .casino-rail-head .rail-arrows button:hover { color:#fff; background:#1c2a3a; }
     /* dikey padding, hover'da buyuyen kartin ustten/alttan kirpilmasini onler */
-    .casino-game-row { display:flex; gap:14px; overflow-x:auto; padding:8px 0; margin:-8px 0; }
-    .casino-rail--grid .casino-game-row { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:16px; overflow:visible; padding:0; margin:0; }
+    .casino-game-row { display:flex; gap:14px; overflow-x:auto; overflow-y:visible; padding:34px 20px; margin:-34px -20px; }
+    .casino-rail--grid .casino-game-row { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:16px; overflow:visible; padding:6px 0; margin:0; }
     @media (max-width:1200px){ .casino-rail--grid .casino-game-row { grid-template-columns:repeat(5,minmax(0,1fr)); } }
     @media (max-width:768px){ .casino-rail--grid .casino-game-row { grid-template-columns:repeat(3,minmax(0,1fr)); } }
     @media (max-width:480px){ .casino-rail--grid .casino-game-row { grid-template-columns:repeat(2,minmax(0,1fr)); } }
