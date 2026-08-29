@@ -5316,11 +5316,30 @@ router.post("/notices", checkPermission("notice.create"), upload.single("image")
 
 router.get("/notices", checkPermission("notice.read"), async (req, res) => {
 	const notices = await Notice.find().sort({ createdAt: -1 }).lean();
-	const data = notices.map((notice) => ({
-		...notice,
-		recipientsCount: Array.isArray(notice.recipients) ? notice.recipients.length : null,
-		readCount: Array.isArray(notice.readBy) ? notice.readBy.length : 0,
-	}));
+
+	// Okundu sayısı tek başına anlamsız; hedef kitle büyüklüğüne oranlanır.
+	// Yayın bildirimlerinde (recipients boş) hedef tüm kullanıcılardır.
+	const hasBroadcast = notices.some(
+		(notice) => !notice.recipientId && (!Array.isArray(notice.recipients) || notice.recipients.length === 0),
+	);
+	const totalUsers = hasBroadcast ? await User.countDocuments() : 0;
+
+	const data = notices.map((notice) => {
+		const recipientsCount = Array.isArray(notice.recipients) ? notice.recipients.length : null;
+
+		let audienceSize;
+		if (notice.recipientId) audienceSize = 1;
+		else if (recipientsCount) audienceSize = recipientsCount;
+		else audienceSize = totalUsers;
+
+		return {
+			...notice,
+			recipientsCount,
+			readCount: Array.isArray(notice.readBy) ? notice.readBy.length : 0,
+			audienceSize,
+		};
+	});
+
 	res.json({ success: true, data });
 });
 
@@ -10137,7 +10156,7 @@ router.get(
 
 // ═══════════════════════════════════════════════���═══════════════════════════
 // 🎨 CUSTOM CSS/JS ENDPOINTS
-// ════════════════════════════════════════════════════════════════�����══════════
+// ════════════════════════════════════════════════════════════════�������══════════
 
 // Update custom CSS
 router.put(

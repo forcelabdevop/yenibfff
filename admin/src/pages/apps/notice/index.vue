@@ -47,6 +47,22 @@ const openDrawer = () => {
   isDrawerOpen.value = true
 }
 
+// Okundu oranı: hedef kitleye göre yüzde. audienceSize 0 ise bölme yapılmaz.
+const readRate = notice => {
+  const size = notice?.audienceSize || 0
+  if (!size) return 0
+
+  return Math.min(Math.round(((notice.readCount || 0) / size) * 100), 100)
+}
+
+const readRateColor = notice => {
+  const rate = readRate(notice)
+  if (rate >= 60) return 'success'
+  if (rate >= 25) return 'warning'
+
+  return 'secondary'
+}
+
 const closeDrawer = () => {
   isDrawerOpen.value = false
   nextTick(() => {
@@ -189,7 +205,17 @@ onMounted(fetchNotices)
         </template>
 
         <template #item.readCount="{ item }">
-          {{ item.raw.readCount ?? 0 }}
+          <div class="d-flex align-center gap-2">
+            <span>{{ item.raw.readCount ?? 0 }}<template v-if="item.raw.audienceSize"> / {{ item.raw.audienceSize }}</template></span>
+            <VChip
+              v-if="item.raw.audienceSize"
+              :color="readRateColor(item.raw)"
+              size="x-small"
+              label
+            >
+              {{ readRate(item.raw) }}%
+            </VChip>
+          </div>
         </template>
 
         <template #item.actions="{ item }">
