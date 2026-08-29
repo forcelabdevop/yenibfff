@@ -25,15 +25,15 @@ window.createBonusesPage = function createBonusesPage(ctx) {
     {title:"Monthly Bonus",sub:"$0.00",image:bonusAssets.monthly,tone:"#1c6a35",middle:"Play Casino and Sports to increase it",action:"Claim in: 2 d 03:18:43",description:"A monthly loyalty reward based on your eligible casino and sports activity throughout the month.",terms:["Calculated once per month","Both casino and sports can contribute","Claim within the availability period"]},
   ]
   const vipBonuses = [
-    {title:"VIP Cashback",image:bonusAssets.calendar,copy:"Up to <b>25%</b> cashback every week"},
-    {title:"Weekly VIP Bonus",image:bonusAssets.party,copy:"Exclusive weekly reward for VIP members"},
-    {title:"Level Up Bonus",image:bonusAssets.gift,copy:"Unlock rewards whenever your rank grows"},
-    {title:"Birthday Bonus",image:bonusAssets.birthday,copy:"A personal reward on your special day"},
+    {title:"VIP Bounty",image:bonusAssets.calendar,copy:"Play Games and bet on Sports to increase the bonus."},
+    {title:"Welcome VIP",image:bonusAssets.party,copy:"Join the VIP club to get a welcome bonus."},
+    {title:"Personal VIP",image:bonusAssets.gift,copy:"Get Personal VIP bonuses based on your activity."},
+    {title:"Birthday",image:bonusAssets.birthday,copy:"More fun on Big day! Sweeten your B-day celebration with tasty bonus ready for you."},
   ]
   const otherBonuses = [
-    {title:"Coin Drops",image:bonusAssets.coins,copy:"Catch surprise crypto drops in chat."},
-    {title:"Crypto Rains",image:bonusAssets.rains,copy:"Community rewards can rain at any time."},
-    {title:"Tips",image:bonusAssets.tips,copy:"Send and receive tips with other players."},
+    {title:"Coindrops",image:bonusAssets.coins,copy:"Get free coins in the Internal chat in one simple action."},
+    {title:"Crypto Rains",image:bonusAssets.rains,copy:"Send crypto to random active users in the Internal Chat."},
+    {title:"Tips",image:bonusAssets.tips,copy:"Communicate in the chat to get some crypto treats."},
   ]
   const faqSets = [
     ["How do I get regular bonuses?","What is the Bonus Calendar?","When can I claim Cashback?","How does the Fury Wheel work?"],
