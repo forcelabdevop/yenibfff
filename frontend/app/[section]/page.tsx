@@ -11,6 +11,7 @@ const sections = {
   originals: `${WEBSITE_NAME} Originals`,
   "live-casino": "Live Casino",
   sports: "Sports Betting",
+  missions: "Missions",
   bonuses: "Bonuses & Promotions",
   vip: "VIP Club",
   "buy-crypto": "Buy Crypto",

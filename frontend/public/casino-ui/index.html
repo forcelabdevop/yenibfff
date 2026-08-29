@@ -19,8 +19,10 @@
 <script src="./wallet-modal.js"></script>
 <script src="./profile-modal.js"></script>
 <script src="./account-page.js"></script>
+<script src="./missions-page.js"></script>
 <script src="./casino-providers-battles.js"></script>
 <link href="./tailwind.css" rel="stylesheet"/>
+<link href="./missions-page.css" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -2242,7 +2244,38 @@
 </aside>
 <main :class="{wide: !sidebarOpen, 'drawer-open': tournamentOpen, 'chat-open': chatOpen &amp;&amp; !tournamentOpen, 'notif-open': notifOpen &amp;&amp; !tournamentOpen &amp;&amp; !chatOpen, 'leader-open': leaderOpen &amp;&amp; !tournamentOpen &amp;&amp; !chatOpen &amp;&amp; !notifOpen}" class="main-shell">
 <section class="route-page casino-middle" v-if="currentPage !== 'home'">
-<template v-if="isCasinoPage">
+<template v-if="isMissionsPage">
+<div @click="closeMissionMenus" class="ms-page">
+  <section aria-labelledby="missions-title">
+    <div class="ms-head">
+      <h1 class="ms-title" id="missions-title">Missions</h1>
+      <div class="ms-filters">
+        <div class="ms-filter">
+          <button :aria-expanded="missionCategoryOpen" @click.stop="missionCategoryOpen=!missionCategoryOpen;missionStatusOpen=false" class="ms-filter-btn" type="button"><i class="fas fa-filter lead"></i><span>{{missionCategoryLabel}}</span><i class="fas fa-chevron-down"></i></button>
+          <div @click.stop class="ms-filter-menu" v-if="missionCategoryOpen"><button :key="option.value" @click="selectMissionCategory(option)" type="button" v-for="option in missionCategories">{{option.label}}</button></div>
+        </div>
+        <div class="ms-filter">
+          <button :aria-expanded="missionStatusOpen" @click.stop="missionStatusOpen=!missionStatusOpen;missionCategoryOpen=false" class="ms-filter-btn" type="button"><span>{{missionStatusLabel}}</span><i class="fas fa-chevron-down"></i></button>
+          <div @click.stop class="ms-filter-menu" v-if="missionStatusOpen"><button :key="option.value" @click="selectMissionStatus(option)" type="button" v-for="option in missionStatuses">{{option.label}}</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="ms-grid" v-if="visibleMissions.length">
+      <article :key="mission.id" @click="openMission(mission)" class="ms-card" role="button" tabindex="0" @keydown.enter="openMission(mission)" v-for="mission in visibleMissions">
+        <img :alt="mission.title" :src="mission.image" class="ms-poster"/>
+        <div class="ms-body"><div class="ms-deadline">{{mission.deadline}}</div><h2 class="ms-card-title">{{mission.title}}</h2><div class="ms-reward-frame"><div class="ms-reward"><img :src="mission.rewardIcon==='fs'?missionAssets.fs:missionAssets.freebet" alt="" class="ms-reward-icon" v-if="mission.rewardIcon!=='dice'"/><i class="fas fa-dice-five ms-dice" v-else></i><div class="ms-reward-copy"><div class="ms-reward-label">Reward:</div><div class="ms-reward-value">{{mission.reward}}</div></div></div></div></div>
+        <i class="fas fa-chevron-right ms-card-arrow"></i>
+      </article>
+    </div>
+    <div class="empty-panel" v-else><div class="empty-panel-inner"><span class="empty-icon"><i class="fas fa-bullseye"></i></span><h2>No missions found</h2><p>Try another category or status.</p></div></div>
+    <div class="ms-more-wrap" v-if="filteredMissions.length>9"><button @click="missionExpanded=!missionExpanded" class="ms-more" type="button">{{missionExpanded?'Show less':'Show more'}}</button></div>
+  </section>
+  <section aria-labelledby="missions-faq-title" class="ms-faq"><h2 class="ms-faq-title" id="missions-faq-title">FAQ</h2><div class="ms-faq-grid"><div :class="{open:missionOpenFaq===index}" :key="item.question" class="ms-faq-item" v-for="(item,index) in missionFaqs"><button :aria-expanded="missionOpenFaq===index" @click="missionOpenFaq=missionOpenFaq===index?null:index" class="ms-faq-question" type="button"><span>{{item.question}}</span><i class="fas fa-chevron-down"></i></button><p class="ms-faq-answer" v-if="missionOpenFaq===index">{{item.answer}}</p></div></div></section>
+</div>
+<img alt="Achievements" class="ms-achievements" src="assets/mission-achievements.png"/>
+<div @click.self="selectedMission=null" class="ms-modal-bg" v-if="selectedMission"><section aria-labelledby="mission-dialog-title" aria-modal="true" class="ms-modal" role="dialog"><h2 class="ms-modal-title" id="mission-dialog-title">Mission Details</h2><button @click="selectedMission=null" aria-label="Close mission details" class="ms-modal-close" type="button">×</button><div class="ms-modal-content"><div class="ms-modal-reward"><img :src="selectedMission.rewardIcon==='fs'?missionAssets.fs:missionAssets.freebet" alt="" class="ms-reward-icon" v-if="selectedMission.rewardIcon!=='dice'"/><i class="fas fa-dice-five ms-dice" v-else></i><div><div class="ms-reward-label">Reward</div><div class="ms-reward-value">{{selectedMission.reward}}</div></div></div><dl class="ms-detail-list"><div class="ms-detail-row"><dt>Status</dt><dd><span class="ms-deadline">AVAILABLE</span></dd></div><div class="ms-detail-row"><dt>Mission type</dt><dd>{{selectedMission.category==='casino'?'Casino':'Sport'}}</dd></div><div class="ms-detail-row"><dt>Condition</dt><dd>{{selectedMission.condition}}</dd></div><div class="ms-detail-row" v-if="selectedMission.sports.length"><dt>Sports</dt><dd><span :key="sport" v-for="sport in selectedMission.sports">{{sport}}<br/></span></dd></div><div class="ms-detail-row"><dt>Odds</dt><dd>{{selectedMission.category==='casino'?'—':'1.7 - ∞'}}</dd></div><div class="ms-detail-row"><dt>Bet</dt><dd>{{selectedMission.category==='casino'?'Any':'$5 - ∞'}}</dd></div><div class="ms-detail-row"><dt>Bet currency</dt><dd>All Currencies</dd></div><div class="ms-detail-row"><dt>Bonus wagering</dt><dd>Excluded</dd></div></dl></div><div class="ms-modal-action"><button @click="joinMission" class="ms-join" type="button">Join</button></div></section></div>
+</template>
+<template v-else-if="isCasinoPage">
   <div @scroll="syncPromoIndex" class="casino-promos no-scrollbar" id="casino-promos">
 <button :key="banner.id" @click="navigate(banner.href)" class="casino-promo" v-for="banner in promoBanners">
 <img :alt="banner.alt || banner.title" :src="banner.image" class="casino-promo__bg" loading="lazy"/>
@@ -4466,7 +4499,7 @@
           {label:'Drops & Wins',image:'assets/contests/contests-tournament.png',icon:'fas fa-trophy',path:'/casino',match:'drop|win'}
         ];
         const navItems = [
-          {label:'Missions', icon:'fas fa-bullseye', count:'27', path:'/bonuses'},
+          {label:'Missions', icon:'fas fa-bullseye', count:'27', path:'/missions'},
           {label:'Bonuses', icon:'fas fa-gift', path:'/bonuses'},
           {label:'Crypto & Earn', icon:'fas fa-money-bill-wave', arrow:true, path:'/buy-crypto'},
           {label:`${WEBSITE_NAME} Token`, image:'/logo.svg', path:'/buy-crypto'},
@@ -4729,7 +4762,11 @@
         });
         const isAccountPage = accountPages.isAccountPage;
 
-        // Cuzdan modali mantigi ayri dosyada: casino-ui/wallet-modal.js
+        // Missions sayfasi mantigi ayri dosyada: casino-ui/missions-page.js
+  const missionsPage = window.createMissionsPage({ ref, computed, currentPage, toastMessage });
+  const isMissionsPage = missionsPage.isMissionsPage;
+  
+  // Cuzdan modali mantigi ayri dosyada: casino-ui/wallet-modal.js
         const walletModal = window.createWalletModal({
           ref, computed, watch, apiUrl, authUser, readAuthToken, requestAuth, toastMessage,
         });
@@ -5004,7 +5041,7 @@
         watch(authUser, (u) => { if (u) loadNotifications(); }, { immediate: true });
         onBeforeUnmount(()=>{ window.removeEventListener('resize',handleResize); window.removeEventListener('keydown',handleKeydown); window.removeEventListener('storage',handleStorageSync); document.removeEventListener('click',handleDocumentClick); clearTimeout(searchTimer); clearInterval(promoTimer); });
         return {...casinoPT,...uiSettings,...leaderboardData,betsRowChoices,betsTab,betsRowCount,betsCountOpen,betsTabs,betsVisibleRows,betGameIcon,selectBetsTab,setBetsCount,heroSpinning,heroSpin,heroBackdropCards,balanceMenuOpen,balanceSearch,balanceHideZero,balanceShowVault,balanceDisplayFiat,balanceCurrencies,balanceActiveCode,balanceFiltered,toggleBalanceMenu,selectBalanceCurrency,websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,...notificationsData,toggleNotif,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,slideCasinoRow,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
-          ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage};
+          ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage, ...missionsPage};
       }
     }).component('game-card', GameCard).mount('#app');
   </script>
