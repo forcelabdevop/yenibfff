@@ -176,6 +176,20 @@ window.createWalletModal = function createWalletModal(ctx) {
       currencies.value = Array.isArray(data) ? data : []
       const crypto = cryptoCurrencies.value
       const fiat = fiatCurrencies.value
+      // Liste yenilendiginde secili ref'ler eski nesnelere bakiyor; kodla yeniden
+      // bagla, aksi halde takas sonrasi bakiyeler ekranda guncellenmez.
+      const resync = (target) => {
+        if (!target.value) return
+        const fresh = currencies.value.find((c) => c.code === target.value.code)
+        if (fresh) target.value = fresh
+      }
+      ;[depositCurrency, cashCurrency, buyFiat, buyCrypto, swapFrom, swapTo].forEach(resync)
+      if (depositNetwork.value && depositCurrency.value) {
+        const freshNetwork = (depositCurrency.value.networks || []).find(
+          (n) => n.id === depositNetwork.value.id,
+        )
+        if (freshNetwork) depositNetwork.value = freshNetwork
+      }
       if (!depositCurrency.value) depositCurrency.value = crypto[0] || null
       if (!depositNetwork.value && depositCurrency.value) {
         depositNetwork.value = (depositCurrency.value.networks || [])[0] || null
