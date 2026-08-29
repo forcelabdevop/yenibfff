@@ -2267,7 +2267,7 @@
 <div class="casino-rail-head" v-if="activeCategory==='all'"><h2><img :src="categoryIconImage(activeRailCategory, pageContent.badge)" alt="" class="rail-head-icon" v-if="categoryIconImage(activeRailCategory, pageContent.badge)"/><i :class="activeRailCategory ? categoryIcon(activeRailCategory) : 'fas fa-gamepad'" v-else></i> {{activeRailCategory?.name || pageContent.badge}} </h2><span class="rail-arrows"><mark>{{routeGames.length}} games loaded</mark><button type="button" aria-label="Previous games" @click="slideCasinoRow($event,-1)"><i class="fas fa-chevron-left"></i></button><button type="button" aria-label="Next games" @click="slideCasinoRow($event,1)"><i class="fas fa-chevron-right"></i></button></span></div>
 <div class="casino-game-row no-scrollbar"><game-card :badge="index<6 ? (index===3?'HOT':'TOP') : ''" :game="game" :key="'catalog-'+(game._id || game.game_code || game.name)" @demo="selectGame(game, true)" @select="selectGame(game)" v-for="(game,index) in (activeCategory==='all' ? slotDisplayGames : routeGames)"></game-card></div>
 </section>
-<section :key="'railA-'+(category._id || category.slug)" class="casino-rail" v-for="category in visibleCategoryRails.slice(0,2)">
+<section :key="'railA-'+(category._id || category.slug)" class="casino-rail" v-for="category in visibleCategoryRails.slice(0,1)">
 <div class="casino-rail-head"><h2><img :src="categoryIconImage(category)" alt="" class="rail-head-icon" v-if="categoryIconImage(category)"/><i :class="categoryIcon(category)" v-else></i> {{category.name}} </h2><span class="rail-arrows"><mark>{{category.total_games || category.games.length}} games</mark><button type="button" aria-label="Previous games" @click="slideCasinoRow($event,-1)"><i class="fas fa-chevron-left"></i></button><button type="button" aria-label="Next games" @click="slideCasinoRow($event,1)"><i class="fas fa-chevron-right"></i></button></span></div>
 <div class="casino-game-row no-scrollbar"><game-card :badge="index<4 ? (index===3?'HOT':'TOP') : ''" :game="game" :key="category.slug+'-'+(game._id || game.game_code)" @demo="selectGame(game, true)" @select="selectGame(game)" v-for="(game,index) in category.games.slice(0,12)"></game-card></div>
 </section>
@@ -2334,7 +2334,7 @@
 </article>
 </div>
 </section>
-<section :key="'railB-'+(category._id || category.slug)" class="casino-rail" v-for="category in visibleCategoryRails.slice(2)">
+<section :key="'railB-'+(category._id || category.slug)" class="casino-rail" v-for="category in visibleCategoryRails.slice(1)">
 <div class="casino-rail-head"><h2><img :src="categoryIconImage(category)" alt="" class="rail-head-icon" v-if="categoryIconImage(category)"/><i :class="categoryIcon(category)" v-else></i> {{category.name}} </h2><span class="rail-arrows"><mark>{{category.total_games || category.games.length}} games</mark><button type="button" aria-label="Previous games" @click="slideCasinoRow($event,-1)"><i class="fas fa-chevron-left"></i></button><button type="button" aria-label="Next games" @click="slideCasinoRow($event,1)"><i class="fas fa-chevron-right"></i></button></span></div>
 <div class="casino-game-row no-scrollbar"><game-card :badge="index<4 ? (index===3?'HOT':'TOP') : ''" :game="game" :key="category.slug+'-'+(game._id || game.game_code)" @demo="selectGame(game, true)" @select="selectGame(game)" v-for="(game,index) in category.games.slice(0,12)"></game-card></div>
 </section>
