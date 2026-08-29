@@ -12,6 +12,7 @@
      Backend'e geri baglanirken bu satir silinir — bkz. MOCK-BACKEND.md -->
 <script src="./mock-backend.js"></script>
 <script src="./casino-ui-settings.js"></script>
+<script src="./casino-ui-leaderboard.js"></script>
 <script src="./game-detail.js"></script>
 <script src="./account-pages.js"></script>
 <script src="./wallet-modal.js"></script>
@@ -3071,14 +3072,14 @@
 <div class="leader-table">
 <div class="leader-thead"><span>Place</span><span>Player</span><span>Wager</span></div>
 <div class="leader-tbody">
-<div :key="row.name" class="leader-row" v-for="row in leaders">
+<div :key="row.place+'-'+row.name" class="leader-row" v-for="row in leaders">
 <div class="leader-place"><img :src="row.badge" alt="" v-if="row.badge"/><span v-else="">{{row.place}}</span></div>
-<div class="leader-player"><img :src="row.image==='raccoon' ? 'assets/user-avatar-raccoon.png' : ('assets/leaderboard/'+row.image)" alt="" class="leader-avatar"/><span class="leader-name">{{row.name}}</span></div>
+<div class="leader-player"><img :src="row.avatarSrc" alt="" class="leader-avatar"/><span class="leader-name">{{row.name}}</span></div>
 <div class="leader-wager"><span class="leader-flag">&#127482;&#127480;</span><span>{{row.wager}}</span></div>
 </div>
-<div class="leader-row selected"><div class="leader-place">-</div><div class="leader-player"><img alt="" class="leader-avatar" src="assets/user-avatar-raccoon.png"/><span class="leader-name">soules3131</span></div><div class="leader-wager"><span class="leader-flag">&#127482;&#127480;</span><span>$0.06</span></div></div>
+<div class="leader-row selected" v-if="!leaderLive"><div class="leader-place">-</div><div class="leader-player"><img alt="" class="leader-avatar" src="assets/user-avatar-raccoon.png"/><span class="leader-name">soules3131</span></div><div class="leader-wager"><span class="leader-flag">&#127482;&#127480;</span><span>$0.06</span></div></div>
 </div>
-<div class="leader-pager"><button @click="toastMessage('Previous page')" type="button">&lsaquo;</button><button :class="{active:leaderPage===n}" :key="n" @click="leaderPage=n" type="button" v-for="n in [1,2,3,10]">{{n}}</button><button @click="toastMessage('Next page')" type="button">&rsaquo;</button></div>
+<div class="leader-pager"><button @click="stepLeaderPage(-1)" type="button">&lsaquo;</button><button :class="{active:leaderPage===n}" :key="n" @click="setLeaderPage(n)" type="button" v-for="n in leaderPages">{{n}}</button><button @click="stepLeaderPage(1)" type="button">&rsaquo;</button></div>
 </div>
 </aside>
 <div :class="{'chat-open':chatOpen,'notif-open':notifOpen,'leader-open':leaderOpen}" class="edge-rewards"><button @click="tournamentOpen=true;chatOpen=false;notifOpen=false;leaderOpen=false" aria-label="Open tournaments"><img alt="" src="assets/contests/contests-tournament-1.png"/></button><button @click="leaderOpen=true;chatOpen=false;tournamentOpen=false;notifOpen=false" aria-label="Open leaderboard"><img alt="" src="assets/contests/contests-leaderboard-1.webp"/></button></div>
@@ -3769,25 +3770,10 @@
           { date:'08/19/26, 03:48 PM', title:'Clear 7 Missions & Grab up to $14', image:'banners/banner-3.webp', description:'Complete seven daily missions and grab your reward.<br>Finish every challenge before time runs out.', action:'View Missions', expanded:false },
         ]);
         const leaderOpen = ref(false);
-        const leaderMonth = ref('August');
-        const leaderMonthMenu = ref(false);
-        const leaderMonths = ['August','July','June'];
-        const leaderCategory = ref('General');
-        const leaderCategories = [{name:'General',icon:'\u265F'},{name:'Casino',icon:'\u2B55'},{name:'Sport',icon:'\u26BD'}];
-        const leaderPage = ref(1);
-        const leaders = ref([
-          {place:1,badge:'assets/leaderboard/badge-1.png',image:'av-1.png',name:'CircleKing',wager:'$12,018,592.29'},
-          {place:2,badge:'assets/leaderboard/badge-2.png',image:'av-2.png',name:'Alolnnda',wager:'$8,381,919.85'},
-          {place:3,badge:'assets/leaderboard/badge-3.png',image:'raccoon',name:'User2037358',wager:'$8,260,119.43'},
-          {place:4,image:'raccoon',name:'Mattosdias',wager:'$5,890,886.99'},
-          {place:5,image:'av-3.png',name:'User8353646',wager:'$4,955,739.66'},
-          {place:6,image:'raccoon',name:'Loochoomus',wager:'$4,779,211.61'},
-          {place:7,image:'av-4.png',name:'sa619',wager:'$4,699,422.63'},
-          {place:8,image:'av-5.png',name:'Michel74',wager:'$4,325,511.94'},
-          {place:9,image:'av-6.png',name:'Mia',wager:'$4,279,952.76'},
-          {place:10,image:'raccoon',name:'User8476234',wager:'$4,132,633.76'}
-        ]);
-        const toggleLeaderboard = () => { leaderOpen.value = !leaderOpen.value; if (leaderOpen.value) { chatOpen.value=false; tournamentOpen.value=false; notifOpen.value=false; } };
+        // Admin > Leaderboard verisi (casino-ui-leaderboard.js)
+        const leaderboardData = window.createCasinoUiLeaderboard({ ref, computed, watch, apiUrl });
+        const {leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaderPages,leaders,leaderLive,stepLeaderPage,setLeaderPage,loadLeaderboard} = leaderboardData;
+        const toggleLeaderboard = () => { leaderOpen.value = !leaderOpen.value; if (leaderOpen.value) { chatOpen.value=false; tournamentOpen.value=false; notifOpen.value=false; loadLeaderboard(); } };
         const chatMuted = ref(false);
         const websiteName = WEBSITE_NAME;
         const websiteEmailDomain = WEBSITE_NAME.toLowerCase().replace(/[^a-z0-9.-]+/g, '') || 'example';
@@ -4825,7 +4811,7 @@
           watch(authUser, (u) => { if (u) accountPages.loadAccountPage(); }, { immediate: true });
         }
         onBeforeUnmount(()=>{ window.removeEventListener('resize',handleResize); window.removeEventListener('keydown',handleKeydown); window.removeEventListener('storage',handleStorageSync); document.removeEventListener('click',handleDocumentClick); clearTimeout(searchTimer); clearInterval(promoTimer); });
-        return {...uiSettings,betsRowChoices,betsTab,betsRowCount,betsCountOpen,betsTabs,betsVisibleRows,betGameIcon,selectBetsTab,setBetsCount,heroSpinning,heroSpin,heroBackdropCards,balanceMenuOpen,balanceSearch,balanceHideZero,balanceShowVault,balanceDisplayFiat,balanceCurrencies,balanceActiveCode,balanceFiltered,toggleBalanceMenu,selectBalanceCurrency,websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,notifTab,notifViewMenuOpen,notifCards,toggleNotif,notifMarkAllRead,notifChooseView,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,slideCasinoRow,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
+        return {...uiSettings,...leaderboardData,betsRowChoices,betsTab,betsRowCount,betsCountOpen,betsTabs,betsVisibleRows,betGameIcon,selectBetsTab,setBetsCount,heroSpinning,heroSpin,heroBackdropCards,balanceMenuOpen,balanceSearch,balanceHideZero,balanceShowVault,balanceDisplayFiat,balanceCurrencies,balanceActiveCode,balanceFiltered,toggleBalanceMenu,selectBalanceCurrency,websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,notifTab,notifViewMenuOpen,notifCards,toggleNotif,notifMarkAllRead,notifChooseView,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,slideCasinoRow,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
           ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage};
       }
     }).component('game-card', GameCard).mount('#app');
