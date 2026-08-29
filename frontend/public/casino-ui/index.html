@@ -2409,7 +2409,7 @@
 </header>
 <div class="reg-details-content">
 <div v-if="regularBonusModal==='wheel'">
-<p>Spin the Free Wheel and get a chance to win up to 1 BTC on your balance.</p>
+<p class="reg-lead">Spin the Free Wheel and get a chance to win up to 1 BTC on your balance.</p>
 <div class="reg-tg-box">
 <h4><i class="fab fa-telegram-plane"></i> With Telegram Bot:</h4>
 <ul>
@@ -2419,45 +2419,120 @@
 </ul>
 <button @click="bonusNotify('Telegram bot connection opened')" class="reg-tg-btn" type="button">Connect Telegram Bot</button>
 </div>
-<div class="reg-details-section"><b>Accrual frequency:</b><br/>Every 12 hours</div>
-<div class="reg-details-section"><b>Next spin in:</b><br/>00:00:00</div>
-<p>- Spin the Wheel from Rank 1 and get real crypto or tokens to participate in the Battle for free.<br/>- From Rank 2 the Special Wheel rewards users only with real crypto.<br/>- Connect the Telegram bot to access the TG Wheel and get only crypto wins.</p>
+<div class="reg-row"><span class="reg-label">Accrual frequency:</span><span class="reg-value">Every 12 hours</span></div>
+<div class="reg-row"><span class="reg-label">Next spin in:</span><span class="reg-value">00:00:00</span></div>
+<div class="reg-row"><p class="reg-fine">- Spin the Wheel from Rank 1 and get real crypto or Fun tokens to participate in the Fun Battle for free.<br/>- From Rank 2 Special Fury Wheel rewards users only with real crypto.<br/>- Connect the Telegram bot to access the TG Wheel and get only crypto wins.</p></div>
 </div>
 <div v-else-if="regularBonusModal==='rakeback'">
-<p>Get a bonus for your bets regardless of the result. Multiply the bonus with a Boost.</p>
-<div class="reg-details-section"><b>Accrual frequency:</b><br/>Every 20 min</div>
-<div class="reg-details-section"><b>Withdrawal distribution:</b><br/>50% of the amount goes to your balance<br/>50% of the amount goes to the calendar for 3 days</div>
-<div class="calendar-notice"><strong>👑 For VIP users:</strong><br/>70% to your balance<br/>30% to the calendar for 2 days</div>
-<p>The minimum amount for distribution to the calendar is $0.003 per day. The smaller amount is credited to the balance in full.</p>
-<div class="reg-details-section"><b>What is the bonus calculated for?</b><br/>- <b>Casino bets</b> (Slots and Originals except Lootboxes)<br/>- <b>Sport bets</b> (Closed bets with the coefficient 1.1 and more)<br/>- <b>Live Casino bets</b> (starting from Rank 10, bets in games by Evolution, Pragmatic Play and Ezugi)</div>
+<p class="reg-lead">Get a bonus for your bets regardless of the result. Multiply the bonus with a Boost.</p>
+<div class="reg-row"><span class="reg-label">Accrual frequency:</span><span class="reg-value">Every 20 min</span></div>
+<div class="reg-row"><span class="reg-label">Withdrawal distribution:</span><span class="reg-value">50% of the amount goes to your balance</span><span class="reg-value">50% of the amount goes to the calendar for 3 days</span>
+<div class="vip-notice"><strong>👑 For VIP users:</strong><span>70% to your balance</span><span>30% to the calendar for 2 days</span></div>
+<p class="reg-fine">🗒️ The minimum amount for distribution to the calendar is $0.003 per day. The smaller amount is credited to the balance in full.</p>
+</div>
+<div class="reg-row"><span class="reg-label reg-label--strong">What is the bonus calculated for?</span><p class="reg-fine">- <b>Casino bets</b> (Slots, Originals except Lootboxes and Furywaves)<br/>- <b>Sport bets</b> (Closed bets with the coefficient 1.1 and more)<br/>- <b>Live Casino bets</b> (starting from Rank 10, bets in games by Evolution, Pragmatic Play and Ezugi)</p></div>
 </div>
 <div v-else-if="regularBonusModal==='cashback'">
-<p>Receive up to 25% of your lost deposited coins back. Unless you are in profit.</p>
-<div class="reg-details-section"><b>Accrual frequency:</b><br/>Twice a week: Tuesday, Friday</div>
-<div class="reg-details-section"><b>Accrual in:</b><br/>2 days 03:48:35</div>
+<p class="reg-lead">Receive up to 25% of your lost deposited coins back.</p>
+<p class="reg-lead reg-lead--muted">Unless you are in profit</p>
+<div class="reg-row"><span class="reg-label">Accrual frequency:</span><span class="reg-value">Twice a week: Tuesday, Friday</span></div>
+<div class="reg-row"><span class="reg-label">Accrual in:</span><span class="reg-value">2 days 03:48:35</span>
 <div class="calendar-notice">ℹ️ The bonus expires if you do not withdraw it before the next one is accrued.</div>
-<div class="reg-details-section"><b>Withdrawal distribution:</b><br/><b>Rank 1-5:</b><br/>50% of the amount goes to your balance<br/>50% of the amount goes to the calendar for 3 days</div>
-<div class="calendar-notice"><strong>👑 For VIP users:</strong><br/>100% to your balance</div>
-<div class="reg-details-section"><b>Cashback for rank:</b>
+</div>
+<div class="reg-row"><span class="reg-label">Withdrawal distribution:</span>
+<span class="reg-value">Rank 1-5:</span>
+<span class="reg-value">50% of the amount goes to your balance</span>
+<span class="reg-value">50% of the amount goes to the calendar for 3 days</span>
+<span class="reg-value reg-value--spaced">Rank 6-10:</span>
+<span class="reg-value">75% of the amount goes to your balance</span>
+<span class="reg-value">25% of the amount goes to the calendar for 3 days</span>
+<div class="vip-notice"><strong>👑 For VIP users:</strong><span>100% to your balance</span></div>
+<p class="reg-fine">🗒️ The minimum amount for distribution to the calendar is $0.003 per day. The smaller amount is credited to the balance in full.</p>
+</div>
+<div class="reg-row"><span class="reg-label reg-label--strong">What is the bonus calculated for?</span><p class="reg-fine">- <b>Casino bets</b> (Slots, Originals except Lootboxes and Furywaves)<br/>- <b>Sport bets</b><br/>- Closed bets with the coefficient 1.2 and more<br/>- Rank 1-12: Only combo bets or system bets are taken into account<br/>- Rank 13-20: All types of sports bets are taken into account.</p></div>
+<div class="reg-row"><span class="reg-label reg-label--strong">Cashback for rank:</span>
 <table class="reg-details-table">
-<thead><tr><th>RANK</th><th>CASINO</th><th>SPORT</th></tr></thead>
+<thead><tr><th>RANK</th><th>CASINO</th><th class="right">SPORT</th></tr></thead>
 <tbody>
-<tr><td>Rank 1:</td><td>5%</td><td>1%</td></tr>
-<tr><td>Rank 2:</td><td>5%</td><td>1%</td></tr>
-<tr><td>Rank 3:</td><td>5%</td><td>1%</td></tr>
-<tr class="active"><td>Rank 4:</td><td>5%</td><td>2%</td></tr>
-<tr><td>Rank 5:</td><td>5%</td><td>2%</td></tr>
-<tr><td>Rank 6:</td><td>6%</td><td>3%</td></tr>
+<tr><td>Rank 1:</td><td>5%</td><td class="right">1%</td></tr>
+<tr><td>Rank 2:</td><td>5%</td><td class="right">1%</td></tr>
+<tr><td>Rank 3:</td><td>5%</td><td class="right">1%</td></tr>
+<tr class="active"><td>Rank 4:</td><td>5%</td><td class="right">2%</td></tr>
+<tr><td>Rank 5:</td><td>5%</td><td class="right">2%</td></tr>
+<tr><td>Rank 6:</td><td>6%</td><td class="right">3%</td></tr>
+<tr><td>Rank 7:</td><td>7%</td><td class="right">3.5%</td></tr>
 </tbody>
 </table>
 </div>
 </div>
+<div v-else-if="regularBonusModal==='weekly'">
+<p class="reg-lead">Make a minimum wager of $150 to unlock the bonus.<br/>The bonus calculation is based on recent activity from Saturday to Friday and lost coins.<br/>Available bonus amount is updated daily at 00:00 UTC</p>
+<div class="reg-row"><span class="reg-label">Accrual frequency:</span><span class="reg-value">Every 7 days</span></div>
+<div class="reg-row"><span class="reg-label">Accrual in:</span><span class="reg-value">6 days 02:48:12</span>
+<div class="calendar-notice">ℹ️ The bonus expires if you do not withdraw it before the next one is accrued.</div>
+</div>
+<div class="reg-row"><span class="reg-label">Withdrawal distribution:</span>
+<span class="reg-value">25% of the amount goes to your balance</span>
+<span class="reg-value">75% of the amount goes to the calendar for 7 days</span>
+<div class="vip-notice"><strong>👑 For VIP users:</strong><span>30% to your balance</span><span>70% to the calendar for 5 days</span></div>
+<p class="reg-fine">🗒️ The minimum amount for distribution to the calendar is $0.003 per day. The smaller amount is credited to the balance in full.</p>
+</div>
+<div class="reg-row"><span class="reg-label reg-label--strong">What is the bonus calculated for?</span><p class="reg-fine">- <b>Casino bets</b> (Slots, Originals except Lootboxes and Furywaves)<br/>- <b>Live Casino bets</b> (starting from Rank 10, bets in games by Evolution, Pragmatic Play and Ezugi)</p></div>
+</div>
+<div v-else-if="regularBonusModal==='sport'">
+<p class="reg-lead">Place bets on Sports and get Free Bets every week. The bonus amount is divided into 3 Free Bets equally.</p>
+<button @click="bonusNotify('Free bets guide is coming soon')" class="reg-link" type="button">How to use free bets <i class="fas fa-angle-right"></i></button>
+<div class="reg-row"><span class="reg-label">Accrual frequency:</span><span class="reg-value">Every 7 days</span></div>
+<div class="reg-row"><div class="reg-wager"><span class="reg-label">Wager to next bonus:</span><b>$150</b></div><div class="reg-progress"><span></span></div></div>
+<div class="reg-row"><span class="reg-label">Accrual in:</span><span class="reg-value">1 days 15:48:07</span>
+<div class="calendar-notice">ℹ️ The accrued Free Bet is available for 7 days before it expires.</div>
+</div>
+<div class="reg-row"><span class="reg-label">Withdrawal distribution:</span><span class="reg-value">1 Free Bet at once</span><span class="reg-value">2 Free Bets to the calendar for Wednesday and Friday</span></div>
+<div class="reg-row"><span class="reg-label reg-label--strong">What is the bonus calculated for?</span><p class="reg-fine">- <b>Sports bets</b> (Closed bets with the coefficient 1.1 and more)</p>
+<span class="reg-label reg-label--strong">Bonus amounts:</span>
+<div class="reg-amounts">
+<div class="reg-amount"><span>$150</span><b>$3</b></div>
+<div class="reg-amount"><span>$500</span><b>$12</b></div>
+<div class="reg-amount"><span>$1000</span><b>$24</b></div>
+<div class="reg-amount"><span>$2500</span><b>$60</b></div>
+<div class="reg-amount"><span>$5000</span><b>$120</b></div>
+<div class="reg-amount"><span>$10000</span><b>$240</b></div>
+<div class="reg-amount"><span>$25000</span><b>$600</b></div>
+<div class="reg-amount"><span>$50000</span><b>$1200</b></div>
+<div class="reg-amount"><span>$100000</span><b>$2400</b></div>
+<div class="reg-amount"><span>$200000</span><b>$4800</b></div>
+<div class="reg-amount"><span>$500000</span><b>$12000</b></div>
+</div>
+</div>
+</div>
 <div v-else>
-<p>Get regular rewards based on your wagering activity during the period.</p>
-<div class="reg-details-section"><b>Accrual frequency:</b><br/><span v-if="regularBonusModal==='monthly'">Monthly (Once a month)</span><span v-else>Weekly (Every Monday)</span></div>
-<div class="reg-details-section"><b>Withdrawal distribution:</b><br/>75% of the amount goes to your balance<br/>25% of the amount goes to the calendar for 3 days</div>
-<div class="calendar-notice"><strong>👑 For VIP users:</strong><br/>100% to your balance</div>
-<p>Calculated based on your total wagered amount in Casino and Sports sections.</p>
+<p class="reg-lead">The bonus calculation is based on monthly activity and lost coins.</p>
+<div class="reg-tg-box">
+<h4><i class="fab fa-telegram-plane"></i> With Telegram Bot:</h4>
+<div class="reg-boost-title">Rates Boost</div>
+<table class="reg-details-table">
+<thead><tr><th>RANK</th><th class="right">BOOST</th></tr></thead>
+<tbody>
+<tr class="active"><td>1 - 4</td><td class="right">X2</td></tr>
+<tr><td>5 - 9</td><td class="right">X2.33</td></tr>
+<tr><td>10 - 14</td><td class="right">X2.67</td></tr>
+<tr><td>15 - 20</td><td class="right">X3</td></tr>
+</tbody>
+</table>
+<p class="reg-tg-note">ℹ️ These % only work with a claim in the Telegram bot.</p>
+<button @click="bonusNotify('Telegram bot connection opened')" class="reg-tg-btn" type="button">Connect Telegram Bot</button>
+</div>
+<div class="reg-row"><span class="reg-label">Accrual frequency:</span><span class="reg-value">On the first day of every month</span></div>
+<div class="reg-row"><span class="reg-label">Accrual in:</span><span class="reg-value">2 days 02:47:56</span>
+<div class="calendar-notice">ℹ️ The bonus expires if you do not withdraw it before the next one is accrued.</div>
+</div>
+<div class="reg-row"><span class="reg-label">Withdrawal distribution:</span>
+<span class="reg-value">25% of the amount goes to your balance</span>
+<span class="reg-value">75% of the amount goes to the calendar for 15 days</span>
+<div class="vip-notice"><strong>👑 For VIP users:</strong><span>25% to your balance</span><span>75% to the calendar for 15 days</span></div>
+<p class="reg-fine">🗒️ The minimum amount for distribution to the calendar is $0.003 per day. The smaller amount is credited to the balance in full.</p>
+</div>
+<div class="reg-row"><span class="reg-label reg-label--strong">What is the bonus calculated for?</span><p class="reg-fine">- <b>Casino bets</b> (Slots, Originals except Lootboxes and Furywaves)<br/>- <b>Sport bets</b> (Closed bets with the coefficient 1.1 and more)<br/>- <b>Live Casino bets</b> (starting from Rank 10, bets in games by Evolution, Pragmatic Play and Ezugi)</p></div>
 </div>
 </div>
 <footer class="reg-details-foot"><button @click="regularBonusModal=null" type="button">Close</button></footer>
