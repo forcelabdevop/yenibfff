@@ -266,6 +266,8 @@
     .main-shell.wide { margin-left: 0; }
     .main-shell.drawer-open { margin-right: var(--drawer-w); transition: margin-left .25s ease, margin-right .25s ease; }
     .main-shell.chat-open { margin-right: var(--chat-w); transition: margin-left .25s ease, margin-right .25s ease; }
+    .main-shell.notif-open { margin-right: var(--notif-w); transition: margin-left .25s ease, margin-right .25s ease; }
+    .main-shell.leader-open { margin-right: var(--leader-w); transition: margin-left .25s ease, margin-right .25s ease; }
     .hero { height: 393px; position: relative; overflow: hidden; background: linear-gradient(102deg, #0a131e 0%, #15131b 24%, #38131f 68%, #641726 100%); }
     .hero::after { content:''; position:absolute; inset:auto 0 0 0; height:80px; background:linear-gradient(transparent,#0a131e); pointer-events:none; }
     .hero-art { position: absolute; z-index: 1; top: 30px; right: 50px; width: 500px; height: 336px; object-fit: contain; object-position: right center; -webkit-mask-image: linear-gradient(to right, transparent 0, #000 9%, #000 100%); mask-image: linear-gradient(to right, transparent 0, #000 9%, #000 100%); }
@@ -416,11 +418,15 @@
     .edge-rewards { position:fixed; z-index:80; right:0; top:111px; width:44px; padding:7px 0; border-radius:12px 0 0 12px; background:#0b1621; display:flex; flex-direction:column; align-items:center; gap:4px; box-shadow:0 10px 24px rgba(0,0,0,.28); }
     .edge-rewards { transition:right .25s ease; }
     .edge-rewards.chat-open { right:var(--chat-w); }
+    .edge-rewards.notif-open { right:var(--notif-w); }
+    .edge-rewards.leader-open { right:var(--leader-w); }
     .edge-rewards button { width:34px; height:34px; display:grid; place-items:center; line-height:1; transition:transform .2s ease; }
     .edge-rewards button img { width:30px; height:30px; object-fit:contain; display:block; }
     .edge-rewards button:hover { transform:scale(1.13); }
     .support-button { transition:right .25s ease; position:fixed; z-index:85; right:14px; bottom:14px; width:44px; height:46px; border-radius:13px; display:grid; place-items:center; color:white; font-size:19px; background:linear-gradient(#37a6ff,#0869f4 65%,#0656cc); border:1px solid #248bff; box-shadow:0 0 23px rgba(30,133,255,.48); }
     .support-button.chat-open { right:calc(var(--chat-w) + 14px); }
+    .support-button.notif-open { right:calc(var(--notif-w) + 14px); }
+    .support-button.leader-open { right:calc(var(--leader-w) + 14px); }
 
     .modal-backdrop { position:fixed; inset:0; z-index:120; display:grid; place-items:center; background:rgba(2,7,12,.76); backdrop-filter:blur(4px); padding:18px; }
     .modal-backdrop--chat { right:var(--chat-w); padding-right:22px; }
@@ -1268,10 +1274,10 @@
       .sidebar { top:62px; width:232px; box-shadow:20px 0 50px rgba(0,0,0,.45); }
       .main-shell, .main-shell.wide { margin-left:0; padding-top:62px; }
       .main-shell.drawer-open { margin-right:0; }
-      .main-shell.chat-open { margin-right:0; }
+      .main-shell.chat-open, .main-shell.notif-open, .main-shell.leader-open { margin-right:0; }
       .chat-drawer { top:62px; width:min(var(--chat-w),100vw); }
-      .edge-rewards.chat-open { right:0; }
-      .support-button.chat-open { right:14px; }
+      .edge-rewards.chat-open, .edge-rewards.notif-open, .edge-rewards.leader-open { right:0; }
+      .support-button.chat-open, .support-button.notif-open, .support-button.leader-open { right:14px; }
       .route-page { padding:20px 14px 100px; }
       .casino-middle { padding:14px 12px 90px; }
     .casino-promo { flex-basis:85%; height:auto; }
@@ -2041,7 +2047,7 @@
 </div>
 </div>
 </aside>
-<main :class="{wide: !sidebarOpen, 'drawer-open': tournamentOpen, 'chat-open': chatOpen &amp;&amp; !tournamentOpen}" class="main-shell">
+<main :class="{wide: !sidebarOpen, 'drawer-open': tournamentOpen, 'chat-open': chatOpen &amp;&amp; !tournamentOpen, 'notif-open': notifOpen &amp;&amp; !tournamentOpen &amp;&amp; !chatOpen, 'leader-open': leaderOpen &amp;&amp; !tournamentOpen &amp;&amp; !chatOpen &amp;&amp; !notifOpen}" class="main-shell">
 <section class="route-page casino-middle" v-if="currentPage !== 'home'">
 <template v-if="isCasinoPage">
   <div @scroll="syncPromoIndex" class="casino-promos no-scrollbar" id="casino-promos">
@@ -2931,8 +2937,8 @@
 <div class="leader-pager"><button @click="toastMessage('Previous page')" type="button">&lsaquo;</button><button :class="{active:leaderPage===n}" :key="n" @click="leaderPage=n" type="button" v-for="n in [1,2,3,10]">{{n}}</button><button @click="toastMessage('Next page')" type="button">&rsaquo;</button></div>
 </div>
 </aside>
-<div :class="{'chat-open':chatOpen}" class="edge-rewards"><button @click="tournamentOpen=true;chatOpen=false" aria-label="Open tournaments"><img alt="" src="assets/contests/contests-tournament-1.png"/></button><button @click="leaderOpen=true;chatOpen=false;tournamentOpen=false;notifOpen=false" aria-label="Open leaderboard"><img alt="" src="assets/contests/contests-leaderboard-1.webp"/></button></div>
-<button :class="{'chat-open':chatOpen}" @click="toastMessage('Live Support opened')" aria-label="Live support" class="support-button"><i class="fas fa-headset"></i></button>
+<div :class="{'chat-open':chatOpen,'notif-open':notifOpen,'leader-open':leaderOpen}" class="edge-rewards"><button @click="tournamentOpen=true;chatOpen=false;notifOpen=false;leaderOpen=false" aria-label="Open tournaments"><img alt="" src="assets/contests/contests-tournament-1.png"/></button><button @click="leaderOpen=true;chatOpen=false;tournamentOpen=false;notifOpen=false" aria-label="Open leaderboard"><img alt="" src="assets/contests/contests-leaderboard-1.webp"/></button></div>
+<button :class="{'chat-open':chatOpen,'notif-open':notifOpen,'leader-open':leaderOpen}" @click="toastMessage('Live Support opened')" aria-label="Live support" class="support-button"><i class="fas fa-headset"></i></button>
 <div @click.self="closeSearchModal" class="search-backdrop" v-if="searchOpen">
 <div class="search-modal">
 <div class="search-modal__head"><h3>Search</h3><button @click="closeSearchModal" aria-label="Close search" class="search-modal__close" type="button"><i class="fas fa-times"></i></button></div>
@@ -4040,12 +4046,14 @@
           chatOpen.value = !chatOpen.value;
           if (chatOpen.value) {
             tournamentOpen.value = false;
+            notifOpen.value = false;
+            leaderOpen.value = false;
             scrollChatToEnd();
           }
         };
         const toggleNotif = () => {
           notifOpen.value = !notifOpen.value;
-          if (notifOpen.value) { chatOpen.value = false; tournamentOpen.value = false; }
+          if (notifOpen.value) { chatOpen.value = false; tournamentOpen.value = false; leaderOpen.value = false; }
         };
         const notifMarkAllRead = () => { toastMessage('All notifications marked as read'); };
         const notifChooseView = (v) => { notifViewMenuOpen.value = false; toastMessage(v === 'All' ? 'Showing all notifications' : 'Showing unread notifications'); };
