@@ -22,11 +22,13 @@
 <script src="./missions-page.js"></script>
 <script src="./bonuses-page.js"></script>
 <script src="./crypto-earn-page.js"></script>
+<script src="./promotions-page.js"></script>
 <script src="./casino-providers-battles.js"></script>
 <link href="./tailwind.css" rel="stylesheet"/>
 <link href="./missions-page.css" rel="stylesheet"/>
 <link href="./bonuses-page.css" rel="stylesheet"/>
 <link href="./crypto-earn-page.css" rel="stylesheet"/>
+<link href="./promotions-page.css" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -2623,6 +2625,49 @@
 <div class="ce-crumb"><span class="dim">{{websiteName}}</span><i class="fas fa-chevron-right"></i><span class="bright">Crypto And Earn</span></div>
 </div>
 </template>
+<template v-else-if="isPromotionsPage">
+<div class="pr-page">
+<div class="pr-inner">
+<div class="pr-title-row">
+<h1 class="pr-title">Promotions</h1>
+<button @click="prModal = true" class="pr-code-btn" type="button"><i class="fas fa-ticket-alt"></i> Enter promo code</button>
+</div>
+<div class="pr-filter-row">
+<div class="pr-tabs" role="tablist">
+<button :class="{'is-active': prTab === 'all'}" @click="prSelectTab('all')" class="pr-tab all" type="button"><i class="fas fa-bullhorn"></i><span class="pr-tab-label">All Promotions</span><span class="pr-tab-count">{{prTotalCount}}</span></button>
+<button :class="{'is-active': prTab === 'casino'}" @click="prSelectTab('casino')" class="pr-tab casino" type="button"><i class="fas fa-spade"></i><span class="pr-tab-label">Casino</span></button>
+<button :class="{'is-active': prTab === 'sports'}" @click="prSelectTab('sports')" class="pr-tab sports" type="button"><i class="fas fa-basketball-ball"></i><span class="pr-tab-label">Sports</span></button>
+</div>
+<div class="pr-status-wrap">
+<button @click="prToggleStatus" class="pr-status-btn" type="button"><span>{{prStatus}}</span><i class="fas fa-chevron-down"></i></button>
+<transition name="pr-fade">
+<div class="pr-status-menu" v-if="prStatusOpen">
+<button :key="option" @click="prSetStatus(option)" type="button" v-for="option in prStatusOptions">{{option}}</button>
+</div>
+</transition>
+</div>
+</div>
+<div class="pr-grid">
+<button :key="card.title" @click="prOpenCard(card)" class="pr-card" type="button" v-for="card in prVisibleCards"><img :alt="card.title" :src="card.image" loading="lazy"/></button>
+<button :key="card.title" @click="prOpenCard(card)" class="pr-more-card" type="button" v-for="card in prExtraCards"><strong>{{card.title}}</strong><span>{{card.subtitle}}</span></button>
+</div>
+<button @click="prExpanded = true" class="pr-load-more" type="button" v-if="!prExpanded">Show 3 more</button>
+<button @click="prExpanded = false" class="pr-load-more" type="button" v-else>Show less</button>
+<div class="pr-progress"><span :style="{width: prExpanded ? '100%' : '75%'}"></span></div>
+<div class="pr-shown">Shown {{prShownCount}} of {{prTotalCount}} promotions</div>
+</div>
+<transition name="pr-fade">
+<div @click.self="prModal = false" class="pr-modal-backdrop" v-if="prModal">
+<div class="pr-modal">
+<div class="pr-modal-head"><h2>Enter promo code</h2><button @click="prModal = false" aria-label="Close" class="pr-modal-close" type="button"><i class="fas fa-times"></i></button></div>
+<p>Enter your code to unlock a {{websiteName}} bonus.</p>
+<input @keyup.enter="prApplyCode" placeholder="Promo code" v-model="prCode"/>
+<button @click="prApplyCode" class="pr-modal-action" type="button">Apply promo code</button>
+</div>
+</div>
+</transition>
+</div>
+</template>
 <template v-else-if="isCasinoPage">
   <div @scroll="syncPromoIndex" class="casino-promos no-scrollbar" id="casino-promos">
 <button :key="banner.id" @click="navigate(banner.href)" class="casino-promo" v-for="banner in promoBanners">
@@ -2940,7 +2985,7 @@
 </template>
 <!-- Account sekme grubundaki sayfalar kendi basligini cizer (.ac-title), route-hero gosterilmez. -->
 <div class="route-hero" v-else-if="!acHasTabs"><div><span class="route-kicker">{{pageContent.kicker}}</span><h1>{{pageContent.title}}</h1><p>{{pageContent.description}}</p></div><span class="route-badge">{{pageContent.badge}}</span></div>
-<div class="empty-panel" v-if="!isCasinoPage && !isGamePage && !isAccountPage && !isBonusesPage && !isCryptoPage"><div class="empty-panel-inner"><span class="empty-icon"><i :class="pageContent.icon"></i></span><h2>{{pageContent.emptyTitle}}</h2><p>{{pageContent.emptyText}}</p></div></div>
+<div class="empty-panel" v-if="!isCasinoPage && !isGamePage && !isAccountPage && !isBonusesPage && !isCryptoPage && !isPromotionsPage"><div class="empty-panel-inner"><span class="empty-icon"><i :class="pageContent.icon"></i></span><h2>{{pageContent.emptyTitle}}</h2><p>{{pageContent.emptyText}}</p></div></div>
 
 <!-- ===== Hesap sayfalari (Wallet / Profile / Account / Transactions / Game History / Sessions / Vault) ===== -->
 <template v-if="isAccountPage">
@@ -4851,7 +4896,7 @@
           {label:'Bonuses', icon:'fas fa-gift', path:'/bonuses'},
           {label:'Crypto & Earn', icon:'fas fa-money-bill-wave', arrow:true, path:'/crypto-and-earn'},
           {label:`${WEBSITE_NAME} Token`, image:'/logo.svg', path:'/buy-crypto'},
-          {label:'Promotions', icon:'fas fa-bullhorn', path:'/bonuses'},
+          {label:'Promotions', icon:'fas fa-bullhorn', path:'/promotions'},
           {label:'Refer & Earn', icon:'fas fa-user-friends', path:'/bonuses'},
           {label:'VIP Club', icon:'fas fa-crown', vip:true, path:'/vip'},
           {label:'Rank System', icon:'fas fa-chart-bar', path:'/vip'},
@@ -5121,6 +5166,10 @@
   // Crypto & Earn sayfasi mantigi ayri dosyada: casino-ui/crypto-earn-page.js
   const cryptoEarnPage = window.createCryptoEarnPage({ ref, currentPage, toastMessage });
   const isCryptoPage = cryptoEarnPage.isCryptoPage;
+
+  // Promotions sayfasi mantigi ayri dosyada: casino-ui/promotions-page.js
+  const promotionsPage = window.createPromotionsPage({ ref, computed, currentPage, toastMessage });
+  const isPromotionsPage = promotionsPage.isPromotionsPage;
   
   // Cuzdan modali mantigi ayri dosyada: casino-ui/wallet-modal.js
         const walletModal = window.createWalletModal({
@@ -5397,7 +5446,7 @@
         watch(authUser, (u) => { if (u) loadNotifications(); }, { immediate: true });
         onBeforeUnmount(()=>{ window.removeEventListener('resize',handleResize); window.removeEventListener('keydown',handleKeydown); window.removeEventListener('storage',handleStorageSync); document.removeEventListener('click',handleDocumentClick); clearTimeout(searchTimer); clearInterval(promoTimer); });
         return {...casinoPT,...uiSettings,...leaderboardData,betsRowChoices,betsTab,betsRowCount,betsCountOpen,betsTabs,betsVisibleRows,betGameIcon,selectBetsTab,setBetsCount,heroSpinning,heroSpin,heroBackdropCards,balanceMenuOpen,balanceSearch,balanceHideZero,balanceShowVault,balanceDisplayFiat,balanceCurrencies,balanceActiveCode,balanceFiltered,toggleBalanceMenu,selectBalanceCurrency,websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,...notificationsData,toggleNotif,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,slideCasinoRow,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
-          ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage, ...missionsPage, ...bonusesPage, ...cryptoEarnPage};
+          ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage, ...missionsPage, ...bonusesPage, ...cryptoEarnPage, ...promotionsPage};
       }
     }).component('game-card', GameCard).mount('#app');
   </script>

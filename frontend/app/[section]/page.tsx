@@ -16,6 +16,7 @@ const sections = {
   vip: "VIP Club",
   "buy-crypto": "Buy Crypto",
   "crypto-and-earn": "Crypto & Earn",
+  promotions: "Promotions",
   // Kullanici hesap sayfalari — profil menusunden acilir.
   wallet: "Wallet",
   profile: "My Profile",

@@ -1,0 +1,132 @@
+/* Promotions sayfasi — kullanicinin referans HTML'inden (index-QEc99.html) birebir port.
+   Referanstaki sayfa govdesi (.main-inner, .title-row, .filter-row, .cards-grid,
+   .promo-card, .load-more, .progress, .shown-text ve promo-code modali) alindi;
+   header / sidebar / chat zaten site kabugunda var.
+   Referanstaki generic isimler site kabuguyla cakisirdi (ozellikle .promo-card,
+   .toast, .modal, .tabs) — hepsi pr- onekiyle YENIDEN ADLANDIRILDI. */
+.pr-page {
+  --pr-page-bg: #0a111b;
+  --pr-muted: #a9b8cf;
+  --pr-dim: #61738e;
+  margin: -34px -32px 0;
+  padding-bottom: 30px;
+  background: var(--pr-page-bg);
+  color: #f7f9fc;
+  font-family: "Montserrat Variable", "Montserrat", Arial, sans-serif;
+  letter-spacing: normal;
+}
+.pr-page * { box-sizing: border-box; }
+.pr-page button { border: 0; color: inherit; cursor: pointer; font: inherit; font-family: inherit; }
+.pr-page h1 { margin: 0; }
+
+.pr-inner {
+  width: calc(100% - 130px);
+  max-width: 1040px;
+  margin: 0 auto;
+  padding-top: 34px;
+  padding-bottom: 30px;
+}
+
+/* ===== Baslik satiri ===== */
+.pr-title-row { height: 36px; display: flex; justify-content: space-between; align-items: center; }
+.pr-title { margin: 0; font-size: 25px; line-height: 1; font-weight: 800; letter-spacing: -0.8px; }
+.pr-code-btn {
+  width: 160px; height: 36px; border-radius: 9px; color: #fff; font-size: 12px; font-weight: 700;
+  background: linear-gradient(180deg, #39a6ff, #0872ef);
+  box-shadow: 0 4px 0 #0752bc, 0 0 23px rgba(37, 137, 255, 0.35);
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+}
+.pr-code-btn i { transform: rotate(-45deg); }
+
+/* ===== Filtre satiri ===== */
+.pr-filter-row { height: 44px; margin-top: 24px; display: flex; align-items: stretch; justify-content: space-between; }
+.pr-tabs { width: 397px; border-radius: 10px; background: #192534; padding: 4px; display: flex; }
+.pr-tab {
+  height: 36px; border-radius: 8px; background: transparent; color: #60738e; font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; gap: 10px; padding: 0 15px;
+}
+.pr-tab.all { width: 166px; }
+.pr-tab.casino { width: 116px; }
+.pr-tab.sports { width: 107px; }
+.pr-tab i { font-size: 16px; }
+.pr-tab.is-active { color: #fff; background: #2885ed; box-shadow: 0 5px 12px rgba(21, 100, 202, 0.25); }
+.pr-tab-count { color: #277bdc; background: #f6f8fb; border-radius: 7px; padding: 3px 7px; font-size: 10px; }
+
+.pr-status-wrap { position: relative; }
+.pr-status-btn {
+  width: 126px; height: 36px; margin-top: 4px; background: #192535; border-radius: 8px; padding: 0 14px;
+  display: flex; align-items: center; justify-content: space-between; font-size: 12px; font-weight: 700;
+}
+.pr-status-btn i { color: #93a5bd; }
+.pr-status-menu {
+  position: absolute; right: 0; top: 44px; width: 126px; border: 1px solid #2d3b4d; border-radius: 8px;
+  background: #172332; padding: 5px; z-index: 10; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+.pr-status-menu button { width: 100%; height: 30px; border-radius: 5px; background: transparent; font-size: 11px; text-align: left; padding-left: 10px; }
+.pr-status-menu button:hover { background: #233247; }
+
+/* ===== Kart gridi ===== */
+.pr-grid { margin-top: 24px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.pr-card {
+  width: 100%; aspect-ratio: 671 / 368; padding: 0; overflow: hidden; border-radius: 11px; background: #172332;
+  position: relative; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+  transition: transform 0.18s ease, filter 0.18s ease;
+}
+.pr-card:hover { transform: translateY(-2px); filter: brightness(1.06); }
+.pr-card img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.pr-more-card {
+  aspect-ratio: 671 / 368; border-radius: 11px; padding: 22px; display: flex; flex-direction: column;
+  justify-content: flex-end; align-items: flex-start; color: #fff;
+  background: radial-gradient(circle at 78% 25%, #1c6ec2, transparent 31%), linear-gradient(145deg, #15253b, #191825 58%, #681730);
+}
+.pr-more-card strong { font-size: 17px; font-weight: 800; }
+.pr-more-card span { font-size: 12px; color: #c6d0de; margin-top: 8px; }
+
+.pr-load-more { display: block; width: 112px; height: 34px; margin: 24px auto 0; border-radius: 8px; background: #29323d; font-size: 12px; font-weight: 700; color: #e2e5ea; }
+.pr-progress { width: 130px; height: 4px; background: #273248; border-radius: 5px; margin: 12px auto 0; overflow: hidden; }
+.pr-progress span { display: block; height: 100%; background: #2586f2; border-radius: inherit; }
+.pr-shown { text-align: center; color: #4f6078; margin-top: 9px; font-size: 11px; font-weight: 600; }
+
+/* ===== Promo kodu modali ===== */
+.pr-modal-backdrop { position: fixed; inset: 0; z-index: 90; background: rgba(2, 7, 13, 0.77); display: flex; align-items: center; justify-content: center; }
+.pr-modal {
+  width: 350px; border-radius: 15px; border: 1px solid #334257; background: #141f2c; padding: 22px;
+  box-shadow: 0 24px 65px rgba(0, 0, 0, 0.55); color: #f7f9fc;
+  font-family: "Montserrat Variable", "Montserrat", Arial, sans-serif;
+}
+.pr-modal * { box-sizing: border-box; }
+.pr-modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 17px; }
+.pr-modal h2 { margin: 0; font-size: 19px; font-weight: 800; }
+.pr-modal-close { width: 30px; height: 30px; border-radius: 8px; background: #263343; border: 0; color: inherit; cursor: pointer; }
+.pr-modal p { color: #91a2b9; font-size: 12px; margin: -6px 0 15px; }
+.pr-modal input {
+  width: 100%; height: 43px; border: 1px solid #35475c; border-radius: 9px; background: #0e1823;
+  outline: none; padding: 0 13px; font-size: 13px; color: #f7f9fc; font-family: inherit;
+}
+.pr-modal-action { width: 100%; height: 42px; border-radius: 9px; background: #2788f4; font-size: 13px; font-weight: 700; margin-top: 12px; border: 0; color: #fff; cursor: pointer; }
+
+.pr-fade-enter-active, .pr-fade-leave-active { transition: all 0.18s ease; }
+.pr-fade-enter-from, .pr-fade-leave-to { opacity: 0; transform: translateY(-5px); }
+
+/* ===== Duyarli ===== */
+@media (max-width: 1350px) {
+  .pr-inner { width: calc(100% - 70px); }
+}
+@media (max-width: 1120px) {
+  .pr-inner { width: calc(100% - 70px); max-width: none; }
+}
+@media (max-width: 760px) {
+  .pr-page { margin: -20px -16px 0; }
+  .pr-inner { width: calc(100% - 28px); padding-top: 24px; }
+  .pr-title-row { height: auto; gap: 15px; }
+  .pr-title { font-size: 23px; }
+  .pr-code-btn { width: 138px; flex: 0 0 138px; font-size: 11px; }
+  .pr-filter-row { height: auto; margin-top: 20px; align-items: flex-start; gap: 10px; }
+  .pr-tabs { width: auto; flex: 1; overflow: hidden; }
+  .pr-tab { padding: 0 9px; gap: 6px; }
+  .pr-tab.all, .pr-tab.casino, .pr-tab.sports { width: auto; flex: 1; }
+  .pr-tab .pr-tab-label { display: none; }
+  .pr-status-btn { width: 104px; }
+  .pr-grid { grid-template-columns: 1fr; gap: 14px; margin-top: 18px; }
+  .pr-card { border-radius: 12px; }
+}
