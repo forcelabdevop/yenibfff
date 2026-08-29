@@ -32,6 +32,7 @@
       --drawer-w: 358px;
       --chat-w: 332px;
       --notif-w: 325px;
+    --leader-w: 338px;
       --header: #0d1923;
       --sidebar: #0f1b26;
       --page: #0a131e;
@@ -829,6 +830,38 @@
       /* Notification drawer */
       .notif-drawer { position:fixed; z-index:135; top:64px; right:0; bottom:0; width:var(--notif-w); display:flex; flex-direction:column; border-left:1px solid #263545; background:#0d1722; box-shadow:-22px 0 48px rgba(0,0,0,.4); transform:translateX(105%); transition:transform .25s ease; }
       .notif-drawer.open { transform:translateX(0); }
+    .leader-drawer { position:fixed; z-index:130; top:64px; right:0; bottom:0; width:var(--leader-w); display:flex; flex-direction:column; border-left:1px solid #263545; background:#0e1925; box-shadow:-22px 0 48px rgba(0,0,0,.4); transform:translateX(105%); transition:transform .25s ease; }
+    .leader-drawer.open { transform:translateX(0); }
+    .leader-head { height:44px; display:flex; align-items:center; padding:0 12px; border-bottom:1px solid #1c2938; gap:10px; flex:none; }
+    .leader-head h2 { font-size:17px; line-height:1; font-weight:800; white-space:nowrap; letter-spacing:-.4px; margin:0; color:#f6f8fb; }
+    .leader-sep { width:1px; height:13px; background:#637187; margin-left:auto; }
+    .leader-month-wrap { position:relative; }
+    .leader-month-btn { height:30px; background:transparent; color:#f0f2f5; font-size:12px; font-weight:800; display:flex; align-items:center; gap:12px; border:0; cursor:pointer; }
+    .leader-chevron { width:8px; height:8px; border-right:2px solid #8fa0b7; border-bottom:2px solid #8fa0b7; transform:rotate(45deg); margin-top:-4px; }
+    .leader-month-menu { position:absolute; z-index:20; right:0; top:32px; width:96px; padding:5px; background:#202d3c; border:1px solid #344456; border-radius:7px; box-shadow:0 12px 30px rgba(0,0,0,.35); }
+    .leader-month-menu button { width:100%; height:29px; border-radius:5px; background:transparent; color:#dfe5ed; text-align:left; padding:0 9px; font-size:11px; border:0; cursor:pointer; }
+    .leader-month-menu button:hover { background:#2c86ee; color:#fff; }
+    .leader-close { width:27px; height:34px; margin-left:5px; background:transparent; color:#9aabc2; font-size:22px; border:0; cursor:pointer; }
+    .leader-tabs { height:44px; margin:8px; border-radius:10px; background:#1c2837; display:flex; align-items:center; padding:4px; gap:2px; flex:none; }
+    .leader-tabs button { height:36px; flex:1; border-radius:8px; background:transparent; color:#60718c; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:8px; white-space:nowrap; border:0; cursor:pointer; }
+    .leader-tabs button.active { background:#2c86ee; color:#fff; box-shadow:0 5px 12px rgba(20,104,203,.2); }
+    .leader-tab-icon { font-size:16px; }
+    .leader-table { flex:1; display:flex; flex-direction:column; margin:0 8px; border-radius:10px 10px 0 0; background:#1a2635; overflow:hidden; }
+    .leader-thead { height:37px; display:grid; grid-template-columns:48px minmax(0,1fr) 119px; align-items:center; padding:0 12px; color:#64748e; font-size:11px; font-weight:800; border-bottom:1px solid #2a3849; flex:none; }
+    .leader-tbody { flex:1; overflow-y:auto; }
+    .leader-row { height:61px; display:grid; grid-template-columns:48px minmax(0,1fr) 119px; align-items:center; padding:0 12px; border-bottom:1px solid #202e3e; color:#f5f7fb; font-size:12px; }
+    .leader-row.selected { background:#2c86ee; border-color:#2c86ee; }
+    .leader-place { display:flex; align-items:center; font-weight:800; font-size:12px; }
+    .leader-place img { width:32px; height:25px; object-fit:contain; object-position:left center; margin-left:-3px; }
+    .leader-player { display:flex; min-width:0; align-items:center; gap:8px; font-weight:800; }
+    .leader-avatar { width:24px; height:24px; border-radius:50%; object-fit:cover; background:#d2d2cd; flex:none; }
+    .leader-name { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .leader-wager { display:flex; align-items:center; gap:8px; white-space:nowrap; font-weight:800; font-size:12px; }
+    .leader-flag { font-size:16px; line-height:1; flex:none; }
+    .leader-pager { height:60px; display:flex; align-items:center; justify-content:center; gap:4px; background:#0f1a26; flex:none; }
+    .leader-pager button { width:34px; height:34px; border-radius:8px; background:#192534; color:#687892; font-size:12px; font-weight:800; border:0; cursor:pointer; }
+    .leader-pager button.active { background:#2c86ee; color:#fff; }
+    @media (max-width:860px){ .leader-drawer{ top:62px; width:min(var(--leader-w),100vw); } }
       .notif-scroll { flex:1; overflow-y:auto; overflow-x:hidden; padding-bottom:16px; scrollbar-width:none; }
       .notif-scroll::-webkit-scrollbar { display:none; }
       .notif-toolbar { position:relative; display:flex; align-items:center; gap:12px; padding:16px 16px 0; white-space:nowrap; }
@@ -2882,7 +2915,23 @@
 <button @click="notifMarkAllRead" class="notif-markread" type="button"><span>Mark all as read</span><i class="far fa-check-circle"></i></button>
 </div>
 </aside>
-<div :class="{'chat-open':chatOpen}" class="edge-rewards"><button @click="tournamentOpen=true;chatOpen=false" aria-label="Open tournaments"><img alt="" src="assets/contests/contests-tournament.png"/></button><button @click="toastMessage('Leaderboard opened')" aria-label="Open leaderboard"><img alt="" src="assets/contests/contests-leaderboard.webp"/></button></div>
+<aside :class="{open:leaderOpen}" aria-label="Leaderboard" class="leader-drawer">
+<div class="leader-head"><h2>{{websiteName}} Leaderboard</h2><span class="leader-sep"></span><div class="leader-month-wrap"><button @click="leaderMonthMenu=!leaderMonthMenu" class="leader-month-btn" type="button">{{leaderMonth}}<span class="leader-chevron"></span></button><div class="leader-month-menu" v-if="leaderMonthMenu"><button :key="m" @click="leaderMonth=m;leaderMonthMenu=false" type="button" v-for="m in leaderMonths">{{m}}</button></div></div><button @click="leaderOpen=false" aria-label="Close leaderboard" class="leader-close" type="button">&times;</button></div>
+<div class="leader-tabs"><button :class="{active:leaderCategory===cat.name}" :key="cat.name" @click="leaderCategory=cat.name" type="button" v-for="cat in leaderCategories"><span class="leader-tab-icon">{{cat.icon}}</span>{{cat.name}}</button></div>
+<div class="leader-table">
+<div class="leader-thead"><span>Place</span><span>Player</span><span>Wager</span></div>
+<div class="leader-tbody">
+<div :key="row.name" class="leader-row" v-for="row in leaders">
+<div class="leader-place"><img :src="row.badge" alt="" v-if="row.badge"/><span v-else="">{{row.place}}</span></div>
+<div class="leader-player"><img :src="row.image==='raccoon' ? 'assets/user-avatar-raccoon.png' : ('assets/leaderboard/'+row.image)" alt="" class="leader-avatar"/><span class="leader-name">{{row.name}}</span></div>
+<div class="leader-wager"><span class="leader-flag">&#127482;&#127480;</span><span>{{row.wager}}</span></div>
+</div>
+<div class="leader-row selected"><div class="leader-place">-</div><div class="leader-player"><img alt="" class="leader-avatar" src="assets/user-avatar-raccoon.png"/><span class="leader-name">soules3131</span></div><div class="leader-wager"><span class="leader-flag">&#127482;&#127480;</span><span>$0.06</span></div></div>
+</div>
+<div class="leader-pager"><button @click="toastMessage('Previous page')" type="button">&lsaquo;</button><button :class="{active:leaderPage===n}" :key="n" @click="leaderPage=n" type="button" v-for="n in [1,2,3,10]">{{n}}</button><button @click="toastMessage('Next page')" type="button">&rsaquo;</button></div>
+</div>
+</aside>
+<div :class="{'chat-open':chatOpen}" class="edge-rewards"><button @click="tournamentOpen=true;chatOpen=false" aria-label="Open tournaments"><img alt="" src="assets/contests/contests-tournament.png"/></button><button @click="leaderOpen=true;chatOpen=false;tournamentOpen=false;notifOpen=false" aria-label="Open leaderboard"><img alt="" src="assets/contests/contests-leaderboard.webp"/></button></div>
 <button :class="{'chat-open':chatOpen}" @click="toastMessage('Live Support opened')" aria-label="Live support" class="support-button"><i class="fas fa-headset"></i></button>
 <div @click.self="closeSearchModal" class="search-backdrop" v-if="searchOpen">
 <div class="search-modal">
@@ -3570,6 +3619,26 @@
           { date:'08/27/26, 06:07 PM', title:'Missions Aren\u2019t Over Yet', image:'banners/banner-2.webp', description:'There\u2019s still time to finish your <strong>Missions.</strong><br>Complete challenges in <strong>Originals</strong> and unlock your rewards before they\u2019re gone.', action:'Finish Missions', expanded:false },
           { date:'08/19/26, 03:48 PM', title:'Clear 7 Missions & Grab up to $14', image:'banners/banner-3.webp', description:'Complete seven daily missions and grab your reward.<br>Finish every challenge before time runs out.', action:'View Missions', expanded:false },
         ]);
+        const leaderOpen = ref(false);
+        const leaderMonth = ref('August');
+        const leaderMonthMenu = ref(false);
+        const leaderMonths = ['August','July','June'];
+        const leaderCategory = ref('General');
+        const leaderCategories = [{name:'General',icon:'\u265F'},{name:'Casino',icon:'\u2B55'},{name:'Sport',icon:'\u26BD'}];
+        const leaderPage = ref(1);
+        const leaders = ref([
+          {place:1,badge:'assets/leaderboard/badge-1.png',image:'av-1.png',name:'CircleKing',wager:'$12,018,592.29'},
+          {place:2,badge:'assets/leaderboard/badge-2.png',image:'av-2.png',name:'Alolnnda',wager:'$8,381,919.85'},
+          {place:3,badge:'assets/leaderboard/badge-3.png',image:'raccoon',name:'User2037358',wager:'$8,260,119.43'},
+          {place:4,image:'raccoon',name:'Mattosdias',wager:'$5,890,886.99'},
+          {place:5,image:'av-3.png',name:'User8353646',wager:'$4,955,739.66'},
+          {place:6,image:'raccoon',name:'Loochoomus',wager:'$4,779,211.61'},
+          {place:7,image:'av-4.png',name:'sa619',wager:'$4,699,422.63'},
+          {place:8,image:'av-5.png',name:'Michel74',wager:'$4,325,511.94'},
+          {place:9,image:'av-6.png',name:'Mia',wager:'$4,279,952.76'},
+          {place:10,image:'raccoon',name:'User8476234',wager:'$4,132,633.76'}
+        ]);
+        const toggleLeaderboard = () => { leaderOpen.value = !leaderOpen.value; if (leaderOpen.value) { chatOpen.value=false; tournamentOpen.value=false; notifOpen.value=false; } };
         const chatMuted = ref(false);
         const websiteName = WEBSITE_NAME;
         const websiteEmailDomain = WEBSITE_NAME.toLowerCase().replace(/[^a-z0-9.-]+/g, '') || 'example';
@@ -4467,7 +4536,7 @@
           watch(authUser, (u) => { if (u) accountPages.loadAccountPage(); }, { immediate: true });
         }
         onBeforeUnmount(()=>{ window.removeEventListener('resize',handleResize); window.removeEventListener('keydown',handleKeydown); window.removeEventListener('storage',handleStorageSync); document.removeEventListener('click',handleDocumentClick); clearTimeout(searchTimer); clearInterval(promoTimer); });
-        return {websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,notifTab,notifViewMenuOpen,notifCards,toggleNotif,notifMarkAllRead,notifChooseView,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
+        return {websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,notifTab,notifViewMenuOpen,notifCards,toggleNotif,notifMarkAllRead,notifChooseView,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
           ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage};
       }
     }).component('game-card', GameCard).mount('#app');
