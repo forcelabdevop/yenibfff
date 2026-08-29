@@ -816,6 +816,26 @@
     .casino-game-row { display:flex; gap:14px; overflow-x:auto; overflow-y:visible; padding:34px 20px; margin:-34px -20px; }
     .casino-rail--grid .casino-game-row { display:grid; grid-template-columns:repeat(auto-fill, minmax(188px, 1fr)); gap:16px; overflow:visible; padding:6px 0; margin:0; }
     .casino-rail--grid .casino-game-card { flex:initial; width:100%; height:auto; aspect-ratio:188/248; }
+    .casino-hero-chooser { position:relative; z-index:1; width:647px; max-width:100%; height:494px; margin:40px auto 12px; border:1px solid rgba(38,68,105,.48); border-radius:23px; background:linear-gradient(90deg, #0d254dab 6.35%, #223b65 56.66%, #20335352); box-shadow:0 24px 70px rgba(0,0,0,.22), inset 0 1px rgba(255,255,255,.025); }
+    .casino-hero-chooser .hero-title { position:absolute; z-index:5; top:45px; left:0; width:100%; margin:0; text-align:center; color:#fff; font-size:32px; line-height:1.22; font-weight:900; letter-spacing:-.8px; white-space:nowrap; transform:scaleX(1.12); }
+    .casino-hero-chooser .hero-title span { color:#f21947; }
+    .casino-hero-chooser .roulette-machine { position:absolute; z-index:3; top:112px; left:44px; width:558px; height:326px; object-fit:fill; border-radius:18px; user-select:none; pointer-events:none; }
+    .casino-hero-chooser .roulette-machine.spinning { animation:heroMachinePulse .15s linear infinite alternate; }
+    @keyframes heroMachinePulse { from { filter:brightness(.9) saturate(.9); transform:translateY(-1px); } to { filter:brightness(1.15) saturate(1.2); transform:translateY(1px); } }
+    .casino-hero-chooser .machine-cap-cover { position:absolute; z-index:6; top:408px; left:238px; width:171px; height:21px; border-radius:8px 8px 0 0; background:linear-gradient(180deg, rgba(82,51,45,.98), rgba(38,31,54,.99)); filter:blur(.25px); }
+    .casino-hero-chooser .spin-button { position:absolute; z-index:8; left:50%; bottom:32px; width:169px; height:37px; transform:translateX(-50%); border:0; border-radius:11px; display:flex; align-items:center; justify-content:center; gap:9px; color:#fff; background:linear-gradient(180deg, #ff2858 0%, #f00743 57%, #d6003b 100%); box-shadow:0 0 14px rgba(244,15,64,.44), inset 0 2px 2px rgba(255,255,255,.28), 0 5px 0 #850025; font-size:18px; font-weight:900; cursor:pointer; transition:filter .15s, bottom .15s, box-shadow .15s; }
+    .casino-hero-chooser .spin-button i { font-size:17px; }
+    .casino-hero-chooser .spin-button:hover { filter:brightness(1.08); }
+    .casino-hero-chooser .spin-button:active { bottom:26px; box-shadow:0 0 10px rgba(244,15,64,.35), inset 0 2px 2px rgba(255,255,255,.2), 0 2px 0 #850025; }
+    .casino-hero-chooser .spin-button[disabled] { cursor:wait; }
+    .casino-hero-chooser .decor { position:absolute; z-index:7; object-fit:contain; pointer-events:none; user-select:none; filter:drop-shadow(0 10px 11px rgba(2,8,20,.2)); }
+    .casino-hero-chooser .decor-chip { width:82px; height:82px; top:-29px; left:-5px; }
+    .casino-hero-chooser .decor-die { width:78px; height:76px; top:40px; right:-64px; }
+    .casino-hero-chooser .decor-cards { width:75px; height:88px; top:219px; right:-60px; }
+    .casino-hero-chooser .decor-cherries { width:104px; height:89px; top:436px; right:-106px; }
+    .casino-hero-chooser .decor-potion { width:71px; height:83px; top:261px; left:-13px; }
+    .casino-hero-chooser .decor-monster { width:126px; height:122px; top:379px; left:-91px; }
+    @media (max-width:720px){ .casino-hero-chooser { width:100%; height:auto; aspect-ratio:647/494; } }
     .casino-game-card { position:relative; flex:0 0 203.2px; width:203.2px; height:267.95px; overflow:hidden; border-radius:13px; background:#152230; }
     .casino-game-card img { width:100%; height:100%; object-fit:cover; }
     .casino-game-card::after { content:""; position:absolute; inset:auto 0 0; height:74px; background:linear-gradient(transparent,rgba(6,11,18,.96)); }
@@ -2127,6 +2147,18 @@
 <section :key="category._id || category.slug" class="casino-rail" v-for="category in visibleCategoryRails">
 <div class="casino-rail-head"><h2><img :src="categoryIconImage(category)" alt="" class="rail-head-icon" v-if="categoryIconImage(category)"/><i :class="categoryIcon(category)" v-else></i> {{category.name}} </h2><span class="rail-arrows"><mark>{{category.total_games || category.games.length}} games</mark><button type="button" aria-label="Previous games" @click="slideCasinoRow($event,-1)"><i class="fas fa-chevron-left"></i></button><button type="button" aria-label="Next games" @click="slideCasinoRow($event,1)"><i class="fas fa-chevron-right"></i></button></span></div>
 <div class="casino-game-row no-scrollbar"><game-card :badge="index<4 ? (index===3?'HOT':'TOP') : ''" :game="game" :key="category.slug+'-'+(game._id || game.game_code)" @demo="selectGame(game, true)" @select="selectGame(game)" v-for="(game,index) in category.games.slice(0,12)"></game-card></div>
+</section>
+<section aria-label="Game chooser" class="casino-hero-chooser" v-if="activeCategory==='all'">
+<img alt="" class="decor decor-chip" src="assets/hero-chip.png"/>
+<img alt="" class="decor decor-die" src="assets/hero-die.png"/>
+<img alt="" class="decor decor-cards" src="assets/hero-cards.png"/>
+<img alt="" class="decor decor-cherries" src="assets/hero-cherries.png"/>
+<img alt="" class="decor decor-potion" src="assets/hero-potion.png"/>
+<img alt="" class="decor decor-monster" src="assets/hero-monster.png"/>
+<h1 class="hero-title">Need help choosing a <span>game</span>?</h1>
+<img :class="{spinning: heroSpinning}" alt="Game roulette" class="roulette-machine" src="assets/hero-roulette.png"/>
+<div aria-hidden="true" class="machine-cap-cover"></div>
+<button :disabled="heroSpinning" @click="heroSpin" class="spin-button"><i :class="{'fa-spin': heroSpinning}" class="fas fa-sync-alt"></i><span>{{ heroSpinning ? 'Spinning' : 'Spin' }}</span></button>
 </section>
 </template>
 <template v-else-if="isGamePage">
@@ -4551,6 +4583,17 @@
             goPromo((promoIndex.value + 1) % promoCount.value, true);
           }, promoDelay.value);
         }
+        const heroSpinning = ref(false);
+        function heroSpin() {
+          if (heroSpinning.value) return;
+          heroSpinning.value = true;
+          setTimeout(() => {
+            heroSpinning.value = false;
+            const pool = (routeGames && routeGames.value && routeGames.value.length) ? routeGames.value : ((typeof slotDisplayGames!=="undefined" && slotDisplayGames.value) ? slotDisplayGames.value : []);
+            const pick = pool.length ? pool[Math.floor(Math.random()*pool.length)] : null;
+            toastMessage(pick ? ("Your game: " + (pick.game_name || pick.name || "Lucky Spin")) : "Spin again for a game!");
+          }, 1200);
+        }
         function toastMessage(message) {
           toast.value = message;
           clearTimeout(toastTimer);
@@ -4611,7 +4654,7 @@
           watch(authUser, (u) => { if (u) accountPages.loadAccountPage(); }, { immediate: true });
         }
         onBeforeUnmount(()=>{ window.removeEventListener('resize',handleResize); window.removeEventListener('keydown',handleKeydown); window.removeEventListener('storage',handleStorageSync); document.removeEventListener('click',handleDocumentClick); clearTimeout(searchTimer); clearInterval(promoTimer); });
-        return {balanceMenuOpen,balanceSearch,balanceHideZero,balanceShowVault,balanceDisplayFiat,balanceCurrencies,balanceActiveCode,balanceFiltered,toggleBalanceMenu,selectBalanceCurrency,websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,notifTab,notifViewMenuOpen,notifCards,toggleNotif,notifMarkAllRead,notifChooseView,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,slideCasinoRow,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
+        return {heroSpinning,heroSpin,balanceMenuOpen,balanceSearch,balanceHideZero,balanceShowVault,balanceDisplayFiat,balanceCurrencies,balanceActiveCode,balanceFiltered,toggleBalanceMenu,selectBalanceCurrency,websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,notifTab,notifViewMenuOpen,notifCards,toggleNotif,notifMarkAllRead,notifChooseView,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,slideCasinoRow,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
           ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage};
       }
     }).component('game-card', GameCard).mount('#app');
