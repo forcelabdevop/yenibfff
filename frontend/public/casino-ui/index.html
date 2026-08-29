@@ -4205,6 +4205,9 @@
         // (profile/security account-pages.js'den gelir — canli veri)
         const accountPage = window.createAccountPage({
           ref, computed, currentPage, navigate,
+          // Sekme gecisi rota degistirmeden yapilir (reaktif anahtar + setter)
+          accountPageKey: accountPages.accountPageKey,
+          setAccountPage: accountPages.setAccountPage,
           profile: accountPages.profile,
           security: accountPages.security,
           // Transactions sekmesi canli veriyi + formatlayicilari account-pages.js'den alir

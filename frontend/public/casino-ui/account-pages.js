@@ -26,7 +26,10 @@ window.createAccountPages = function createAccountPages(ctx) {
     "verification",
   ]
   const isAccountPage = ACCOUNT_PAGES.includes(currentPage)
-  const accountPageKey = currentPage
+  // REAKTIF: Account sekmeleri (My Account / Transactions / Game History /
+  // Sessions / Verification) arasindaki gecis artik sayfa yenilemeden,
+  // yalnizca bu anahtari degistirerek yapilir (bkz. setAccountPage).
+  const accountPageKey = ref(currentPage)
 
   const accountLoading = ref(false)
   const accountError = ref("")
@@ -247,24 +250,66 @@ window.createAccountPages = function createAccountPages(ctx) {
     vaultData.value = (payload && payload.data) || null
   }
 
+  /** Sayfaya ozel veri yukleyicileri (overview her sayfada zaten cekilir). */
+  const SECTION_LOADERS = {
+    transactions: loadTransactions,
+    "game-history": loadGameHistory,
+    sessions: loadSessions,
+    vault: loadVault,
+  }
+  /** Bir kez cekilen sekmeler; sekme degistikce tekrar istek atmayiz. */
+  const loadedSections = new Set()
+
   /** Aktif sayfaya gore gereken veriyi ceker. */
   async function loadAccountPage() {
     if (!isAccountPage || !authUser.value) return
+    const key = accountPageKey.value
     accountLoading.value = true
     accountError.value = ""
     try {
       // Tum sayfalar overview'a dayanir (para birimi formatlamasi dahil);
       // sayfaya ozel veri ek olarak paralel cekilir.
       const jobs = [loadOverview()]
-      if (accountPageKey === "transactions") jobs.push(loadTransactions())
-      if (accountPageKey === "game-history") jobs.push(loadGameHistory())
-      if (accountPageKey === "sessions") jobs.push(loadSessions())
-      if (accountPageKey === "vault") jobs.push(loadVault())
+      const sectionLoader = SECTION_LOADERS[key]
+      if (sectionLoader) jobs.push(sectionLoader())
       await Promise.all(jobs)
+      if (sectionLoader) loadedSections.add(key)
     } catch (error) {
       accountError.value = "Bilgiler su an yuklenemiyor. Lutfen daha sonra tekrar dene."
     } finally {
       accountLoading.value = false
+    }
+  }
+
+  /**
+   * Sekmeler arasi ISTEMCI TARAFI gecis — sayfa yenilenmez.
+   * Adres cubugu hem iframe icinde (`?page=`) hem de ust pencerede
+   * (`replace-path` postMessage'i) guncellenir; boylece yenileme/paylasim
+   * hala dogru rotaya duser.
+   */
+  async function setAccountPage(key, path) {
+    if (!ACCOUNT_PAGES.includes(key) || accountPageKey.value === key) return
+    accountPageKey.value = key
+
+    try {
+      const url = new URL(window.location.href)
+      url.searchParams.set("page", key)
+      window.history.replaceState(null, "", url.toString())
+    } catch (error) {
+      /* adres cubugu guncellenemezse gecis yine de calisir */
+    }
+    if (path && window.parent && window.parent !== window) {
+      window.parent.postMessage({ source: "casino-frame", type: "replace-path", path }, window.location.origin)
+    }
+
+    // Yalnizca ilk acilista o sekmenin verisini cek (overview'i tekrar cekmeyiz).
+    const sectionLoader = SECTION_LOADERS[key]
+    if (!sectionLoader || loadedSections.has(key) || !authUser.value) return
+    try {
+      await sectionLoader()
+      loadedSections.add(key)
+    } catch (error) {
+      /* sekme bos gorunur; tekrar tiklanınca yeniden denenir */
     }
   }
 
@@ -314,6 +359,7 @@ window.createAccountPages = function createAccountPages(ctx) {
   return {
     isAccountPage,
     accountPageKey,
+    setAccountPage,
     accountLoading,
     accountError,
     profile,

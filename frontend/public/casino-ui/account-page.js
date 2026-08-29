@@ -37,12 +37,20 @@ window.createAccountPage = function createAccountPage(ctx) {
   ]
 
   const acTabs = AC_TABS
-  const acHasTabs = AC_TABS.some((tab) => tab.key === currentPage)
-  const acActiveTab = currentPage
+  // Sekme durumu account-pages.js'deki REAKTIF `accountPageKey`den okunur, boylece
+  // sekmeye tiklamak rota degistirmek (= iframe'i yeniden yuklemek) yerine aninda
+  // gorunumu degistirir. `setAccountPage` yoksa eski davranisa (navigate) duseriz.
+  const acPageKey = ctx.accountPageKey
+  const acSetPage = ctx.setAccountPage
+  const acCurrentKey = () => (acPageKey && acPageKey.value !== undefined ? acPageKey.value : currentPage)
+
+  const acHasTabs = computed(() => AC_TABS.some((tab) => tab.key === acCurrentKey()))
+  const acActiveTab = computed(() => acCurrentKey())
 
   function acSelectTab(tab) {
-    if (tab.key === currentPage) return
-    navigate(tab.path)
+    if (tab.key === acCurrentKey()) return
+    if (typeof acSetPage === "function") acSetPage(tab.key, tab.path)
+    else navigate(tab.path)
   }
 
   // --- STATIK: rank ilerlemesi ve cashback (backend ucu yok) ---
