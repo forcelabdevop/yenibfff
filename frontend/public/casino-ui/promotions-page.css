@@ -16,7 +16,10 @@
   letter-spacing: normal;
 }
 .pr-page * { box-sizing: border-box; }
-.pr-page button { border: 0; color: inherit; cursor: pointer; font: inherit; font-family: inherit; }
+/* NOT: burada `font: inherit` KULLANMA — `.pr-page button` (0,1,1) asagidaki
+   `.pr-tab` / `.pr-code-btn` (0,1,0) kurallarini yener ve tum butonlar 16px olur
+   (metin iki satira sarar). Sadece font-family devralinir. */
+.pr-page button { border: 0; color: inherit; cursor: pointer; font-family: inherit; font-weight: 700; white-space: nowrap; }
 .pr-page h1 { margin: 0; }
 
 .pr-inner {
@@ -49,6 +52,9 @@
 .pr-tab.casino { width: 116px; }
 .pr-tab.sports { width: 107px; }
 .pr-tab i { font-size: 16px; }
+/* Bu FA surumunde `fa-spade` YOK (content:none, 0px genislik) — site kabugundaki
+   inline maca SVG'si kullanildi. */
+.pr-page .pr-spade { width: 16px; height: 16px; fill: currentColor; display: block; flex: 0 0 16px; }
 .pr-tab.is-active { color: #fff; background: #2885ed; box-shadow: 0 5px 12px rgba(21, 100, 202, 0.25); }
 .pr-tab-count { color: #277bdc; background: #f6f8fb; border-radius: 7px; padding: 3px 7px; font-size: 10px; }
 
