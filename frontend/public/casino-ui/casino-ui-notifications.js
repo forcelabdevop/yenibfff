@@ -175,6 +175,13 @@
       personalItems.value.filter((item) => !item.read).length,
     );
 
+    // Zil rozeti. Canlı veride sunucunun toplam okunmamış sayısı kullanılır
+    // (sayfa limitinin ötesindekiler de dahil); aksi halde eldeki kartlardan
+    // hesaplanır.
+    const notifBadge = computed(() =>
+      notifLive.value ? notifUnread.value : notifPlatformCount.value + notifPersonalCount.value,
+    );
+
     const notifChooseView = (view) => {
       notifViewMenuOpen.value = false;
       notifView.value = view === 'Unread' ? 'Unread' : 'All';
@@ -217,6 +224,7 @@
       notifPlatformCount,
       notifPersonalCount,
       notifUnread,
+      notifBadge,
       notifLive,
       notifChooseView,
       notifToggleCard,
