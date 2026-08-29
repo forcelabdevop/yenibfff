@@ -17,8 +17,10 @@
 
   function createCasinoProvidersBattles(ctx) {
     const ref = ctx.ref;
+    const computed = ctx.computed;
     const navigate = typeof ctx.navigate === 'function' ? ctx.navigate : function () {};
     const notify = typeof ctx.notify === 'function' ? ctx.notify : function () {};
+    const onOpenGame = typeof ctx.onOpenGame === 'function' ? ctx.onOpenGame : null;
 
     const ptProviders = ref([
       { name: 'BETFURY', games: '24', logo: ASSETS + 'image-5.png', width: 142, height: 25 },
@@ -34,21 +36,67 @@
 
     const ptProviderTotal = ref(75);
 
-    // "Recent Top Wins" rayi. Kart gorselleri kazanc metnini icinde barindirir.
-    // kind: '' standart, 'promo' one cikan, 'woman' canli casino (dar).
-    // Backend hazir oldugunda: GET <apiBase>/public/top-wins -> ptWins
-    const WIN = ASSETS + 'win/';
-    const ptWins = ref([
-      { name: 'Space Dice', image: WIN + 'space.png', kind: '' },
-      { name: 'Space Dice', image: WIN + 'promo.png', kind: 'promo' },
-      { name: 'Live Baccarat', image: WIN + 'woman.png', kind: 'woman' },
-      { name: 'Space Dice', image: WIN + 'space.png', kind: '' },
-      { name: 'Space Dice', image: WIN + 'space.png', kind: '' },
-      { name: 'Space Dice', image: WIN + 'promo.png', kind: 'promo' },
-      { name: 'Live Baccarat', image: WIN + 'woman.png', kind: 'woman' },
-      { name: 'Space Dice', image: WIN + 'space.png', kind: '' }
-    ]);
-    const ptWinIcon = WIN + 'medal.png';
+    // ===== "Recent Top Wins" rayi =====
+    // VERI ODAKLI: her kart, gercek bir oyunun gorseli + uzerine bindirilen
+    // kazanc verisidir (tutar + oyuncu + avatar). Boylece "Gates of Olympus"ta
+    // bir kazanc olunca O oyunun gorseli overlay ile burada gorunur.
+    //
+    // Kaynak: ctx.games (canli oyun listesi / topSlots). Backend'de gercek
+    // "recent wins" ucu hazir oldugunda ctx.wins ile hazir kayit gecilebilir
+    // (alanlar: game{banner|background|image, game_name|name}, amount, user, avatar).
+    const ptWinIcon = ASSETS + 'win/medal.png';
+    const WIN_AVATAR = 'assets/user-avatar-raccoon.png';
+    const WIN_USERS = [
+      'Loochoomus', 'Mattosdias', 'FloridaMan', 'AZquarious', 'AlonInda',
+      'User8400859', 'Kryptonic', 'NovaRider', 'ZenMaster', 'BigWinBob',
+      'CryptoKing', 'LuckyLuna'
+    ];
+
+    // Isimden deterministik seed — her renderda ayni tutar/oyuncu cikar.
+    function ptSeed(str) {
+      let h = 0;
+      for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0;
+      return h;
+    }
+    function ptWinFromGame(game, i) {
+      const name = game.game_name || game.name || 'Game';
+      const seed = ptSeed(name + '#' + i);
+      const amount = 250 + (seed % 480000) / 100; // ~$250 - $5050
+      return {
+        name: name,
+        image: game.banner || game.background || game.image || '',
+        amount: '$' + amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+        user: WIN_USERS[seed % WIN_USERS.length],
+        avatar: game.userAvatar || WIN_AVATAR,
+        top: i < 3,
+        game: game
+      };
+    }
+
+    const ptWinsFallback = ref([]);
+    const ptWins = computed
+      ? computed(function () {
+          // Backend hazir kayit verdiyse onu kullan.
+          if (ctx.wins && ctx.wins.value && ctx.wins.value.length) {
+            return ctx.wins.value.map(function (w, i) {
+              const g = w.game || w;
+              return {
+                name: w.name || g.game_name || g.name || 'Game',
+                image: w.image || g.banner || g.background || g.image || '',
+                amount: w.amount || '',
+                user: w.user || w.username || '',
+                avatar: w.avatar || WIN_AVATAR,
+                top: typeof w.top === 'boolean' ? w.top : i < 3,
+                game: g
+              };
+            });
+          }
+          const pool = (ctx.games && ctx.games.value && ctx.games.value.length)
+            ? ctx.games.value
+            : ptWinsFallback.value;
+          return pool.slice(0, 12).map(ptWinFromGame);
+        })
+      : ptWinsFallback;
 
     const ptTournaments = ref([
       {
@@ -105,6 +153,7 @@
     }
 
     function ptOpenWin(win) {
+      if (onOpenGame && win && win.game) { onOpenGame(win.game); return; }
       navigate('/casino');
     }
 

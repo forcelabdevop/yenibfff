@@ -877,12 +877,16 @@
   .pt-sk-prize { width:55px; height:6px; border-radius:8px; background:#2a384c; }
   .pt-note { height:54px; margin:0 11px; border-radius:8px; background:#2c3b50; color:#aab9d0; display:flex; align-items:flex-start; padding:11px 12px; font-size:11.5px; line-height:1.4; font-weight:500; }
   .pt-note i { color:#ffb620; margin:3px 8px 0 0; font-size:13px; }
-  .pt-wins-track { height:249px; align-items:center; }
-  .pt-win { flex:0 0 176px; height:249px; padding:0; border:none; border-radius:13px; overflow:hidden; background:#1b2736; cursor:pointer; transition:transform .2s, filter .2s; }
+  .pt-wins-track { height:249px; align-items:stretch; }
+  .pt-win { position:relative; flex:0 0 176px; height:249px; padding:0; border:none; border-radius:13px; overflow:hidden; background:#1b2736; cursor:pointer; transition:transform .2s, filter .2s; text-align:left; }
   .pt-win:hover { transform:translateY(-2px); filter:brightness(1.06); }
-  .pt-win img { width:100%; height:100%; display:block; object-fit:cover; }
-  .pt-win.promo { flex-basis:190px; }
-  .pt-win.woman { flex-basis:158px; }
+  .pt-win__art { width:100%; height:100%; display:block; object-fit:cover; }
+  .pt-win__top { position:absolute; top:0; left:0; padding:6px 15px; font:800 12px/1 inherit; letter-spacing:.4px; color:#fff; background:#e5343d; border-radius:13px 0 13px 0; }
+  .pt-win__info { position:absolute; left:8px; right:8px; bottom:8px; display:flex; flex-direction:column; align-items:center; gap:3px; padding:9px 8px 10px; border-radius:11px; background:linear-gradient(180deg, rgba(20,28,42,.72), rgba(16,22,34,.94)); backdrop-filter:blur(3px); }
+  .pt-win__amount { color:#fff; font-weight:800; font-size:17px; line-height:1.1; }
+  .pt-win__user { display:flex; align-items:center; gap:6px; max-width:100%; }
+  .pt-win__user span { color:#5b9dff; font-weight:600; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .pt-win__avatar { width:18px; height:18px; border-radius:50%; object-fit:cover; flex:none; background:#0d1420; }
   @media (max-width:900px) {
     .pt-title { font-size:18px; }
     .pt-actions { gap:12px; }
@@ -2287,8 +2291,13 @@
 </div>
 </div>
 <div class="pt-track pt-wins-track">
-<button :class="win.kind" :key="index" @click="ptOpenWin(win)" class="pt-win" type="button" v-for="(win,index) in ptWins">
-<img :alt="win.name" :src="win.image" loading="lazy"/>
+<button :key="index" @click="ptOpenWin(win)" class="pt-win" type="button" v-for="(win,index) in ptWins">
+<img :alt="win.name" :src="win.image" class="pt-win__art" loading="lazy"/>
+<span class="pt-win__top" v-if="win.top">TOP</span>
+<span class="pt-win__info">
+<b class="pt-win__amount">{{win.amount}}</b>
+<span class="pt-win__user"><img :src="win.avatar" alt="" class="pt-win__avatar"/><span>{{win.user}}</span></span>
+</span>
 </button>
 </div>
 </section>
@@ -4710,7 +4719,8 @@
 
         // Providers + Battles bloklari ayri dosyada: casino-ui/casino-providers-battles.js
         const casinoPT = window.createCasinoProvidersBattles({
-          ref, navigate, notify: toastMessage,
+          ref, computed, navigate, notify: toastMessage,
+          games: topSlots, onOpenGame: (game) => selectGame(game),
         });
 
         // Hesap sayfalari mantigi ayri dosyada: casino-ui/account-pages.js
