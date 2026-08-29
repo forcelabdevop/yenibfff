@@ -1616,6 +1616,101 @@
     .ac-verify__card { padding:22px; border-radius:14px; background:#101c28; }
     .ac-verify__card h3 { margin:0 0 16px; color:#f7f8fb; font-size:17px; font-weight:900; }
 
+
+    /* ----- Game History / Sessions / Verification (referans) ----- */
+    /* Ortak: filtre dropdown'i (Game History araç çubuğu) */
+    .gh-toolbar { height:36px; margin-top:32px; display:flex; justify-content:flex-end; position:relative; z-index:20; }
+    .gh-filter { position:relative; }
+    .gh-filter__btn { min-width:128px; height:36px; display:flex; align-items:center; justify-content:space-between; gap:12px; border-radius:9px; padding:0 14px; background:#202c3d; color:#f5f7fb; font-size:12px; font-weight:900; cursor:pointer; white-space:nowrap; }
+    .gh-filter__btn:hover { background:#26344a; }
+    .gh-filter__btn i { color:#9db0cc; font-size:13px; transition:transform .16s ease; }
+    .gh-filter.is-open .gh-filter__btn i { transform:rotate(180deg); }
+    .gh-menu { position:absolute; right:0; top:41px; min-width:100%; padding:6px; border:1px solid #2a3a4e; border-radius:9px; background:#1c2736; box-shadow:0 12px 24px rgba(0,0,0,.35); }
+    .gh-menu button { width:100%; height:31px; display:block; border-radius:6px; padding:0 9px; background:transparent; color:#aebed6; font-size:12px; font-weight:900; text-align:left; white-space:nowrap; cursor:pointer; }
+    .gh-menu button:hover, .gh-menu button.is-active { background:#29374a; color:#fff; }
+
+    /* Game History tablosu */
+    .gh-head, .gh-row { display:grid; grid-template-columns:minmax(0,1.5fr) 1fr 1.1fr .95fr 1.05fr 1.05fr; align-items:center; padding:0 16px; }
+    .gh-head { height:16px; margin-top:27px; color:#60718d; font-size:12px; font-weight:900; letter-spacing:1px; }
+    .gh-rows { margin-top:11px; display:flex; flex-direction:column; gap:6px; }
+    .gh-row { min-height:50px; border-radius:9px; background:#141e2b; font-size:15px; }
+    .gh-game { display:flex; align-items:center; gap:11px; min-width:0; color:#acbdd5; }
+    .gh-game img { width:25px; height:23px; flex:0 0 auto; border-radius:4px; object-fit:cover; }
+    .gh-game span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:900; }
+    .gh-time { color:#acbdd5; font-weight:900; }
+    .gh-bet { color:#f6f6fa; font-weight:900; }
+    /* Carpan: referanstaki CHANCE kolonuyla ayni altin gradyan */
+    .gh-mult { font-weight:900; background:linear-gradient(90deg,#f7c237,#ff714f); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .gh-mult--flat { background:none; color:#60718d; }
+    .gh-payout { font-weight:900; color:#60718d; }
+    .gh-payout--win { color:#15c344; }
+    .gh-balance { color:#60718d; font-weight:900; }
+
+    /* Sessions tablosu */
+    .ss-view { margin-top:55px; }
+    .ss-head, .ss-row { display:grid; grid-template-columns:102px minmax(0,1fr) 105px 70px; align-items:center; }
+    .ss-head { height:16px; padding:0 16px; color:#60728e; font-size:12px; font-weight:900; letter-spacing:1px; }
+    .ss-rows { margin-top:14px; display:flex; flex-direction:column; gap:6px; }
+    .ss-row { min-height:50px; padding:0 16px; border-radius:9px; background:#141e2b; }
+    .ss-date { color:#aebed7; font-size:15px; font-weight:900; }
+    .ss-agent { padding-right:18px; color:#f3f4f8; font-size:14.5px; line-height:17px; font-weight:900; word-break:break-all; }
+    .ss-state { font-size:14px; font-weight:900; white-space:nowrap; }
+    .ss-state:before { content:''; display:inline-block; width:9px; height:9px; margin-right:8px; border-radius:50%; }
+    .ss-state--current { color:#21d949; }
+    .ss-state--current:before { background:#28e34e; }
+    .ss-state--active { color:#ffb328; }
+    .ss-state--active:before { background:#ffb328; }
+    .ss-logout { height:28px; border-radius:7px; background:linear-gradient(180deg,#43afff,#0875f5 65%,#005cdd); box-shadow:inset 0 1px 4px rgba(255,255,255,.55),0 3px 10px rgba(0,95,255,.18); color:#fff; font-size:12px; font-weight:900; cursor:pointer; }
+    .ss-logout:disabled { opacity:.55; cursor:not-allowed; }
+
+    /* Verification: KYC karti + detay karti */
+    .kyc-grid { display:grid; grid-template-columns:328px minmax(0,1fr); gap:23px; margin-top:36px; align-items:start; }
+    .kyc-card { position:relative; height:516px; padding:24px; border-radius:15px; background:#0e1924; overflow:hidden; }
+    .kyc-card h2 { position:relative; z-index:2; margin:0; font-size:18px; line-height:24px; font-weight:900; }
+    .kyc-card p { position:relative; z-index:2; margin-top:15px; color:#9eb9e5; font-size:15px; line-height:20px; font-weight:700; }
+    .kyc-art { position:absolute; left:0; bottom:0; width:100%; height:245px; object-fit:cover; object-position:center top; }
+    .kyc-details { min-height:389px; padding:24px; border-radius:15px; background:#0e1924; }
+    .kyc-steps-row { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+    .kyc-steps { display:flex; width:378px; height:44px; }
+    .kyc-step { width:130px; height:44px; display:grid; place-items:center; background:#202c3d; color:#7185a5; font-size:16px; font-weight:900; }
+    .kyc-step:not(:first-child) { margin-left:-7px; padding-left:7px; clip-path:polygon(10px 0,calc(100% - 13px) 0,100% 50%,calc(100% - 13px) 100%,10px 100%,23px 50%); }
+    .kyc-step:first-child { z-index:3; border-radius:10px 0 0 10px; clip-path:polygon(0 0,calc(100% - 13px) 0,100% 50%,calc(100% - 13px) 100%,0 100%); }
+    .kyc-step:nth-child(2) { z-index:2; }
+    .kyc-step:nth-child(3) { z-index:1; }
+    .kyc-step.is-done { background:#16be3d; color:#fff; }
+    .kyc-status { color:#14bd3b; font-size:14px; font-weight:900; white-space:nowrap; }
+    .kyc-status--pending { color:#ffb328; }
+    .kyc-rows { margin-top:22px; display:flex; flex-direction:column; gap:14px; }
+    .kyc-row { display:flex; align-items:baseline; min-height:20px; font-size:15px; line-height:20px; }
+    .kyc-row dt { margin-right:14px; color:#9fb9e5; font-weight:800; white-space:nowrap; }
+    .kyc-row dd { margin:0; color:#f5f6fa; font-weight:900; }
+    .kyc-help { display:inline-grid; place-items:center; width:19px; height:19px; margin-left:5px; border:2px solid #5e718e; border-radius:50%; color:#5e718e; font-size:10px; font-style:normal; vertical-align:-2px; }
+    .kyc-note { margin-top:27px; color:#5d6f8c; font-size:14px; line-height:20px; font-weight:700; }
+
+    @media (max-width:1180px) {
+      .kyc-grid { grid-template-columns:310px minmax(0,1fr); gap:18px; }
+      .kyc-card, .kyc-details { padding:21px; }
+      .kyc-status { display:none; }
+      .kyc-steps { width:100%; }
+      .kyc-step { flex:1; width:auto; }
+      .gh-head, .gh-row { grid-template-columns:minmax(0,1.4fr) .9fr 1fr .85fr 1fr 1fr; }
+    }
+    @media (max-width:900px) {
+      .kyc-grid { grid-template-columns:1fr; margin-top:20px; }
+      .kyc-details { height:auto; }
+      .ss-view { margin-top:30px; overflow-x:auto; }
+      .ss-head, .ss-row { min-width:700px; }
+      .gh-toolbar { margin-top:22px; }
+      .gh-table { overflow-x:auto; }
+      .gh-head, .gh-row { min-width:820px; }
+    }
+    @media (max-width:520px) {
+      .kyc-card { height:auto; padding-bottom:250px; }
+      .kyc-row { flex-wrap:wrap; font-size:13px; }
+      .kyc-row dt { margin-right:8px; }
+      .kyc-note { font-size:13px; }
+    }
+
     /* ----- Transactions sekmesi (BetFury referans tasarimi) ----- */
     .tx-filters { margin-top:32px; display:flex; justify-content:flex-end; gap:8px; position:relative; z-index:20; }
     .tx-filter { position:relative; }
@@ -2201,35 +2296,45 @@
     </div>
 
     <!-- Verification -->
+    <!-- Verification — referans tasarim: KYC bilgi karti + 3 adimli detay karti.
+         Kimlik alanlari canli (/account/overview -> profile), "Politically
+         Exposed Person" statik (backend'de alan yok). Adres normalizasyonu
+         icin account-page.js icindeki kycRows'a bak. -->
     <div class="ac-page" v-else-if="accountPageKey==='verification'">
-      <div class="ac-verify">
-        <article class="ac-verify__card">
-          <h3>Verification status</h3>
-          <ul class="acct-checks">
-            <li :class="{done:row.done}" :key="row.label" v-for="row in verificationRows">
-              <i :class="row.done ? 'fas fa-check-circle' : 'far fa-circle'"></i>
-              <span class="acct-checks__label">{{row.label}}</span>
-              <span class="acct-checks__value">{{row.value}}</span>
-            </li>
-          </ul>
+      <div class="kyc-grid">
+        <article class="kyc-card">
+          <h2>KYC Verification</h2>
+          <p>We want to get closer and care more about our users, so we ask you to fill in your personal information. This will help us provide even better service. It will secure your account in case of recovery. Also it will allow us to send you sweet gifts &amp; rewards. The following documents are required for verification: passport, driver&apos;s license or ID card.</p>
+          <img alt="" class="kyc-art" src="assets/kyc-mascot.png"/>
         </article>
-        <article class="ac-verify__card" v-if="profile">
-          <h3>Contact details</h3>
-          <dl class="acct-rows">
-            <div class="acct-row"><dt>E-mail</dt><dd>{{profile.email || 'Not added'}}</dd></div>
-            <div class="acct-row"><dt>Phone</dt><dd>{{profile.phone || 'Not added'}}</dd></div>
-            <div class="acct-row"><dt>Country</dt><dd>{{(profile.address && profile.address.country) || '—'}}</dd></div>
-            <div class="acct-row"><dt>City</dt><dd>{{(profile.address && profile.address.city) || '—'}}</dd></div>
+
+        <article class="kyc-details">
+          <div class="kyc-steps-row">
+            <div class="kyc-steps">
+              <div class="kyc-step" :class="{'is-done': kycStep >= 1}">Step 01</div>
+              <div class="kyc-step" :class="{'is-done': kycStep >= 2}">Step 02</div>
+              <div class="kyc-step" :class="{'is-done': kycStep >= 3}">Step 03</div>
+            </div>
+            <div class="kyc-status" :class="{'kyc-status--pending': !kycComplete}">
+              <i class="fas" :class="kycComplete ? 'fa-check' : 'fa-clock'"></i> {{ kycComplete ? 'Completed' : 'In progress' }}
+            </div>
+          </div>
+
+          <dl class="kyc-rows">
+            <div class="kyc-row" v-for="row in kycRows" :key="row.label">
+              <dt>{{row.label}}:</dt>
+              <dd>{{row.value}}<span class="kyc-help" v-if="row.help">?</span></dd>
+            </div>
           </dl>
+
+          <p class="kyc-note">Contact our Support to change this information.</p>
         </article>
       </div>
 
       <nav aria-label="Breadcrumb" class="ac-crumbs">
         <button @click="navigate('/')" type="button">{{ websiteName }}</button>
         <i class="fas fa-chevron-right"></i>
-        <button @click="navigate('/account')" type="button">Account</button>
-        <i class="fas fa-chevron-right"></i>
-        <span aria-current="page" class="current">Verification</span>
+        <span aria-current="page" class="current">Account</span>
       </nav>
     </div>
 
@@ -2277,46 +2382,74 @@
       </div>
     </div>
 
-    <!-- Game History -->
-    <div class="acct-card acct-card--full" v-else-if="accountPageKey==='game-history'">
-      <div class="acct-scroll" v-if="gameHistory.length">
-        <table class="acct-table">
-          <thead><tr><th>Date</th><th>Game</th><th class="acct-num">Stake</th><th class="acct-num">Win</th><th class="acct-num">Balance</th></tr></thead>
-          <tbody>
-            <tr v-for="row in gameHistory" :key="row.txn_id">
-              <td class="acct-muted">{{accountFormatDate(row.created_at)}}</td>
-              <td>
-                <span class="acct-strong">{{row.game_name}}</span>
-                <!-- row.provider BASILMAZ: /game-history bu alani populate
-                     etmeden dondurur, yani degeri saglayici adi degil duz bir
-                     ObjectId'dir (backend/routes/index.js ~782 + Game
-                     semasindaki provider ref'i). Saglayici adini burada
-                     gostermek icin once backend payload'ina provider_code
-                     eklenmeli — ayrinti: MOCK-BACKEND.md -->
-                <span class="acct-sub" v-if="row.provider_code">{{row.provider_code}}</span>
-              </td>
-              <td class="acct-num">{{accountFormatMoney(row.bet_money, activeCurrency)}}</td>
-              <td class="acct-num acct-strong" :class="Number(row.win_money) > 0 ? 'acct-pos' : 'acct-muted'">{{accountFormatMoney(row.win_money, activeCurrency)}}</td>
-              <td class="acct-num acct-muted">{{accountFormatMoney(row.balance_after, activeCurrency)}}</td>
-            </tr>
-          </tbody>
-        </table>
+    <!-- Game History — referans tasarim: sag ustte tur filtresi + 6 kolonlu tablo.
+         Veri canli (GET /game-history/:identifier). Filtre `game_type` uzerinden
+         istemci tarafinda calisir; ayrinti account-page.js icindeki blok yorumunda. -->
+    <div v-else-if="accountPageKey==='game-history'">
+      <div class="gh-toolbar">
+        <div class="gh-filter" :class="{'is-open': ghFilterOpen}">
+          <button class="gh-filter__btn" type="button" @click.stop="ghToggleFilter">
+            <span>{{ghFilterLabel}}</span><i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="gh-menu" v-if="ghFilterOpen">
+            <button v-for="option in ghFilters" :key="option.key" :class="{'is-active': ghFilter===option.key}" type="button" @click="ghSelectFilter(option.key)">{{option.label}}</button>
+          </div>
+        </div>
       </div>
-      <p class="acct-empty" v-else>You have not played any rounds yet.</p>
+
+      <div class="gh-table" v-if="ghRows.length">
+        <div class="gh-head"><span>GAME</span><span>TIME</span><span>BET</span><span>MULTIPLIER</span><span>PAYOUT</span><span>BALANCE</span></div>
+        <div class="gh-rows">
+          <div class="gh-row" v-for="row in ghRows" :key="row.id">
+            <div class="gh-game"><img :src="row.image" alt=""/><span>{{row.game}}</span></div>
+            <div class="gh-time">{{row.time}}</div>
+            <div class="gh-bet">{{row.bet}}</div>
+            <div class="gh-mult" :class="{'gh-mult--flat': !row.hasWin}">{{row.multiplier}}</div>
+            <div class="gh-payout" :class="{'gh-payout--win': row.hasWin}">{{row.payout}}</div>
+            <div class="gh-balance">{{row.balance}}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tx-empty" v-else>
+        <img alt="" src="assets/mascot-empty.png"/>
+        <p>{{ ghFilter !== 'all' ? 'No rounds match this filter.' : 'You have not played any rounds yet.' }}</p>
+        <button type="button" v-if="ghFilter !== 'all'" @click="ghSelectFilter('all')">Reset filter</button>
+      </div>
+
+      <nav aria-label="Breadcrumb" class="ac-crumbs">
+        <button @click="navigate('/')" type="button">{{ websiteName }}</button>
+        <i class="fas fa-chevron-right"></i>
+        <span aria-current="page" class="current">Account</span>
+      </nav>
     </div>
 
-    <!-- Sessions -->
-    <div class="acct-card acct-card--full" v-else-if="accountPageKey==='sessions'">
-      <ul class="acct-sessions" v-if="sessions.length">
-        <li v-for="entry in sessions" :key="entry._id">
-          <span class="acct-sessions__icon"><i class="fas fa-desktop"></i></span>
-          <div class="acct-sessions__body">
-            <strong>{{accountDescribeDevice(entry.userAgent)}}</strong>
-            <span class="acct-sub">{{accountFormatDate(entry.at)}}<template v-if="entry.ip"> · IP {{entry.ip}}</template></span>
+    <!-- Sessions — referans tasarim: DATE / BROWSER / durum / Log out.
+         Veri canli (GET /account/sessions). "Log out" icin backend ucu YOK,
+         ayrinti account-page.js icindeki blok yorumunda. -->
+    <div v-else-if="accountPageKey==='sessions'">
+      <div class="ss-view" v-if="ssRows.length">
+        <div class="ss-head"><span>DATE</span><span>BROWSER</span><span></span><span></span></div>
+        <div class="ss-rows">
+          <div class="ss-row" v-for="row in ssRows" :key="row.id">
+            <div class="ss-date">{{row.date}}</div>
+            <div class="ss-agent">{{row.agent}}</div>
+            <div class="ss-state" :class="'ss-state--'+row.tone">{{row.state}}</div>
+            <button class="ss-logout" type="button" :disabled="row.current" @click="ssLogout(row)">Log out</button>
           </div>
-        </li>
-      </ul>
-      <p class="acct-empty" v-else>No sign-in activity has been recorded yet.</p>
+        </div>
+      </div>
+
+      <div class="tx-empty" v-else>
+        <img alt="" src="assets/mascot-empty.png"/>
+        <p>No sign-in activity has been recorded yet.</p>
+      </div>
+
+      <nav aria-label="Breadcrumb" class="ac-crumbs">
+        <button @click="navigate('/')" type="button">{{ websiteName }}</button>
+        <i class="fas fa-chevron-right"></i>
+        <span aria-current="page" class="current">Account</span>
+      </nav>
     </div>
 
     <!-- Vault -->
@@ -4080,6 +4213,11 @@
           accountFormatMoney: accountPages.accountFormatMoney,
           accountStatusLabel: accountPages.accountStatusLabel,
           accountStatusTone: accountPages.accountStatusTone,
+          accountFormatDateOnly: accountPages.accountFormatDateOnly,
+          // Game History / Sessions / Verification icin canli veri
+          gameHistory: accountPages.gameHistory,
+          sessions: accountPages.sessions,
+          backendAssetUrl,
           toastMessage,
         });
 
@@ -4199,7 +4337,7 @@
         function handleResize(){ sidebarOpen.value = window.innerWidth > 900; }
         function handleKeydown(event){ if (event.key === 'Escape' && searchOpen.value) closeSearchModal(); }
         // Transactions filtre menuleri: dis tikla kapanir (butonlar @click.stop kullanir).
-        function handleDocumentClick(event){ if (!event.target.closest('.tx-filter')) accountPage.txCloseMenus(); }
+        function handleDocumentClick(event){ if (!event.target.closest('.tx-filter')) accountPage.txCloseMenus(); if (!event.target.closest('.gh-filter')) accountPage.ghCloseMenu(); }
         onMounted(()=>{ window.addEventListener('resize',handleResize); window.addEventListener('keydown',handleKeydown); window.addEventListener('storage',handleStorageSync); document.addEventListener('click',handleDocumentClick); loadCasinoGames(); startPromoAutoplay(); refreshAuthUser(); if (isGamePage) gamePage.loadGameDetail(); });
         // Hesap sayfalari oturum gerektirir: refreshAuthUser async oldugu icin
         // onMounted icinde cagirmak erken olurdu; authUser dolunca yukluyoruz.

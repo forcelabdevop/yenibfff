@@ -166,7 +166,7 @@ window.createAccountPage = function createAccountPage(ctx) {
    * tarafinda, cekilen 50 kayit uzerinde calisir. Sunucu tarafi filtre/
    * sayfalama gerekince: GET /transaction-history?type=&from=&to= eklenmeli.
    * ========================================================================= */
-  const { transactions, activeCurrency, accountFormatMoney, accountStatusLabel, accountStatusTone } = ctx
+  const { transactions, activeCurrency, accountFormatMoney, accountStatusLabel, accountStatusTone, accountFormatDateOnly } = ctx
 
   const TX_RANGES = [
     { key: "all", label: "All time", days: 0 },
@@ -313,6 +313,175 @@ window.createAccountPage = function createAccountPage(ctx) {
     if (row.info) toastMessage("Islem referansi: " + row.info)
   }
 
+
+  /* ===== Game History / Sessions / Verification ===== */
+  const { gameHistory, sessions, backendAssetUrl } = ctx
+
+  /* --- Game History -------------------------------------------------------
+   * Veri CANLI: account-pages.js -> GET /game-history/:identifier
+   * Satir alanlari: txn_id, created_at, game_name, game_type, banner,
+   * bet_money, win_money, balance_after, provider_code.
+   *
+   * DIKKAT: `provider` populate EDILMEZ (duz ObjectId) — asla basilmaz,
+   * insan-okunur etiket `provider_code`. Filtre `game_type` uzerinden
+   * ISTEMCI tarafinda calisir; sunucu filtresi gerekince
+   * GET /game-history?type= eklenmeli.
+   * --------------------------------------------------------------------- */
+  const ghFilter = ref("all")
+  const ghFilterOpen = ref(false)
+
+  function ghToggleFilter() {
+    ghFilterOpen.value = !ghFilterOpen.value
+  }
+  function ghCloseMenu() {
+    ghFilterOpen.value = false
+  }
+  function ghSelectFilter(key) {
+    ghFilter.value = key
+    ghFilterOpen.value = false
+  }
+
+  function ghTypeLabel(type) {
+    const raw = String(type || "other")
+    if (raw === "other") return "Other"
+    return raw.charAt(0).toUpperCase() + raw.slice(1).replace(/[-_]/g, " ")
+  }
+
+  /** "All games" + yuklenen kayitlarda gecen benzersiz game_type degerleri. */
+  const ghFilters = computed(() => {
+    const seen = []
+    ;(gameHistory.value || []).forEach((row) => {
+      const type = String(row.game_type || "other")
+      if (!seen.includes(type)) seen.push(type)
+    })
+    return [{ key: "all", label: "All games" }].concat(
+      seen.map((type) => ({ key: type, label: ghTypeLabel(type) })),
+    )
+  })
+
+  const ghFilterLabel = computed(() => {
+    const option = ghFilters.value.find((item) => item.key === ghFilter.value)
+    return option ? option.label : "All games"
+  })
+
+  const ghRows = computed(() => {
+    const currency = activeCurrency.value
+    return (gameHistory.value || [])
+      .filter((row) => ghFilter.value === "all" || String(row.game_type || "other") === ghFilter.value)
+      .map((row, index) => {
+        const bet = Number(row.bet_money) || 0
+        const win = Number(row.win_money) || 0
+        const date = new Date(row.created_at)
+        const valid = !Number.isNaN(date.getTime())
+        return {
+          id: String(row.txn_id || row.round_id || index),
+          game: row.game_name || "Unknown",
+          image: (row.banner && backendAssetUrl(row.banner)) || "assets/loot-icon.png",
+          time: valid
+            ? date.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })
+            : "—",
+          bet: accountFormatMoney(bet, currency),
+          // Carpan yalnizca gecerli bir bahis varsa anlamli
+          multiplier: bet > 0 ? "x " + (win / bet).toFixed(2) : "—",
+          payout: accountFormatMoney(win, currency),
+          balance: accountFormatMoney(row.balance_after, currency),
+          hasWin: win > 0,
+        }
+      })
+  })
+
+  /* --- Sessions -----------------------------------------------------------
+   * Veri CANLI: account-pages.js -> GET /account/sessions?limit=25
+   * Satir alanlari: _id, at, ip, userAgent.
+   *
+   * Ilk kayit (en yeni) "Current" kabul edilir — backend oturumu isaretleyen
+   * bir alan dondurmuyor. Tek oturumu kapatmak icin de uc YOK; eklenince
+   * ssLogout() gercek cagriya baglanmali:
+   *   DELETE /account/sessions/:id  ->  { success: true }
+   * --------------------------------------------------------------------- */
+  function ssLogout(row) {
+    toastMessage("Oturum kapatma ucu henuz yok: DELETE /account/sessions/" + row.id)
+  }
+
+  const ssRows = computed(() =>
+    (sessions.value || []).map((entry, index) => {
+      const date = new Date(entry.at)
+      const valid = !Number.isNaN(date.getTime())
+      const current = index === 0
+      return {
+        id: String(entry._id || index),
+        date: valid
+          ? String(date.getMonth() + 1).padStart(2, "0") +
+            "/" +
+            String(date.getDate()).padStart(2, "0") +
+            "/" +
+            String(date.getFullYear()).slice(-2)
+          : "—",
+        // Referans tasarim tam User-Agent dizesini gosteriyor
+        agent: entry.userAgent || "Unknown device",
+        state: current ? "Current" : "Active",
+        tone: current ? "current" : "active",
+        current,
+      }
+    }),
+  )
+
+  /* --- Verification (KYC) -------------------------------------------------
+   * Kimlik alanlari CANLI: /account/overview -> profile
+   *
+   * ADRES SEMA UYUSMAZLIGI: gercek backend'de `user.address` Brezilya
+   * sablonudur (cep / estado / cidade / bairro / rua / numeroEnd /
+   * complemento), mock ise { country, city } donuyor. Asagidaki normalizasyon
+   * IKISINI de destekler — birini kaldirmayin.
+   *
+   * "Politically Exposed Person" backend'de YOK, statik "No" gosterilir.
+   * Alan eklenince: profile.politicallyExposed -> Yes/No.
+   * --------------------------------------------------------------------- */
+  function kycPick() {
+    for (let i = 0; i < arguments.length; i += 1) {
+      const value = arguments[i]
+      if (value != null && String(value).trim() !== "") return String(value).trim()
+    }
+    return ""
+  }
+
+  const kycRows = computed(() => {
+    const p = profile.value
+    if (!p) return []
+    const address = p.address || {}
+    const living = [
+      kycPick(address.rua, address.line1, address.street),
+      kycPick(address.numeroEnd, address.number),
+      kycPick(address.bairro, address.district),
+      kycPick(address.complemento),
+    ].filter(Boolean)
+
+    return [
+      { label: "Your name", value: kycPick(p.name, p.username) || "—" },
+      { label: "Date of Birth", value: p.birthday ? accountFormatDateOnly(p.birthday) : "Not added" },
+      { label: "Your country", value: kycPick(address.country, address.estado) || "Not added" },
+      { label: "Living Address", value: living.length ? living.join(", ") : "Not added" },
+      { label: "City", value: kycPick(address.city, address.cidade) || "Not added" },
+      { label: "Postal Code", value: kycPick(address.postalCode, address.cep) || "Not added" },
+      // Backend'de karsiligi yok — statik
+      { label: "Politically Exposed Person", value: "No", help: true },
+    ]
+  })
+
+  /**
+   * Adim gostergesi: 1) hesap acildi 2) e-posta dogrulandi 3) kimlik onaylandi.
+   * Backend ayri bir KYC adim alani dondurmuyor, mevcut bayraklardan turetiyoruz.
+   */
+  const kycStep = computed(() => {
+    const p = profile.value
+    if (!p) return 1
+    if (p.identityVerified) return 3
+    if (p.emailVerified) return 2
+    return 1
+  })
+
+  const kycComplete = computed(() => kycStep.value >= 3)
+
   return {
     acTabs,
     acHasTabs,
@@ -352,5 +521,18 @@ window.createAccountPage = function createAccountPage(ctx) {
     txTypeCounts,
     txIsFiltered,
     txCopyInfo,
+    ghFilter,
+    ghFilterOpen,
+    ghFilters,
+    ghFilterLabel,
+    ghRows,
+    ghToggleFilter,
+    ghCloseMenu,
+    ghSelectFilter,
+    ssRows,
+    ssLogout,
+    kycRows,
+    kycStep,
+    kycComplete,
   }
 }
