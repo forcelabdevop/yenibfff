@@ -10,6 +10,9 @@ window.createBonusesPage = function createBonusesPage(ctx) {
     party: "assets/bonus-party.png", gift: "assets/bonus-gift.png", birthday: "assets/bonus-birthday.png",
     coins: "assets/bonus-coins.png", rains: "assets/bonus-rains.png", tips: "assets/bonus-tips.png",
     bannerLeft: "assets/bonus-banner-left.png", bannerRight: "assets/bonus-banner-right.png", chest: "assets/bonus-chest.png",
+    avatar: "assets/bonus-avatar.png", token: "assets/bonus-token.png", tether: "assets/bonus-tether.png",
+    ukFlag: "assets/bonus-uk-flag.png", usFlag: "assets/bonus-us-flag.png", trophy: "assets/bonus-trophy.png",
+    rankCoin: "assets/bonus-rank-coin.png", crown: "assets/bonus-crown.png", calendarIcon: "assets/bonus-calendar-icon.png",
   }
   const regularBonuses = [
     {title:"Free Fury Wheel",sub:"Spin every 12h",image:bonusAssets.wheel,tone:"#312495",middle:"Win up to 1 BTC",action:"Spin the Wheel",red:true},
