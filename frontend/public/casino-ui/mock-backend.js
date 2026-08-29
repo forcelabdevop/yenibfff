@@ -289,9 +289,156 @@
       headers: { "content-type": "application/json" },
     })
 
+  // ---------------------------------------------------------------------------
+  // 3b) Cuzdan modali verisi (Wallet / Swap / Deposit)
+  //
+  // DIKKAT: Bu uclarin HICBIRI gercek backend'de YOK — tamami bu mock'a ozgu.
+  // Sozlesme ve baglama adimlari: wallet-modal.js basindaki blok + MOCK-BACKEND.md
+  // bolum 8. `usd` alani yalnizca swap kurunu hesaplamak icin var; gercek
+  // backend'de fiyat servisi bunu saglayacak.
+  // ---------------------------------------------------------------------------
+  const WALLET_CURRENCIES = [
+    {
+      code: "USDT",
+      name: "Tether",
+      icon: "assets/coin-usdt.png",
+      fiat: false,
+      balance: 1284.5,
+      precision: 2,
+      usd: 1,
+      minDeposit: 1,
+      networks: [
+        { id: "BEP20", label: "BNB Chain(BEP-20)", icon: "assets/coin-bnb.png" },
+        { id: "TRC20", label: "Tron (TRC-20)", icon: "assets/coin-usdt.png" },
+      ],
+    },
+    {
+      code: "BTC",
+      name: "Bitcoin",
+      icon: "assets/coin-btc.png",
+      fiat: false,
+      balance: 0.01824,
+      precision: 8,
+      usd: 86206.9,
+      minDeposit: 0.0001,
+      networks: [{ id: "BTC", label: "Bitcoin", icon: "assets/coin-btc.png" }],
+    },
+    {
+      code: "BFG",
+      name: "BetFury Token",
+      icon: "assets/coin-bfg.png",
+      fiat: false,
+      balance: 26.9203471,
+      precision: 4,
+      usd: 0.0121,
+      minDeposit: 10,
+      networks: [{ id: "BEP20", label: "BNB Chain(BEP-20)", icon: "assets/coin-bnb.png" }],
+    },
+    {
+      code: "USD",
+      name: "US Dollar",
+      icon: "assets/flag-usd.png",
+      fiat: true,
+      balance: 0,
+      precision: 2,
+      usd: 1,
+      minDeposit: 10,
+      networks: [],
+    },
+  ]
+
   const ROUTES = [
     // --- oturum / kullanici ---
     ["GET", /^\/user\/[^/]+$/, () => json(buildUser())],
+
+    // --- cuzdan modali (SADECE MOCK — backend'de karsiligi yok) ---
+    ["GET", /^\/wallet\/currencies$/, () => json({ success: true, data: WALLET_CURRENCIES })],
+    [
+      "GET",
+      /^\/wallet\/deposit-address$/,
+      (_req, url) => {
+        const code = url.searchParams.get("currency") || "USDT"
+        const network = url.searchParams.get("network") || ""
+        const currency = WALLET_CURRENCIES.find((c) => c.code === code) || WALLET_CURRENCIES[0]
+        return json({
+          success: true,
+          data: {
+            currency: currency.code,
+            network,
+            // Gercek backend kullaniciya ozel adres uretir; sabit deger DEGIL.
+            address: "0x27c2350aF1b6b1c9E4a1f2Bd9c07eCeCeb" + currency.code,
+            qr: "assets/deposit-qr.png",
+            minDeposit: currency.minDeposit,
+          },
+        })
+      },
+    ],
+    [
+      "GET",
+      /^\/wallet\/quote$/,
+      (_req, url) => {
+        const from = WALLET_CURRENCIES.find((c) => c.code === url.searchParams.get("from"))
+        const to = WALLET_CURRENCIES.find((c) => c.code === url.searchParams.get("to"))
+        const amount = Number(url.searchParams.get("amount")) || 0
+        if (!from || !to) return json({ success: false, message: "Bilinmeyen para birimi" }, 400)
+        const rate = from.usd / to.usd
+        const receive = amount * rate
+        const fmt = (n) => Number(n.toFixed(to.precision === 2 ? 2 : 8))
+        return json({
+          success: true,
+          data: {
+            rate,
+            receive: fmt(receive),
+            provider: { name: "Moonpay", icon: "assets/provider-moonpay.png" },
+            methods: [
+              {
+                id: "credit",
+                kind: "credit",
+                label: "Credit Card",
+                icon: "assets/card-credit.png",
+                receive: fmt(receive),
+                best: true,
+                recommended: true,
+              },
+              {
+                id: "debit",
+                kind: "debit",
+                label: "Debit Card",
+                icon: "assets/card-debit.png",
+                receive: fmt(receive * 0.998),
+                best: true,
+                recommended: false,
+              },
+            ],
+          },
+        })
+      },
+    ],
+    [
+      "POST",
+      /^\/wallet\/swap$/,
+      async (req) => {
+        let body = {}
+        try {
+          body = JSON.parse((await req.text()) || "{}") || {}
+        } catch {}
+        const from = WALLET_CURRENCIES.find((c) => c.code === body.from)
+        const to = WALLET_CURRENCIES.find((c) => c.code === body.to)
+        const amount = Number(body.amount) || 0
+        if (!from || !to) return json({ success: false, message: "Bilinmeyen para birimi" }, 400)
+        if (amount <= 0) return json({ success: false, message: "Gecersiz tutar" }, 400)
+        if (amount > from.balance) return json({ success: false, message: "Yetersiz bakiye" }, 400)
+        // Gercek backend'de bu iki satir ATOMIK olmali (mongoose transaction).
+        from.balance = Number((from.balance - amount).toFixed(8))
+        to.balance = Number((to.balance + amount * (from.usd / to.usd)).toFixed(8))
+        return json({ success: true, data: { balances: WALLET_CURRENCIES } })
+      },
+    ],
+    [
+      "POST",
+      /^\/wallet\/buy$/,
+      () => json({ success: true, data: { redirectUrl: null, status: "created" } }),
+    ],
     ["POST", /^\/auth\/credentials$/, () => json({ token: TOKEN, userId: USER_ID, user: buildUser() })],
     ["POST", /^\/auth\/credentials\/register$/, () => json({ token: TOKEN, userId: USER_ID, user: buildUser() })],
     ["POST", /^\/auth\/credentials\/mfa\/validate-otp$/, () => json({ token: TOKEN, userId: USER_ID })],
