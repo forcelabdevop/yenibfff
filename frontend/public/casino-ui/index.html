@@ -11,6 +11,7 @@
      script'inden ONCE yuklenmeli (window.fetch ve window.io'yu sarar).
      Backend'e geri baglanirken bu satir silinir — bkz. MOCK-BACKEND.md -->
 <script src="./mock-backend.js"></script>
+<script src="./casino-ui-settings.js"></script>
 <script src="./game-detail.js"></script>
 <script src="./account-pages.js"></script>
 <script src="./wallet-modal.js"></script>
@@ -2189,8 +2190,8 @@
 <div class="casino-rail-head"><h2><img :src="categoryIconImage(category)" alt="" class="rail-head-icon" v-if="categoryIconImage(category)"/><i :class="categoryIcon(category)" v-else></i> {{category.name}} </h2><span class="rail-arrows"><mark>{{category.total_games || category.games.length}} games</mark><button type="button" aria-label="Previous games" @click="slideCasinoRow($event,-1)"><i class="fas fa-chevron-left"></i></button><button type="button" aria-label="Next games" @click="slideCasinoRow($event,1)"><i class="fas fa-chevron-right"></i></button></span></div>
 <div class="casino-game-row no-scrollbar"><game-card :badge="index<4 ? (index===3?'HOT':'TOP') : ''" :game="game" :key="category.slug+'-'+(game._id || game.game_code)" @demo="selectGame(game, true)" @select="selectGame(game)" v-for="(game,index) in category.games.slice(0,12)"></game-card></div>
 </section>
-<div class="casino-hero-wrap" v-if="activeCategory==='all'">
-<div class="casino-hero-backdrop" aria-hidden="true"><img v-for="(c,i) in heroBackdropCards" :key="'hbd'+i" :src="c.image" :style="c.style" alt="" loading="lazy"/><div class="casino-hero-shade"></div></div>
+<div class="casino-hero-wrap" v-if="activeCategory==='all' &amp;&amp; heroEnabled">
+<div class="casino-hero-backdrop" aria-hidden="true" v-if="heroBackdropEnabled"><img v-for="(c,i) in heroBackdropCards" :key="'hbd'+i" :src="c.image" :style="c.style" alt="" loading="lazy"/><div class="casino-hero-shade"></div></div>
 <section aria-label="Game chooser" class="casino-hero-chooser">
 <img alt="" class="decor decor-chip" src="assets/hero-chip.png"/>
 <img alt="" class="decor decor-die" src="assets/hero-die.png"/>
@@ -2198,20 +2199,21 @@
 <img alt="" class="decor decor-cherries" src="assets/hero-cherries.png"/>
 <img alt="" class="decor decor-potion" src="assets/hero-potion.png"/>
 <img alt="" class="decor decor-monster" src="assets/hero-monster.png"/>
-<h1 class="hero-title">Need help choosing a <span>game</span>?</h1>
+<h1 class="hero-title" v-if="heroTitleText">{{heroTitleText}}</h1>
+<h1 class="hero-title" v-else>Need help choosing a <span>game</span>?</h1>
 <img :class="{spinning: heroSpinning}" alt="Game roulette" class="roulette-machine" src="assets/hero-roulette.png"/>
 <div aria-hidden="true" class="machine-cap-cover"></div>
-<button :disabled="heroSpinning" @click="heroSpin" class="spin-button"><i :class="{'fa-spin': heroSpinning}" class="fas fa-sync-alt"></i><span>{{ heroSpinning ? 'Spinning' : 'Spin' }}</span></button>
+<button :disabled="heroSpinning" @click="heroSpin" class="spin-button"><i :class="{'fa-spin': heroSpinning}" class="fas fa-sync-alt"></i><span>{{ heroSpinning ? 'Spinning' : (heroButtonText || 'Spin') }}</span></button>
 </section>
 </div>
-<section class="casino-bets" v-if="activeCategory==='all'">
+<section class="casino-bets" v-if="activeCategory==='all' &amp;&amp; betsEnabled">
 <div class="casino-bets-top">
 <div class="casino-bets-tabs">
 <button :class="{active: betsTab===tab.id}" :key="tab.id" @click="selectBetsTab(tab.id)" class="casino-bets-tab" type="button" v-for="tab in betsTabs"><i :class="tab.icon"></i><span>{{tab.label}}</span></button>
 </div>
 <div class="casino-bets-count">
 <button @click="betsCountOpen=!betsCountOpen" class="casino-bets-count-btn" type="button"><span>{{betsRowCount}}</span><i class="fas fa-chevron-down"></i></button>
-<div class="casino-bets-count-menu" v-if="betsCountOpen"><button :key="c" @click="setBetsCount(c)" type="button" v-for="c in [10,20,50]">{{c}}</button></div>
+<div class="casino-bets-count-menu" v-if="betsCountOpen"><button :key="c" @click="setBetsCount(c)" type="button" v-for="c in betsRowChoices">{{c}}</button></div>
 </div>
 </div>
 <div class="casino-bets-tablewrap">
@@ -2852,15 +2854,15 @@
 </section>
 
 </template>
-<footer class="site-footer" id="footer">
+<footer class="site-footer" id="footer" v-if="footerEnabled">
 <div class="footer-inner">
 <div class="footer-grid">
-<div class="footer-col"><h4>I-GAMING</h4><a href="#originals">All games</a><a href="#originals">Dice</a><a href="#top-slots">Slots</a><a href="#activity">Rank system</a><a href="#originals">Live casino</a><a href="#originals">Plinko</a><a href="#originals">Crypto Poker</a></div>
+<template v-if="footerColumns"><div class="footer-col" v-for="(col,ci) in footerColumns" :key="'fc'+ci"><h4>{{col.title}}</h4><a v-for="(link,li) in col.links" :key="'fl'+ci+'-'+li" :href="link.url">{{link.label}}</a></div></template><template v-else><div class="footer-col"><h4>I-GAMING</h4><a href="#originals">All games</a><a href="#originals">Dice</a><a href="#top-slots">Slots</a><a href="#activity">Rank system</a><a href="#originals">Live casino</a><a href="#originals">Plinko</a><a href="#originals">Crypto Poker</a></div>
 <div class="footer-col"><h4>FEATURES</h4><a href="#staking">{{websiteName}} Staking</a><a href="#staking">Crypto Staking</a><a href="#buy-crypto">{{websiteName}} Box</a><a href="#activity">Daily tasks</a><a href="#footer">Affiliate Program ↗</a><a href="#originals">Futures</a></div>
 <div class="footer-col"><h4>PROMO</h4><a href="#home">Promotions</a></div>
 <div class="footer-col"><h4>ABOUT US</h4><a href="#news">News</a><a href="#news">About {{websiteName}}</a><a href="#news">About team</a><a href="#news">{{websiteName}} Whitepaper ↗</a><a href="#news">{{websiteName}} Docs ↗</a><a href="#news">Official Mirrors ↗</a><a href="#news">Download application</a></div>
 <div class="footer-col"><h4>CONTACT US</h4><a class="contact-link" :href="'mailto:support@' + websiteEmailDomain + '.com'">Live Support</a><p>For quick help with any question</p><a class="contact-link" :href="'mailto:support@' + websiteEmailDomain + '.com'">support@{{websiteEmailDomain}}.com</a><p>For questions and technical issues</p><a class="contact-link" :href="'mailto:bugbounty@' + websiteEmailDomain + '.com'">bugbounty@{{websiteEmailDomain}}.com</a><p>For bugbounty reports</p><a class="contact-link" :href="'mailto:pr@' + websiteEmailDomain + '.com'">pr@{{websiteEmailDomain}}.com</a><p>For marketing and partnership proposals</p><a class="contact-link" :href="'mailto:affiliate@' + websiteEmailDomain + '.com'">affiliate@{{websiteEmailDomain}}.com</a><p>To become {{websiteName}} affiliate partner</p></div>
-<div class="footer-col"><h4>HELP</h4><a href="#footer">Fairness</a><a href="#footer">Privacy Policy ↗</a><a href="#footer">Terms of Service ↗</a><a href="#footer">Sportsbetting T&amp;C ↗</a><a href="#footer">Bug Bounty Program ↗</a><a href="#footer">Business Inquiries ↗</a><a href="#footer">Responsible Gambling</a></div>
+<div class="footer-col"><h4>HELP</h4><a href="#footer">Fairness</a><a href="#footer">Privacy Policy ↗</a><a href="#footer">Terms of Service ↗</a><a href="#footer">Sportsbetting T&amp;C ↗</a><a href="#footer">Bug Bounty Program ↗</a><a href="#footer">Business Inquiries ↗</a><a href="#footer">Responsible Gambling</a></div></template>
 <div class="footer-col"><div class="reg-icons"><span class="age">18+</span><span class="sio">SIO</span></div><p>This website offers gaming with risk experience. To be a user of our site you must be over 18 years old. We are not responsible for the violation of your local laws related to i-gaming. Play responsibly and have fun on {{websiteName}}.</p><p style="margin-top:20px">{{websiteName}} is a brand name of Universe B Games N.V. Company Address: Dr. H. Fergusonweg 1, Curacao. {{websiteName}} is authorised to operate by the Curacao Gaming Control Board under its valid Certificate of Operation until the process of the application has concluded.</p></div>
 </div>
 <div class="partners no-scrollbar"><span class="partner big">₿bitcoin</span><span class="partner">♦ ethereum</span><span class="partner">Ⓣ tether</span><span class="partner">▽ TRON</span><span class="partner">CRYPTO<br/>RANK ↗</span><span class="partner">◉ CoinGecko</span><span class="partner">Ⓜ CoinMarketCap</span><span class="partner">◉ DappRadar</span><span class="partner">◈ COIN98</span></div>
@@ -4683,15 +4685,31 @@
             toastMessage(pick ? ("Your game: " + (pick.game_name || pick.name || "Lucky Spin")) : "Spin again for a game!");
           }, 1200);
         }
+        // Admin > CMS Yönetimi > Casino Arayüzü ayarları (casino-ui-settings.js)
+        const uiSettings = window.createCasinoUiSettings({ ref, computed, apiUrl, websiteName: WEBSITE_NAME });
+        uiSettings.loadCasinoUiSettings();
         const betsTab = ref('all');
         const betsRowCount = ref(10);
         const betsCountOpen = ref(false);
-        const betsTabs = [
-          {id:'all',label:'All Bets',icon:'fas fa-coins'},
-          {id:'my',label:'My Bets',icon:'fas fa-user'},
-          {id:'high',label:'High Rollers',icon:'fas fa-chart-line'},
-          {id:'rare',label:'Rare Wins',icon:'fas fa-award'}
+        const BETS_TAB_ICONS = {all:'fas fa-coins',my:'fas fa-user',high:'fas fa-chart-line',rare:'fas fa-award'};
+        const defaultBetsTabs = [
+          {id:'all',label:'All Bets',icon:BETS_TAB_ICONS.all},
+          {id:'my',label:'My Bets',icon:BETS_TAB_ICONS.my},
+          {id:'high',label:'High Rollers',icon:BETS_TAB_ICONS.high},
+          {id:'rare',label:'Rare Wins',icon:BETS_TAB_ICONS.rare}
         ];
+        // Admin sekme tanımlarsa onlar kazanır; yoksa sabit liste kullanılır.
+        const betsTabs = computed(() => {
+          const overrides = uiSettings.betsTabOverrides.value;
+          if (!overrides) return defaultBetsTabs;
+          return overrides.map(tab => ({
+            id: tab.key,
+            label: tab.label || (defaultBetsTabs.find(d => d.id === tab.key) || {}).label || tab.key,
+            icon: BETS_TAB_ICONS[tab.key] || 'fas fa-coins'
+          }));
+        });
+        // Satır sayısı seçenekleri ve varsayılanı da yönetilebilir.
+        const betsRowChoices = computed(() => uiSettings.betsRowOptions.value || [10,20,50]);
         const betRows = {
           all:[
             {game:'Dice',time:'09:07:20 PM',user:'User1912134',avatar:'👱',level:6,bet:'$1.03',multiplier:'x1.053',payout:'$1.09'},
@@ -4735,10 +4753,17 @@
             {game:'SpaceDice',time:'02/05/23',user:'User981384',avatar:'👨',level:13,bet:'$8.57',multiplier:'x9902.000',payout:'$84,860.14'}
           ]
         };
+        // Ayarlar geldiğinde varsayılan satır sayısını uygula (kullanıcı henüz
+        // seçim yapmadıysa). Seçenek listesinde olmayan değer yok sayılır.
+        let betsRowCountTouched = false;
+        watch(() => uiSettings.betsDefaultRowCount.value, value => {
+          if (betsRowCountTouched || !value) return;
+          if (betsRowChoices.value.includes(value)) betsRowCount.value = value;
+        });
         const betsVisibleRows = computed(() => (betRows[betsTab.value] || []).slice(0, betsRowCount.value));
         function betGameIcon(game){ return {'Dice':'fas fa-dice-d20','Mines':'fas fa-bomb','Limbo':'fas fa-rocket','Plinko':'fas fa-braille','SpaceDice':'fas fa-dice','Blackjack':'fas fa-address-card','Cryptos':'fab fa-bitcoin'}[game] || 'fas fa-dice'; }
         function selectBetsTab(id){ betsTab.value = id; betsCountOpen.value = false; }
-        function setBetsCount(c){ betsRowCount.value = c; betsCountOpen.value = false; }
+        function setBetsCount(c){ betsRowCountTouched = true; betsRowCount.value = c; betsCountOpen.value = false; }
         function toastMessage(message) {
           toast.value = message;
           clearTimeout(toastTimer);
@@ -4799,7 +4824,7 @@
           watch(authUser, (u) => { if (u) accountPages.loadAccountPage(); }, { immediate: true });
         }
         onBeforeUnmount(()=>{ window.removeEventListener('resize',handleResize); window.removeEventListener('keydown',handleKeydown); window.removeEventListener('storage',handleStorageSync); document.removeEventListener('click',handleDocumentClick); clearTimeout(searchTimer); clearInterval(promoTimer); });
-        return {betsTab,betsRowCount,betsCountOpen,betsTabs,betsVisibleRows,betGameIcon,selectBetsTab,setBetsCount,heroSpinning,heroSpin,heroBackdropCards,balanceMenuOpen,balanceSearch,balanceHideZero,balanceShowVault,balanceDisplayFiat,balanceCurrencies,balanceActiveCode,balanceFiltered,toggleBalanceMenu,selectBalanceCurrency,websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,notifTab,notifViewMenuOpen,notifCards,toggleNotif,notifMarkAllRead,notifChooseView,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,slideCasinoRow,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
+        return {...uiSettings,betsRowChoices,betsTab,betsRowCount,betsCountOpen,betsTabs,betsVisibleRows,betGameIcon,selectBetsTab,setBetsCount,heroSpinning,heroSpin,heroBackdropCards,balanceMenuOpen,balanceSearch,balanceHideZero,balanceShowVault,balanceDisplayFiat,balanceCurrencies,balanceActiveCode,balanceFiltered,toggleBalanceMenu,selectBalanceCurrency,websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,notifTab,notifViewMenuOpen,notifCards,toggleNotif,notifMarkAllRead,notifChooseView,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,slideCasinoRow,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
           ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage};
       }
     }).component('game-card', GameCard).mount('#app');
