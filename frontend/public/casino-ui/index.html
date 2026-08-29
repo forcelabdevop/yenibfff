@@ -840,6 +840,43 @@
     .casino-hero-chooser .decor-potion { width:71px; height:83px; top:261px; left:-13px; }
     .casino-hero-chooser .decor-monster { width:126px; height:122px; top:379px; left:-91px; }
     @media (max-width:720px){ .casino-hero-chooser { width:100%; height:auto; aspect-ratio:647/494; } }
+    .casino-bets { position:relative; z-index:1; width:min(1180px,100%); margin:44px auto 10px; padding:0 4px; }
+    .casino-bets-top { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+    .casino-bets-tabs { display:inline-flex; align-items:center; gap:4px; padding:6px; background:rgba(25,38,57,.88); border-radius:12px; overflow-x:auto; scrollbar-width:none; }
+    .casino-bets-tabs::-webkit-scrollbar { display:none; }
+    .casino-bets-tab { height:41px; padding:0 16px; border:0; border-radius:9px; background:transparent; color:#657793; display:inline-flex; align-items:center; gap:9px; font-size:15px; font-weight:900; white-space:nowrap; cursor:pointer; transition:.15s; }
+    .casino-bets-tab i { font-size:18px; color:#a9b7cb; }
+    .casino-bets-tab:hover { color:#c7d2e2; }
+    .casino-bets-tab.active { color:#fff; background:#278af0; box-shadow:0 2px 7px rgba(0,81,170,.25); }
+    .casino-bets-tab.active i { color:#fff; }
+    .casino-bets-count { position:relative; flex:none; }
+    .casino-bets-count-btn { width:66px; height:38px; border:0; border-radius:9px; background:#182536; color:#f6f7fa; display:flex; align-items:center; justify-content:center; gap:10px; font-size:14px; font-weight:900; cursor:pointer; }
+    .casino-bets-count-btn i { color:#9badc5; font-size:12px; }
+    .casino-bets-count-menu { position:absolute; z-index:20; right:0; top:44px; width:66px; padding:4px; border-radius:9px; background:#1c2a3c; box-shadow:0 10px 25px rgba(0,0,0,.4); }
+    .casino-bets-count-menu button { display:block; width:100%; height:30px; border:0; background:transparent; border-radius:6px; color:#c6d1e0; font-weight:800; cursor:pointer; }
+    .casino-bets-count-menu button:hover { background:#278af0; color:#fff; }
+    .casino-bets-tablewrap { margin-top:18px; width:100%; overflow-x:auto; scrollbar-width:none; }
+    .casino-bets-tablewrap::-webkit-scrollbar { display:none; }
+    .casino-bets-table { min-width:820px; width:100%; }
+    .casino-bets-head, .casino-bets-row { display:grid; grid-template-columns:19% 17% 22% 20% 13% 9%; align-items:center; }
+    .casino-bets-head { height:32px; color:#60738f; font-size:12px; font-weight:900; letter-spacing:.55px; text-transform:uppercase; }
+    .casino-bets-head > div, .casino-bets-row > .cell { padding:0 16px; min-width:0; }
+    .casino-bets-row { height:50px; margin-bottom:6px; border-radius:9px; background:rgba(20,31,45,.95); color:#acbad0; font-size:15px; font-weight:800; }
+    .casino-bets-row:hover { background:#172539; }
+    .casino-bets-row .cell { display:flex; align-items:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .casino-bets-row .cell-game { gap:12px; }
+    .casino-bets-row .cell-game i { width:20px; text-align:center; font-size:19px; color:#adbbcf; flex:none; }
+    .casino-bets-row .cell-time { color:#aab8cd; }
+    .casino-bets-row .cell-user { gap:9px; color:#f6f7fa; }
+    .casino-bets-avatar { width:24px; height:24px; border-radius:50%; display:grid; place-items:center; position:relative; flex:none; font-size:14px; background:linear-gradient(135deg,#ef5cb3,#ff7db9); border:1px solid rgba(255,255,255,.12); }
+    .casino-bets-avatar.gold { background:#111; border-color:#d5af12; color:#d6b20d; font-weight:900; font-size:11px; }
+    .casino-bets-avatar em { position:absolute; right:-2px; bottom:-6px; height:12px; min-width:18px; padding:0 4px; border-radius:7px; background:#f3134c; color:#fff; font-size:9px; line-height:12px; text-align:center; font-weight:900; font-style:normal; }
+    .casino-bets-row .cell-bet { color:#f7f8fa; font-weight:900; }
+    .casino-bets-mult { display:inline-flex; align-items:center; justify-content:center; min-height:21px; padding:0 8px; border-radius:12px; background:#263347; color:#10bb42; font-weight:900; line-height:21px; }
+    .casino-bets-mult.zero { color:#657792; }
+    .casino-bets-row .cell-payout { color:#10bb42; font-weight:900; }
+    .casino-bets-row .cell-payout.zero { color:#657792; }
+    @media (max-width:720px){ .casino-bets { margin-top:30px; } }
     .casino-game-card { position:relative; flex:0 0 203.2px; width:203.2px; height:267.95px; overflow:hidden; border-radius:13px; background:#152230; }
     .casino-game-card img { width:100%; height:100%; object-fit:cover; }
     .casino-game-card::after { content:""; position:absolute; inset:auto 0 0; height:74px; background:linear-gradient(transparent,rgba(6,11,18,.96)); }
@@ -2167,6 +2204,30 @@
 <button :disabled="heroSpinning" @click="heroSpin" class="spin-button"><i :class="{'fa-spin': heroSpinning}" class="fas fa-sync-alt"></i><span>{{ heroSpinning ? 'Spinning' : 'Spin' }}</span></button>
 </section>
 </div>
+<section class="casino-bets" v-if="activeCategory==='all'">
+<div class="casino-bets-top">
+<div class="casino-bets-tabs">
+<button :class="{active: betsTab===tab.id}" :key="tab.id" @click="selectBetsTab(tab.id)" class="casino-bets-tab" type="button" v-for="tab in betsTabs"><i :class="tab.icon"></i><span>{{tab.label}}</span></button>
+</div>
+<div class="casino-bets-count">
+<button @click="betsCountOpen=!betsCountOpen" class="casino-bets-count-btn" type="button"><span>{{betsRowCount}}</span><i class="fas fa-chevron-down"></i></button>
+<div class="casino-bets-count-menu" v-if="betsCountOpen"><button :key="c" @click="setBetsCount(c)" type="button" v-for="c in [10,20,50]">{{c}}</button></div>
+</div>
+</div>
+<div class="casino-bets-tablewrap">
+<div class="casino-bets-table">
+<div class="casino-bets-head"><div>Game</div><div>{{betsTab==='rare'?'Date':'Time'}}</div><div>User</div><div>Bet Amount</div><div>Multiplier</div><div>Payout</div></div>
+<div :key="betsTab+'-'+index" class="casino-bets-row" v-for="(row,index) in betsVisibleRows">
+<div class="cell cell-game"><i :class="betGameIcon(row.game)"></i><span>{{row.game}}</span></div>
+<div class="cell cell-time">{{row.time}}</div>
+<div class="cell cell-user"><span :class="{gold:row.gold}" class="casino-bets-avatar">{{row.avatar}}<em>{{row.level}}</em></span><span>{{row.user}}</span></div>
+<div class="cell cell-bet">{{row.bet}}</div>
+<div class="cell"><span :class="{zero:row.zero}" class="casino-bets-mult">{{row.multiplier}}</span></div>
+<div :class="{zero:row.zero}" class="cell cell-payout">{{row.payout}}</div>
+</div>
+</div>
+</div>
+</section>
 </template>
 <template v-else-if="isGamePage">
   <div class="game-page-loading" v-if="gameDetailLoading"><span class="game-spinner"></span><p>Loading game…</p></div>
@@ -4621,6 +4682,62 @@
             toastMessage(pick ? ("Your game: " + (pick.game_name || pick.name || "Lucky Spin")) : "Spin again for a game!");
           }, 1200);
         }
+        const betsTab = ref('all');
+        const betsRowCount = ref(10);
+        const betsCountOpen = ref(false);
+        const betsTabs = [
+          {id:'all',label:'All Bets',icon:'fas fa-coins'},
+          {id:'my',label:'My Bets',icon:'fas fa-user'},
+          {id:'high',label:'High Rollers',icon:'fas fa-chart-line'},
+          {id:'rare',label:'Rare Wins',icon:'fas fa-award'}
+        ];
+        const betRows = {
+          all:[
+            {game:'Dice',time:'09:07:20 PM',user:'User1912134',avatar:'👱',level:6,bet:'$1.03',multiplier:'x1.053',payout:'$1.09'},
+            {game:'Mines',time:'09:06:59 PM',user:'BFGSUCCESS',avatar:'S',gold:true,level:13,bet:'$4.80',multiplier:'x1.032',payout:'$4.95'},
+            {game:'Mines',time:'09:06:58 PM',user:'BFGSUCCESS',avatar:'S',gold:true,level:13,bet:'$4.80',multiplier:'x1.032',payout:'$4.95'},
+            {game:'Limbo',time:'09:06:57 PM',user:'User8189532',avatar:'👩',level:5,bet:'$1.46',multiplier:'x0.000',payout:'$0.00',zero:true},
+            {game:'Mines',time:'09:06:56 PM',user:'BFGSUCCESS',avatar:'S',gold:true,level:13,bet:'$4.80',multiplier:'x1.032',payout:'$4.95'},
+            {game:'Mines',time:'09:06:55 PM',user:'BFGSUCCESS',avatar:'S',gold:true,level:13,bet:'$4.80',multiplier:'x1.032',payout:'$4.95'},
+            {game:'Limbo',time:'08:47:22 PM',user:'User4953905',avatar:'👧',level:8,bet:'$2.21',multiplier:'x2.640',payout:'$5.85'},
+            {game:'Dice',time:'08:47:16 PM',user:'User6175033',avatar:'🦝',level:6,bet:'$2.09',multiplier:'x1.904',payout:'$3.99'},
+            {game:'Dice',time:'08:47:14 PM',user:'User7442053',avatar:'👨',level:3,bet:'$8.11',multiplier:'x1.269',payout:'$10.30'},
+            {game:'Dice',time:'08:47:08 PM',user:'User4060569',avatar:'🦝',level:6,bet:'$4.49',multiplier:'x2.829',payout:'$12.70'}
+          ],
+          my:[
+            {game:'Dice',time:'09:03:45 PM',user:'You',avatar:'🦝',level:6,bet:'$0.05',multiplier:'x1.980',payout:'$0.11'},
+            {game:'Mines',time:'08:58:12 PM',user:'You',avatar:'🦝',level:6,bet:'$0.10',multiplier:'x0.000',payout:'$0.00',zero:true},
+            {game:'Limbo',time:'08:51:03 PM',user:'You',avatar:'🦝',level:6,bet:'$0.25',multiplier:'x3.420',payout:'$0.86'}
+          ],
+          high:[
+            {game:'Dice',time:'04:53:25 AM',user:'Boomboom',avatar:'👨',level:7,bet:'$69,105.00',multiplier:'x2.000',payout:'$138,210.00'},
+            {game:'Dice',time:'04:53:19 AM',user:'Boomboom',avatar:'👨',level:7,bet:'$69,105.00',multiplier:'x2.000',payout:'$138,210.00'},
+            {game:'Dice',time:'10:03:22 PM',user:'Boomboom',avatar:'👨',level:7,bet:'$51,828.75',multiplier:'x2.000',payout:'$103,657.50'},
+            {game:'Dice',time:'07:17:29 PM',user:'User516108',avatar:'🦝',level:3,bet:'$42,762.69',multiplier:'x2.000',payout:'$85,525.38'},
+            {game:'Blackjack',time:'06:44:37 PM',user:'User1357824',avatar:'🦝',level:13,bet:'$42,000.00',multiplier:'x2.000',payout:'$84,000.00'},
+            {game:'Cryptos',time:'10:30:11 AM',user:'cinha',avatar:'👩',level:8,bet:'$41,463.00',multiplier:'x6.000',payout:'$248,778.00'},
+            {game:'Limbo',time:'05:19:53 AM',user:'Quasar',avatar:'🤓',level:6,bet:'$41,463.00',multiplier:'x2.000',payout:'$82,926.00'},
+            {game:'Mines',time:'08:12:50 PM',user:'RVSLAN',avatar:'👩',level:8,bet:'$41,463.00',multiplier:'x1.130',payout:'$46,853.18'},
+            {game:'Cryptos',time:'01:06:40 PM',user:'cinha',avatar:'👩',level:9,bet:'$41,463.00',multiplier:'x0.100',payout:'$4,146.30'},
+            {game:'Cryptos',time:'01:02:37 PM',user:'cinha',avatar:'👩',level:8,bet:'$41,463.00',multiplier:'x0.100',payout:'$4,146.30'}
+          ],
+          rare:[
+            {game:'Plinko',time:'06/13/26',user:'Elkham777',avatar:'👨',level:11,bet:'$3.33',multiplier:'x10000.000',payout:'$33,300.00'},
+            {game:'Plinko',time:'05/14/25',user:'Plinkhoe',avatar:'🥷',level:14,bet:'$1.38',multiplier:'x10000.000',payout:'$13,860.77'},
+            {game:'Plinko',time:'05/20/25',user:'Plinkhoe',avatar:'🥷',level:14,bet:'$1.13',multiplier:'x10000.000',payout:'$11,387.38'},
+            {game:'Plinko',time:'02/20/26',user:'Elkham7',avatar:'🦝',level:10,bet:'$1.00',multiplier:'x10000.000',payout:'$10,000.00'},
+            {game:'SpaceDice',time:'04/27/23',user:'User981384',avatar:'👨',level:13,bet:'$19.52',multiplier:'x9902.000',payout:'$193,292.58'},
+            {game:'SpaceDice',time:'12/14/22',user:'User981384',avatar:'👨',level:13,bet:'$15.61',multiplier:'x9902.000',payout:'$154,634.06'},
+            {game:'SpaceDice',time:'02/22/26',user:'User981384',avatar:'👨',level:14,bet:'$15.00',multiplier:'x9902.000',payout:'$148,530.00'},
+            {game:'SpaceDice',time:'08/04/25',user:'User981384',avatar:'👨',level:14,bet:'$12.50',multiplier:'x9902.000',payout:'$123,775.00'},
+            {game:'SpaceDice',time:'11/29/24',user:'User981384',avatar:'👨',level:14,bet:'$11.75',multiplier:'x9902.000',payout:'$116,394.99'},
+            {game:'SpaceDice',time:'02/05/23',user:'User981384',avatar:'👨',level:13,bet:'$8.57',multiplier:'x9902.000',payout:'$84,860.14'}
+          ]
+        };
+        const betsVisibleRows = computed(() => (betRows[betsTab.value] || []).slice(0, betsRowCount.value));
+        function betGameIcon(game){ return {'Dice':'fas fa-dice-d20','Mines':'fas fa-bomb','Limbo':'fas fa-rocket','Plinko':'fas fa-braille','SpaceDice':'fas fa-dice','Blackjack':'fas fa-address-card','Cryptos':'fab fa-bitcoin'}[game] || 'fas fa-dice'; }
+        function selectBetsTab(id){ betsTab.value = id; betsCountOpen.value = false; }
+        function setBetsCount(c){ betsRowCount.value = c; betsCountOpen.value = false; }
         function toastMessage(message) {
           toast.value = message;
           clearTimeout(toastTimer);
@@ -4681,7 +4798,7 @@
           watch(authUser, (u) => { if (u) accountPages.loadAccountPage(); }, { immediate: true });
         }
         onBeforeUnmount(()=>{ window.removeEventListener('resize',handleResize); window.removeEventListener('keydown',handleKeydown); window.removeEventListener('storage',handleStorageSync); document.removeEventListener('click',handleDocumentClick); clearTimeout(searchTimer); clearInterval(promoTimer); });
-        return {heroSpinning,heroSpin,heroBackdropCards,balanceMenuOpen,balanceSearch,balanceHideZero,balanceShowVault,balanceDisplayFiat,balanceCurrencies,balanceActiveCode,balanceFiltered,toggleBalanceMenu,selectBalanceCurrency,websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,notifTab,notifViewMenuOpen,notifCards,toggleNotif,notifMarkAllRead,notifChooseView,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,slideCasinoRow,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
+        return {betsTab,betsRowCount,betsCountOpen,betsTabs,betsVisibleRows,betGameIcon,selectBetsTab,setBetsCount,heroSpinning,heroSpin,heroBackdropCards,balanceMenuOpen,balanceSearch,balanceHideZero,balanceShowVault,balanceDisplayFiat,balanceCurrencies,balanceActiveCode,balanceFiltered,toggleBalanceMenu,selectBalanceCurrency,websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,notifTab,notifViewMenuOpen,notifCards,toggleNotif,notifMarkAllRead,notifChooseView,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,slideCasinoRow,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
           ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage};
       }
     }).component('game-card', GameCard).mount('#app');
