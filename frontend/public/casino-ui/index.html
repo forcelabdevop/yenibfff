@@ -15,6 +15,7 @@
 <script src="./account-pages.js"></script>
 <script src="./wallet-modal.js"></script>
 <script src="./profile-modal.js"></script>
+<script src="./account-page.js"></script>
 <link href="./tailwind.css" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
@@ -1528,6 +1529,113 @@
       .pm-modal--details { padding:0 16px; }
       .pm-filter-menu { left:16px; right:16px; }
     }
+
+    /* ===== Account sayfasi (casino-ui/account-page.js) ===== */
+    .ac-page { font-family:'Nunito Sans','Poppins','Montserrat',Arial,sans-serif; }
+    .ac-title { height:30px; margin:0 0 18px; color:#f7f7fa; font-size:24px; line-height:30px; font-weight:900; }
+    .ac-tabs { width:100%; height:95px; display:grid; grid-template-columns:repeat(5,1fr); overflow:hidden; border-radius:15px; background:linear-gradient(180deg,#0f1924 0%,#192431 100%); }
+    .ac-tab { position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; border:0; background:transparent; color:#f7f8fb; font-size:17px; font-weight:900; cursor:pointer; }
+    .ac-tab.active { background:linear-gradient(180deg,rgba(16,26,38,.35) 0%,#1c3558 58%,#28558c 100%); }
+    .ac-tab img { width:53px; height:47px; object-fit:contain; }
+    .ac-tab span { line-height:22px; }
+
+    .ac-summary { margin-top:32px; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; }
+    .ac-card { position:relative; height:100px; overflow:hidden; border-radius:14px; background:#182330; }
+    .ac-profile { display:flex; align-items:center; padding:0 24px; }
+    .ac-profile__avatar { width:52px; height:52px; flex:0 0 auto; border-radius:50%; object-fit:cover; background:#0f1b26; }
+    .ac-profile__copy { margin-left:19px; min-width:0; }
+    .ac-profile__name { color:#f7f8fb; font-size:20px; line-height:24px; font-weight:900; letter-spacing:.2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .ac-link { border:0; padding:0; background:transparent; color:#168fff; font-size:13px; font-weight:700; text-decoration:underline; cursor:pointer; }
+    .ac-profile__copy .ac-link { margin-top:4px; }
+
+    .ac-rank__badge { position:absolute; left:24px; top:19px; width:49px; height:58px; object-fit:contain; }
+    .ac-rank__main { position:absolute; left:76px; right:24px; top:16px; min-width:0; }
+    .ac-rank__head { display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:12px; font-weight:900; white-space:nowrap; }
+    .ac-rank__head strong { font-size:13px; }
+    .ac-rank__value { color:#17ca4c; }
+    .ac-rank__bar-row { margin-top:8px; display:flex; align-items:center; gap:8px; }
+    .ac-rank__bar { position:relative; flex:1; height:10px; overflow:hidden; border-radius:8px; background:#233146; }
+    .ac-rank__bar span { display:block; height:100%; background:#11c84a; }
+    .ac-rank__pct { position:absolute; left:44%; top:-4px; color:#f7f8fb; font-size:11px; font-weight:900; }
+    .ac-rank__gift { font-size:23px; line-height:23px; }
+    .ac-rank__caption { position:absolute; left:41px; right:10px; bottom:14px; margin:0; color:#adbad0; font-size:11.5px; line-height:14px; font-weight:800; text-align:center; white-space:nowrap; }
+    .ac-rank__caption b { color:#fff; }
+
+    .ac-cashback { display:flex; align-items:center; padding-left:112px; }
+    .ac-cashback__art { position:absolute; left:1px; top:-8px; width:112px; height:122px; object-fit:contain; }
+    .ac-cashback__copy { position:relative; z-index:2; }
+    .ac-cashback__title { color:#f7f8fb; font-size:13px; font-weight:900; }
+    .ac-cashback__numbers { margin-top:3px; display:flex; align-items:center; gap:7px; font-size:32px; line-height:36px; font-weight:900; }
+    .ac-cashback__now { color:#0bc545; }
+    .ac-cashback__sep { color:#223044; letter-spacing:-8px; transform:skewX(-7deg); }
+    .ac-cashback__next { color:#202c3f; }
+
+    .ac-promo { margin-top:32px; display:grid; grid-template-columns:minmax(0,688fr) minmax(0,336fr); gap:16px; }
+    .ac-bot { position:relative; height:278px; overflow:hidden; border-radius:14px; background:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(110deg,#1a3c63 0%,#225b9e 48%,#2873cb 100%); background-size:35px 35px,35px 35px,100% 100%; }
+    .ac-bot__copy { position:relative; z-index:3; width:330px; padding:24px 0 0 24px; }
+    .ac-bot__title { display:flex; align-items:center; gap:8px; color:#f7f8fb; font-size:17px; font-weight:900; }
+    .ac-bot__mark { width:24px; height:24px; display:grid; place-items:center; border-radius:7px; background:#42a9e8; color:#fff; font-size:14px; }
+    .ac-bot__text { margin-top:18px; color:#b7c5da; font-size:13px; line-height:18px; font-weight:700; }
+    .ac-bot__art { position:absolute; z-index:2; right:-1px; top:16px; width:330px; height:319px; object-fit:cover; object-position:top center; }
+    .ac-bot__cta { position:absolute; z-index:4; left:24px; bottom:28px; width:280px; }
+    .ac-btn { height:48px; border:0; border-radius:9px; color:#fff; font-size:15px; font-weight:900; cursor:pointer; }
+    .ac-btn--blue { background:linear-gradient(180deg,#31a9ff 0%,#147dff 30%,#0d52ed 100%); box-shadow:inset 0 2px 2px rgba(255,255,255,.35),0 5px 0 #073eb7,0 8px 20px rgba(0,105,255,.24); }
+    .ac-btn--red { background:linear-gradient(180deg,#ff2f64 0%,#ed0043 55%,#be0037 100%); box-shadow:inset 0 2px 2px rgba(255,255,255,.28),0 5px 0 #85002e,0 8px 20px rgba(255,0,67,.28); }
+
+    .ac-settings { height:278px; padding:25px 24px; border-radius:14px; background:#101c28; }
+    .ac-settings__title { display:flex; align-items:center; gap:9px; margin-bottom:20px; color:#f7f8fb; font-size:17px; font-weight:900; }
+    .ac-info { width:19px; height:19px; flex:0 0 auto; display:grid; place-items:center; border:2px solid #44505d; border-radius:50%; color:#7c8999; font-size:11px; font-style:normal; }
+    .ac-setting { height:33px; display:flex; align-items:center; gap:8px; border:0; width:100%; padding:0; background:transparent; color:#f7f8fb; font-size:15px; font-weight:900; text-align:left; cursor:pointer; }
+    .ac-check { width:25px; height:25px; flex:0 0 auto; display:grid; place-items:center; border:2px solid #525e69; border-radius:7px; background:transparent; color:#fff; font-size:12px; }
+    .ac-check.checked { border-color:#218af2; background:#218af2; }
+
+    .ac-security { margin-top:32px; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; }
+    .ac-sec { position:relative; height:270px; padding:20px; overflow:hidden; border-radius:14px; background:#101c28; }
+    .ac-sec__title { display:flex; align-items:center; gap:9px; color:#f7f8fb; font-size:17px; line-height:23px; font-weight:900; }
+    .ac-sec__title i { width:19px; text-align:center; color:#c6d2e2; }
+    .ac-sec__status { height:21px; margin-top:4px; display:flex; align-items:center; gap:7px; font-size:13px; font-weight:900; }
+    .ac-sec__status.ok { color:#13c74a; }
+    .ac-sec__status.bad { color:#ff1651; }
+    .ac-sec__text { margin:14px 0 0; color:#667690; font-size:12.5px; line-height:18px; font-weight:800; }
+    .ac-sec__promo { position:absolute; left:20px; bottom:72px; display:flex; align-items:center; gap:7px; border:0; padding:0; background:transparent; color:#f7f8fb; font-size:14px; font-weight:900; cursor:pointer; }
+    .ac-sec__promo .ac-check { width:24px; height:24px; border-radius:6px; }
+    .ac-sec__email { position:absolute; left:20px; right:20px; bottom:20px; height:36px; display:flex; align-items:center; padding:0 12px; overflow:hidden; border:1px solid #334358; border-radius:8px; background:#0c151f; color:#fff; font-size:12.5px; font-weight:900; white-space:nowrap; text-overflow:ellipsis; }
+    .ac-sec__action { position:absolute; left:20px; right:20px; bottom:24px; }
+
+    .ac-responsible { width:100%; height:44px; margin-top:32px; display:flex; align-items:center; justify-content:center; gap:9px; border:0; border-radius:8px; background:#2b333e; color:#e5e7ea; font-size:15px; font-weight:900; cursor:pointer; }
+    .ac-responsible i { width:20px; height:20px; display:grid; place-items:center; border-radius:7px; background:#e5e7ea; color:#5e6875; font-size:11px; }
+    .ac-crumbs { height:30px; margin:52px 0 18px; display:flex; align-items:center; gap:13px; color:#5d6673; font-size:18px; font-weight:900; }
+    .ac-crumbs button { border:0; padding:0; background:transparent; color:inherit; font:inherit; cursor:pointer; }
+    .ac-crumbs button:hover { color:#aab5c4; }
+    .ac-crumbs .current { color:#d9dce1; }
+    .ac-crumbs i { font-size:16px; }
+
+    .ac-verify { margin-top:32px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+    .ac-verify__card { padding:22px; border-radius:14px; background:#101c28; }
+    .ac-verify__card h3 { margin:0 0 16px; color:#f7f8fb; font-size:17px; font-weight:900; }
+
+    @media (max-width:900px) {
+      .ac-summary { grid-template-columns:1fr; gap:12px; margin-top:20px; }
+      .ac-promo { grid-template-columns:1fr; gap:12px; margin-top:20px; }
+      .ac-security { grid-template-columns:1fr; gap:12px; margin-top:20px; }
+      .ac-verify { grid-template-columns:1fr; }
+      .ac-tabs { display:flex; height:92px; overflow-x:auto; border-radius:12px; scrollbar-width:none; }
+      .ac-tabs::-webkit-scrollbar { display:none; }
+      .ac-tab { flex:0 0 145px; font-size:15px; }
+      .ac-bot { height:310px; }
+      .ac-bot__copy { width:58%; padding-left:18px; }
+      .ac-bot__art { width:275px; height:300px; right:-65px; top:42px; }
+      .ac-bot__cta { left:18px; width:52%; bottom:24px; }
+      .ac-responsible { margin-top:20px; }
+      .ac-crumbs { margin-top:35px; }
+    }
+    @media (max-width:520px) {
+      .ac-title { font-size:21px; }
+      .ac-cashback { padding-left:96px; }
+      .ac-cashback__art { width:96px; }
+      .ac-cashback__numbers { font-size:27px; }
+      .ac-crumbs { font-size:15px; gap:9px; }
+    }
   </style>
 </head>
 <body>
@@ -1858,11 +1966,22 @@
   </div>
   </template>
 </template>
-<div class="route-hero" v-else><div><span class="route-kicker">{{pageContent.kicker}}</span><h1>{{pageContent.title}}</h1><p>{{pageContent.description}}</p></div><span class="route-badge">{{pageContent.badge}}</span></div>
+<!-- Account sekme grubundaki sayfalar kendi basligini cizer (.ac-title), route-hero gosterilmez. -->
+<div class="route-hero" v-else-if="!acHasTabs"><div><span class="route-kicker">{{pageContent.kicker}}</span><h1>{{pageContent.title}}</h1><p>{{pageContent.description}}</p></div><span class="route-badge">{{pageContent.badge}}</span></div>
 <div class="empty-panel" v-if="!isCasinoPage && !isGamePage && !isAccountPage"><div class="empty-panel-inner"><span class="empty-icon"><i :class="pageContent.icon"></i></span><h2>{{pageContent.emptyTitle}}</h2><p>{{pageContent.emptyText}}</p></div></div>
 
 <!-- ===== Hesap sayfalari (Wallet / Profile / Account / Transactions / Game History / Sessions / Vault) ===== -->
 <template v-if="isAccountPage">
+  <!-- Ortak "Account" basligi + sekme cubugu (5 rotada gorunur) -->
+  <div class="ac-page" v-if="acHasTabs">
+    <h1 class="ac-title">Account</h1>
+    <nav aria-label="Account sections" class="ac-tabs">
+      <button :class="{active: acActiveTab === tab.key}" :key="tab.key" @click="acSelectTab(tab)" class="ac-tab" type="button" v-for="tab in acTabs">
+        <img :alt="''" :src="tab.icon"/><span>{{ tab.label }}</span>
+      </button>
+    </nav>
+  </div>
+
   <!-- Oturum yok -->
   <div class="acct-gate" v-if="!authUser">
     <span class="acct-gate__icon"><i class="fas fa-lock"></i></span>
@@ -1923,27 +2042,129 @@
       </div>
     </div>
 
-    <!-- Account -->
-    <div class="acct-grid" v-else-if="accountPageKey==='account'">
-      <div class="acct-card acct-card--wide" v-if="profile">
-        <h3 class="acct-card__title">Contact details</h3>
-        <dl class="acct-rows">
-          <div class="acct-row"><dt>E-mail</dt><dd>{{profile.email || 'Not added'}}</dd></div>
-          <div class="acct-row"><dt>Phone</dt><dd>{{profile.phone || 'Not added'}}</dd></div>
-          <div class="acct-row"><dt>Country</dt><dd>{{(profile.address && profile.address.country) || '—'}}</dd></div>
-          <div class="acct-row"><dt>City</dt><dd>{{(profile.address && profile.address.city) || '—'}}</dd></div>
-        </dl>
+    <!-- Account (referans tasarim) -->
+    <div class="ac-page" v-else-if="accountPageKey==='account'">
+      <!-- Ozet: profil / rank / cashback -->
+      <div class="ac-summary">
+        <article class="ac-card ac-profile">
+          <img :alt="acUsername + ' avatar'" :src="acAvatar" class="ac-profile__avatar"/>
+          <div class="ac-profile__copy">
+            <div class="ac-profile__name">{{ acUsername }}</div>
+            <button @click="acChangeUsername" class="ac-link" type="button">Change</button>
+          </div>
+        </article>
+
+        <article class="ac-card">
+          <img alt="" class="ac-rank__badge" src="assets/rank-badge.png"/>
+          <div class="ac-rank__main">
+            <div class="ac-rank__head">
+              <strong>My Rank : <span class="ac-rank__value">{{ acRankName }}</span></strong>
+              <button @click="acNotify('Rank sistemi yakinda')" class="ac-link" type="button">View all ranks</button>
+            </div>
+            <div class="ac-rank__bar-row">
+              <div class="ac-rank__bar">
+                <span :style="{width: acRankProgress + '%'}"></span>
+                <b class="ac-rank__pct">{{ acRankProgress }}%</b>
+              </div>
+              <span class="ac-rank__gift">🎁</span>
+            </div>
+            <p class="ac-rank__caption">Sports wager is calculated with <b>{{ acRankCaption }}</b> coefficient</p>
+          </div>
+        </article>
+
+        <article class="ac-card ac-cashback">
+          <img alt="" class="ac-cashback__art" src="assets/mascot-cashback.png"/>
+          <div class="ac-cashback__copy">
+            <div class="ac-cashback__title">My Cashback:</div>
+            <div class="ac-cashback__numbers">
+              <span class="ac-cashback__now">{{ acCashbackCurrent }}</span>
+              <span class="ac-cashback__sep">❯❯❯</span>
+              <span class="ac-cashback__next">{{ acCashbackNext }}</span>
+            </div>
+          </div>
+        </article>
       </div>
-      <div class="acct-card acct-card--wide">
-        <h3 class="acct-card__title">Verification &amp; security</h3>
-        <ul class="acct-checks">
-          <li v-for="row in verificationRows" :key="row.label" :class="{done:row.done}">
-            <i :class="row.done ? 'fas fa-check-circle' : 'far fa-circle'"></i>
-            <span class="acct-checks__label">{{row.label}}</span>
-            <span class="acct-checks__value">{{row.value}}</span>
-          </li>
-        </ul>
+
+      <!-- Telegram bot + kisisel ayarlar -->
+      <div class="ac-promo">
+        <article class="ac-bot">
+          <div class="ac-bot__copy">
+            <div class="ac-bot__title"><span class="ac-bot__mark"><i class="fab fa-telegram-plane"></i></span><span>Mr. Fury Bot</span></div>
+            <p class="ac-bot__text">Connect Mr. Fury Bot to your account. Receive special TG Bonuses for your activity. Stay updated on hot news &amp; offers, and quickly access the platform.</p>
+          </div>
+          <button @click="acConnectBot" class="ac-btn ac-btn--blue ac-bot__cta" type="button">Connect</button>
+          <img alt="" class="ac-bot__art" src="assets/mascot-telegram.png"/>
+        </article>
+
+        <article class="ac-settings">
+          <div class="ac-settings__title"><i class="fas fa-cog"></i><span>Personal Settings</span><i class="ac-info">i</i></div>
+          <button :key="setting.label" @click="acToggleSetting(index)" class="ac-setting" type="button" v-for="(setting,index) in acSettings">
+            <span :class="{checked: setting.checked}" class="ac-check"><i class="fas fa-check" v-if="setting.checked"></i></span>
+            <span>{{ setting.label }}</span>
+            <i class="ac-info" v-if="index===0">i</i>
+          </button>
+        </article>
       </div>
+
+      <!-- Guvenlik kartlari (e-posta/telefon/2FA canli, sifre statik) -->
+      <div class="ac-security">
+        <article :key="card.key" class="ac-sec" v-for="card in acSecurityCards">
+          <div class="ac-sec__title"><i :class="card.icon"></i><span>{{ card.title }}</span></div>
+          <div :class="card.ok ? 'ok' : 'bad'" class="ac-sec__status">
+            <i :class="card.ok ? 'fas fa-check' : 'fas fa-times'"></i><span>{{ card.status }}</span>
+          </div>
+          <p class="ac-sec__text">{{ card.description }}</p>
+          <button @click="acToggleEmailPromos" class="ac-sec__promo" type="button" v-if="card.promo">
+            <span :class="{checked: acEmailPromos}" class="ac-check"><i class="fas fa-check" v-if="acEmailPromos"></i></span>
+            <span>Receive Email Promos</span>
+          </button>
+          <div class="ac-sec__email" v-if="card.promo">{{ card.email || 'Not added' }}</div>
+          <button :class="card.actionTone === 'red' ? 'ac-btn--red' : 'ac-btn--blue'" @click="acSecurityAction(card)" class="ac-btn ac-sec__action" type="button" v-if="card.action">{{ card.action }}</button>
+        </article>
+      </div>
+
+      <button @click="acNotify('Responsible Gambling sayfasi yakinda')" class="ac-responsible" type="button">
+        <i class="fas fa-hand-paper"></i><span>Responsible Gambling</span>
+      </button>
+
+      <nav aria-label="Breadcrumb" class="ac-crumbs">
+        <button @click="navigate('/')" type="button">{{ websiteName }}</button>
+        <i class="fas fa-chevron-right"></i>
+        <span aria-current="page" class="current">Account</span>
+      </nav>
+    </div>
+
+    <!-- Verification -->
+    <div class="ac-page" v-else-if="accountPageKey==='verification'">
+      <div class="ac-verify">
+        <article class="ac-verify__card">
+          <h3>Verification status</h3>
+          <ul class="acct-checks">
+            <li :class="{done:row.done}" :key="row.label" v-for="row in verificationRows">
+              <i :class="row.done ? 'fas fa-check-circle' : 'far fa-circle'"></i>
+              <span class="acct-checks__label">{{row.label}}</span>
+              <span class="acct-checks__value">{{row.value}}</span>
+            </li>
+          </ul>
+        </article>
+        <article class="ac-verify__card" v-if="profile">
+          <h3>Contact details</h3>
+          <dl class="acct-rows">
+            <div class="acct-row"><dt>E-mail</dt><dd>{{profile.email || 'Not added'}}</dd></div>
+            <div class="acct-row"><dt>Phone</dt><dd>{{profile.phone || 'Not added'}}</dd></div>
+            <div class="acct-row"><dt>Country</dt><dd>{{(profile.address && profile.address.country) || '—'}}</dd></div>
+            <div class="acct-row"><dt>City</dt><dd>{{(profile.address && profile.address.city) || '—'}}</dd></div>
+          </dl>
+        </article>
+      </div>
+
+      <nav aria-label="Breadcrumb" class="ac-crumbs">
+        <button @click="navigate('/')" type="button">{{ websiteName }}</button>
+        <i class="fas fa-chevron-right"></i>
+        <button @click="navigate('/account')" type="button">Account</button>
+        <i class="fas fa-chevron-right"></i>
+        <span aria-current="page" class="current">Verification</span>
+      </nav>
     </div>
 
     <!-- Transaction History -->
@@ -3485,7 +3706,8 @@
           transactions:{kicker:'Payments',title:'Transaction History',description:'Every deposit, withdrawal and bonus movement on your account.',badge:'Payments',icon:'fas fa-credit-card'},
           'game-history':{kicker:'Activity',title:'Game History',description:'Your recent rounds, stakes and results.',badge:'Activity',icon:'fas fa-clock'},
           sessions:{kicker:'Security',title:'Sessions',description:'Recent sign-ins recorded for your account.',badge:'Security',icon:'fas fa-bars'},
-          vault:{kicker:'Savings',title:'Vault',description:'Move funds between your wallet and your vault to keep them apart from play.',badge:'Vault',icon:'fas fa-box'}
+          vault:{kicker:'Savings',title:'Vault',description:'Move funds between your wallet and your vault to keep them apart from play.',badge:'Vault',icon:'fas fa-box'},
+          verification:{kicker:'Security',title:'Verification',description:'Verification status and contact details for your account.',badge:'Security',icon:'fas fa-check-circle'}
         };
         const pageContent = pageMap[currentPage] || pageMap.casino;
         const isCasinoPage = ['casino','slots','originals','live-casino'].includes(currentPage);
@@ -3755,6 +3977,15 @@
           ref, computed, nextTick, authUser, userRank, topSlots, toastMessage,
         });
 
+        // Account sayfasi arayuzu ayri dosyada: casino-ui/account-page.js
+        // (profile/security account-pages.js'den gelir — canli veri)
+        const accountPage = window.createAccountPage({
+          ref, computed, currentPage, navigate,
+          profile: accountPages.profile,
+          security: accountPages.security,
+          toastMessage,
+        });
+
         async function loadCasinoGames() {
           try {
             const response = await fetch(apiUrl('/public/games/categories/with-games'), {credentials:'include'});
@@ -3878,7 +4109,7 @@
         }
         onBeforeUnmount(()=>{ window.removeEventListener('resize',handleResize); window.removeEventListener('keydown',handleKeydown); window.removeEventListener('storage',handleStorageSync); clearTimeout(searchTimer); clearInterval(promoTimer); });
         return {websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
-          ...gamePage, ...accountPages, ...walletModal, ...profileModal};
+          ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage};
       }
     }).component('game-card', GameCard).mount('#app');
   </script>

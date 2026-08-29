@@ -15,7 +15,16 @@ window.createAccountPages = function createAccountPages(ctx) {
   const { ref, computed, currentPage, apiUrl, authUser, readAuthToken } = ctx
 
   // Bu sayfalar oturum gerektirir; index.html sablonu buna gore giris ekrani gosterir.
-  const ACCOUNT_PAGES = ["wallet", "profile", "account", "transactions", "game-history", "sessions", "vault"]
+  const ACCOUNT_PAGES = [
+    "wallet",
+    "profile",
+    "account",
+    "transactions",
+    "game-history",
+    "sessions",
+    "vault",
+    "verification",
+  ]
   const isAccountPage = ACCOUNT_PAGES.includes(currentPage)
   const accountPageKey = currentPage
 

@@ -22,6 +22,7 @@ const sections = {
   "game-history": "Game History",
   sessions: "Sessions",
   vault: "Vault",
+  verification: "Verification",
 } as const
 
 // Kisisel veri gosteren sayfalar — arama motorlarina kapatiliyor.
@@ -33,6 +34,7 @@ const privateSections = new Set<string>([
   "game-history",
   "sessions",
   "vault",
+  "verification",
 ])
 
 type Section = keyof typeof sections
