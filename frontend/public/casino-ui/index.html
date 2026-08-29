@@ -14,6 +14,7 @@
 <script src="./game-detail.js"></script>
 <script src="./account-pages.js"></script>
 <script src="./wallet-modal.js"></script>
+<script src="./profile-modal.js"></script>
 <link href="./tailwind.css" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
@@ -1406,6 +1407,127 @@
       .wm-method__result strong { font-size:11px; }
       .wm-disclaimer { font-size:11px; }
     }
+
+    /* ===== Profil modali (casino-ui/profile-modal.js) ===== */
+    .pm-modal { position:relative; width:530px; max-width:calc(100vw - 16px); height:calc(100vh - 94px); max-height:815px; border-radius:14px; overflow:hidden; background:#111c27; box-shadow:0 18px 70px rgba(0,0,0,.38); font-family:'Poppins','Montserrat',Arial,sans-serif; }
+    .pm-head { position:absolute; z-index:8; left:0; right:0; top:0; height:81px; padding:0 24px; display:flex; align-items:center; background:linear-gradient(112deg,#0d4686 0%,#0c3769 48%,#10253d 100%); border-bottom:1px solid rgba(42,70,96,.28); }
+    .pm-head h1 { margin:0; font-size:26px; line-height:32px; font-weight:800; letter-spacing:-.6px; color:#f7f9fd; }
+    .pm-tip { position:absolute; right:56px; top:26px; width:101px; height:27px; padding:0; border:0; border-radius:7px; background:linear-gradient(#2375c1,#1058bd); color:#e6edf6; font-size:12px; line-height:27px; font-weight:700; box-shadow:0 7px 15px rgba(0,80,190,.3), inset 0 1px 0 rgba(255,255,255,.15); cursor:pointer; }
+    .pm-tip i { margin-right:4px; }
+    .pm-close { position:absolute; z-index:10; right:18px; top:19px; width:24px; height:31px; border:0; padding:0; background:transparent; color:#b8c7da; font-size:17px; cursor:pointer; }
+    .pm-scroll { position:absolute; inset:81px 0 0; overflow-y:auto; overflow-x:hidden; scrollbar-width:none; overscroll-behavior:contain; }
+    .pm-scroll::-webkit-scrollbar { display:none; }
+
+    .pm-intro { position:relative; height:177px; border-bottom:1px solid #263544; }
+    .pm-avatar-col { position:absolute; left:24px; top:16px; width:120px; text-align:center; }
+    .pm-avatar { display:block; width:100px; height:100px; border-radius:50%; object-fit:cover; margin:0 auto; background:#1b2634; }
+    .pm-rank-pill { display:inline-flex; height:18px; align-items:center; justify-content:center; margin-top:14px; min-width:50px; padding:0 8px; border-radius:10px; background:#ff174d; color:#fff; font-size:11px; line-height:18px; font-weight:800; }
+    .pm-identity { position:absolute; left:168px; top:17px; right:28px; }
+    .pm-member-age { color:#b7c4d7; font-size:12px; line-height:17px; font-weight:700; }
+    .pm-username { margin-top:3px; font-size:30px; line-height:36px; letter-spacing:-.6px; font-weight:800; color:#fafbfe; word-break:break-word; }
+
+    .pm-activity { position:absolute; z-index:7; top:84px; left:168px; width:334px; max-width:calc(100% - 196px); height:44px; overflow:hidden; border-radius:10px; background:#1b2634; transition:height .12s ease, box-shadow .12s ease, background .12s ease; }
+    .pm-activity.is-open { height:293px; background:#202b3a; box-shadow:0 14px 25px rgba(0,0,0,.2); }
+    .pm-activity__head { width:100%; height:44px; border:0; padding:0 13px 0 16px; background:transparent; color:#f7f9fd; display:flex; align-items:center; cursor:pointer; }
+    .pm-activity__head .pm-chat-icon { width:21px; color:#74869f; font-size:18px; text-align:left; }
+    .pm-activity__name { margin-left:11px; font-size:17px; line-height:22px; font-weight:700; white-space:nowrap; }
+    .pm-activity__level { margin-left:auto; color:#75869f; font-size:13px; font-weight:800; }
+    .pm-activity__tier { height:21px; margin-left:8px; padding:0 10px; display:inline-flex; align-items:center; border-radius:12px; background:#667892; color:#fff; font-size:12px; font-weight:800; }
+    .pm-caret { width:8px; height:8px; margin-left:12px; border-right:2px solid #8ea0b8; border-bottom:2px solid #8ea0b8; transform:rotate(45deg) translateY(-2px); transition:transform .12s ease; }
+    .is-open .pm-caret { transform:rotate(225deg) translate(-1px,-1px); }
+    .pm-activity__body { padding:2px 14px 0; }
+    .pm-activity__line { height:51px; padding-top:10px; }
+    .pm-activity__row { display:flex; align-items:center; color:#afbdd1; font-size:15px; line-height:20px; font-weight:600; }
+    .pm-activity__row .pm-emoji { width:18px; font-size:14px; }
+    .pm-activity__row .pm-score { margin-left:auto; color:#72839d; font-size:13px; font-weight:800; }
+    .pm-activity__row .pm-score b { color:#18c44c; }
+    .pm-bar { height:4px; margin-top:8px; overflow:hidden; border-radius:4px; background:#233043; }
+    .pm-bar span { display:block; height:100%; border-radius:4px; background:#18c44c; }
+    .pm-activity__foot { height:43px; display:flex; align-items:center; border:0; padding:0; background:transparent; color:#2d91ff; font-size:15px; font-weight:800; cursor:pointer; }
+    .pm-arrow { display:inline-block; width:9px; height:9px; margin-left:9px; border-top:2px solid currentColor; border-right:2px solid currentColor; transform:rotate(45deg); }
+
+    .pm-body { padding:0 24px 40px; }
+    .pm-section { margin-top:25px; }
+    .pm-section:first-child { margin-top:22px; }
+    .pm-section__head { min-height:25px; display:flex; align-items:center; }
+    .pm-section__head h2 { margin:0; color:#f8f9fc; font-size:19px; line-height:25px; font-weight:800; letter-spacing:-.25px; }
+    .pm-details-link { margin-left:auto; border:0; background:transparent; color:#2d91ff; font-size:15px; line-height:23px; font-weight:800; padding:0 4px; cursor:pointer; }
+    .pm-details-link .pm-arrow { width:8px; height:8px; margin-left:8px; }
+    .pm-metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin-top:10px; }
+    .pm-metric { min-height:66px; border-radius:10px; background:#1a2531; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:6px; }
+    .pm-metric__label { color:#70819a; font-size:12px; line-height:16px; font-weight:700; white-space:nowrap; }
+    .pm-metric__value { margin-top:4px; color:#f9fafc; font-size:15px; line-height:19px; font-weight:800; }
+    .pm-help { display:inline-flex; width:14px; height:14px; margin-left:3px; align-items:center; justify-content:center; border-radius:50%; border:1px solid #71849c; font-size:8px; vertical-align:1px; }
+    .pm-divider { height:1px; margin-top:19px; background:#263544; }
+
+    .pm-games { margin-top:22px; }
+    .pm-games h2, .pm-battles h2 { margin:0; color:#f8f9fc; font-size:21px; line-height:25px; font-weight:800; letter-spacing:-.3px; }
+    .pm-games__row { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:9px; margin-top:8px; }
+    .pm-game { min-width:0; }
+    .pm-game__cover { display:block; width:100%; aspect-ratio:114/149; border-radius:13px; object-fit:cover; background:#1a2531; }
+    .pm-game__meta { margin-top:12px; }
+    .pm-game__meta small { display:block; color:#71819a; font-size:11px; line-height:14px; font-weight:700; }
+    .pm-game__meta strong { display:block; color:#f8f9fc; font-size:14px; line-height:18px; font-weight:800; }
+    .pm-battles { margin-top:19px; }
+    .pm-battles h2 { font-size:20px; line-height:29px; }
+    .pm-table { width:100%; margin-top:13px; border-collapse:collapse; table-layout:fixed; font-size:12px; }
+    .pm-table th { height:26px; padding:0 1px 7px; text-align:left; color:#70819a; border-bottom:1px solid #263544; font-weight:800; }
+    .pm-table th:nth-child(1) { width:31.3%; }
+    .pm-table th:nth-child(2) { width:21.4%; }
+    .pm-table th:nth-child(3) { width:13.5%; }
+    .pm-table th:nth-child(4) { width:33.8%; }
+    .pm-table td { height:36px; padding:0 1px; border-bottom:1px solid #202e3c; color:#f6f8fb; font-weight:800; white-space:nowrap; }
+    .pm-table tr:last-child td { border-bottom:0; }
+    .pm-table .pm-muted { color:#b5c2d5; }
+    .pm-table .pm-place { color:#9fb5d6; }
+    .pm-prize-coins { display:inline-flex; margin-right:7px; vertical-align:middle; }
+    .pm-prize-coins img { width:20px; height:20px; border-radius:50%; border:2px solid #a8dec9; background:#18a678; }
+    .pm-prize-coins img + img { margin-left:-5px; border-color:#fff; background:#f32658; }
+
+    .pm-modal--details { padding:0 24px; }
+    .pm-details-top { height:73px; display:flex; align-items:center; }
+    .pm-back { width:34px; height:34px; border:0; border-radius:9px; background:#303a46; color:#d9e0e9; font-size:13px; cursor:pointer; }
+    .pm-details-top h1 { margin:0 0 0 9px; font-size:18px; line-height:24px; font-weight:800; color:#f7f9fd; }
+    .pm-modal--details .pm-close { top:14px; right:17px; }
+    .pm-filter { position:relative; height:36px; border:0; width:100%; border-radius:9px; background:#202c3a; display:flex; align-items:center; padding:0 14px; color:#fff; font-size:13px; font-weight:800; cursor:pointer; }
+    .pm-filter .pm-caret { position:absolute; right:14px; top:13px; margin:0; }
+    .pm-filter-menu { position:absolute; left:24px; right:24px; top:111px; z-index:9; padding:5px; border-radius:9px; background:#263443; box-shadow:0 13px 25px rgba(0,0,0,.35); }
+    .pm-filter-menu button { width:100%; height:31px; border:0; border-radius:6px; background:transparent; color:#dbe3ee; text-align:left; padding:0 10px; font-size:12px; font-weight:700; cursor:pointer; }
+    .pm-filter-menu button:hover { background:#324356; }
+    .pm-detail-table { margin-top:18px; }
+    .pm-detail-head, .pm-detail-row { display:grid; grid-template-columns:48% 52%; }
+    .pm-detail-head { height:24px; color:#71839d; font-size:12px; line-height:20px; font-weight:800; border-bottom:1px solid #2b3949; }
+    .pm-detail-row { height:45px; align-items:center; border-bottom:1px solid #2b3949; color:#f8f9fc; font-weight:800; }
+    .pm-detail-row .pm-wager { display:flex; align-items:center; min-width:0; font-size:13px; line-height:18px; }
+    .pm-detail-row .pm-bet { font-size:15px; line-height:19px; }
+    .pm-detail-row img { width:21px; height:21px; margin-right:6px; flex:0 0 auto; }
+
+    @media (max-width:600px) {
+      .pm-modal { width:calc(100vw - 16px); height:calc(100vh - 16px); max-height:none; border-radius:13px; }
+      .pm-head { padding:0 18px; }
+      .pm-head h1 { font-size:24px; }
+      .pm-tip { right:50px; }
+      .pm-intro { height:193px; }
+      .pm-avatar-col { left:11px; width:105px; }
+      .pm-avatar { width:88px; height:88px; }
+      .pm-rank-pill { margin-top:11px; }
+      .pm-identity { left:124px; right:14px; }
+      .pm-username { font-size:25px; }
+      .pm-activity { left:14px; right:14px; top:140px; width:auto; max-width:none; }
+      .pm-activity__head { padding-left:13px; padding-right:11px; }
+      .pm-activity__name { font-size:15px; margin-left:8px; }
+      .pm-activity__level { font-size:12px; }
+      .pm-activity__tier { padding:0 8px; margin-left:7px; }
+      .pm-caret { margin-left:9px; }
+      .pm-body { padding-left:14px; padding-right:14px; }
+      .pm-metrics { gap:8px; }
+      .pm-metric__label { font-size:10px; }
+      .pm-metric__value { font-size:14px; }
+      .pm-games__row { grid-template-columns:repeat(4,114px); overflow-x:auto; padding-bottom:5px; }
+      .pm-games__row::-webkit-scrollbar { display:none; }
+      .pm-modal--details { padding:0 16px; }
+      .pm-filter-menu { left:16px; right:16px; }
+    }
   </style>
 </head>
 <body>
@@ -1445,7 +1567,7 @@
 </div>
 <div class="user-dropdown__menu">
 <button @click="userMenuOpen=false; openWallet('wallet')"><i class="fas fa-wallet"></i> Wallet</button>
-<button @click="goAccount('/profile')"><i class="fas fa-user"></i> My Profile</button>
+<button @click="userMenuOpen=false; openProfileModal()"><i class="fas fa-user"></i> My Profile</button>
 <button @click="goAccount('/account')"><i class="fas fa-id-badge"></i> Account</button>
 <button @click="goAccount('/transactions')"><i class="fas fa-credit-card"></i> Transaction History</button>
 <button @click="goAccount('/game-history')"><i class="fas fa-clock"></i> Game History</button>
@@ -2367,6 +2489,114 @@
 </div>
 </div>
 </div>
+<!-- ===== Profil modali (Profile / Details) — mantik: casino-ui/profile-modal.js ===== -->
+<transition name="fade">
+<div :class="{'modal-backdrop--chat':chatOpen}" @click.self="closeProfileModal" class="modal-backdrop" v-if="pmIsOpen">
+
+  <!-- Kok: Profile -->
+  <section aria-label="Profile" class="pm-modal" role="dialog" v-if="pmView==='profile'">
+    <header class="pm-head">
+      <h1>Profile</h1>
+      <button @click="profileLeaveTip" class="pm-tip" type="button"><i class="fas fa-hand-holding-usd"></i>Leave a tip</button>
+      <button @click="closeProfileModal" aria-label="Kapat" class="pm-close" type="button"><i class="fas fa-times"></i></button>
+    </header>
+    <div class="pm-scroll" ref="pmScroll">
+      <section class="pm-intro">
+        <div class="pm-avatar-col">
+          <img alt="" class="pm-avatar" src="assets/user-avatar-raccoon.png"/>
+          <span class="pm-rank-pill">{{ pmRankLabel }}</span>
+        </div>
+        <div class="pm-identity">
+          <div class="pm-member-age">{{ pmMemberAge }}</div>
+          <div class="pm-username">{{ pmUsername }}</div>
+        </div>
+        <div :class="{'is-open':pmActivityOpen}" class="pm-activity">
+          <button @click="toggleProfileActivity" class="pm-activity__head" type="button">
+            <i class="fas fa-comment-dots pm-chat-icon"></i>
+            <span class="pm-activity__name">Chat activity</span>
+            <span class="pm-activity__level">{{ pmChatLevel }}</span>
+            <span class="pm-activity__tier">{{ pmChatTier }}</span>
+            <span class="pm-caret"></span>
+          </button>
+          <div class="pm-activity__body">
+            <div :key="item.label" class="pm-activity__line" v-for="item in pmChatActivity">
+              <div class="pm-activity__row">
+                <span class="pm-emoji">{{ item.emoji }}</span><span>{{ item.label }}</span>
+                <span class="pm-score"><b>{{ item.current }}</b> / {{ item.total }}</span>
+              </div>
+              <div class="pm-bar"><span :style="{width:item.progress + '%'}"></span></div>
+            </div>
+            <button @click="toggleProfileActivity" class="pm-activity__foot" type="button">Chat Activity details <span class="pm-arrow"></span></button>
+          </div>
+        </div>
+      </section>
+      <div class="pm-body">
+        <section :key="section.title" class="pm-section" v-for="(section,index) in pmMetricSections">
+          <div class="pm-section__head">
+            <h2>{{ section.title }}</h2>
+            <button @click="openProfileDetails" class="pm-details-link" type="button" v-if="index===0">Details <span class="pm-arrow"></span></button>
+          </div>
+          <div class="pm-metrics">
+            <article :key="metric.label" class="pm-metric" v-for="metric in section.metrics">
+              <div class="pm-metric__label">{{ metric.label }}<span class="pm-help" v-if="metric.help">?</span></div>
+              <div class="pm-metric__value">{{ metric.value }}</div>
+            </article>
+          </div>
+        </section>
+        <div class="pm-divider"></div>
+        <section class="pm-games">
+          <h2>Top Played Games</h2>
+          <div class="pm-games__row">
+            <article :key="game.key" class="pm-game" v-for="game in pmGames">
+              <img :alt="game.name" :src="game.image" class="pm-game__cover"/>
+              <div class="pm-game__meta"><small>Wagered</small><strong>{{ game.amount }}</strong></div>
+            </article>
+          </div>
+        </section>
+        <div class="pm-divider"></div>
+        <section class="pm-battles">
+          <h2>TOP Battles Rewards</h2>
+          <table class="pm-table">
+            <thead><tr><th>Battle Name</th><th>Date</th><th>Place</th><th>Prize</th></tr></thead>
+            <tbody>
+              <tr :key="battle.name" v-for="battle in pmBattles">
+                <td>{{ battle.name }}</td>
+                <td class="pm-muted">{{ battle.date }}</td>
+                <td class="pm-place">{{ battle.place }}</td>
+                <td>
+                  <span class="pm-prize-coins" v-if="battle.coins"><img alt="" src="assets/coin-usdt.png"/><img alt="" src="assets/coin-bfg.png"/></span>{{ battle.prize }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <!-- Details -->
+  <section aria-label="Statistics details" class="pm-modal pm-modal--details" role="dialog" v-else-if="pmView==='details'">
+    <div class="pm-details-top">
+      <button @click="backToProfileView" aria-label="Geri" class="pm-back" type="button"><i class="fas fa-chevron-left"></i></button>
+      <h1>Details</h1>
+    </div>
+    <button @click="closeProfileModal" aria-label="Kapat" class="pm-close" type="button"><i class="fas fa-times"></i></button>
+    <button @click="toggleProfileFilter" class="pm-filter" type="button">{{ pmFilter }}<span class="pm-caret"></span></button>
+    <div class="pm-filter-menu" v-if="pmFilterOpen">
+      <button :key="filter" @click.stop="selectProfileFilter(filter)" type="button" v-for="filter in pmFilters">{{ filter }}</button>
+    </div>
+    <div class="pm-detail-table">
+      <div class="pm-detail-head"><span>Wagered</span><span>Bet</span></div>
+      <div :key="row.currency" class="pm-detail-row" v-for="row in pmDetailRows">
+        <div class="pm-wager"><img :src="row.icon" alt="" v-if="row.icon"/><span>{{ row.amount }} {{ row.currency }}</span></div>
+        <div class="pm-bet">{{ row.bet }}</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</transition>
+
 <!-- ===== Cuzdan modali (Wallet / Crypto Swap / Deposit) ===== -->
 <transition name="fade">
 <div :class="{'modal-backdrop--chat':chatOpen}" @click.self="closeWallet" class="modal-backdrop" v-if="walletIsOpen">
@@ -3346,7 +3576,7 @@
         const staking = [
           {name:`${WEBSITE_NAME} Staking`,code:'SITE',label:'APY',rate:'42.24%',duration:'Flexible',image:'/logo.svg',class:''},
           {name:'Binance Coin',code:'BNB',label:'Est.APR',rate:'60%',duration:'365 Days',symbol:'⬡',class:'bnb'},
-          {name:'Bitcoin',code:'BTC',label:'Est.APR',rate:'60%',duration:'365 Days',symbol:'��',class:'btc'},
+          {name:'Bitcoin',code:'BTC',label:'Est.APR',rate:'60%',duration:'365 Days',symbol:'����',class:'btc'},
           {name:'Ethereum',code:'ETH',label:'Est.APR',rate:'60%',duration:'365 Days',symbol:'♦',class:'eth'},
           {name:'Tron',code:'TRX',label:'Est.APR',rate:'60%',duration:'365 Days',symbol:'▽',class:'trx'},
           {name:'Tether',code:'USDT',label:'Est.APR',rate:'60%',duration:'365 Days',symbol:'��',class:'usdt'}
@@ -3520,6 +3750,11 @@
           ref, computed, watch, apiUrl, authUser, readAuthToken, requestAuth, toastMessage,
         });
 
+        // Profil modali mantigi ayri dosyada: casino-ui/profile-modal.js
+        const profileModal = window.createProfileModal({
+          ref, computed, nextTick, authUser, userRank, topSlots, toastMessage,
+        });
+
         async function loadCasinoGames() {
           try {
             const response = await fetch(apiUrl('/public/games/categories/with-games'), {credentials:'include'});
@@ -3643,7 +3878,7 @@
         }
         onBeforeUnmount(()=>{ window.removeEventListener('resize',handleResize); window.removeEventListener('keydown',handleKeydown); window.removeEventListener('storage',handleStorageSync); clearTimeout(searchTimer); clearInterval(promoTimer); });
         return {websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
-          ...gamePage, ...accountPages, ...walletModal};
+          ...gamePage, ...accountPages, ...walletModal, ...profileModal};
       }
     }).component('game-card', GameCard).mount('#app');
   </script>
