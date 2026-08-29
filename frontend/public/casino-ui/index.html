@@ -1567,7 +1567,9 @@
     .ac-cashback__title { color:#f7f8fb; font-size:13px; font-weight:900; }
     .ac-cashback__numbers { margin-top:3px; display:flex; align-items:center; gap:7px; font-size:32px; line-height:36px; font-weight:900; }
     .ac-cashback__now { color:#0bc545; }
-    .ac-cashback__sep { color:#223044; letter-spacing:-8px; transform:skewX(-7deg); }
+    .ac-cashback__sep { display:flex; align-items:center; color:#223044; font-size:26px; transform:skewX(-7deg); }
+    .ac-cashback__sep i { margin-right:-9px; }
+    .ac-cashback__sep i:last-child { margin-right:0; }
     .ac-cashback__next { color:#202c3f; }
 
     .ac-promo { margin-top:32px; display:grid; grid-template-columns:minmax(0,688fr) minmax(0,336fr); gap:16px; }
@@ -1618,10 +1620,12 @@
        (rank basligi/caption nowrap oldugu icin tasiyor, mascot metnin ustune biniyor). */
     @media (max-width:1180px) {
       .ac-summary { grid-template-columns:1fr; gap:14px; }
-      .ac-rank__caption { white-space:normal; text-align:left; }
-      .ac-bot__copy { width:56%; }
-      .ac-bot__art { width:290px; height:280px; right:-30px; top:26px; }
-      .ac-bot__cta { width:min(280px,52%); }
+      .ac-rank__main { position:static; padding:16px 24px 0 76px; }
+      .ac-rank__bar-row { max-width:420px; }
+      .ac-rank__caption { position:static; margin-top:10px; padding-left:76px; text-align:left; white-space:normal; }
+      .ac-bot__copy { width:50%; }
+      .ac-bot__art { width:240px; height:250px; right:-40px; top:40px; }
+      .ac-bot__cta { width:min(280px,46%); }
       .ac-security { grid-template-columns:repeat(2,minmax(0,1fr)); }
     }
     @media (max-width:900px) {
@@ -2088,7 +2092,7 @@
             <div class="ac-cashback__title">My Cashback:</div>
             <div class="ac-cashback__numbers">
               <span class="ac-cashback__now">{{ acCashbackCurrent }}</span>
-              <span class="ac-cashback__sep">❯❯❯</span>
+              <span class="ac-cashback__sep"><i class="fas fa-angle-right"></i><i class="fas fa-angle-right"></i><i class="fas fa-angle-right"></i></span>
               <span class="ac-cashback__next">{{ acCashbackNext }}</span>
             </div>
           </div>
