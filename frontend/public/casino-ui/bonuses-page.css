@@ -360,6 +360,7 @@
 .bn-page .reg-value--spaced{margin-top:14px}
 .bn-page .reg-fine{color:#a4bee5;font-size:13px;line-height:21px;margin-top:10px}
 .bn-page .reg-fine b{color:#fff}
+.bn-page .reg-fine + .reg-label--strong{margin-top:18px}
 .bn-page .vip-notice{margin-top:16px;border:1px solid #6d5222;border-radius:11px;background:#18222f;padding:12px 14px}
 .bn-page .vip-notice strong{display:block;color:#ffbd28;font-size:15px;margin-bottom:6px}
 .bn-page .vip-notice span{display:block;color:#fff;font-size:14px;font-weight:700;line-height:24px}
