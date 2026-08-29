@@ -635,17 +635,25 @@
     .gl-cover__play:hover:not(:disabled) { transform:scale(1.06); box-shadow:0 3px 22px rgba(255,35,65,.62), inset 0 4px 4px rgba(255,255,255,.37); }
     .gl-cover__play:disabled { cursor:progress; opacity:.72; }
     .gl-cover__play i { margin-left:3px; }
-    .gl-viewport.is-starlight { aspect-ratio:2084/1378; }
-    .gl-reference-launch { position:absolute; inset:0; overflow:hidden; }
-    .gl-reference-launch__image { width:100%; height:100%; display:block; object-fit:cover; }
-    .gl-reference-hotspot { position:absolute; z-index:2; border:0; border-radius:10px; background:transparent; cursor:pointer; }
-    .gl-reference-hotspot--currency { left:50.5%; top:43%; width:15.2%; height:5.8%; }
-    .gl-reference-hotspot--demo { left:34.5%; top:50.05%; width:14.8%; height:7.2%; }
-    .gl-reference-hotspot--real { left:50.5%; top:50.05%; width:14.8%; height:7.2%; }
-    .gl-reference-hotspot:hover { box-shadow:inset 0 0 0 2px rgba(255,255,255,.08); }
-    .gl-reference-currencies { position:absolute; z-index:4; left:50.5%; top:49%; width:15.2%; min-width:135px; padding:7px; border:1px solid #43556d; border-radius:10px; background:#253345; box-shadow:0 13px 28px rgba(0,0,0,.45); }
-    .gl-reference-currencies button { width:100%; padding:8px; border:0; border-radius:7px; background:transparent; color:#fff; font-size:12px; text-align:left; cursor:pointer; }
-    .gl-reference-currencies button:hover { background:#34465b; }
+    .gl-launch { position:absolute; inset:0; display:grid; place-items:center; overflow:hidden; background:#101a27; }
+    .gl-launch__art { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:saturate(.78); transform:scale(1.015); }
+    .gl-launch__veil { position:absolute; inset:0; background:rgba(11,27,43,.82); }
+    .gl-launch__controls { position:relative; z-index:2; width:min(400px,calc(100% - 32px)); display:flex; flex-direction:column; gap:14px; }
+    .gl-launch__currency-wrap { position:relative; }
+    .gl-launch__currency { width:100%; height:46px; display:grid; grid-template-columns:1fr auto 18px; align-items:center; gap:10px; padding:0 14px; border:1px solid rgba(102,126,151,.22); border-radius:10px; background:rgba(48,65,84,.78); color:#dce4ef; font:700 15px/1 inherit; cursor:pointer; backdrop-filter:blur(8px); }
+    .gl-launch__currency strong { display:flex; align-items:center; color:#fff; font-size:14px; }
+    .gl-launch__currency i { color:#99abc0; font-size:12px; transition:transform .2s ease; }
+    .gl-launch__currency[aria-expanded="true"] i { transform:rotate(180deg); }
+    .gl-launch__currencies { position:absolute; z-index:3; top:52px; right:0; width:132px; padding:6px; border:1px solid #43556d; border-radius:9px; background:#253345; box-shadow:0 13px 28px rgba(0,0,0,.45); }
+    .gl-launch__currencies button { width:100%; padding:8px; border:0; border-radius:6px; background:transparent; color:#fff; font:700 12px/1 inherit; text-align:left; cursor:pointer; }
+    .gl-launch__currencies button:hover { background:#34465b; }
+    .gl-launch__actions { display:flex; gap:12px; }
+    .gl-launch__actions > button { height:48px; flex:1; border:0; border-radius:10px; color:#fff; font:800 15px/1 inherit; cursor:pointer; }
+    .gl-launch__demo { background:rgba(79,99,119,.68); box-shadow:inset 0 1px 0 rgba(255,255,255,.06); }
+    .gl-launch__real { background:linear-gradient(180deg,#ff2457,#dc0040); box-shadow:inset 0 3px 0 rgba(255,112,137,.72),0 5px 0 #a90032,0 8px 24px rgba(245,12,73,.3); }
+    .gl-launch__actions > button:hover:not(:disabled) { filter:brightness(1.08); }
+    .gl-launch__actions > button:disabled { cursor:progress; opacity:.72; }
+    .gl-launch__error { display:flex; align-items:flex-start; justify-content:center; gap:7px; margin:0; padding:8px 12px; border-radius:9px; background:rgba(255,23,79,.16); color:#ff9ab0; font-size:12px; line-height:1.4; text-align:center; }
 
     .gl-meta { width:100%; height:72px; margin-top:20px; padding:0 17px; display:flex; align-items:center; justify-content:space-between; border:0; border-radius:12px 12px 0 0; color:#f5f6f8; background:#18222f; font-family:inherit; text-align:left; cursor:pointer; }
     .gl-meta__copy { display:flex; align-items:baseline; min-width:0; gap:11px; }
@@ -2013,30 +2021,26 @@
         </div>
       </div>
 
-      <div :class="{'is-starlight': useStarlightLaunchScreen}" class="gl-viewport" id="glViewport">
+      <div class="gl-viewport" id="glViewport">
         <iframe :src="launchUrl" :title="detailGame.game_name" allow="autoplay; fullscreen" class="gl-viewport__media" v-if="launchState === 'ready'"></iframe>
-        <div class="gl-reference-launch" v-else-if="useStarlightLaunchScreen">
-          <img alt="Starlight Princess 1000 game launch screen" class="gl-reference-launch__image" src="assets/starlight-launch-screen.png"/>
-          <button @click.stop="gameCurrencyOpen = !gameCurrencyOpen" aria-label="Choose display currency" class="gl-reference-hotspot gl-reference-hotspot--currency" type="button"></button>
-          <button @click="setDemoMode(true)" aria-label="Play demo" class="gl-reference-hotspot gl-reference-hotspot--demo" type="button"></button>
-          <button :disabled="launchState === 'loading'" @click="startGame" aria-label="Play for real" class="gl-reference-hotspot gl-reference-hotspot--real" type="button"></button>
-          <div @click.stop class="gl-reference-currencies" v-if="gameCurrencyOpen">
-            <button @click="gameCurrencyOpen=false; notifyGame('Balance displayed in USD')" type="button">USD</button>
-            <button @click="gameCurrencyOpen=false; notifyGame('Balance displayed in USDT')" type="button">USDT</button>
-          </div>
-        </div>
-        <div class="gl-cover" v-else>
-          <img alt="" :src="detailGame.background || detailGame.banner" class="gl-cover__bg" v-if="detailGame.background || detailGame.banner"/>
-          <span class="gl-cover__shade"></span>
-          <div class="gl-cover__inner">
-            <img :alt="detailGame.game_name" :src="detailGame.banner" class="gl-cover__thumb" v-if="detailGame.banner"/>
-            <h1 class="gl-cover__title">{{detailGame.game_name}}</h1>
-            <p class="gl-cover__provider" v-if="detailProviderName">{{detailProviderName}}</p>
-            <p class="gl-cover__error" v-if="launchState === 'error'"><i class="fas fa-circle-exclamation"></i> {{launchError}}</p>
-            <button :aria-label="'Play ' + detailGame.game_name" :disabled="launchState === 'loading'" @click="startGame" class="gl-cover__play" type="button">
-              <span class="game-spinner" v-if="launchState === 'loading'"></span>
-              <i class="fas fa-play" v-else></i>
-            </button>
+        <div class="gl-launch" v-else>
+          <img alt="" :src="detailLaunchArtwork" class="gl-launch__art" v-if="detailLaunchArtwork"/>
+          <span aria-hidden="true" class="gl-launch__veil"></span>
+          <div class="gl-launch__controls">
+            <div class="gl-launch__currency-wrap">
+              <button :aria-expanded="gameCurrencyOpen" @click.stop="gameCurrencyOpen = !gameCurrencyOpen" class="gl-launch__currency" type="button">
+                <span>Display balance in</span><strong>USD</strong><i class="fas fa-chevron-down"></i>
+              </button>
+              <div @click.stop class="gl-launch__currencies" v-if="gameCurrencyOpen">
+                <button @click="gameCurrencyOpen=false; notifyGame('Balance displayed in USD')" type="button">USD</button>
+                <button @click="gameCurrencyOpen=false; notifyGame('Balance displayed in USDT')" type="button">USDT</button>
+              </div>
+            </div>
+            <div class="gl-launch__actions">
+              <button @click="setDemoMode(true)" class="gl-launch__demo" type="button">Demo Play</button>
+              <button :disabled="launchState === 'loading'" @click="startGame" class="gl-launch__real" type="button"><span class="game-spinner" v-if="launchState === 'loading'"></span><span v-else>Real Play</span></button>
+            </div>
+            <p class="gl-launch__error" role="alert" v-if="launchState === 'error'"><i class="fas fa-circle-exclamation"></i> {{launchError}}</p>
           </div>
         </div>
       </div>

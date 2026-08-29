@@ -33,9 +33,10 @@ window.createGameDetail = function createGameDetail(ctx) {
   let toastTimer = null
 
   const detailGame = computed(() => (gameDetail.value ? gameDetail.value.game : null))
-  const useStarlightLaunchScreen = computed(() => {
+  const detailLaunchArtwork = computed(() => {
     const game = detailGame.value
-    return /starlight princess/i.test(String((game && game.game_name) || routeGameCode))
+    if (!game) return ""
+    return game.background || game.cover || game.banner || ""
   })
 
   const detailProviderName = computed(() => {
@@ -107,6 +108,7 @@ window.createGameDetail = function createGameDetail(ctx) {
     return Object.assign({}, game, {
       banner: backendAssetUrl(game.banner),
       background: backendAssetUrl(game.background),
+      cover: backendAssetUrl(game.cover),
     })
   }
 
@@ -284,7 +286,7 @@ window.createGameDetail = function createGameDetail(ctx) {
     launchTheatre,
     gameFavorite,
     gameCurrencyOpen,
-    useStarlightLaunchScreen,
+    detailLaunchArtwork,
     loadGameDetail,
     startGame,
     exitGame,
