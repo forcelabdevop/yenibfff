@@ -15,17 +15,20 @@ const sortByOrder = (list = []) =>
 
 router.get("/casino-ui-settings", async (req, res) => {
 	try {
-		let settings = await SiteSettings.findOne().select("casinoUi").lean();
+		// .lean() KULLANMA: Mongoose varsayılanları yalnızca doküman hydrate
+		// edilirken uygulanır, lean sorguda uygulanmaz. Bu değişiklikten önce
+		// oluşmuş kayıtlarda casinoUi alanı yok, bu yüzden hydrate edip
+		// varsayılanların dolmasını sağlıyoruz.
+		let doc = await SiteSettings.findOne();
 
 		// Kayıt yoksa şema varsayılanlarıyla oluştur; casino-ui her zaman dolu
 		// bir yapı alsın diye ilk isteği boş dönmüyoruz.
-		if (!settings) {
-			const created = new SiteSettings();
-			await created.save();
-			settings = created.toObject();
+		if (!doc) {
+			doc = new SiteSettings();
+			await doc.save();
 		}
 
-		const casinoUi = settings.casinoUi || {};
+		const casinoUi = doc.toObject().casinoUi || {};
 		const footer = casinoUi.footer || {};
 
 		res.status(200).json({

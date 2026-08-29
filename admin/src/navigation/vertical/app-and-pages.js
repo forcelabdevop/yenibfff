@@ -411,6 +411,26 @@ export default [
 
   { heading: "CMS Yönetimi" },
   {
+    title: "Casino Arayüzü",
+    icon: { icon: "tabler-layout-bottombar" },
+    action: "read",
+    subject: "platform",
+    children: [
+      {
+        title: "Footer",
+        to: "apps-casino-ui-footer",
+        action: "read",
+        subject: "platform",
+      },
+      {
+        title: "Lobi Bileşenleri",
+        to: "apps-casino-ui-lobby",
+        action: "read",
+        subject: "platform",
+      },
+    ],
+  },
+  {
     title: "Bannerlar",
     icon: { icon: "tabler-photo" },
     to: "apps-banner",
