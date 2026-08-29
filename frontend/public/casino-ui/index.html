@@ -635,6 +635,17 @@
     .gl-cover__play:hover:not(:disabled) { transform:scale(1.06); box-shadow:0 3px 22px rgba(255,35,65,.62), inset 0 4px 4px rgba(255,255,255,.37); }
     .gl-cover__play:disabled { cursor:progress; opacity:.72; }
     .gl-cover__play i { margin-left:3px; }
+    .gl-viewport.is-starlight { aspect-ratio:2084/1378; }
+    .gl-reference-launch { position:absolute; inset:0; overflow:hidden; }
+    .gl-reference-launch__image { width:100%; height:100%; display:block; object-fit:cover; }
+    .gl-reference-hotspot { position:absolute; z-index:2; border:0; border-radius:10px; background:transparent; cursor:pointer; }
+    .gl-reference-hotspot--currency { left:50.5%; top:43%; width:15.2%; height:5.8%; }
+    .gl-reference-hotspot--demo { left:34.5%; top:50.05%; width:14.8%; height:7.2%; }
+    .gl-reference-hotspot--real { left:50.5%; top:50.05%; width:14.8%; height:7.2%; }
+    .gl-reference-hotspot:hover { box-shadow:inset 0 0 0 2px rgba(255,255,255,.08); }
+    .gl-reference-currencies { position:absolute; z-index:4; left:50.5%; top:49%; width:15.2%; min-width:135px; padding:7px; border:1px solid #43556d; border-radius:10px; background:#253345; box-shadow:0 13px 28px rgba(0,0,0,.45); }
+    .gl-reference-currencies button { width:100%; padding:8px; border:0; border-radius:7px; background:transparent; color:#fff; font-size:12px; text-align:left; cursor:pointer; }
+    .gl-reference-currencies button:hover { background:#34465b; }
 
     .gl-meta { width:100%; height:72px; margin-top:20px; padding:0 17px; display:flex; align-items:center; justify-content:space-between; border:0; border-radius:12px 12px 0 0; color:#f5f6f8; background:#18222f; font-family:inherit; text-align:left; cursor:pointer; }
     .gl-meta__copy { display:flex; align-items:baseline; min-width:0; gap:11px; }
@@ -2002,8 +2013,18 @@
         </div>
       </div>
 
-      <div class="gl-viewport" id="glViewport">
+      <div :class="{'is-starlight': useStarlightLaunchScreen}" class="gl-viewport" id="glViewport">
         <iframe :src="launchUrl" :title="detailGame.game_name" allow="autoplay; fullscreen" class="gl-viewport__media" v-if="launchState === 'ready'"></iframe>
+        <div class="gl-reference-launch" v-else-if="useStarlightLaunchScreen">
+          <img alt="Starlight Princess 1000 game launch screen" class="gl-reference-launch__image" src="assets/starlight-launch-screen.png"/>
+          <button @click.stop="gameCurrencyOpen = !gameCurrencyOpen" aria-label="Choose display currency" class="gl-reference-hotspot gl-reference-hotspot--currency" type="button"></button>
+          <button @click="setDemoMode(true)" aria-label="Play demo" class="gl-reference-hotspot gl-reference-hotspot--demo" type="button"></button>
+          <button :disabled="launchState === 'loading'" @click="startGame" aria-label="Play for real" class="gl-reference-hotspot gl-reference-hotspot--real" type="button"></button>
+          <div @click.stop class="gl-reference-currencies" v-if="gameCurrencyOpen">
+            <button @click="gameCurrencyOpen=false; notifyGame('Balance displayed in USD')" type="button">USD</button>
+            <button @click="gameCurrencyOpen=false; notifyGame('Balance displayed in USDT')" type="button">USDT</button>
+          </div>
+        </div>
         <div class="gl-cover" v-else>
           <img alt="" :src="detailGame.background || detailGame.banner" class="gl-cover__bg" v-if="detailGame.background || detailGame.banner"/>
           <span class="gl-cover__shade"></span>

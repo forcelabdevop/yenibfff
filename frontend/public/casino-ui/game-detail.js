@@ -20,6 +20,7 @@ window.createGameDetail = function createGameDetail(ctx) {
   const launchError = ref("")
   const launchTheatre = ref(false)
   const gameFavorite = ref(false)
+  const gameCurrencyOpen = ref(false)
 
   // --- Referans tasarimin arayuz durumu ---
   // Demo modu backend'de desteklenmiyor (GetGameUrl'in demo parametresi yok),
@@ -32,6 +33,10 @@ window.createGameDetail = function createGameDetail(ctx) {
   let toastTimer = null
 
   const detailGame = computed(() => (gameDetail.value ? gameDetail.value.game : null))
+  const useStarlightLaunchScreen = computed(() => {
+    const game = detailGame.value
+    return /starlight princess/i.test(String((game && game.game_name) || routeGameCode))
+  })
 
   const detailProviderName = computed(() => {
     const provider = gameDetail.value && gameDetail.value.provider
@@ -278,6 +283,8 @@ window.createGameDetail = function createGameDetail(ctx) {
     launchError,
     launchTheatre,
     gameFavorite,
+    gameCurrencyOpen,
+    useStarlightLaunchScreen,
     loadGameDetail,
     startGame,
     exitGame,
