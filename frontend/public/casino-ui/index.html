@@ -2279,26 +2279,191 @@
 </template>
 <template v-else-if="isBonusesPage">
 <div class="bn-page">
-<section class="bn-hero"><div class="bn-wrap"><div class="bn-rank"><img :src="bonusAssets.rank" alt="Rank 4"/><div><h1>Welcome to <span>Bonuses</span></h1><div class="bn-progress"></div><p>Wager for next rank: <b>$22,193.92</b></p></div></div><div class="bn-summary"><button @click="openBonusModal('promo')" class="bn-promo" type="button"><i class="fas fa-tag"></i> Enter promo code</button><div class="bn-total"><img :src="bonusAssets.usFlag" alt="United States"/><div><small>Total bonus claimed:</small><strong>$119.79</strong></div><button @click="openBonusModal('history')" type="button">History <i class="fas fa-chevron-right"></i></button></div></div></div></section>
-<div class="bn-wrap bn-content">
-<section class="bn-section"><div class="bn-head"><h2>Special bonuses <span class="bn-count">1</span></h2><button @click="openBonusModal('history')" class="bn-link" type="button"><i class="fas fa-history"></i> History</button></div><article class="bn-special"><button @click="openBonusModal('special')" aria-label="Friday Bonus information" class="bn-special-info" type="button">i</button><div class="bn-card-top"><img :src="bonusAssets.fs" alt="Free spins"/><div><small>Friday Bonus</small><b>50 Free Spins</b></div></div><div class="bn-details"><span>Games:</span><b>Fruit Million</b><span>Min. Deposit:</span><b>$70</b><span>Wager:</span><b>x35</b></div><div class="bn-actions"><button @click="openBonusModal('special')" class="bn-btn" type="button">1d 17:55:41</button><button @click="openDeposit('crypto')" class="bn-btn bn-btn--red" type="button">Deposit</button></div></article></section>
-<section class="bn-section"><div class="bn-head"><h2 class="bn-title-icon"><img :src="bonusAssets.calendarIcon" alt=""/>Bonus calendar</h2><button @click="openBonusModal('calendar')" class="bn-link" type="button">More info <i class="fas fa-chevron-right"></i></button></div><div class="bn-calendar"><img :src="bonusAssets.bannerLeft" alt=""/><div class="bn-calendar-copy"><h3>Unlock Rewards &amp; Epic Wins!</h3><p>Play Games and bet on Sports to increase the bonus.</p><div class="bn-calendar-actions"><button @click="navigate('/casino')" class="bn-btn--red" type="button">Go to Casino</button><button @click="navigate('/sports')" class="bn-blue" type="button">Go to Sports</button></div></div><img :src="bonusAssets.bannerRight" alt=""/></div></section>
-<section class="bn-section"><div class="bn-head"><h2>Regular bonuses <span class="bn-count">1 / 6</span></h2><button @click="openBonusModal('boost')" class="bn-link" type="button">Boost your Bonuses <i class="fab fa-telegram-plane"></i></button></div><div class="bn-grid"><article :key="bonus.title" :style="{'--tone':bonus.tone}" class="bn-card" v-for="(bonus,index) in regularBonuses"><button @click="openBonusModal('bonus', bonus)" :aria-label="bonus.title + ' information'" class="bn-info" type="button">i</button><div class="bn-card-head"><img :alt="bonus.title" :src="bonus.image" class="bn-icon"/><div><b>{{bonus.title}}</b><span>{{bonus.sub}}</span></div><em v-if="index===0 || index===5"><i class="fab fa-telegram-plane"></i>{{index===0?'BOOST':'UP TO X3'}}</em></div><div class="bn-card-mid" :class="{'bn-card-mid--progress':index===3 || index===4}"><template v-if="index===3 || index===4"><span>{{index===3?'Wager to unlock:':'Wager to next bonus:'}}</span><b>$0 / $150</b><i><u></u></i></template><strong v-else>{{bonus.middle}}</strong></div><button :class="{'bn-btn--red':bonus.red}" @click="openBonusModal('bonus', bonus)" class="bn-btn" type="button">{{bonus.action}}</button></article></div></section>
-<section class="bn-section"><div class="bn-head"><h2 class="bn-title-icon"><img :src="bonusAssets.crown" alt=""/>VIP bonuses</h2><button @click="navigate('/vip')" class="bn-link" type="button">VIP Benefits <i class="fas fa-chevron-right"></i></button></div><div class="bn-vip-grid"><article :key="bonus.title" class="bn-vip" v-for="bonus in vipBonuses"><button @click="openBonusModal('rank')" :aria-label="bonus.title + ' information'" class="bn-info" type="button">i</button><img :alt="bonus.title" :src="bonus.image"/><h3>{{bonus.title}}</h3><p v-html="bonus.copy"></p></article></div></section>
-<section class="bn-section"><div class="bn-head"><h2>Other bonuses</h2></div><div class="bn-other"><article :key="bonus.title" v-for="bonus in otherBonuses"><header><img :alt="bonus.title" :src="bonus.image" class="bn-icon"/><b>{{bonus.title}}</b></header><p>{{bonus.copy}}</p></article></div></section>
-<section class="bn-section"><div class="bn-head"><h2>FAQ</h2><div class="bn-faq-tabs"><button :class="{active:bonusFaqTab===0}" @click="bonusFaqTab=0;bonusOpenFaq=null" type="button">Regular Bonuses &amp; Bonus Calendar</button><button :class="{active:bonusFaqTab===1}" @click="bonusFaqTab=1;bonusOpenFaq=null" type="button">Free Spins and Deposit Bonuses</button></div></div><div class="bn-faq-grid"><article :key="question" class="bn-faq-item" v-for="(question,index) in bonusFaqs"><button :aria-expanded="bonusOpenFaq===index" @click="toggleBonusFaq(index)" type="button"><span>{{question}}</span><i :class="bonusOpenFaq===index?'fas fa-chevron-up':'fas fa-chevron-down'"></i></button><p v-if="bonusOpenFaq===index">Eligible rewards are calculated from your activity and become available automatically. Open the relevant bonus card to review its exact terms before claiming.</p></article></div></section>
-<div class="bn-breadcrumb"><span>{{websiteName}}</span><i class="fas fa-chevron-right"></i><b>Bonus Cabinet</b></div>
-</div><aside aria-label="Bonus shortcuts" class="bn-rail"><button @click="openBonusModal('history')" aria-label="Rewards" type="button"><img :src="bonusAssets.trophy" alt=""/></button><button @click="openBonusModal('rank')" aria-label="Rank system" type="button"><img :src="bonusAssets.rankCoin" alt=""/></button></aside>
-<div @click.self="closeBonusModal" class="bn-modal-bg" v-if="bonusModal"><section aria-modal="true" class="bn-modal" role="dialog"><button @click="closeBonusModal" aria-label="Close" class="bn-modal-close" type="button"><i class="fas fa-times"></i></button>
-<template v-if="bonusModal.type==='promo'"><div class="bn-modal-icon"><i class="fas fa-tag"></i></div><h2>Enter promo code</h2><p class="bn-modal-lead">Activate a promo code to unlock an available reward.</p><form @submit.prevent="submitPromo" class="bn-promo-form"><label for="bonus-promo-code">Promo code</label><div><input id="bonus-promo-code" placeholder="Enter your code" v-model="promoCode"/><button type="submit">Apply</button></div></form></template>
-<template v-else-if="bonusModal.type==='history'"><div class="bn-modal-heading"><div><small>REWARDS</small><h2>Bonus history</h2></div><img :src="bonusAssets.trophy" alt=""/></div><div class="bn-history"><div :key="item.date+item.title" class="bn-history-row" v-for="item in historyItems"><div><b>{{item.title}}</b><span>{{item.date}}</span></div><strong>{{item.amount}}</strong><em>{{item.status}}</em></div></div></template>
-<template v-else-if="bonusModal.type==='calendar'"><div class="bn-modal-heading"><div><small>LOYALTY REWARDS</small><h2>Bonus Calendar</h2></div><img :src="bonusAssets.calendarIcon" alt=""/></div><p class="bn-modal-lead">Play Casino games and bet on Sports to build your calendar reward. The more eligible activity you complete, the higher your next reward can become.</p><ul class="bn-modal-list"><li><i class="fas fa-check"></i><span>Daily activity increases your calendar progress.</span></li><li><i class="fas fa-check"></i><span>Rewards unlock automatically on eligible days.</span></li><li><i class="fas fa-check"></i><span>Open the calendar regularly so you do not miss a claim.</span></li></ul><button @click="closeBonusModal();navigate('/casino')" class="bn-modal-primary" type="button">Start playing</button></template>
-<template v-else-if="bonusModal.type==='special'"><div class="bn-modal-heading"><div><small>SPECIAL BONUS</small><h2>Friday Bonus</h2></div><img :src="bonusAssets.fs" alt=""/></div><div class="bn-modal-reward">50 Free Spins <span>on Fruit Million</span></div><dl class="bn-modal-terms"><div><dt>Minimum deposit</dt><dd>$70</dd></div><div><dt>Wagering requirement</dt><dd>x35</dd></div><div><dt>Expires in</dt><dd>1d 17:55:41</dd></div></dl><p class="bn-modal-note">Make one eligible deposit before the timer expires. Free Spins are credited after the deposit is confirmed.</p><button @click="closeBonusModal();openDeposit('crypto')" class="bn-modal-primary" type="button">Deposit now</button></template>
-<template v-else-if="bonusModal.type==='bonus'"><div class="bn-modal-heading"><div><small>REGULAR BONUS</small><h2>{{bonusModal.bonus.title}}</h2></div><img :src="bonusModal.bonus.image" alt=""/></div><p class="bn-modal-lead">{{bonusModal.bonus.description}}</p><ul class="bn-modal-list"><li :key="term" v-for="term in bonusModal.bonus.terms"><i class="fas fa-check"></i><span>{{term}}</span></li></ul><div class="bn-modal-status"><span>Current status</span><strong>{{bonusModal.bonus.middle}}</strong></div><button @click="closeBonusModal" class="bn-modal-primary" type="button">Got it</button></template>
-<template v-else-if="bonusModal.type==='boost'"><div class="bn-modal-icon bn-modal-icon--telegram"><i class="fab fa-telegram-plane"></i></div><h2>Boost your Bonuses</h2><p class="bn-modal-lead">Join the community channel to follow limited bonus boosts, drops and campaign announcements.</p><button @click="bonusNotify('Telegram channel opened');closeBonusModal()" class="bn-modal-primary" type="button">Open Telegram</button></template>
-<template v-else><div class="bn-modal-heading"><div><small>LOYALTY PROGRAM</small><h2>Rank system</h2></div><img :src="bonusAssets.rankCoin" alt=""/></div><p class="bn-modal-lead">Earn rank progress from eligible casino and sports wagers. Higher ranks unlock improved cashback, weekly rewards and exclusive VIP benefits.</p><div class="bn-rank-modal-progress"><span style="width:18%"></span></div><div class="bn-rank-modal-meta"><span>Rank 4</span><b>$22,193.92 to next rank</b></div></template>
-<footer class="bn-modal-footer"><button @click="closeBonusModal" type="button">Close</button></footer>
-</section></div></div>
+<section class="hero" id="bn-top">
+<div class="hero-inner page-shell">
+<div class="rank-block">
+<img :src="bonusAssets.rankAvatar" alt="Rank 4" class="rank-avatar"/>
+<div class="rank-copy">
+<h1 class="rank-title">Welcome to <b>Bonuses</b></h1>
+<div class="rank-progress"><span></span><span class="rank-gift">🎁</span></div>
+<div class="rank-note">Wager for next rank: <b>$22,193.92</b> <span class="tiny-info">i</span></div>
+</div>
+</div>
+<span class="hero-speck speck1"></span><span class="hero-speck speck2"></span>
+<div class="claim-box">
+<button @click="bonusNotify('Promo code entry opened')" class="promo-code" type="button"><i class="fas fa-tag"></i>Enter promo code</button>
+<div class="claim-divider"></div>
+<div class="claim-summary"><img :src="bonusAssets.usFlag" alt="US" class="us-flag"/><div><div class="claim-label">Total bonus claimed:</div><div class="claim-amount">$119.79</div></div><button @click="historyModal=true" class="claim-history" type="button">History <i class="fas fa-chevron-right"></i></button></div>
+</div>
+</div>
+</section>
+<div class="page-shell">
+<section class="special" id="bn-special">
+<div class="section-head"><h2 class="section-title">Special bonuses <span class="count-badge">1</span></h2><button @click="specialHistoryModal=true" class="history-small" type="button"><i class="fas fa-history"></i>History</button></div>
+<article class="special-card">
+<div class="special-top"><img :src="bonusAssets.fs" alt="Free spins" class="fs-icon"/><div><div class="special-label">Friday Bonus</div><div class="special-name">50 Free Spins</div></div><button @click="bonusNotify('Bonus menu opened')" class="dots" type="button">•••</button></div>
+<div class="special-details"><span>Games:</span><span><b>Fruit Million</b> <span class="metric-help">?</span></span><span>Min. Deposit:</span><span><b>$70</b></span><span>Wager:</span><span><b>x35</b></span></div>
+<div class="special-actions"><button class="time-btn" type="button">1d 17:55:41</button><button @click="bonusDepositModal=true" class="red-btn small-red" type="button">Deposit</button></div>
+</article>
+</section>
+<section class="calendar-section" id="bn-calendar">
+<div class="section-head"><h2 class="section-title calendar-heading"><img :src="bonusAssets.calendarIcon" alt="" class="calendar-icon"/>Bonus calendar</h2><button @click="calendarDetailsModal=true" class="blue-link" type="button">More info <i class="fas fa-chevron-right"></i></button></div>
+<div class="calendar-banner">
+<img :src="bonusAssets.bannerLeft" alt="" class="banner-decor banner-left"/><img :src="bonusAssets.bannerRight" alt="" class="banner-decor banner-right"/>
+<div class="banner-copy"><div class="banner-title">Unlock Rewards &amp; Epic Wins!</div><div class="banner-sub">Play 🎰 <b>Games</b> and bet on ⚽ <b>Sports</b> to increase the bonus.</div><div class="banner-actions"><button @click="navigate('/casino')" class="red-btn" type="button">Go to Casino</button><button @click="navigate('/sports')" class="blue-btn" type="button">Go to Sports</button></div></div>
+</div>
+</section>
+<section class="regular-section" id="bn-regular">
+<div class="section-head"><h2 class="section-title">Regular bonuses <span class="count-badge">1 <span class="slash">/ 6</span></span></h2><button @click="bonusNotify('Telegram bonus boost opened')" class="boost-link" type="button">Boost your Bonuses <i class="fab fa-telegram-plane"></i></button></div>
+<div class="regular-grid">
+<article class="regular-card wheel"><div class="card-head"><img :src="bonusAssets.wheel" alt="" class="reg-icon"/><div><div class="reg-title">Free Fury Wheel</div><div class="reg-sub">Spin every <b>12h</b></div></div></div><span @click="openRegularInfo('wheel')" class="info-circle">i</span><span class="boost-pill"><i class="fab fa-telegram-plane"></i><b>BOOST</b></span><div class="card-middle"><span class="coin">₿</span> Win up to <b>1 BTC</b></div><button @click="bonusNotify('The Fury Wheel is spinning!')" class="red-btn wheel-action" type="button">Spin the Wheel</button></article>
+<article class="regular-card rake"><div class="card-head"><img :src="bonusAssets.rake" alt="" class="reg-icon"/><div><div class="reg-title">Rakeback</div><div class="reg-sub">$0.00</div></div></div><span @click="openRegularInfo('rakeback')" class="info-circle">i</span><div class="card-middle">🧊 <b>BOOST X2</b> | INACTIVE</div><button @click="bonusNotify('Place bets to activate rakeback')" class="dark-action" type="button">Place bets to get a bonus</button></article>
+<article class="regular-card cash"><div class="card-head"><img :src="bonusAssets.cash" alt="" class="reg-icon"/><div><div class="reg-title">Cashback</div><div class="reg-sub">$0.00</div></div></div><span @click="openRegularInfo('cashback')" class="info-circle">i</span><div class="card-middle rate">5% <span class="next">≫ 6%</span></div><button class="dark-action" type="button">Claim in: 2 d 04:18:43</button></article>
+<article class="regular-card weekly"><div class="card-head"><img :src="bonusAssets.weekly" alt="" class="reg-icon"/><div><div class="reg-title">Weekly Bonus</div><div class="reg-sub">$0.00</div></div></div><span @click="openRegularInfo('weekly')" class="info-circle">i</span><div class="metric-row"><span>Wager to unlock:</span><b>$0 / $150</b></div><div class="progress-line"><span></span></div><button class="dark-action" type="button">Claim in: 6 d 03:18:43</button></article>
+<article class="regular-card sport"><div class="card-head"><img :src="bonusAssets.sport" alt="" class="reg-icon"/><div><div class="reg-title">Weekly Sport Bonus</div><div class="reg-sub white">No bonus</div></div></div><span @click="openRegularInfo('sport')" class="info-circle">i</span><div class="metric-row"><span>Wager to next bonus:</span><b>$0 / $150 <span class="metric-help">?</span></b></div><div class="progress-line"><span></span></div><button class="dark-action" type="button">Claim in: 1 d 16:18:43</button></article>
+<article class="regular-card monthly"><div class="card-head"><img :src="bonusAssets.monthly" alt="" class="reg-icon"/><div><div class="reg-title">Monthly Bonus</div><div class="reg-sub green">$0.00 <span class="metric-help">?</span></div></div></div><span @click="openRegularInfo('monthly')" class="info-circle">i</span><span class="boost-pill up"><i class="fab fa-telegram-plane"></i><b>UP TO X3</b></span><div class="monthly-copy">Play 🎰 <b>Casino</b> and ⚽ <b>Sports</b> to increase the bonus</div><button class="dark-action" type="button">Claim in: 2 d 03:18:43</button></article>
+</div>
+</section>
+<section class="vip-section" id="bn-vip">
+<div class="section-head"><h2 class="section-title vip-heading"><img :src="bonusAssets.crown" alt="" class="vip-crown"/> VIP bonuses</h2><button @click="navigate('/vip')" class="blue-link" type="button">VIP Benefits <i class="fas fa-chevron-right"></i></button></div>
+<div class="vip-grid"><article :key="card.title" class="vip-card" v-for="card in vipCards"><span class="info-circle">i</span><img :src="card.image" alt="" class="vip-icon"/><div class="vip-title">{{card.title}}</div><div class="vip-copy" v-html="card.copy"></div></article></div>
+</section>
+<section class="other-section" id="bn-other">
+<div class="section-head"><h2 class="section-title">Other bonuses</h2></div>
+<div class="other-grid"><article :class="card.class" :key="card.title" class="other-card" v-for="card in otherCards"><div class="other-top"><img :src="card.image" alt="" class="other-icon"/><div class="other-title">{{card.title}}</div></div><div class="other-copy">{{card.copy}}</div></article></div>
+</section>
+<section class="faq-section" id="bn-faq">
+<div class="faq-head"><h2 class="section-title">FAQ</h2><div class="faq-tabs"><button :class="{active:faqTab===0}" @click="faqTab=0" class="faq-tab" type="button">Regular Bonuses &amp; Bonus Calendar</button><button :class="{active:faqTab===1}" @click="faqTab=1" class="faq-tab" type="button">Free Spins and Deposits Bonuses</button></div></div>
+<div class="faq-grid">
+<div><article :class="{tall:q.tall,open:openFaq==='l'+i}" :key="q.q" @click="toggleFaq('l'+i)" class="faq-row" v-for="(q,i) in displayedFaq.left"><div><div><span class="emoji">{{q.icon}}</span>{{q.q}}</div><div class="faq-answer" v-if="openFaq==='l'+i">{{q.a}}</div></div><i class="fas fa-chevron-down faq-arrow"></i></article></div>
+<div><article :class="{tall:q.tall,open:openFaq==='r'+i}" :key="q.q" @click="toggleFaq('r'+i)" class="faq-row" v-for="(q,i) in displayedFaq.right"><div><div><span class="emoji">{{q.icon}}</span>{{q.q}}</div><div class="faq-answer" v-if="openFaq==='r'+i">{{q.a}}</div></div><i class="fas fa-chevron-down faq-arrow"></i></article></div>
+</div>
+</section>
+<div class="breadcrumb"><span class="dim">{{websiteName}}</span><i class="fas fa-chevron-right"></i><b>Bonus Cabinet</b></div>
+</div>
+<div class="reward-rail"><img :src="bonusAssets.trophy" @click="historyModal=true" alt="Rewards"/><img :src="bonusAssets.rankCoin" @click="bonusNotify('Rank system opened')" alt="Rank"/></div>
+<div @click.self="specialHistoryModal=false" class="special-history-overlay" v-if="specialHistoryModal">
+<section aria-label="Special bonus history" aria-modal="true" class="special-history-modal" role="dialog">
+<header class="special-history-head"><h2>History</h2><button @click="specialHistoryModal=false" class="special-history-close" type="button"><i class="fas fa-times"></i></button></header>
+<div class="special-history-list"><article :key="entry.title+entry.value" class="special-history-row" v-for="entry in specialHistoryRows"><img :src="entry.image" alt=""/><div class="special-history-copy"><b>{{entry.title}}</b><span>{{entry.value}}</span></div><strong class="special-history-status">{{entry.status}}</strong></article></div>
+<div class="special-history-pages"><button type="button">&lt;</button><button class="active" type="button">1</button><button type="button">2</button><button type="button">&gt;</button></div>
+<footer class="special-history-footer"><button @click="specialHistoryModal=false" type="button">Close</button></footer>
+</section>
+</div>
+<div @click.self="historyModal=false" class="history-overlay" v-if="historyModal">
+<section aria-label="Bonus History" aria-modal="true" class="history-modal" role="dialog">
+<header class="history-top"><h2>Bonus History</h2><button @click="historyModal=false" class="history-close" type="button"><i class="fas fa-times"></i></button><div class="history-total"><img :src="bonusAssets.bonusChest" alt=""/><div><span>Total bonus claimed</span><b>$119.79</b></div></div></header>
+<div class="insight"><span class="insight-icon">📜</span><b>Insight Statistics</b><button @click="statisticModal=true;historyModal=false" class="red-btn" type="button">View</button></div>
+<div class="history-list"><div :key="row.name" class="history-row" v-for="row in historyRows"><img :src="row.image" alt=""/><b class="history-name">{{row.name}} <span class="metric-help" v-if="row.help">?</span></b><div class="history-value"><b>{{row.amount}}</b><span>{{row.percent}}</span></div></div></div>
+<footer class="history-actions"><button @click="bonusNotify('Bonus details opened')" class="details-btn" type="button">More details</button><button @click="shareModal=true;historyModal=false" class="share-btn" type="button"><i class="fas fa-share-alt"></i>  Share</button></footer>
+</section>
+</div>
+<div @click.self="shareModal=false" class="share-overlay" v-if="shareModal">
+<section aria-label="Share bonus history" aria-modal="true" class="share-modal" role="dialog">
+<header class="share-header"><h2>Share</h2><button @click="shareModal=false" class="share-close" type="button"><i class="fas fa-times"></i></button></header>
+<div class="share-content"><p class="share-intro">Good job! Share this with friends on social networks. Play more and get new achievements on {{websiteName}}.</p><div class="share-note"><span>ℹ️</span>This post will not take part in the Share &amp; Win competition.<a @click.prevent="bonusNotify('Share and Win details opened')" href="#">About Share &amp; Win <i class="fas fa-chevron-right"></i></a></div><div class="share-divider"></div><div class="share-card"><div class="share-brand">{{websiteName}}</div><h3>MY TOTAL<br/>BONUSES 🎁</h3><div class="share-amount"><img :src="bonusAssets.usFlag" alt=""/>119.79</div><div class="share-user"><img :src="bonusAssets.smallAvatar" alt=""/>{{authUser?.username || 'Player'}}</div></div></div>
+<footer class="share-actions"><div><button @click="bonusNotify('Shared to chat')" type="button"><i class="fas fa-comment-dots"></i></button><small>SITE CHAT</small></div><div><button @click="bonusNotify('Shared to X')" type="button">𝕏</button><small>TWITTER</small></div><div><button @click="bonusNotify('Shared to Telegram')" type="button"><i class="fab fa-telegram-plane"></i></button><small>TELEGRAM</small></div></footer>
+</section>
+</div>
+<div @click.self="statisticModal=false" class="statistic-overlay" v-if="statisticModal">
+<section aria-label="Statistic" aria-modal="true" class="statistic-modal" role="dialog">
+<header class="stat-head"><button @click="statisticModal=false;historyModal=true" class="stat-back" type="button"><i class="fas fa-chevron-left"></i></button><h2>Statistic</h2><button @click="statisticModal=false" class="stat-close" type="button"><i class="fas fa-times"></i></button></header>
+<div class="stat-body">
+<div class="stat-summary"><div :key="row.name" class="stat-row" v-for="row in statisticRows"><img :src="row.image" alt=""/><b>{{row.name}}</b><strong>$0.00</strong></div></div>
+<div class="period-card"><div class="period-top"><span>PERIOD</span><b>Week</b></div><div class="stat-total"><div class="stat-total-line"><span class="stat-label">WAGERED</span><span class="amount"><img :src="bonusAssets.usFlag" alt=""/>$0.05</span></div><div class="stat-total-line"><span class="stat-label">BONUSES</span><span class="amount"><img :src="bonusAssets.usFlag" alt=""/>$0.00</span></div></div><div class="stat-summary"><div :key="'week-'+row.name" class="stat-row" v-for="row in statisticRows"><img :src="row.image" alt=""/><b>{{row.name}}</b><strong>$0.00</strong></div></div></div>
+<div class="period-card"><div class="period-top"><span>PERIOD</span><b>Month</b></div><div class="stat-total"><div class="stat-total-line"><span class="stat-label">WAGERED</span><span class="amount"><img :src="bonusAssets.usFlag" alt=""/>$0.05</span></div><div class="stat-total-line"><span class="stat-label">BONUSES</span><span class="amount"><img :src="bonusAssets.usFlag" alt=""/>$0.00</span></div></div><div class="stat-summary"><div class="stat-row"><img :src="bonusAssets.cash" alt=""/><b>Cashback</b><strong>$0.00</strong></div></div></div>
+</div>
+<footer><button @click="statisticModal=false" type="button">Close</button></footer>
+</section>
+</div>
+<div @click.self="calendarDetailsModal=false" class="calendar-details-overlay" v-if="calendarDetailsModal">
+<section aria-label="Bonus details" aria-modal="true" class="calendar-details-modal" role="dialog">
+<header class="calendar-details-head"><h2>Bonus details</h2><p>Bonus calendar</p><button @click="calendarDetailsModal=false" class="calendar-details-x" type="button"><i class="fas fa-times"></i></button></header>
+<div class="calendar-details-main"><p>Get three bonuses daily. Claim bonuses from the calendar and activate the Rakeback boost for the next 60 minutes.</p><button @click="calendarDetailsModal=false;bonusNotify('Full bonus calendar opened')" class="calendar-full-btn" type="button">View full calendar</button><div class="calendar-rule"></div><div class="calendar-value">Frequency of unlocking:<b>Every 8 hours</b></div><div class="calendar-rule"></div><div class="calendar-notice">ℹ️ The unlocked bonus part expires after 24 hours if it is not claimed.<br/><strong>👑 For VIP users</strong> the unlocked bonus part expires after 96 hours if it is not claimed.</div><div class="calendar-rule"></div><div class="calendar-value">What is the bonus calculated for?<b>Claim your regular bonuses (Cashback, Rakeback, Monthly and Weekly bonus) to get calendar bonuses.</b></div></div>
+<footer class="calendar-details-foot"><button @click="calendarDetailsModal=false" type="button">Close</button></footer>
+</section>
+</div>
+<div @click.self="bonusDepositModal=false" class="deposit-overlay" v-if="bonusDepositModal">
+<section aria-label="Deposit" aria-modal="true" class="deposit-modal" role="dialog">
+<header class="deposit-modal-head"><button @click="bonusDepositModal=false" class="modal-back" type="button"><i class="fas fa-chevron-left"></i></button><h2>Deposit</h2><button @click="bonusDepositModal=false" class="modal-close" type="button"><i class="fas fa-times"></i></button></header>
+<div class="deposit-tabs"><button class="active" type="button">Crypto</button><button @click="bonusNotify('Cash deposits are unavailable')" type="button">Cash</button><button @click="bonusNotify('Buy Crypto opened')" type="button">Buy Crypto</button></div>
+<div class="deposit-selects"><button class="deposit-select" type="button"><img :src="bonusAssets.tether" alt=""/><span><small>Currency</small><b>USDT</b></span><i class="fas fa-chevron-down"></i></button><button class="deposit-select" type="button"><span class="bnb-coin">◆</span><span><small>Network</small><b>BNB Chain(BEP-...</b></span><i class="fas fa-chevron-down"></i></button></div>
+<div class="active-bonus"><img :src="bonusAssets.bonusChest" alt=""/><div><span>Active Deposit Bonus:</span><b>50 Free Spins</b></div><button @click="bonusExpanded=!bonusExpanded" type="button"><i :class="bonusExpanded?'fas fa-chevron-up':'fas fa-chevron-down'"></i></button></div>
+<div class="bonus-picker" v-if="bonusExpanded"><div class="picker-title"><span class="radio-on"></span><b>Special bonuses</b><span class="count-badge">1</span><a @click.prevent="bonusDepositModal=false" href="#bn-special">More details <i class="fas fa-chevron-right"></i></a></div><div class="selected-bonus"><span class="check">✓</span><div class="bonus-main"><img :src="bonusAssets.fs" alt=""/><div><small>FRIDAY BONUS</small><b>50 Free Spins</b></div></div><div class="bonus-line"></div><div class="bonus-min"><span>Min. deposit:</span><b>$70</b><i>?</i></div><div class="bonus-timer">1d 17:38:04</div></div></div>
+<button @click="bonusNotify('Deposit without a bonus selected')" class="without-bonus" type="button"><span></span>Without bonus</button>
+<p class="deposit-warning">⚠️ Please don&apos;t change the selected bonus until the deposit is credited to the game balance.</p>
+<div class="address-row"><div><small>Your USDT deposit address</small><b>0xA7F4...D6E9</b></div><button @click="bonusNotify('Address copied')" type="button"><i class="far fa-copy"></i></button><div class="qr">▦</div></div>
+</section>
+</div>
+<div @click.self="regularBonusModal=null" class="reg-details-overlay" v-if="regularBonusModal">
+<section class="reg-details-modal">
+<header class="reg-details-head">
+<h2>Bonus Details</h2>
+<p v-if="regularBonusModal==='wheel'">Free Fury Wheel</p>
+<p v-else-if="regularBonusModal==='rakeback'">Rakeback + Boost</p>
+<p v-else-if="regularBonusModal==='cashback'">Cashback</p>
+<p v-else-if="regularBonusModal==='weekly'">Weekly Bonus</p>
+<p v-else-if="regularBonusModal==='sport'">Weekly Sport Bonus</p>
+<p v-else-if="regularBonusModal==='monthly'">Monthly Bonus</p>
+<button @click="regularBonusModal=null" class="reg-details-x" type="button"><i class="fas fa-times"></i></button>
+</header>
+<div class="reg-details-content">
+<div v-if="regularBonusModal==='wheel'">
+<p>Spin the Free Wheel and get a chance to win up to 1 BTC on your balance.</p>
+<div class="reg-tg-box">
+<h4><i class="fab fa-telegram-plane"></i> With Telegram Bot:</h4>
+<ul>
+<li>Only cryptocurrency winnings</li>
+<li>Increased winning amounts for all currencies</li>
+<li>Win up to 5 BTC!</li>
+</ul>
+<button @click="bonusNotify('Telegram bot connection opened')" class="reg-tg-btn" type="button">Connect Telegram Bot</button>
+</div>
+<div class="reg-details-section"><b>Accrual frequency:</b><br/>Every 12 hours</div>
+<div class="reg-details-section"><b>Next spin in:</b><br/>00:00:00</div>
+<p>- Spin the Wheel from Rank 1 and get real crypto or tokens to participate in the Battle for free.<br/>- From Rank 2 the Special Wheel rewards users only with real crypto.<br/>- Connect the Telegram bot to access the TG Wheel and get only crypto wins.</p>
+</div>
+<div v-else-if="regularBonusModal==='rakeback'">
+<p>Get a bonus for your bets regardless of the result. Multiply the bonus with a Boost.</p>
+<div class="reg-details-section"><b>Accrual frequency:</b><br/>Every 20 min</div>
+<div class="reg-details-section"><b>Withdrawal distribution:</b><br/>50% of the amount goes to your balance<br/>50% of the amount goes to the calendar for 3 days</div>
+<div class="calendar-notice"><strong>👑 For VIP users:</strong><br/>70% to your balance<br/>30% to the calendar for 2 days</div>
+<p>The minimum amount for distribution to the calendar is $0.003 per day. The smaller amount is credited to the balance in full.</p>
+<div class="reg-details-section"><b>What is the bonus calculated for?</b><br/>- <b>Casino bets</b> (Slots and Originals except Lootboxes)<br/>- <b>Sport bets</b> (Closed bets with the coefficient 1.1 and more)<br/>- <b>Live Casino bets</b> (starting from Rank 10, bets in games by Evolution, Pragmatic Play and Ezugi)</div>
+</div>
+<div v-else-if="regularBonusModal==='cashback'">
+<p>Receive up to 25% of your lost deposited coins back. Unless you are in profit.</p>
+<div class="reg-details-section"><b>Accrual frequency:</b><br/>Twice a week: Tuesday, Friday</div>
+<div class="reg-details-section"><b>Accrual in:</b><br/>2 days 03:48:35</div>
+<div class="calendar-notice">ℹ️ The bonus expires if you do not withdraw it before the next one is accrued.</div>
+<div class="reg-details-section"><b>Withdrawal distribution:</b><br/><b>Rank 1-5:</b><br/>50% of the amount goes to your balance<br/>50% of the amount goes to the calendar for 3 days</div>
+<div class="calendar-notice"><strong>👑 For VIP users:</strong><br/>100% to your balance</div>
+<div class="reg-details-section"><b>Cashback for rank:</b>
+<table class="reg-details-table">
+<thead><tr><th>RANK</th><th>CASINO</th><th>SPORT</th></tr></thead>
+<tbody>
+<tr><td>Rank 1:</td><td>5%</td><td>1%</td></tr>
+<tr><td>Rank 2:</td><td>5%</td><td>1%</td></tr>
+<tr><td>Rank 3:</td><td>5%</td><td>1%</td></tr>
+<tr class="active"><td>Rank 4:</td><td>5%</td><td>2%</td></tr>
+<tr><td>Rank 5:</td><td>5%</td><td>2%</td></tr>
+<tr><td>Rank 6:</td><td>6%</td><td>3%</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div v-else>
+<p>Get regular rewards based on your wagering activity during the period.</p>
+<div class="reg-details-section"><b>Accrual frequency:</b><br/><span v-if="regularBonusModal==='monthly'">Monthly (Once a month)</span><span v-else>Weekly (Every Monday)</span></div>
+<div class="reg-details-section"><b>Withdrawal distribution:</b><br/>75% of the amount goes to your balance<br/>25% of the amount goes to the calendar for 3 days</div>
+<div class="calendar-notice"><strong>👑 For VIP users:</strong><br/>100% to your balance</div>
+<p>Calculated based on your total wagered amount in Casino and Sports sections.</p>
+</div>
+</div>
+<footer class="reg-details-foot"><button @click="regularBonusModal=null" type="button">Close</button></footer>
+</section>
+</div>
+</div>
 </template>
 <template v-else-if="isCasinoPage">
   <div @scroll="syncPromoIndex" class="casino-promos no-scrollbar" id="casino-promos">
