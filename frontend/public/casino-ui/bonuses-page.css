@@ -133,7 +133,7 @@
 .bn-page .vip-heading{display:flex;align-items:center;gap:9px}
 .bn-page .vip-crown{width:29px;height:25px;object-fit:contain}
 .bn-page .vip-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:20px}
-.bn-page .vip-card{height:184px;border-radius:16px;position:relative;text-align:center;padding:12px 13px;background:linear-gradient(180deg,#59433b 0%,#2e2c31 47%,#19232f 100%);overflow:hidden}
+.bn-page .vip-card{min-height:184px;border-radius:16px;position:relative;text-align:center;padding:12px 13px;background:linear-gradient(180deg,#59433b 0%,#2e2c31 47%,#19232f 100%);overflow:hidden}
 .bn-page .vip-card .info-circle{right:16px;top:16px;border-color:rgba(234,230,228,.25);color:#dedad6}
 .bn-page .vip-icon{height:67px;width:84px;object-fit:contain;margin:0 auto 4px;display:block}
 .bn-page .vip-title{font-size:16px;line-height:22px;font-weight:700;color:#fff}
@@ -143,7 +143,7 @@
 .bn-page .other-section{margin-top:40px}
 .bn-page .other-section .section-head{height:29px}
 .bn-page .other-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:9px 8px 0}
-.bn-page .other-card{height:112px;border-radius:14px;position:relative;padding:18px 12px;overflow:hidden;background:#121d29}
+.bn-page .other-card{min-height:112px;border-radius:14px;position:relative;padding:18px 12px;overflow:hidden;background:#121d29}
 .bn-page .other-card.coins{background:linear-gradient(115deg,#3e2e28,#171a22 52%,#111b27)}
 .bn-page .other-card.rains{background:linear-gradient(115deg,#173a64,#122337 54%,#111b27)}
 .bn-page .other-card.tips{background:linear-gradient(115deg,#12442f,#113027 48%,#111b27)}

@@ -39,10 +39,10 @@ window.createBonusesPage = function createBonusesPage(ctx) {
   }
 
   const vipCards = [
-    { title: "VIP Bounty", image: bonusAssets.vip1, copy: "Play 🎰 Games and bet on ⚽ Sports<br>to increase the bonus." },
-    { title: "Welcome VIP", image: bonusAssets.vip2, copy: "Join the 👑VIP club to get a welcome<br>bonus." },
-    { title: "Personal VIP", image: bonusAssets.vip3, copy: "Get Personal VIP bonuses based on<br>your activity." },
-    { title: "Birthday", image: bonusAssets.vip4, copy: "More fun on Big day! Sweeten your<br>B-day celebration with tasty bonus<br>ready for you." },
+    { title: "VIP Bounty", image: bonusAssets.vip1, copy: "Play 🎰 Games and bet on ⚽ Sports to increase the bonus." },
+    { title: "Welcome VIP", image: bonusAssets.vip2, copy: "Join the 👑VIP club to get a welcome bonus." },
+    { title: "Personal VIP", image: bonusAssets.vip3, copy: "Get Personal VIP bonuses based on your activity." },
+    { title: "Birthday", image: bonusAssets.vip4, copy: "More fun on Big day! Sweeten your B-day celebration with tasty bonus ready for you." },
   ]
 
   const otherCards = [
