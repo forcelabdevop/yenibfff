@@ -34,6 +34,22 @@
 
     const ptProviderTotal = ref(75);
 
+    // "Recent Top Wins" rayi. Kart gorselleri kazanc metnini icinde barindirir.
+    // kind: '' standart, 'promo' one cikan, 'woman' canli casino (dar).
+    // Backend hazir oldugunda: GET <apiBase>/public/top-wins -> ptWins
+    const WIN = ASSETS + 'win/';
+    const ptWins = ref([
+      { name: 'Space Dice', image: WIN + 'space.png', kind: '' },
+      { name: 'Space Dice', image: WIN + 'promo.png', kind: 'promo' },
+      { name: 'Live Baccarat', image: WIN + 'woman.png', kind: 'woman' },
+      { name: 'Space Dice', image: WIN + 'space.png', kind: '' },
+      { name: 'Space Dice', image: WIN + 'space.png', kind: '' },
+      { name: 'Space Dice', image: WIN + 'promo.png', kind: 'promo' },
+      { name: 'Live Baccarat', image: WIN + 'woman.png', kind: 'woman' },
+      { name: 'Space Dice', image: WIN + 'space.png', kind: '' }
+    ]);
+    const ptWinIcon = WIN + 'medal.png';
+
     const ptTournaments = ref([
       {
         title: 'Pro Players Battle', titleHtml: 'Pro Players<br>Battle', days: '4 Days', time: '16:52:40',
@@ -88,6 +104,10 @@
       notify(provider.name + ' oyunlari yakinda filtrelenebilecek.');
     }
 
+    function ptOpenWin(win) {
+      navigate('/casino');
+    }
+
     function ptOpenTournament(tour) {
       notify(tour.title);
     }
@@ -98,6 +118,7 @@
 
     return {
       ptProviders, ptProviderTotal, ptTournaments, ptRaccoon,
+      ptWins, ptWinIcon, ptOpenWin,
       ptSlide, ptOpenProvider, ptOpenTournament, ptAllProviders
     };
   }
