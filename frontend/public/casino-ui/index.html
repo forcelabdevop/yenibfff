@@ -806,7 +806,8 @@
     .casino-rail-head h2>i { margin-right:9px; color:#ff174f; }
     .casino-rail-head h2 { display:flex; align-items:center; }
     .rail-head-icon { width:26px; height:26px; margin-right:9px; object-fit:contain; flex:0 0 auto; }
-    .casino-rail-head mark { margin-left:9px; padding:7px 11px; border-radius:18px; color:#fff; background:#1c2a3a; font-size:12px; }
+    .casino-rail-head mark { margin:0; padding:0; border:none; border-radius:0; color:var(--blue); background:none; font-size:14px; font-weight:700; cursor:pointer; transition:color .1s ease-in-out; }
+    .casino-rail-head mark:hover { color:#5aa6ff; }
     .casino-rail-head span { display:flex; gap:24px; color:#aab7c8; }
     .casino-rail-head .rail-arrows { gap:14px; }
     .casino-rail-head .rail-arrows button { background:none; border:none; color:#aab7c8; cursor:pointer; font-size:15px; padding:0; display:grid; place-items:center; width:26px; height:26px; border-radius:8px; transition:.2s; }
@@ -2123,11 +2124,11 @@
 <label class="casino-search"><i class="fas fa-search"></i><input @keyup.enter="performSearch" placeholder="Search" v-model="search"/></label>
 </div>
 <section class="casino-rail" :class="{'casino-rail--grid': activeCategory!=='all'}">
-<div class="casino-rail-head" v-if="activeCategory==='all'"><h2><img :src="categoryIconImage(activeRailCategory, pageContent.badge)" alt="" class="rail-head-icon" v-if="categoryIconImage(activeRailCategory, pageContent.badge)"/><i :class="activeRailCategory ? categoryIcon(activeRailCategory) : 'fas fa-gamepad'" v-else></i> {{activeRailCategory?.name || pageContent.badge}} <mark>{{routeGames.length}} games loaded</mark></h2><span class="rail-arrows"><button type="button" aria-label="Previous games" @click="slideCasinoRow($event,-1)"><i class="fas fa-chevron-left"></i></button><button type="button" aria-label="Next games" @click="slideCasinoRow($event,1)"><i class="fas fa-chevron-right"></i></button></span></div>
+<div class="casino-rail-head" v-if="activeCategory==='all'"><h2><img :src="categoryIconImage(activeRailCategory, pageContent.badge)" alt="" class="rail-head-icon" v-if="categoryIconImage(activeRailCategory, pageContent.badge)"/><i :class="activeRailCategory ? categoryIcon(activeRailCategory) : 'fas fa-gamepad'" v-else></i> {{activeRailCategory?.name || pageContent.badge}} </h2><span class="rail-arrows"><mark>{{routeGames.length}} games loaded</mark><button type="button" aria-label="Previous games" @click="slideCasinoRow($event,-1)"><i class="fas fa-chevron-left"></i></button><button type="button" aria-label="Next games" @click="slideCasinoRow($event,1)"><i class="fas fa-chevron-right"></i></button></span></div>
 <div class="casino-game-row no-scrollbar"><game-card :badge="index<6 ? (index===3?'HOT':'TOP') : ''" :game="game" :key="'catalog-'+(game._id || game.game_code || game.name)" @demo="selectGame(game, true)" @select="selectGame(game)" v-for="(game,index) in (activeCategory==='all' ? slotDisplayGames : routeGames)"></game-card></div>
 </section>
 <section :key="category._id || category.slug" class="casino-rail" v-for="category in visibleCategoryRails">
-<div class="casino-rail-head"><h2><img :src="categoryIconImage(category)" alt="" class="rail-head-icon" v-if="categoryIconImage(category)"/><i :class="categoryIcon(category)" v-else></i> {{category.name}} <mark>{{category.total_games || category.games.length}} games</mark></h2><span class="rail-arrows"><button type="button" aria-label="Previous games" @click="slideCasinoRow($event,-1)"><i class="fas fa-chevron-left"></i></button><button type="button" aria-label="Next games" @click="slideCasinoRow($event,1)"><i class="fas fa-chevron-right"></i></button></span></div>
+<div class="casino-rail-head"><h2><img :src="categoryIconImage(category)" alt="" class="rail-head-icon" v-if="categoryIconImage(category)"/><i :class="categoryIcon(category)" v-else></i> {{category.name}} </h2><span class="rail-arrows"><mark>{{category.total_games || category.games.length}} games</mark><button type="button" aria-label="Previous games" @click="slideCasinoRow($event,-1)"><i class="fas fa-chevron-left"></i></button><button type="button" aria-label="Next games" @click="slideCasinoRow($event,1)"><i class="fas fa-chevron-right"></i></button></span></div>
 <div class="casino-game-row no-scrollbar"><game-card :badge="index<4 ? (index===3?'HOT':'TOP') : ''" :game="game" :key="category.slug+'-'+(game._id || game.game_code)" @demo="selectGame(game, true)" @select="selectGame(game)" v-for="(game,index) in category.games.slice(0,12)"></game-card></div>
 </section>
 </template>
