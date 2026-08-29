@@ -341,14 +341,42 @@
 
 /* ===== Regular bonus details modal ===== */
 .bn-page .reg-details-overlay{position:fixed;z-index:170;inset:0;background:rgba(2,10,19,.9);display:flex;align-items:flex-start;justify-content:center;padding-top:60px;overflow-y:auto}
-.bn-page .reg-details-modal{width:400px;max-width:calc(100vw - 32px);background:#111d29;border-radius:16px;box-shadow:0 30px 90px rgba(0,0,0,.6);margin-bottom:60px}
-.bn-page .reg-details-head{height:120px;padding:32px 24px;background:linear-gradient(180deg,#0b417f,#111d29 90%);position:relative;border-radius:16px 16px 0 0}
+.bn-page .reg-details-modal{width:400px;max-width:calc(100vw - 32px);background:#111d29;border-radius:16px;box-shadow:0 30px 90px rgba(0,0,0,.6);margin-bottom:60px;display:flex;flex-direction:column;max-height:calc(100vh - 120px)}
+.bn-page .reg-details-head{flex:none;height:120px;padding:32px 24px;background:linear-gradient(180deg,#0b417f,#111d29 90%);position:relative;border-radius:16px 16px 0 0}
 .bn-page .reg-details-head h2{font-size:24px;margin:0}
 .bn-page .reg-details-head p{font-size:14px;color:#a4bee5;margin-top:8px}
 .bn-page .reg-details-x{position:absolute;right:20px;top:20px;color:#c2cede;background:transparent;font-size:20px}
-.bn-page .reg-details-content{padding:24px;font-size:13px;color:#a4bee5;line-height:20px}
+.bn-page .reg-details-content{flex:1 1 auto;overflow-y:auto;padding:0 24px 8px;font-size:13px;color:#a4bee5;line-height:20px}
 .bn-page .reg-details-content b{color:#fff}
 .bn-page .reg-details-section{margin-bottom:20px}
+.bn-page .reg-lead{color:#fff;font-size:15px;line-height:24px;padding-top:20px}
+.bn-page .reg-lead--muted{color:#a4bee5;font-size:14px;padding-top:10px}
+.bn-page .reg-row{padding:18px 0;border-top:1px solid #1d2938}
+.bn-page .reg-details-content > div > .reg-row:first-child{border-top:0}
+.bn-page .reg-details-content > div > .reg-tg-box + .reg-row{border-top:0}
+.bn-page .reg-label{display:block;color:#8ba0bd;font-size:14px;margin-bottom:6px}
+.bn-page .reg-label--strong{color:#fff;font-weight:700;font-size:15px}
+.bn-page .reg-value{display:block;color:#fff;font-size:15px;font-weight:700;line-height:24px}
+.bn-page .reg-value--spaced{margin-top:14px}
+.bn-page .reg-fine{color:#a4bee5;font-size:13px;line-height:21px;margin-top:10px}
+.bn-page .reg-fine b{color:#fff}
+.bn-page .vip-notice{margin-top:16px;border:1px solid #6d5222;border-radius:11px;background:#18222f;padding:12px 14px}
+.bn-page .vip-notice strong{display:block;color:#ffbd28;font-size:15px;margin-bottom:6px}
+.bn-page .vip-notice span{display:block;color:#fff;font-size:14px;font-weight:700;line-height:24px}
+.bn-page .reg-link{display:inline-flex;align-items:center;gap:8px;margin-top:6px;background:transparent;color:#2f8ff0;font-size:15px;font-weight:700}
+.bn-page .reg-wager{display:flex;align-items:center;justify-content:space-between}
+.bn-page .reg-wager .reg-label{margin:0}
+.bn-page .reg-wager b{color:#fff;font-size:15px}
+.bn-page .reg-progress{margin-top:12px;height:5px;border-radius:5px;background:#2b394b;overflow:hidden}
+.bn-page .reg-progress span{display:block;width:2%;height:100%;background:#14c743}
+.bn-page .reg-boost-title{color:#fff;font-size:15px;font-weight:700;margin-bottom:4px}
+.bn-page .reg-tg-note{margin:14px 0 0;color:#a4bee5;font-size:13px;line-height:20px}
+.bn-page .reg-tg-note + .reg-tg-btn{margin-top:14px}
+.bn-page .reg-amounts{margin-top:12px;background:#172433;border-radius:10px;overflow:hidden}
+.bn-page .reg-amount{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid #243445;font-size:14px}
+.bn-page .reg-amount:last-child{border-bottom:0}
+.bn-page .reg-amount span{color:#fff;font-weight:700}
+.bn-page .reg-amount b{color:#fff;font-weight:700}
 .bn-page .reg-tg-box{background:#1c2c3c;border:1px solid #324458;border-radius:12px;padding:16px;margin:16px 0}
 .bn-page .reg-tg-box h4{color:#248ee9;margin:0 0 10px;font-size:14px}
 .bn-page .reg-tg-box ul{list-style:none;padding:0;margin:0 0 16px}
@@ -360,6 +388,10 @@
 .bn-page .reg-details-table th{color:#7185a2;font-weight:700}
 .bn-page .reg-details-table tr.active{background:#2688f5;color:#fff}
 .bn-page .reg-details-table tr.active td{color:#fff}
+.bn-page .reg-details-table th.right,.bn-page .reg-details-table td.right{text-align:right}
+.bn-page .reg-details-table td{color:#fff;font-weight:700;font-size:13px}
+.bn-page .reg-details-table tr:last-child th,.bn-page .reg-details-table tr:last-child td{border-bottom:0}
+.bn-page .reg-details-foot{flex:none}
 .bn-page .reg-details-foot{padding:16px 24px;background:#202d3d;border-radius:0 0 16px 16px}
 .bn-page .reg-details-foot button{width:100%;height:44px;border-radius:9px;background:#3d4654;color:#fff;font-size:14px}
 
