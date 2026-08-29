@@ -11,6 +11,8 @@ type FrameMessage =
   | { source: "casino-frame"; type: "launch-game"; game: CasinoGame }
   | { source: "casino-frame"; type: "open-auth"; mode: "login" | "register" }
   | { source: "casino-frame"; type: "navigate"; path: string }
+  /** iframe icinde sayfa yenilemeden gecis yapildi: sadece adres cubugunu guncelle. */
+  | { source: "casino-frame"; type: "replace-path"; path: string }
 
 interface CasinoFrameProps {
   page?: string
@@ -40,6 +42,10 @@ export function CasinoFrame({ page = "home", extraParams }: CasinoFrameProps) {
 
       if (event.data.type === "launch-game") setSelectedGame(event.data.game)
       if (event.data.type === "navigate" && event.data.path.startsWith("/")) router.push(event.data.path)
+      // router.push iframe'i yeniden yukleyecegi icin burada sadece History API kullaniyoruz.
+      if (event.data.type === "replace-path" && event.data.path.startsWith("/")) {
+        window.history.replaceState(null, "", event.data.path)
+      }
       if (event.data.type === "open-auth") {
         setAuthMode(event.data.mode)
         setAuthOpen(true)
