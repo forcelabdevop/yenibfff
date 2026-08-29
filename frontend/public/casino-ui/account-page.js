@@ -153,6 +153,166 @@ window.createAccountPage = function createAccountPage(ctx) {
     toastMessage(message)
   }
 
+  /* =========================================================================
+   * Transactions sekmesi (/transactions)
+   *
+   * Veri CANLI: account-pages.js -> GET /transaction-history/:userId?limit=50
+   * Satir alanlari: createdAt, type (deposit|withdraw), method
+   * (crypto|bank|bonus|forcelab|...), status (pending|completed|approved|
+   * rejected|cancelled), amount, currency, title ve saglayiciya gore
+   * transaction / uuid / externalTransactionId referanslari.
+   *
+   * Tarih ve tur filtreleri backend'de karsiligi olmadigi icin istemci
+   * tarafinda, cekilen 50 kayit uzerinde calisir. Sunucu tarafi filtre/
+   * sayfalama gerekince: GET /transaction-history?type=&from=&to= eklenmeli.
+   * ========================================================================= */
+  const { transactions, activeCurrency, accountFormatMoney, accountStatusLabel, accountStatusTone } = ctx
+
+  const TX_RANGES = [
+    { key: "all", label: "All time", days: 0 },
+    { key: "7d", label: "Last 7 days", days: 7 },
+    { key: "30d", label: "Last 30 days", days: 30 },
+    { key: "90d", label: "Last 90 days", days: 90 },
+  ]
+
+  /** Backend `type` + `method` alanlarini tek bir filtre listesine indiriyoruz. */
+  const TX_TYPES = [
+    { key: "all", label: "All types" },
+    { key: "deposit", label: "Deposit", match: (tx) => tx.type === "deposit" && tx.method !== "bonus" },
+    { key: "withdraw", label: "Withdrawal", match: (tx) => tx.type === "withdraw" },
+    { key: "bonus", label: "Bonus", match: (tx) => tx.method === "bonus" },
+    { key: "bank", label: "Bank transfer", match: (tx) => tx.method === "bank" },
+    { key: "crypto", label: "Crypto", match: (tx) => tx.method === "crypto" },
+  ]
+
+  const txRanges = TX_RANGES
+  const txTypes = TX_TYPES
+  const txRange = ref("all")
+  const txType = ref("all")
+  const txRangeOpen = ref(false)
+  const txTypeOpen = ref(false)
+
+  function txToggleRange() {
+    txRangeOpen.value = !txRangeOpen.value
+    txTypeOpen.value = false
+  }
+  function txToggleType() {
+    txTypeOpen.value = !txTypeOpen.value
+    txRangeOpen.value = false
+  }
+  function txSelectRange(key) {
+    txRange.value = key
+    txRangeOpen.value = false
+  }
+  function txSelectType(key) {
+    txType.value = key
+    txTypeOpen.value = false
+  }
+  function txResetFilters() {
+    txRange.value = "all"
+    txType.value = "all"
+    txRangeOpen.value = false
+    txTypeOpen.value = false
+  }
+  function txCloseMenus() {
+    txRangeOpen.value = false
+    txTypeOpen.value = false
+  }
+
+  function txPad(value) {
+    return String(value).padStart(2, "0")
+  }
+  function txFormatDay(date) {
+    return txPad(date.getDate()) + "/" + txPad(date.getMonth() + 1) + "/" + date.getFullYear()
+  }
+  function txRangeStart(key) {
+    const range = TX_RANGES.find((item) => item.key === key)
+    if (!range || !range.days) return null
+    const start = new Date()
+    start.setDate(start.getDate() - range.days)
+    start.setHours(0, 0, 0, 0)
+    return start
+  }
+  function txMethodLabel(method) {
+    const map = { crypto: "Crypto", bank: "Bank", bonus: "Bonus", forcelab: "Forcelab" }
+    if (!method) return ""
+    return map[method] || String(method).charAt(0).toUpperCase() + String(method).slice(1)
+  }
+  /** Kisaltilmis islem referansi (hash / uuid / harici id). */
+  function txReference(tx) {
+    const value = String(tx.transaction || tx.uuid || tx.externalTransactionId || "")
+    if (!value) return ""
+    if (value.length <= 13) return value
+    return value.slice(0, 6) + "…" + value.slice(-4)
+  }
+
+  /** Tur filtresi uygulanmis liste (tarih filtresi haric). */
+  const txByType = computed(() => {
+    const list = transactions.value || []
+    const option = TX_TYPES.find((item) => item.key === txType.value)
+    if (!option || !option.match) return list
+    return list.filter(option.match)
+  })
+
+  /** Tabloya basilan son liste: tur + tarih filtresi. */
+  const txRows = computed(() => {
+    const start = txRangeStart(txRange.value)
+    return txByType.value
+      .filter((tx) => {
+        if (!start) return true
+        const date = new Date(tx.createdAt)
+        return !Number.isNaN(date.getTime()) && date >= start
+      })
+      .map((tx) => {
+        const date = new Date(tx.createdAt)
+        const valid = !Number.isNaN(date.getTime())
+        const isWithdraw = tx.type === "withdraw"
+        return {
+          id: String(tx._id),
+          date: valid ? txFormatDay(date) : "—",
+          time: valid ? txPad(date.getHours()) + ":" + txPad(date.getMinutes()) + ":" + txPad(date.getSeconds()) : "",
+          label: tx.title || (isWithdraw ? "Withdrawal" : "Deposit"),
+          method: txMethodLabel(tx.method),
+          amount: (isWithdraw ? "−" : "+") + accountFormatMoney(tx.amount, tx.currency || activeCurrency.value),
+          negative: isWithdraw,
+          status: accountStatusLabel(tx.status),
+          tone: accountStatusTone(tx.status),
+          info: txReference(tx),
+        }
+      })
+  })
+
+  /** Kaydi olmayan turler menude soluk gorunur (referans tasarim). */
+  const txTypeCounts = computed(() => {
+    const list = transactions.value || []
+    const counts = {}
+    TX_TYPES.forEach((option) => {
+      counts[option.key] = option.match ? list.filter(option.match).length : list.length
+    })
+    return counts
+  })
+
+  const txRangeLabel = computed(() => {
+    const start = txRangeStart(txRange.value)
+    const end = new Date()
+    if (start) return txFormatDay(start) + " - " + txFormatDay(end)
+    const list = transactions.value || []
+    const oldest = list.length ? new Date(list[list.length - 1].createdAt) : null
+    if (!oldest || Number.isNaN(oldest.getTime())) return "All time"
+    return txFormatDay(oldest) + " - " + txFormatDay(end)
+  })
+
+  const txTypeLabel = computed(() => {
+    const option = TX_TYPES.find((item) => item.key === txType.value)
+    return option ? option.label : "All types"
+  })
+
+  const txIsFiltered = computed(() => txType.value !== "all" || txRange.value !== "all")
+
+  function txCopyInfo(row) {
+    if (row.info) toastMessage("Islem referansi: " + row.info)
+  }
+
   return {
     acTabs,
     acHasTabs,
@@ -174,5 +334,23 @@ window.createAccountPage = function createAccountPage(ctx) {
     acConnectBot,
     acChangeUsername,
     acNotify,
+    txRanges,
+    txTypes,
+    txRange,
+    txType,
+    txRangeOpen,
+    txTypeOpen,
+    txToggleRange,
+    txToggleType,
+    txSelectRange,
+    txSelectType,
+    txResetFilters,
+    txCloseMenus,
+    txRows,
+    txRangeLabel,
+    txTypeLabel,
+    txTypeCounts,
+    txIsFiltered,
+    txCopyInfo,
   }
 }
