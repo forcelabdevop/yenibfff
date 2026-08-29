@@ -3068,7 +3068,9 @@
             return;
           }
           // Oyun artik modal yerine kendi sayfasinda acilir (/game/?code=...).
-          navigate('/game/?code=' + encodeURIComponent(game.game_code));
+          // Egik cizgi YOK: next.config.mjs'de trailingSlash kapali. '/game/'
+          // yazmak yayin ortaminda 308 dongusu (ERR_TOO_MANY_REDIRECTS) uretir.
+          navigate('/game?code=' + encodeURIComponent(game.game_code));
         }
         function gamesForPage(categories) {
           const matcher = currentPage === 'slots' ? /slot/i : currentPage === 'originals' ? /original|crash|instant/i : currentPage === 'live-casino' ? /live|table/i : null;

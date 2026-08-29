@@ -174,3 +174,35 @@ parametresidir; ikisi farklıysa istek mock'a hiç uğramaz.
 > `http://localhost:5000/...` adresleri önizleme origin'ine (`:5173`) yeniden
 > yazılır; bu yüzden manuel probe'lar mock'a düşmez ve Next'in 404 HTML'i döner.
 > Probe ederken adresi koddan üret: `fetch(__MOCK_DEBUG__.API_BASE + '/...')`.
+
+## 7. `trailingSlash` — hesap sayfalarını komple kıran ayar (mock ile ilgisiz)
+
+Belirti: profil menüsünden herhangi bir sayfaya (Wallet, Vault, ...) tıklayınca
+sayfa hiç açılmıyor, tarayıcı **`ERR_TOO_MANY_REDIRECTS`** veriyor
+("sizi çok fazla kez yönlendirdi"). Sayfa mock'a hiç ulaşmadığı için ilk bakışta
+"mock bozuk" gibi görünür — değil.
+
+Sebep: `next.config.mjs` içinde `output: "export"` ile birlikte
+`trailingSlash: true` vardı.
+
+- `trailingSlash: true` → export dizin yapısı üretir (`out/wallet/index.html`),
+  kanonik adres `/wallet/` olur ve Next `/wallet` için `308 -> /wallet/` döner.
+- Ama bu projenin yayın ortamı sondaki eğik çizgiyi **siliyor**:
+  `/wallet/` için `308 -> /wallet`.
+- Sonuç: `/wallet` ⇄ `/wallet/` arasında sonsuz 308 ping-pong.
+
+Çözüm: `trailingSlash` tamamen kaldırıldı (varsayılan `false`). Export artık düz
+dosya üretiyor (`out/wallet.html`) ve sunucunun davranışıyla uyumlu.
+
+**Kural:** tüm dahili linkler eğik çizgi**siz** olmalı. Bu yüzden
+`index.html` içindeki oyun linki de `/game/?code=` → `/game?code=` yapıldı.
+İkisini karıştırmak aynı döngüyü geri getirir.
+
+Teşhis komutu (yönlendirme zincirini gösterir):
+
+```bash
+curl -s -o /dev/null -D - -L --max-redirs 6 https://<host>/wallet | grep -i "^HTTP/\|^location:"
+```
+
+`next.config.mjs` değiştirildiğinde **dev sunucusu yeniden başlatılmalı**;
+aksi halde rotalar hâlâ 308 döner ve düzeltme çalışmamış gibi görünür.
