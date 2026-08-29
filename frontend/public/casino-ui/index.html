@@ -817,8 +817,8 @@
     .casino-rail--grid .casino-game-row { display:grid; grid-template-columns:repeat(auto-fill, minmax(188px, 1fr)); gap:16px; overflow:visible; padding:6px 0; margin:0; }
     .casino-rail--grid .casino-game-card { flex:initial; width:100%; height:auto; aspect-ratio:188/248; }
     .casino-hero-wrap { position:relative; z-index:1; width:min(1180px,100%); margin:96px auto 24px; }
-    .casino-hero-backdrop { position:absolute; z-index:0; top:-26px; bottom:-26px; left:0; right:0; overflow:hidden; border-radius:26px; background:radial-gradient(ellipse 48% 75% at 50% 70%, rgba(35,34,129,.5), transparent 72%); pointer-events:none; }
-    .casino-hero-backdrop img { position:absolute; width:185px; aspect-ratio:188/248; object-fit:cover; border-radius:17px; opacity:.13; filter:saturate(.7) blur(.35px); box-shadow:0 20px 45px rgba(0,0,0,.3); user-select:none; }
+    .casino-hero-backdrop { position:absolute; z-index:0; top:-70px; bottom:-70px; left:50%; width:100vw; margin-left:-50vw; overflow:hidden; background:radial-gradient(ellipse 42% 80% at 50% 55%, rgba(35,34,129,.5), transparent 70%); pointer-events:none; }
+    .casino-hero-backdrop img { position:absolute; width:230px; aspect-ratio:188/248; object-fit:cover; border-radius:20px; opacity:.16; filter:saturate(.75) blur(.4px); box-shadow:0 24px 55px rgba(0,0,0,.32); user-select:none; }
     .casino-hero-shade { position:absolute; inset:0; background:linear-gradient(180deg, rgba(7,16,25,.5), rgba(6,14,22,.1) 45%, rgba(7,15,23,.45)), linear-gradient(90deg, rgba(6,15,23,.55), transparent 26%, transparent 74%, rgba(5,13,20,.6)); }
     .casino-hero-chooser { position:relative; z-index:2; width:647px; max-width:100%; height:494px; margin:0 auto; border:1px solid rgba(38,68,105,.48); border-radius:23px; background:linear-gradient(90deg, #0d254dab 6.35%, #223b65 56.66%, #20335352); box-shadow:0 24px 70px rgba(0,0,0,.22), inset 0 1px rgba(255,255,255,.025); }
     .casino-hero-chooser .hero-title { position:absolute; z-index:5; top:45px; left:0; width:100%; margin:0; text-align:center; color:#fff; font-size:32px; line-height:1.22; font-weight:900; letter-spacing:-.8px; white-space:nowrap; transform:scaleX(1.12); }
@@ -4592,14 +4592,17 @@
         }
         const heroSpinning = ref(false);
         const heroBackdropPos = [
-          {left:'-8px',top:'150px',transform:'rotate(-16deg)'},
-          {left:'128px',top:'14px',transform:'rotate(-11deg)'},
-          {left:'470px',top:'-58px',transform:'rotate(-10deg)'},
-          {left:'650px',top:'262px',transform:'rotate(8deg)'},
-          {left:'835px',top:'-42px',transform:'rotate(-12deg)'},
-          {left:'1000px',top:'120px',transform:'rotate(-11deg)'},
-          {left:'1075px',top:'320px',transform:'rotate(7deg)'},
-          {left:'40px',top:'360px',transform:'rotate(10deg)'}
+          {left:'1%',top:'40px',transform:'rotate(-14deg)'},
+          {left:'9%',top:'250px',transform:'rotate(-9deg)'},
+          {left:'17%',top:'20px',transform:'rotate(-11deg)'},
+          {left:'24%',top:'300px',transform:'rotate(8deg)'},
+          {left:'33%',top:'-30px',transform:'rotate(-8deg)'},
+          {left:'50%',top:'340px',transform:'translateX(-50%) rotate(6deg)'},
+          {left:'62%',top:'-40px',transform:'rotate(-10deg)'},
+          {left:'70%',top:'300px',transform:'rotate(9deg)'},
+          {left:'78%',top:'30px',transform:'rotate(-12deg)'},
+          {left:'86%',top:'250px',transform:'rotate(7deg)'},
+          {left:'92%',top:'20px',transform:'rotate(-9deg)'}
         ];
         const heroBackdropCards = computed(() => {
           const pool = (typeof slotDisplayGames!=="undefined" && slotDisplayGames.value && slotDisplayGames.value.length) ? slotDisplayGames.value : ((routeGames && routeGames.value) ? routeGames.value : []);
