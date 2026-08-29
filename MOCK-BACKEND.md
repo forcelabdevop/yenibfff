@@ -206,3 +206,29 @@ curl -s -o /dev/null -D - -L --max-redirs 6 https://<host>/wallet | grep -i "^HT
 
 `next.config.mjs` değiştirildiğinde **dev sunucusu yeniden başlatılmalı**;
 aksi halde rotalar hâlâ 308 döner ve düzeltme çalışmamış gibi görünür.
+
+## 8. Cüzdan modalı uçları — backend'de KARŞILIĞI YOK
+
+`casino-ui/wallet-modal.js` (Wallet / Crypto Swap / Deposit modalı) beş uç
+kullanıyor ve bunların **hiçbiri** şu an `backend/` içinde yok. Gerçek backend
+yazılırken bu sözleşmeye uyulursa frontend'de değişiklik gerekmez:
+
+| Uç | Dönüş |
+| --- | --- |
+| `GET /wallet/currencies` | `{ success, data: [{ code, name, icon, fiat, balance, precision, usd, minDeposit, networks:[{id,label,icon}] }] }` |
+| `GET /wallet/deposit-address?currency=&network=` | `{ success, data: { currency, network, address, qr, minDeposit } }` |
+| `GET /wallet/quote?kind=buy\|swap&from=&to=&amount=` | `{ success, data: { rate, receive, provider:{name,icon}, methods:[{id,kind,label,icon,receive,best,recommended}] } }` |
+| `POST /wallet/swap` `{ from, to, amount }` | `{ success, data: { balances } }` — iki bakiye güncellemesi **atomik** olmalı |
+| `POST /wallet/buy` `{ fiat, crypto, amount, methodId }` | `{ success, data: { redirectUrl, status } }` |
+
+Notlar:
+
+- `usd` alanı yalnızca mockun kur hesabı için var; gerçekte fiyat servisi
+  kullanılacak, `GET /wallet/quote` kuru backend'den dönmeli.
+- `deposit-address` kullanıcıya özel adres üretmeli; mocktaki sabit adres örnek.
+- Modal listeyi yeniledikten sonra seçili para birimlerini `code` ile yeniden
+  bağlıyor (`loadCurrencies` içindeki `resync`). Backend yeni nesneler döndürdüğü
+  için bu şart; kaldırılırsa takas sonrası bakiyeler ekranda güncellenmez.
+- Modal markup'ında para birimi seçicileri `div[role=button]`; **iç içe `button`
+  kullanılmamalı** (HTML ayrıştırıcısı dıştaki butonu kapatıp `#app`'i erken
+  kapatıyor, tüm sayfa bozuluyor).
