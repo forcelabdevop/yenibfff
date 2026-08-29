@@ -13,6 +13,7 @@
 <script src="./mock-backend.js"></script>
 <script src="./casino-ui-settings.js"></script>
 <script src="./casino-ui-leaderboard.js"></script>
+<script src="./casino-ui-notifications.js"></script>
 <script src="./game-detail.js"></script>
 <script src="./account-pages.js"></script>
 <script src="./wallet-modal.js"></script>
@@ -3045,24 +3046,37 @@
 </div>
 </div>
 <div class="notif-tabs" role="tablist">
-<button :class="{active:notifTab==='platform'}" @click="notifTab='platform'" class="notif-tab" role="tab" type="button"><span>Platform</span><span class="notif-tab-count">{{notifCards.length}}</span></button>
-<button :class="{active:notifTab==='personal'}" @click="notifTab='personal'" class="notif-tab" role="tab" type="button"><span>Personal</span><span class="notif-tab-count">0</span></button>
+<button :class="{active:notifTab==='platform'}" @click="notifTab='platform'" class="notif-tab" role="tab" type="button"><span>Platform</span><span class="notif-tab-count">{{notifPlatformCount}}</span></button>
+<button :class="{active:notifTab==='personal'}" @click="notifTab='personal'" class="notif-tab" role="tab" type="button"><span>Personal</span><span class="notif-tab-count">{{notifPersonalCount}}</span></button>
 </div>
-<div class="notif-list" v-if="notifTab==='platform'">
-<article :class="{expanded:card.expanded}" :key="card.title" class="notif-card" v-for="card in notifCards">
+<div class="notif-list" v-if="notifTab==='platform' && notifCards.length">
+<article :class="{expanded:card.expanded,read:card.read}" :key="card.id" class="notif-card" v-for="card in notifCards">
 <div class="notif-card__head">
 <div class="notif-card__date">{{card.date}}</div>
 <h3 class="notif-card__title">{{card.title}}</h3>
 </div>
-<div class="notif-card__banner"><img :alt="card.title" :src="card.image"/></div>
+<div class="notif-card__banner" v-if="card.image"><img :alt="card.title" :src="card.image"/></div>
 <div class="notif-card__desc">
 <p v-html="card.description"></p>
-<button @click="card.expanded=!card.expanded" class="notif-showall" type="button"><span>{{card.expanded?'Show less':'Show all'}}</span><i class="fas fa-chevron-down"></i></button>
+<button @click="notifToggleCard(card)" class="notif-showall" type="button"><span>{{card.expanded?'Show less':'Show all'}}</span><i class="fas fa-chevron-down"></i></button>
 </div>
-<button @click="toastMessage(card.action + ' opened')" class="notif-card__action" type="button"><span>{{card.action}}</span><i class="fas fa-chevron-right"></i></button>
+<button @click="toastMessage(card.action + ' opened')" class="notif-card__action" type="button" v-if="card.action"><span>{{card.action}}</span><i class="fas fa-chevron-right"></i></button>
 </article>
 </div>
-<div class="notif-empty" v-else><i class="fas fa-bell-slash"></i><span>No personal notifications</span></div>
+<div class="notif-list" v-else-if="notifTab==='personal' && notifPersonalCards.length">
+<article :class="{expanded:card.expanded,read:card.read}" :key="card.id" class="notif-card" v-for="card in notifPersonalCards">
+<div class="notif-card__head">
+<div class="notif-card__date">{{card.date}}</div>
+<h3 class="notif-card__title">{{card.title}}</h3>
+</div>
+<div class="notif-card__banner" v-if="card.image"><img :alt="card.title" :src="card.image"/></div>
+<div class="notif-card__desc">
+<p v-html="card.description"></p>
+<button @click="notifToggleCard(card)" class="notif-showall" type="button"><span>{{card.expanded?'Show less':'Show all'}}</span><i class="fas fa-chevron-down"></i></button>
+</div>
+</article>
+</div>
+<div class="notif-empty" v-else><i class="fas fa-bell-slash"></i><span>{{notifView==='Unread' ? 'No unread notifications' : (notifTab==='personal' ? 'No personal notifications' : 'No notifications yet')}}</span></div>
 <button @click="notifMarkAllRead" class="notif-markread" type="button"><span>Mark all as read</span><i class="far fa-check-circle"></i></button>
 </div>
 </aside>
@@ -3762,13 +3776,9 @@
         const rulesOpen = ref(false);
         const chatOpen = ref(false);
         const notifOpen = ref(false);
-        const notifTab = ref('platform');
-        const notifViewMenuOpen = ref(false);
-        const notifCards = ref([
-          { date:'08/27/26, 06:07 PM', title:'Share & Win Is Now Bigger!', image:'banners/banner-1.webp', description:'Your favorite contest just got an upgrade.<br>Join the refreshed <strong>Share & Win</strong> contest and win even bigger rewards.', action:'Share & Win', expanded:false },
-          { date:'08/27/26, 06:07 PM', title:'Missions Aren\u2019t Over Yet', image:'banners/banner-2.webp', description:'There\u2019s still time to finish your <strong>Missions.</strong><br>Complete challenges in <strong>Originals</strong> and unlock your rewards before they\u2019re gone.', action:'Finish Missions', expanded:false },
-          { date:'08/19/26, 03:48 PM', title:'Clear 7 Missions & Grab up to $14', image:'banners/banner-3.webp', description:'Complete seven daily missions and grab your reward.<br>Finish every challenge before time runs out.', action:'View Missions', expanded:false },
-        ]);
+        // Admin > Bildirimler verisi (casino-ui-notifications.js)
+        const notificationsData = window.createCasinoUiNotifications({ ref, computed, apiUrl, readAuthToken, backendAssetUrl, toastMessage });
+        const {notifTab,notifViewMenuOpen,notifCards,notifPersonalCards,notifPlatformCount,notifPersonalCount,notifUnread,notifChooseView,notifToggleCard,notifMarkAllRead,loadNotifications} = notificationsData;
         const leaderOpen = ref(false);
         // Admin > Leaderboard verisi (casino-ui-leaderboard.js)
         const leaderboardData = window.createCasinoUiLeaderboard({ ref, computed, watch, apiUrl });
@@ -4182,10 +4192,8 @@
         };
         const toggleNotif = () => {
           notifOpen.value = !notifOpen.value;
-          if (notifOpen.value) { chatOpen.value = false; tournamentOpen.value = false; leaderOpen.value = false; }
+          if (notifOpen.value) { chatOpen.value = false; tournamentOpen.value = false; leaderOpen.value = false; loadNotifications(); }
         };
-        const notifMarkAllRead = () => { toastMessage('All notifications marked as read'); };
-        const notifChooseView = (v) => { notifViewMenuOpen.value = false; toastMessage(v === 'All' ? 'Showing all notifications' : 'Showing unread notifications'); };
         const toggleChatLike = (message) => {
           message.liked = !message.liked;
           message.likes += message.liked ? 1 : -1;
@@ -4811,7 +4819,7 @@
           watch(authUser, (u) => { if (u) accountPages.loadAccountPage(); }, { immediate: true });
         }
         onBeforeUnmount(()=>{ window.removeEventListener('resize',handleResize); window.removeEventListener('keydown',handleKeydown); window.removeEventListener('storage',handleStorageSync); document.removeEventListener('click',handleDocumentClick); clearTimeout(searchTimer); clearInterval(promoTimer); });
-        return {...uiSettings,...leaderboardData,betsRowChoices,betsTab,betsRowCount,betsCountOpen,betsTabs,betsVisibleRows,betGameIcon,selectBetsTab,setBetsCount,heroSpinning,heroSpin,heroBackdropCards,balanceMenuOpen,balanceSearch,balanceHideZero,balanceShowVault,balanceDisplayFiat,balanceCurrencies,balanceActiveCode,balanceFiltered,toggleBalanceMenu,selectBalanceCurrency,websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,notifTab,notifViewMenuOpen,notifCards,toggleNotif,notifMarkAllRead,notifChooseView,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,slideCasinoRow,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
+        return {...uiSettings,...leaderboardData,betsRowChoices,betsTab,betsRowCount,betsCountOpen,betsTabs,betsVisibleRows,betGameIcon,selectBetsTab,setBetsCount,heroSpinning,heroSpin,heroBackdropCards,balanceMenuOpen,balanceSearch,balanceHideZero,balanceShowVault,balanceDisplayFiat,balanceCurrencies,balanceActiveCode,balanceFiltered,toggleBalanceMenu,selectBalanceCurrency,websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,...notificationsData,toggleNotif,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,slideCasinoRow,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
           ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage};
       }
     }).component('game-card', GameCard).mount('#app');

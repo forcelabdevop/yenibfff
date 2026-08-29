@@ -297,6 +297,38 @@
   // bolum 8. `usd` alani yalnizca swap kurunu hesaplamak icin var; gercek
   // backend'de fiyat servisi bunu saglayacak.
   // ---------------------------------------------------------------------------
+  // Bildirim ornekleri — Admin > Bildirimler'den gelen kayitlarin sekli.
+  // "personal" alani recipientId dolu olan (kisiye ozel) bildirimi isaretler.
+  const NOTICES = [
+    {
+      _id: "notice-1",
+      title: "Weekend Reload Bonus",
+      message: "Deposit this weekend and get a <strong>50% reload bonus</strong> up to 250 EUR.",
+      image: null,
+      createdAt: new Date(Date.now() - 3600e3).toISOString(),
+      personal: false,
+      read: false,
+    },
+    {
+      _id: "notice-2",
+      title: "Scheduled Maintenance",
+      message: "Live Casino will be briefly unavailable on Sunday 03:00-04:00 UTC.",
+      image: null,
+      createdAt: new Date(Date.now() - 26 * 3600e3).toISOString(),
+      personal: false,
+      read: true,
+    },
+    {
+      _id: "notice-3",
+      title: "Your withdrawal was approved",
+      message: "Your withdrawal of <strong>120 EUR</strong> has been processed.",
+      image: null,
+      createdAt: new Date(Date.now() - 2 * 3600e3).toISOString(),
+      personal: true,
+      read: false,
+    },
+  ]
+
   const WALLET_CURRENCIES = [
     {
       code: "USDT",
@@ -350,6 +382,47 @@
   const ROUTES = [
     // --- oturum / kullanici ---
     ["GET", /^\/user\/[^/]+$/, () => json(buildUser())],
+
+    // --- bildirimler (backend: routes/notice/index.js) ---
+    [
+      "GET",
+      /^\/notices$/,
+      (_req, url) => {
+        const scope = url.searchParams.get("scope") || "all"
+        const items = NOTICES.filter((n) => (scope === "personal" ? n.personal : scope === "platform" ? !n.personal : true))
+        return json({
+          success: true,
+          data: items,
+          meta: {
+            page: 1,
+            limit: items.length,
+            total: items.length,
+            pageCount: 1,
+            unread: NOTICES.filter((n) => !n.read).length,
+          },
+        })
+      },
+    ],
+    [
+      "POST",
+      /^\/notices\/read-all$/,
+      () => {
+        NOTICES.forEach((n) => {
+          n.read = true
+        })
+        return json({ success: true, data: { updated: NOTICES.length } })
+      },
+    ],
+    [
+      "POST",
+      /^\/notices\/[^/]+\/read$/,
+      (_req, url) => {
+        const id = url.pathname.split("/")[2]
+        const notice = NOTICES.find((n) => String(n._id) === id)
+        if (notice) notice.read = true
+        return json({ success: true })
+      },
+    ],
 
     // --- cuzdan modali (SADECE MOCK — backend'de karsiligi yok) ---
     ["GET", /^\/wallet\/currencies$/, () => json({ success: true, data: WALLET_CURRENCIES })],
