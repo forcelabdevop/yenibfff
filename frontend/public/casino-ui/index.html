@@ -86,6 +86,29 @@
     .balance-button .pill-icon__coin { width: 100%; height: 100%; object-fit: contain; display: block; }
     .balance-button .balance-amount { white-space: nowrap; }
     .balance-button .fa-chevron-down, .user-button .fa-chevron-down { font-size: 10px; color: var(--dim); margin-left: 1px; }
+    /* balance currency dropdown */
+    .balance-wrap { position: relative; display: inline-flex; }
+    .bal-dd { position: absolute; top: calc(100% + 10px); left: 0; width: 280px; height: 207px; display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 20px 50px rgba(0,0,0,.55); overflow: hidden; z-index: 90; }
+    .bal-dd__search { padding: 10px 10px 8px; }
+    .bal-dd__search label { display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--page); color: var(--dim); }
+    .bal-dd__search input { flex: 1; min-width: 0; border: 0; background: transparent; color: #f7f8fb; outline: none; font-size: 13px; }
+    .bal-dd__list { flex: 1; overflow-y: auto; padding: 0 6px; }
+    .bal-dd__row { display: flex; align-items: center; gap: 10px; width: 100%; padding: 7px 8px; border: 0; border-radius: 9px; background: transparent; color: var(--dim); cursor: pointer; text-align: left; }
+    .bal-dd__row:hover { background: var(--panel-2); }
+    .bal-dd__row.is-active { background: var(--panel-2); color: #f7f8fb; }
+    .bal-dd__coin { width: 26px; height: 26px; border-radius: 50%; object-fit: contain; flex-shrink: 0; background: #fff; }
+    .bal-dd__code { font-weight: 800; font-size: 14px; }
+    .bal-dd__val { margin-left: auto; font-weight: 800; font-size: 14px; color: #f7f8fb; }
+    .bal-dd__foot { border-top: 1px solid var(--line); padding: 10px 12px; display: flex; flex-direction: column; gap: 9px; }
+    .bal-dd__opt { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; }
+    .bal-dd__opt .lbl { color: #f7f8fb; }
+    .bal-dd__opt .right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+    .bal-switch { width: 38px; height: 22px; border-radius: 999px; background: #3a4655; border: 0; position: relative; cursor: pointer; flex-shrink: 0; transition: .18s; }
+    .bal-switch.on { background: var(--blue); }
+    .bal-switch::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: .18s; }
+    .bal-switch.on::after { left: 19px; }
+    .bal-dd__fiat { display: flex; align-items: center; gap: 6px; padding: 5px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel-2); font-size: 12px; font-weight: 800; }
+    .bal-dd__fiat .flag { width: 18px; height: 18px; border-radius: 50%; object-fit: cover; }
     .deposit-button { width: 78px; height: 36px; flex: 0 0 78px; padding: 0; margin-left: -26px; position: relative; z-index: 2; font-size: 12px; color: white; background: linear-gradient(1turn, #c4003b .8%, #fb1949); box-shadow: 0 3px 16px #ff234180, inset 0 4px 3px #ffffff4d; }
     .deposit-button:hover { background: linear-gradient(1turn, #d40040 .8%, #ff2f5b); box-shadow: 0 6px 22px #ff2341a6, inset 0 4px 3px #ffffff66; transform: translateY(-2px); }
     .user-button { width: auto; padding: 0 10px 0 5px; gap: 6px; margin-left: 8px; border-radius: 20px 8px 8px 20px; }
@@ -1934,7 +1957,17 @@
 <button :class="{active:chatOpen}" @click="toggleChat" aria-label="Messages" class="top-button chat-top"><img alt="" class="chat-icon" src="assets/icon-chat.svg"/></button>
 </div>
 <div class="header-right" v-else>
-<button @click="openWallet('wallet')" class="top-button balance-button"><span class="pill-icon"><img alt="" class="pill-icon__coin" src="assets/wallet-coin-icon.png"/></span><span class="balance-amount">{{formattedBalance}}</span><i class="fas fa-chevron-down"></i></button>
+<div class="balance-wrap"><button @click.stop="toggleBalanceMenu" class="top-button balance-button"><span class="pill-icon"><img alt="" class="pill-icon__coin" src="assets/wallet-coin-icon.png"/></span><span class="balance-amount">{{formattedBalance}}</span><i :class="balanceMenuOpen ? 'fas fa-chevron-up' : 'fas fa-chevron-down'"></i></button>
+<div class="bal-dd" @click.stop v-if="balanceMenuOpen">
+<div class="bal-dd__search"><label><i class="fas fa-search"></i><input placeholder="Search" type="text" v-model="balanceSearch"/></label></div>
+<div class="bal-dd__list no-scrollbar"><button :class="['bal-dd__row',{'is-active':c.code===balanceActiveCode}]" :key="c.code" @click="selectBalanceCurrency(c)" type="button" v-for="c in balanceFiltered"><img :src="c.icon" alt="" class="bal-dd__coin"/><span class="bal-dd__code">{{c.code}}</span><span class="bal-dd__val">{{c.fiat}}</span></button></div>
+<div class="bal-dd__foot">
+<div class="bal-dd__opt"><span class="lbl">Hide 0 balances</span><span class="right"><button :class="['bal-switch',{on:balanceHideZero}]" @click="balanceHideZero=!balanceHideZero" type="button"></button></span></div>
+<div class="bal-dd__opt"><span class="lbl">Show vault balance</span><span class="right"><button :class="['bal-switch',{on:balanceShowVault}]" @click="balanceShowVault=!balanceShowVault" type="button"></button></span></div>
+<div class="bal-dd__opt"><span class="lbl">Display in Fiat</span><span class="right"><span class="bal-dd__fiat"><img alt="" class="flag" src="assets/flag-usd.png"/>USD</span><button :class="['bal-switch',{on:balanceDisplayFiat}]" @click="balanceDisplayFiat=!balanceDisplayFiat" type="button"></button></span></div>
+</div>
+</div>
+</div>
 <button @click="openDeposit('crypto')" class="top-button deposit-button">Deposit</button>
 <div @mouseenter="openUserMenu" @mouseleave="closeUserMenu" class="user-menu-wrap">
 <button :class="{'is-open': userMenuOpen}" @click="toggleUserMenu" class="top-button user-button"><span class="user-avatar"><span class="user-avatar__clip"><img alt="" class="user-avatar__img" src="assets/user-avatar-raccoon.png"/></span><svg class="user-avatar__ring" viewBox="0 0 29 29"><circle class="track" cx="14.5" cy="14.5" r="13.5"></circle><circle :stroke-dasharray="rankRingLength" :stroke-dashoffset="rankRingOffset" class="value" cx="14.5" cy="14.5" r="13.5"></circle></svg></span><i :class="userMenuOpen ? 'fa-chevron-up' : 'fa-chevron-down'" class="fas"></i></button>
@@ -4284,6 +4317,29 @@
           try { return new Intl.NumberFormat(meta.locale, { style:'currency', currency: walletFiat.value, minimumFractionDigits:2, maximumFractionDigits:2 }).format(amount); }
           catch { return `${meta.symbol}${amount.toFixed(2)}`; }
         });
+        const balanceMenuOpen = ref(false);
+        const balanceSearch = ref('');
+        const balanceHideZero = ref(false);
+        const balanceShowVault = ref(false);
+        const balanceDisplayFiat = ref(true);
+        const balanceCurrencies = ref([
+          {code:'USDT', icon:'assets/coin-usdt.png', fiat:'$0.08'},
+          {code:'BFG', icon:'assets/coin-bfg.png', fiat:'$0.11'},
+          {code:'BNB', icon:'assets/coin-bnb.png', fiat:'$0.11'},
+          {code:'BTC', icon:'assets/coin-btc.png', fiat:'$0.02'},
+          {code:'SHIB', icon:'assets/coin-shib.png', fiat:'$0.00'},
+          {code:'BTTC', icon:'assets/coin-bttc.png', fiat:'$0.00'},
+        ]);
+        const balanceActiveCode = ref('USDT');
+        const balanceFiltered = computed(() => {
+          const q = balanceSearch.value.trim().toUpperCase();
+          let list = balanceCurrencies.value;
+          if (q) list = list.filter(c => c.code.includes(q));
+          if (balanceHideZero.value) list = list.filter(c => c.fiat !== '$0.00');
+          return list;
+        });
+        const toggleBalanceMenu = () => { balanceMenuOpen.value = !balanceMenuOpen.value; };
+        const selectBalanceCurrency = (c) => { balanceActiveCode.value = c.code; };
         const userRank = computed(() => {
           const u = authUser.value; if (!u) return 1;
           return Number(u.rank ?? u.vipLevel ?? u.level ?? 1) || 1;
@@ -4536,7 +4592,7 @@
         function handleResize(){ sidebarOpen.value = window.innerWidth > 900; }
         function handleKeydown(event){ if (event.key === 'Escape' && searchOpen.value) closeSearchModal(); }
         // Transactions filtre menuleri: dis tikla kapanir (butonlar @click.stop kullanir).
-        function handleDocumentClick(event){ if (!event.target.closest('.tx-filter')) accountPage.txCloseMenus(); if (!event.target.closest('.gh-filter')) accountPage.ghCloseMenu(); }
+        function handleDocumentClick(event){ if (!event.target.closest('.tx-filter')) accountPage.txCloseMenus(); if (!event.target.closest('.gh-filter')) accountPage.ghCloseMenu(); if (!event.target.closest('.balance-wrap')) balanceMenuOpen.value = false; }
         onMounted(()=>{ window.addEventListener('resize',handleResize); window.addEventListener('keydown',handleKeydown); window.addEventListener('storage',handleStorageSync); document.addEventListener('click',handleDocumentClick); loadCasinoGames(); startPromoAutoplay(); refreshAuthUser(); if (isGamePage) gamePage.loadGameDetail(); });
         // Hesap sayfalari oturum gerektirir: refreshAuthUser async oldugu icin
         // onMounted icinde cagirmak erken olurdu; authUser dolunca yukluyoruz.
@@ -4544,7 +4600,7 @@
           watch(authUser, (u) => { if (u) accountPages.loadAccountPage(); }, { immediate: true });
         }
         onBeforeUnmount(()=>{ window.removeEventListener('resize',handleResize); window.removeEventListener('keydown',handleKeydown); window.removeEventListener('storage',handleStorageSync); document.removeEventListener('click',handleDocumentClick); clearTimeout(searchTimer); clearInterval(promoTimer); });
-        return {websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,notifTab,notifViewMenuOpen,notifCards,toggleNotif,notifMarkAllRead,notifChooseView,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
+        return {balanceMenuOpen,balanceSearch,balanceHideZero,balanceShowVault,balanceDisplayFiat,balanceCurrencies,balanceActiveCode,balanceFiltered,toggleBalanceMenu,selectBalanceCurrency,websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,notifTab,notifViewMenuOpen,notifCards,toggleNotif,notifMarkAllRead,notifChooseView,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
           ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage};
       }
     }).component('game-card', GameCard).mount('#app');
