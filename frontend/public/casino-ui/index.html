@@ -2410,12 +2410,12 @@
           <span class="wm-balance">Your balance: <strong>{{balanceOf(swapFrom)}}</strong></span>
         </div>
         <div class="wm-field">
-          <button @click.stop="toggleWalletDropdown('swapFrom')" class="wm-currency-btn" type="button">
+          <div @click.stop="toggleWalletDropdown('swapFrom')" class="wm-currency-btn" role="button" tabindex="0">
             <img :src="coinIcon(swapFrom)" alt="" class="wm-coin"/>{{swapFrom && swapFrom.code}}<i class="fas fa-chevron-down wm-chev"></i>
             <div @click.stop class="wm-pop" v-if="walletDropdown==='swapFrom'">
               <button :key="'sf-'+c.code" @click="selectSwapFrom(c)" class="wm-pop__option" type="button" v-for="c in cryptoCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
             </div>
-          </button>
+          </div>
           <input class="wm-input" inputmode="decimal" placeholder="Amount" v-model="swapAmount"/>
           <button @click="swapMax" class="wm-max" type="button">Max</button>
         </div>
@@ -2427,12 +2427,12 @@
           <span class="wm-balance">Your balance: <strong>{{balanceOf(swapTo)}}</strong></span>
         </div>
         <div class="wm-field">
-          <button @click.stop="toggleWalletDropdown('swapTo')" class="wm-currency-btn" type="button">
+          <div @click.stop="toggleWalletDropdown('swapTo')" class="wm-currency-btn" role="button" tabindex="0">
             <img :src="coinIcon(swapTo)" alt="" class="wm-coin"/>{{swapTo && swapTo.code}}<i class="fas fa-chevron-down wm-chev"></i>
             <div @click.stop class="wm-pop" v-if="walletDropdown==='swapTo'">
               <button :key="'st-'+c.code" @click="selectSwapTo(c)" class="wm-pop__option" type="button" v-for="c in cryptoCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
             </div>
-          </button>
+          </div>
           <input :value="swapReceive" class="wm-input" placeholder="Amount" readonly/>
         </div>
         <div @click="swapAgree=!swapAgree" class="wm-terms">
@@ -2509,12 +2509,12 @@
       <!-- Cash -->
       <template v-else-if="depositTab==='cash'">
         <div class="wm-field" style="margin-top:15px">
-          <button @click.stop="toggleWalletDropdown('cashCurrency')" class="wm-currency-btn" type="button">
+          <div @click.stop="toggleWalletDropdown('cashCurrency')" class="wm-currency-btn" role="button" tabindex="0">
             <img :src="coinIcon(cashCurrency)" alt="" class="wm-coin"/>{{cashCurrency && cashCurrency.code}}<i class="fas fa-chevron-down wm-chev"></i>
             <div @click.stop class="wm-pop" v-if="walletDropdown==='cashCurrency'">
               <button :key="'cc-'+c.code" @click="selectCashCurrency(c)" class="wm-pop__option" type="button" v-for="c in fiatCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
             </div>
-          </button>
+          </div>
           <input class="wm-input" inputmode="decimal" placeholder="Amount" v-model="cashAmount"/>
           <button @click="cashMax" class="wm-max" type="button">Max</button>
         </div>
@@ -2535,22 +2535,22 @@
         <div class="wm-buy">
           <div class="wm-buy__label">You send</div>
           <div class="wm-field">
-            <button @click.stop="toggleWalletDropdown('buyFiat')" class="wm-currency-btn" type="button">
+            <div @click.stop="toggleWalletDropdown('buyFiat')" class="wm-currency-btn" role="button" tabindex="0">
               <img :src="coinIcon(buyFiat)" alt="" class="wm-coin"/>{{buyFiat && buyFiat.code}}<i class="fas fa-chevron-down wm-chev"></i>
               <div @click.stop class="wm-pop" v-if="walletDropdown==='buyFiat'">
                 <button :key="'bf-'+c.code" @click="selectBuyFiat(c)" class="wm-pop__option" type="button" v-for="c in fiatCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
               </div>
-            </button>
+            </div>
             <input class="wm-input" inputmode="decimal" placeholder="Amount" v-model="buyAmount"/>
           </div>
           <div class="wm-buy__label" style="margin-top:15px">You get</div>
           <div class="wm-field">
-            <button @click.stop="toggleWalletDropdown('buyCrypto')" class="wm-currency-btn" type="button">
+            <div @click.stop="toggleWalletDropdown('buyCrypto')" class="wm-currency-btn" role="button" tabindex="0">
               <img :src="coinIcon(buyCrypto)" alt="" class="wm-coin"/>{{buyCrypto && buyCrypto.code}}<i class="fas fa-chevron-down wm-chev"></i>
               <div @click.stop class="wm-pop" v-if="walletDropdown==='buyCrypto'">
                 <button :key="'bc-'+c.code" @click="selectBuyCrypto(c)" class="wm-pop__option" type="button" v-for="c in cryptoCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
               </div>
-            </button>
+            </div>
             <input :value="buyReceive" class="wm-input" placeholder="Amount" readonly/>
           </div>
           <div class="wm-buy__meta">
