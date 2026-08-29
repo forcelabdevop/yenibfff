@@ -2614,10 +2614,10 @@
 <div class="standard-pad">
 <section aria-label="Main products" class="promo-grid">
 <button @click="scrollTo('originals')" class="promo-card casino text-left">
-<h3>Casino</h3><p>Enjoy {{websiteName}} Originals and other casino games from top providers.</p><img alt="Dice" class="promo-emoji" src="assets/image-5.png"/>
+<h3>Casino</h3><p>Enjoy {{websiteName}} Originals and other casino games from top providers.</p><img alt="Dice" class="promo-emoji" src="assets/dice-red-stripes.avif"/>
 </button>
 <button @click="scrollTo('sports')" class="promo-card sport text-left">
-<h3>Sport</h3><p>Bet on popular sports events with high odds and other great features.</p><img alt="Soccer ball" class="promo-emoji" src="assets/image-6.png"/>
+<h3>Sport</h3><p>Bet on popular sports events with high odds and other great features.</p><img alt="Soccer ball" class="promo-emoji" src="assets/ball-blue-stripes.avif"/>
 </button>
 </section>
 <button @click="scrollTo('staking')" class="crypto-strip w-full text-left">
@@ -2931,7 +2931,7 @@
 <div class="leader-pager"><button @click="toastMessage('Previous page')" type="button">&lsaquo;</button><button :class="{active:leaderPage===n}" :key="n" @click="leaderPage=n" type="button" v-for="n in [1,2,3,10]">{{n}}</button><button @click="toastMessage('Next page')" type="button">&rsaquo;</button></div>
 </div>
 </aside>
-<div :class="{'chat-open':chatOpen}" class="edge-rewards"><button @click="tournamentOpen=true;chatOpen=false" aria-label="Open tournaments"><img alt="" src="assets/contests/contests-tournament.png"/></button><button @click="leaderOpen=true;chatOpen=false;tournamentOpen=false;notifOpen=false" aria-label="Open leaderboard"><img alt="" src="assets/contests/contests-leaderboard.webp"/></button></div>
+<div :class="{'chat-open':chatOpen}" class="edge-rewards"><button @click="tournamentOpen=true;chatOpen=false" aria-label="Open tournaments"><img alt="" src="assets/contests/contests-tournament-1.png"/></button><button @click="leaderOpen=true;chatOpen=false;tournamentOpen=false;notifOpen=false" aria-label="Open leaderboard"><img alt="" src="assets/contests/contests-leaderboard-1.webp"/></button></div>
 <button :class="{'chat-open':chatOpen}" @click="toastMessage('Live Support opened')" aria-label="Live support" class="support-button"><i class="fas fa-headset"></i></button>
 <div @click.self="closeSearchModal" class="search-backdrop" v-if="searchOpen">
 <div class="search-modal">
