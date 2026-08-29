@@ -1614,6 +1614,16 @@
     .ac-verify__card { padding:22px; border-radius:14px; background:#101c28; }
     .ac-verify__card h3 { margin:0 0 16px; color:#f7f8fb; font-size:17px; font-weight:900; }
 
+    /* Ara genislikler: 3'lu ozet satiri ve bot karti 1180px altinda sigmiyor
+       (rank basligi/caption nowrap oldugu icin tasiyor, mascot metnin ustune biniyor). */
+    @media (max-width:1180px) {
+      .ac-summary { grid-template-columns:1fr; gap:14px; }
+      .ac-rank__caption { white-space:normal; text-align:left; }
+      .ac-bot__copy { width:56%; }
+      .ac-bot__art { width:290px; height:280px; right:-30px; top:26px; }
+      .ac-bot__cta { width:min(280px,52%); }
+      .ac-security { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    }
     @media (max-width:900px) {
       .ac-summary { grid-template-columns:1fr; gap:12px; margin-top:20px; }
       .ac-promo { grid-template-columns:1fr; gap:12px; margin-top:20px; }
