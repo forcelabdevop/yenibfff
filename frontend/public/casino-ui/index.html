@@ -19,6 +19,7 @@
 <script src="./wallet-modal.js"></script>
 <script src="./profile-modal.js"></script>
 <script src="./account-page.js"></script>
+<script src="./casino-providers-battles.js"></script>
 <link href="./tailwind.css" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
@@ -804,6 +805,84 @@
     @media (min-width:900px) { .gl-info-grid { grid-template-columns:1fr 1fr; gap:28px 40px; } }
 
     .casino-rail { margin-top:34px; }
+/* ===== Providers + Battles (casino-providers-battles.js) ===== */
+  .pt-section { margin-top:40px; }
+  .pt-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .pt-title { display:flex; align-items:center; gap:9px; margin:0; color:#f8f9fb; font-size:21px; line-height:1; font-weight:800; letter-spacing:-.4px; }
+  .pt-title i { width:22px; text-align:center; color:#60738e; font-size:20px; }
+  .pt-actions { display:flex; align-items:center; gap:18px; color:#60738e; }
+  .pt-actions .pt-all { background:none; border:none; padding:0; color:#2888f4; font-size:13px; font-weight:700; white-space:nowrap; cursor:pointer; }
+  .pt-actions .pt-all:hover { color:#5aa6ff; }
+  .pt-actions button { background:none; border:none; padding:0; color:#aab7c8; font-size:14px; cursor:pointer; display:grid; place-items:center; width:26px; height:26px; border-radius:8px; transition:.2s; }
+  .pt-actions button:hover { color:#fff; background:#1c2a3a; }
+  .pt-track { display:flex; gap:14px; overflow-x:auto; overflow-y:hidden; scrollbar-width:none; scroll-behavior:smooth; }
+  .pt-track::-webkit-scrollbar { display:none; }
+  .pt-providers-track { height:216px; }
+  .pt-provider { flex:0 0 164px; height:216px; padding:0; border:none; border-radius:13px; overflow:hidden; background:#1b2736; color:inherit; text-align:left; cursor:pointer; transition:transform .2s, filter .2s; }
+  .pt-provider:hover { transform:translateY(-2px); filter:brightness(1.08); }
+  .pt-provider__logo { display:grid; place-items:center; height:177px; }
+  .pt-provider__logo img { display:block; object-fit:contain; max-width:80%; }
+  .pt-provider__mark { font-size:28px; filter:saturate(1.2); }
+  .pt-provider__foot { height:39px; background:#0d3158; display:flex; align-items:center; justify-content:center; gap:6px; color:#a9b9d1; font-size:12px; font-weight:600; }
+  .pt-provider__foot i { font-size:11px; }
+  .pt-provider__foot b { color:#f7f9fc; font-weight:700; }
+  .pt-tours-track { height:486px; }
+  .pt-tour { flex:0 0 342px; height:486px; position:relative; overflow:hidden; border-radius:10px; background:#1b2736; }
+  .pt-hero { height:228px; position:relative; overflow:hidden; background:linear-gradient(145deg,#301a29 0%,#601631 48%,#d6003d 100%); }
+  .pt-hero:before { content:''; position:absolute; inset:0; opacity:.55; background:radial-gradient(circle at 80% 12%, rgba(255,0,58,.72), transparent 35%), radial-gradient(circle at 20% 80%, rgba(16,20,32,.5), transparent 55%); }
+  .pt-theme-2 { background:linear-gradient(145deg,#321b2b 0%,#64142e 58%,#ef003e 100%); }
+  .pt-theme-2:before { background:radial-gradient(circle at 84% 9%, rgba(255,0,65,.65), transparent 35%), radial-gradient(circle at 33% 80%, rgba(10,20,31,.55), transparent 54%); }
+  .pt-theme-3 { background:linear-gradient(145deg,#311a2a 0%,#69152e 55%,#ed003c 100%); }
+  .pt-theme-4 { background:linear-gradient(145deg,#3b1628 0%,#6b1630 58%,#b9153d 100%); }
+  .pt-theme-4:after { content:''; position:absolute; z-index:2; left:0; bottom:0; width:178px; height:22px; background:linear-gradient(90deg,#261827 0%,#321726 72%,rgba(49,22,37,.9) 100%); }
+  .pt-theme-5 { background:linear-gradient(145deg,#361928,#a20d37 67%,#f0003f); }
+  .pt-hero__art { position:absolute; z-index:1; inset:0; width:100%; height:100%; display:block; object-fit:cover; pointer-events:none; }
+  .pt-hero__rank { position:absolute; z-index:3; top:168px; right:12px; width:95px; height:32px; object-fit:fill; pointer-events:none; }
+  .pt-hero__oaks { position:absolute; z-index:3; right:0; bottom:21px; width:115px; height:40px; object-fit:fill; }
+  .pt-time { position:absolute; z-index:4; top:34px; left:18px; height:22px; padding:0 8px; border-radius:6px; display:flex; align-items:center; background:rgba(223,177,196,.27); color:#fff; font-size:11.5px; font-weight:800; white-space:nowrap; }
+  .pt-time__bar { width:1px; height:13px; margin:0 6px; background:rgba(255,255,255,.42); }
+  .pt-hero__title { position:absolute; z-index:4; left:18px; top:75px; max-width:158px; margin:0; color:#fff; font-size:18px; line-height:1.3; letter-spacing:-.55px; font-weight:800; }
+  .pt-prize { position:absolute; z-index:5; left:18px; bottom:34px; min-width:138px; height:35px; border-radius:6px; padding:0 8px; display:flex; align-items:center; gap:7px; color:#0b1420; background:#fff; }
+  .pt-prize.wide { min-width:176px; }
+  .pt-prize__label { font-size:8px; line-height:8px; font-weight:900; }
+  .pt-prize__amount { font-size:21px; line-height:1; font-weight:900; letter-spacing:.4px; white-space:nowrap; }
+  .pt-prize__bonus { position:absolute; right:0; top:-7px; height:14px; border-radius:8px 8px 0 0; padding:0 7px; display:flex; align-items:center; color:#fff; background:#f12453; font-size:8px; font-weight:900; }
+  .pt-board { position:relative; height:258px; background:#1b2736; }
+  .pt-board__head { height:43px; margin:0 11px; border-bottom:1px solid #2b394a; display:grid; grid-template-columns:61px 1fr 105px; align-items:center; color:#60738f; font-size:10px; font-weight:700; }
+  .pt-row { height:54px; margin:0 11px; border-bottom:1px solid #2b394a; display:grid; grid-template-columns:61px 1fr 105px; align-items:center; }
+  .pt-medal { width:29px; height:28px; position:relative; display:grid; place-items:center; }
+  .pt-medal:before { content:''; position:absolute; z-index:0; left:0; top:8px; width:29px; height:12px; background:linear-gradient(180deg,#ffd02c,#d88d00); clip-path:polygon(0 8%,34% 31%,43% 0,50% 36%,58% 0,68% 31%,100% 8%,88% 89%,50% 69%,12% 89%); }
+  .pt-medal__core { position:relative; z-index:1; width:19px; height:19px; border-radius:50%; display:grid; place-items:center; background:linear-gradient(145deg,#ffe557,#ee9e00); border:2px solid #ffc52d; color:#fff; font-size:10px; font-weight:900; text-shadow:0 1px 1px rgba(90,40,0,.45); }
+  .pt-medal.silver:before { background:linear-gradient(180deg,#d9ddea,#8c8ea5); }
+  .pt-medal.silver .pt-medal__core { background:linear-gradient(145deg,#f5f6fc,#9c9faf); border-color:#c7c9d5; }
+  .pt-medal.bronze:before { background:linear-gradient(180deg,#ef9d58,#9a4d29); }
+  .pt-medal.bronze .pt-medal__core { background:linear-gradient(145deg,#ffb879,#ae542d); border-color:#d77940; }
+  .pt-player { display:flex; align-items:center; min-width:0; }
+  .pt-avatar { flex:0 0 22px; width:22px; height:22px; border-radius:50%; overflow:hidden; margin-right:7px; display:grid; place-items:center; background:#e5d38e; font-size:15px; }
+  .pt-avatar img { width:100%; height:100%; object-fit:cover; }
+  .pt-player__copy { min-width:0; line-height:1.2; }
+  .pt-player__name { display:block; color:#f9fafc; font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .pt-player__wager { display:block; color:#9fb0c8; font-size:11.5px; font-weight:600; margin-top:3px; white-space:nowrap; }
+  .pt-prize-cell { color:#fafbfc; font-size:16px; font-weight:700; line-height:1.05; }
+  .pt-fs { display:block; color:#9cb7df; font-size:10px; line-height:1; margin-top:4px; font-weight:700; }
+  .pt-slide { position:absolute; z-index:9; left:10px; right:10px; bottom:12px; height:31px; border-radius:8px; color:#fff; font-size:11px; font-weight:800; cursor:pointer; background:linear-gradient(180deg,#ff2e5e 0%,#ee0648 38%,#d4003e 100%); border:1px solid rgba(255,74,112,.75); box-shadow:0 -2px 8px rgba(255,34,84,.52),0 5px 11px rgba(244,0,62,.27), inset 0 1px rgba(255,255,255,.45); transition:filter .18s, transform .18s; }
+  .pt-slide:hover { filter:brightness(1.15); }
+  .pt-slide:active { transform:scale(.992); }
+  .pt-skeleton { height:54px; margin:0 11px; display:grid; grid-template-columns:61px 1fr 105px; align-items:center; }
+  .pt-sk-circle { width:22px; height:22px; border-radius:50%; background:#2a384c; }
+  .pt-sk-player { display:flex; align-items:center; gap:8px; }
+  .pt-sk-lines { display:flex; flex-direction:column; gap:6px; }
+  .pt-sk-line { height:6px; width:64px; border-radius:8px; background:#2a384c; }
+  .pt-sk-line.short { width:72px; height:4px; }
+  .pt-sk-prize { width:55px; height:6px; border-radius:8px; background:#2a384c; }
+  .pt-note { height:54px; margin:0 11px; border-radius:8px; background:#2c3b50; color:#aab9d0; display:flex; align-items:flex-start; padding:11px 12px; font-size:11.5px; line-height:1.4; font-weight:500; }
+  .pt-note i { color:#ffb620; margin:3px 8px 0 0; font-size:13px; }
+  @media (max-width:900px) {
+    .pt-title { font-size:18px; }
+    .pt-actions { gap:12px; }
+    .pt-tour { flex-basis:326px; }
+  }
+
     .casino-rail-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:15px; }
     .casino-rail-head h2 { color:#fff; font-size:21px; }
     .casino-rail-head h2>i { margin-right:9px; color:#ff174f; }
@@ -2188,7 +2267,74 @@
 <div class="casino-rail-head" v-if="activeCategory==='all'"><h2><img :src="categoryIconImage(activeRailCategory, pageContent.badge)" alt="" class="rail-head-icon" v-if="categoryIconImage(activeRailCategory, pageContent.badge)"/><i :class="activeRailCategory ? categoryIcon(activeRailCategory) : 'fas fa-gamepad'" v-else></i> {{activeRailCategory?.name || pageContent.badge}} </h2><span class="rail-arrows"><mark>{{routeGames.length}} games loaded</mark><button type="button" aria-label="Previous games" @click="slideCasinoRow($event,-1)"><i class="fas fa-chevron-left"></i></button><button type="button" aria-label="Next games" @click="slideCasinoRow($event,1)"><i class="fas fa-chevron-right"></i></button></span></div>
 <div class="casino-game-row no-scrollbar"><game-card :badge="index<6 ? (index===3?'HOT':'TOP') : ''" :game="game" :key="'catalog-'+(game._id || game.game_code || game.name)" @demo="selectGame(game, true)" @select="selectGame(game)" v-for="(game,index) in (activeCategory==='all' ? slotDisplayGames : routeGames)"></game-card></div>
 </section>
-<section :key="category._id || category.slug" class="casino-rail" v-for="category in visibleCategoryRails">
+<section :key="'railA-'+(category._id || category.slug)" class="casino-rail" v-for="category in visibleCategoryRails.slice(0,2)">
+<div class="casino-rail-head"><h2><img :src="categoryIconImage(category)" alt="" class="rail-head-icon" v-if="categoryIconImage(category)"/><i :class="categoryIcon(category)" v-else></i> {{category.name}} </h2><span class="rail-arrows"><mark>{{category.total_games || category.games.length}} games</mark><button type="button" aria-label="Previous games" @click="slideCasinoRow($event,-1)"><i class="fas fa-chevron-left"></i></button><button type="button" aria-label="Next games" @click="slideCasinoRow($event,1)"><i class="fas fa-chevron-right"></i></button></span></div>
+<div class="casino-game-row no-scrollbar"><game-card :badge="index<4 ? (index===3?'HOT':'TOP') : ''" :game="game" :key="category.slug+'-'+(game._id || game.game_code)" @demo="selectGame(game, true)" @select="selectGame(game)" v-for="(game,index) in category.games.slice(0,12)"></game-card></div>
+</section>
+<!-- ===== Providers + Battles (casino-providers-battles.js) ===== -->
+<section class="pt-section pt-providers" v-if="activeCategory==='all'">
+<div class="pt-head">
+<h2 class="pt-title"><i class="fas fa-layer-group"></i><span>Providers</span></h2>
+<div class="pt-actions">
+<button @click="ptAllProviders" class="pt-all" type="button">All {{ptProviderTotal}}</button>
+<button @click="ptSlide($event,-1)" aria-label="Previous providers" type="button"><i class="fas fa-chevron-left"></i></button>
+<button @click="ptSlide($event,1)" aria-label="Next providers" type="button"><i class="fas fa-chevron-right"></i></button>
+</div>
+</div>
+<div class="pt-track pt-providers-track">
+<button :key="provider.name" @click="ptOpenProvider(provider)" class="pt-provider" type="button" v-for="provider in ptProviders">
+<span class="pt-provider__logo">
+<img :alt="provider.name" :src="provider.logo" :style="{width: provider.width + 'px', height: provider.height + 'px'}" loading="lazy" v-if="provider.logo"/>
+<span class="pt-provider__mark" v-else>{{provider.mark}}</span>
+</span>
+<span class="pt-provider__foot"><i class="fas fa-gamepad"></i><span>Games <b>{{provider.games}}</b></span></span>
+</button>
+</div>
+</section>
+<section class="pt-section pt-battles" v-if="activeCategory==='all'">
+<div class="pt-head">
+<h2 class="pt-title"><i class="fas fa-trophy"></i><span>Battles &amp; Tournaments</span></h2>
+<div class="pt-actions">
+<button @click="ptSlide($event,-1)" aria-label="Previous tournaments" type="button"><i class="fas fa-chevron-left"></i></button>
+<button @click="ptSlide($event,1)" aria-label="Next tournaments" type="button"><i class="fas fa-chevron-right"></i></button>
+</div>
+</div>
+<div class="pt-track pt-tours-track">
+<article :key="tour.title" class="pt-tour" v-for="tour in ptTournaments">
+<div :class="tour.theme" class="pt-hero">
+<img :src="tour.art" alt="" class="pt-hero__art" loading="lazy" v-if="tour.art"/>
+<img :src="tour.rank" alt="" class="pt-hero__rank" v-if="tour.rank"/>
+<img :src="tour.oaksLogo" alt="3 Oaks Gaming" class="pt-hero__oaks" v-if="tour.oaks"/>
+<div class="pt-time"><span>{{tour.days}}</span><span class="pt-time__bar"></span><span>{{tour.time}}</span></div>
+<h3 class="pt-hero__title" v-html="tour.titleHtml"></h3>
+<div :class="{wide: tour.wide}" class="pt-prize">
+<span class="pt-prize__bonus" v-if="tour.bonus">+ BONUSES</span>
+<span class="pt-prize__label">PRIZE<br/>POOL</span><span class="pt-prize__amount">{{tour.pool}}</span>
+</div>
+</div>
+<div class="pt-board">
+<div class="pt-board__head"><span>Place</span><span>{{tour.mode === 'battle' ? 'Player , Wager' : 'Player'}}</span><span>Prize</span></div>
+<template v-if="tour.players">
+<div :key="player.name" class="pt-row" v-for="(player,pIndex) in tour.players">
+<div :class="{silver:pIndex===1, bronze:pIndex===2}" class="pt-medal"><span class="pt-medal__core">{{pIndex + 1}}</span></div>
+<div class="pt-player">
+<span :style="{background: player.avatarBg}" class="pt-avatar"><img :src="ptRaccoon" alt="" v-if="player.raccoon"/><span v-else>{{player.avatar}}</span></span>
+<span class="pt-player__copy"><span class="pt-player__name">{{player.name}}</span><span class="pt-player__wager">{{player.wager}}</span></span>
+</div>
+<div class="pt-prize-cell">{{player.prize}}<span class="pt-fs" v-if="player.fs">{{player.fs}}</span></div>
+</div>
+</template>
+<template v-else>
+<div class="pt-skeleton"><span class="pt-sk-circle"></span><span class="pt-sk-player"><span class="pt-sk-circle"></span><span class="pt-sk-lines"><span class="pt-sk-line"></span><span class="pt-sk-line short"></span></span></span><span class="pt-sk-prize"></span></div>
+<div class="pt-note"><i class="fas fa-trophy"></i><span>The leaderboard is located inside each Game that participates in the Tournament.</span></div>
+<div class="pt-skeleton"><span class="pt-sk-circle"></span><span class="pt-sk-player"><span class="pt-sk-circle"></span><span class="pt-sk-lines"><span class="pt-sk-line"></span><span class="pt-sk-line short"></span></span></span><span class="pt-sk-prize"></span></div>
+</template>
+<button @click="ptOpenTournament(tour)" class="pt-slide" type="button">{{tour.button}}</button>
+</div>
+</article>
+</div>
+</section>
+<section :key="'railB-'+(category._id || category.slug)" class="casino-rail" v-for="category in visibleCategoryRails.slice(2)">
 <div class="casino-rail-head"><h2><img :src="categoryIconImage(category)" alt="" class="rail-head-icon" v-if="categoryIconImage(category)"/><i :class="categoryIcon(category)" v-else></i> {{category.name}} </h2><span class="rail-arrows"><mark>{{category.total_games || category.games.length}} games</mark><button type="button" aria-label="Previous games" @click="slideCasinoRow($event,-1)"><i class="fas fa-chevron-left"></i></button><button type="button" aria-label="Next games" @click="slideCasinoRow($event,1)"><i class="fas fa-chevron-right"></i></button></span></div>
 <div class="casino-game-row no-scrollbar"><game-card :badge="index<4 ? (index===3?'HOT':'TOP') : ''" :game="game" :key="category.slug+'-'+(game._id || game.game_code)" @demo="selectGame(game, true)" @select="selectGame(game)" v-for="(game,index) in category.games.slice(0,12)"></game-card></div>
 </section>
@@ -4541,6 +4687,11 @@
         });
         const isGamePage = gamePage.isGamePage;
 
+        // Providers + Battles bloklari ayri dosyada: casino-ui/casino-providers-battles.js
+        const casinoPT = window.createCasinoProvidersBattles({
+          ref, navigate, notify: toastMessage,
+        });
+
         // Hesap sayfalari mantigi ayri dosyada: casino-ui/account-pages.js
         const accountPages = window.createAccountPages({
           ref, computed, currentPage, apiUrl, authUser, readAuthToken,
@@ -4821,7 +4972,7 @@
         // Zil rozeti cekmece acilmadan da dogru olmali: oturum dolunca yukle.
         watch(authUser, (u) => { if (u) loadNotifications(); }, { immediate: true });
         onBeforeUnmount(()=>{ window.removeEventListener('resize',handleResize); window.removeEventListener('keydown',handleKeydown); window.removeEventListener('storage',handleStorageSync); document.removeEventListener('click',handleDocumentClick); clearTimeout(searchTimer); clearInterval(promoTimer); });
-        return {...uiSettings,...leaderboardData,betsRowChoices,betsTab,betsRowCount,betsCountOpen,betsTabs,betsVisibleRows,betGameIcon,selectBetsTab,setBetsCount,heroSpinning,heroSpin,heroBackdropCards,balanceMenuOpen,balanceSearch,balanceHideZero,balanceShowVault,balanceDisplayFiat,balanceCurrencies,balanceActiveCode,balanceFiltered,toggleBalanceMenu,selectBalanceCurrency,websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,...notificationsData,toggleNotif,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,slideCasinoRow,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
+        return {...casinoPT,...uiSettings,...leaderboardData,betsRowChoices,betsTab,betsRowCount,betsCountOpen,betsTabs,betsVisibleRows,betGameIcon,selectBetsTab,setBetsCount,heroSpinning,heroSpin,heroBackdropCards,balanceMenuOpen,balanceSearch,balanceHideZero,balanceShowVault,balanceDisplayFiat,balanceCurrencies,balanceActiveCode,balanceFiltered,toggleBalanceMenu,selectBalanceCurrency,websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,...notificationsData,toggleNotif,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,slideCasinoRow,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
           ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage};
       }
     }).component('game-card', GameCard).mount('#app');
