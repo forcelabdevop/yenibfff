@@ -21,10 +21,12 @@
 <script src="./account-page.js"></script>
 <script src="./missions-page.js"></script>
 <script src="./bonuses-page.js"></script>
+<script src="./crypto-earn-page.js"></script>
 <script src="./casino-providers-battles.js"></script>
 <link href="./tailwind.css" rel="stylesheet"/>
 <link href="./missions-page.css" rel="stylesheet"/>
 <link href="./bonuses-page.css" rel="stylesheet"/>
+<link href="./crypto-earn-page.css" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -2540,6 +2542,87 @@
 </div>
 </div>
 </template>
+<template v-else-if="isCryptoPage">
+<div class="ce-page">
+<section class="ce-hero">
+<div class="ce-shell ce-hero__inner">
+<div class="ce-hero__copy">
+<h1 class="ce-hero__title">CRYPTO &amp; EARN</h1>
+<p class="ce-hero__sub">Stake, trade, and explore more ways to grow your crypto.</p>
+<button @click="openDeposit('crypto')" class="ce-red ce-hero__cta" type="button">Make Deposit</button>
+</div>
+<img :src="ceAssets.hero" alt="Bitcoin on a glowing platform" class="ce-hero__art"/>
+</div>
+</section>
+<section class="ce-section ce-section--staking">
+<div class="ce-head">
+<h2>Crypto Staking</h2>
+<div class="ce-head__link"><button @click="ceNotify('Crypto Staking opened')" type="button">Go to Crypto Staking</button><button @click="ceSlide($event,-1)" aria-label="Previous" class="ce-arrow" type="button"><i class="fas fa-chevron-left"></i></button><button @click="ceSlide($event,1)" aria-label="Next" class="ce-arrow is-active" type="button"><i class="fas fa-chevron-right"></i></button></div>
+</div>
+<div class="ce-stakes ce-track">
+<article :class="{'is-featured':i===0}" :key="coin.symbol" class="ce-stake" v-for="(coin,i) in ceStaking">
+<div class="ce-stake__top">
+<img :alt="coin.symbol" :src="coin.icon" class="ce-stake__icon"/>
+<div class="ce-stake__copy"><div class="ce-stake__name">{{coin.name}}</div><div class="ce-stake__symbol">{{coin.symbol}}</div></div>
+<div class="ce-stake__rate"><div class="ce-stake__label">{{coin.label}} <i class="far fa-question-circle" v-if="i===0"></i></div><div class="ce-stake__value">{{coin.rate}}</div></div>
+</div>
+<div class="ce-stake__bottom"><span>Duration</span><span>{{coin.duration}}</span></div>
+</article>
+</div>
+</section>
+<section class="ce-section ce-section--swap">
+<div class="ce-head"><h2>Swap Crypto</h2></div>
+<div class="ce-swap">
+<div class="ce-swap__coins">
+<template v-for="(coin,ci) in ceSwapCoins" :key="'ce-sw'+ci"><img :alt="coin.alt" :src="coin.src" v-if="coin.type==='img'"/><span :style="{background:coin.bg}" class="ce-swap__glyph" v-else="">{{coin.glyph}}</span></template>
+</div>
+<div class="ce-swap__caption">Seamless crypto swaps, any coin, any network.</div>
+<button @click="openWallet('swap')" class="ce-red ce-swap__button" type="button">Crypto Swap</button>
+</div>
+</section>
+<section class="ce-section ce-section--futures">
+<div class="ce-head">
+<h2>Futures</h2>
+<div class="ce-head__link"><button @click="ceNotify('Futures opened')" type="button">Go to Futures</button><button @click="ceSlide($event,-1)" aria-label="Previous" class="ce-arrow" type="button"><i class="fas fa-chevron-left"></i></button><button @click="ceSlide($event,1)" aria-label="Next" class="ce-arrow is-active" type="button"><i class="fas fa-chevron-right"></i></button></div>
+</div>
+<div class="ce-futures ce-track">
+<article :key="future.symbol" class="ce-future" v-for="future in ceFutures">
+<div class="ce-future__title">
+<img :alt="future.symbol" :src="future.icon" v-if="future.icon"/>
+<span :class="future.kind" class="ce-future__mark" v-else-if="future.glyph">{{future.glyph}}</span>
+<span :class="future.kind" class="ce-future__mark" v-else=""><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M18.9 3h3.4l-7.1 7a4.6 4.6 0 0 1-6.4 0L1.7 3h3.4l5.4 5.3c.8.8 2.2.8 3 0L18.9 3ZM5.1 21H1.7l7.1-7a4.6 4.6 0 0 1 6.4 0l7.1 7h-3.4l-5.4-5.3a2.1 2.1 0 0 0-3 0L5.1 21Z"></path></svg></span>
+<span>{{future.symbol}}</span>
+</div>
+<div class="ce-future__label">Price</div><div class="ce-future__price">{{future.price}}</div>
+<div class="ce-future__lev">Leverage: <strong>1000x</strong></div>
+</article>
+</div>
+</section>
+<section class="ce-section ce-section--loot">
+<div class="ce-head">
+<h2>NFT Lootboxes</h2>
+<div class="ce-head__link"><button @click="ceNotify('NFT Lootboxes opened')" type="button">Go to NFT Lootboxes</button><button @click="ceSlide($event,-1)" aria-label="Previous" class="ce-arrow" type="button"><i class="fas fa-chevron-left"></i></button><button @click="ceSlide($event,1)" aria-label="Next" class="ce-arrow is-active" type="button"><i class="fas fa-chevron-right"></i></button></div>
+</div>
+<div class="ce-loot-wrap">
+<div class="ce-loots ce-track">
+<article :key="box.name" class="ce-loot" v-for="(box,i) in ceLootboxes">
+<span class="ce-loot__new" v-if="box.isNew">NEW</span>
+<button @click.stop="ceToggleInfo(i)" aria-label="Included items" class="ce-loot__info" type="button">i</button>
+<img :alt="box.name" :src="box.art" class="ce-loot__art"/>
+<div class="ce-loot__meta"><div class="ce-loot__name">{{box.name}}</div><div class="ce-loot__sub"><span class="ce-loot__items">{{box.items}} items</span><span class="ce-loot__price">{{box.price}}</span></div></div>
+<button @click="ceNotify(box.name + ' lootbox opened')" class="ce-red ce-loot__open" type="button">Open</button>
+<div class="ce-tip" v-if="ceInfoOpen===i">
+<div class="ce-tip__title">Included items</div>
+<div class="ce-tip__row"><img :src="ceAssets.boxRed" alt=""/><span>TRX</span><strong>10</strong></div>
+<div class="ce-tip__row"><img :src="ceAssets.boxRed" alt=""/><span>TRX</span><strong>1</strong></div>
+</div>
+</article>
+</div>
+</div>
+</section>
+<div class="ce-crumb"><span class="dim">{{websiteName}}</span><i class="fas fa-chevron-right"></i><span class="bright">Crypto And Earn</span></div>
+</div>
+</template>
 <template v-else-if="isCasinoPage">
   <div @scroll="syncPromoIndex" class="casino-promos no-scrollbar" id="casino-promos">
 <button :key="banner.id" @click="navigate(banner.href)" class="casino-promo" v-for="banner in promoBanners">
@@ -2857,7 +2940,7 @@
 </template>
 <!-- Account sekme grubundaki sayfalar kendi basligini cizer (.ac-title), route-hero gosterilmez. -->
 <div class="route-hero" v-else-if="!acHasTabs"><div><span class="route-kicker">{{pageContent.kicker}}</span><h1>{{pageContent.title}}</h1><p>{{pageContent.description}}</p></div><span class="route-badge">{{pageContent.badge}}</span></div>
-<div class="empty-panel" v-if="!isCasinoPage && !isGamePage && !isAccountPage && !isBonusesPage"><div class="empty-panel-inner"><span class="empty-icon"><i :class="pageContent.icon"></i></span><h2>{{pageContent.emptyTitle}}</h2><p>{{pageContent.emptyText}}</p></div></div>
+<div class="empty-panel" v-if="!isCasinoPage && !isGamePage && !isAccountPage && !isBonusesPage && !isCryptoPage"><div class="empty-panel-inner"><span class="empty-icon"><i :class="pageContent.icon"></i></span><h2>{{pageContent.emptyTitle}}</h2><p>{{pageContent.emptyText}}</p></div></div>
 
 <!-- ===== Hesap sayfalari (Wallet / Profile / Account / Transactions / Game History / Sessions / Vault) ===== -->
 <template v-if="isAccountPage">
@@ -4766,13 +4849,13 @@
         const navItems = [
           {label:'Missions', icon:'fas fa-bullseye', count:'27', path:'/missions'},
           {label:'Bonuses', icon:'fas fa-gift', path:'/bonuses'},
-          {label:'Crypto & Earn', icon:'fas fa-money-bill-wave', arrow:true, path:'/buy-crypto'},
+          {label:'Crypto & Earn', icon:'fas fa-money-bill-wave', arrow:true, path:'/crypto-and-earn'},
           {label:`${WEBSITE_NAME} Token`, image:'/logo.svg', path:'/buy-crypto'},
           {label:'Promotions', icon:'fas fa-bullhorn', path:'/bonuses'},
           {label:'Refer & Earn', icon:'fas fa-user-friends', path:'/bonuses'},
           {label:'VIP Club', icon:'fas fa-crown', vip:true, path:'/vip'},
           {label:'Rank System', icon:'fas fa-chart-bar', path:'/vip'},
-          {label:'Free Crypto Boxes', icon:'fas fa-cube', path:'/buy-crypto'},
+          {label:'Free Crypto Boxes', icon:'fas fa-cube', path:'/crypto-and-earn'},
           {label:'News', icon:'fas fa-newspaper', path:'/'}
         ];
 
@@ -5034,6 +5117,10 @@
   // Bonus Cabinet mantigi ayri dosyada: casino-ui/bonuses-page.js
   const bonusesPage = window.createBonusesPage({ ref, computed, currentPage, toastMessage });
   const isBonusesPage = bonusesPage.isBonusesPage;
+
+  // Crypto & Earn sayfasi mantigi ayri dosyada: casino-ui/crypto-earn-page.js
+  const cryptoEarnPage = window.createCryptoEarnPage({ ref, currentPage, toastMessage });
+  const isCryptoPage = cryptoEarnPage.isCryptoPage;
   
   // Cuzdan modali mantigi ayri dosyada: casino-ui/wallet-modal.js
         const walletModal = window.createWalletModal({
@@ -5310,7 +5397,7 @@
         watch(authUser, (u) => { if (u) loadNotifications(); }, { immediate: true });
         onBeforeUnmount(()=>{ window.removeEventListener('resize',handleResize); window.removeEventListener('keydown',handleKeydown); window.removeEventListener('storage',handleStorageSync); document.removeEventListener('click',handleDocumentClick); clearTimeout(searchTimer); clearInterval(promoTimer); });
         return {...casinoPT,...uiSettings,...leaderboardData,betsRowChoices,betsTab,betsRowCount,betsCountOpen,betsTabs,betsVisibleRows,betGameIcon,selectBetsTab,setBetsCount,heroSpinning,heroSpin,heroBackdropCards,balanceMenuOpen,balanceSearch,balanceHideZero,balanceShowVault,balanceDisplayFiat,balanceCurrencies,balanceActiveCode,balanceFiltered,toggleBalanceMenu,selectBalanceCurrency,websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,...notificationsData,toggleNotif,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,slideCasinoRow,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
-          ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage, ...missionsPage, ...bonusesPage};
+          ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage, ...missionsPage, ...bonusesPage, ...cryptoEarnPage};
       }
     }).component('game-card', GameCard).mount('#app');
   </script>
