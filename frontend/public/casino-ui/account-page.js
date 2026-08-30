@@ -22,7 +22,6 @@
  *     - sifre kartinin durumu         -> profile.hasPassword alani gerekiyor
  *     - Mr. Fury Bot baglantisi       -> POST /account/telegram/connect olmali
  *
- * Backend'e baglanirken: MOCK-BACKEND.md bolum 9.
  */
 window.createAccountPage = function createAccountPage(ctx) {
   const { ref, computed, currentPage, navigate, profile, security, toastMessage } = ctx

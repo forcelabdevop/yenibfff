@@ -37,6 +37,7 @@ window.createAccountPages = function createAccountPages(ctx) {
   const profile = ref(null)
   const security = ref(null)
   const walletState = ref(null)
+  const accountStats = ref({})
   const transactions = ref([])
   const gameHistory = ref([])
   const sessions = ref([])
@@ -208,6 +209,7 @@ window.createAccountPages = function createAccountPages(ctx) {
     profile.value = data.profile || null
     security.value = data.security || null
     walletState.value = data.wallet || null
+    accountStats.value = data.stats || {}
     // DIKKAT: /account/overview'in `vault` nesnesi /account/vault'unkinden
     // DAHA AZ alan icerir — `activeBalance`/`activeWallet` yoktur. Duz atama
     // yapinca iki yukleyici (loadOverview + loadVault) paralel kostugu icin
@@ -365,6 +367,7 @@ window.createAccountPages = function createAccountPages(ctx) {
     profile,
     security,
     walletState,
+    accountStats,
     walletRows,
     activeCurrency,
     verificationRows,

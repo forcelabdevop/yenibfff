@@ -2,11 +2,7 @@
  * Cuzdan modali (Wallet / Crypto Swap / Deposit) mantigi.
  * casino-ui/index.html icindeki Vue setup() fonksiyonundan cagrilir.
  *
- * ============================================================================
- * BACKEND BAGLAMA NOTLARI  (su an tamami FRONTEND-ONLY, mock-backend.js uzerinden)
- * ============================================================================
- * Asagidaki uclarin HICBIRI backend'de HENUZ YOK. `mock-backend.js` bunlari
- * gecici olarak karsiliyor. Gercek backend'e gecerken:
+ * Cuzdan verileri ve islemleri canli backend API'lerinden gelir:
  *
  *  1) GET /wallet/currencies
  *     -> { success, data: [{ code, name, icon, network, networks[], balance,

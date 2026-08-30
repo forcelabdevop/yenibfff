@@ -2,12 +2,8 @@
  * Profil modali (Profile / Details) mantigi.
  * casino-ui/index.html icindeki Vue setup() fonksiyonundan cagrilir.
  *
- * ============================================================================
- * BACKEND BAGLAMA NOTLARI  (su an TAMAMI STATIK — bilincli tercih)
- * ============================================================================
- * Bu modaldeki tum rakamlar STATIK. Kullanici adi, rank ve oyun kapaklari
- * mevcut canli verilerden (authUser + oyun katalogu) geliyor; geri kalan
- * metrikler placeholder. Gercek backend'e gecerken beklenen uclar:
+ * Profil metrikleri /account/overview yanitindaki kullaniciya ait canli
+ * stats alanindan gelir. Kaydi olmayan metrikler uydurulmaz ve sifir gosterilir.
  *
  *  1) GET /account/profile-stats
  *     -> { success, data: {
@@ -39,7 +35,7 @@
  * ============================================================================
  */
 window.createProfileModal = function createProfileModal(ctx) {
-  const { ref, computed, nextTick, authUser, userRank, topSlots, toastMessage } = ctx
+  const { ref, computed, nextTick, authUser, userRank, accountStats, toastMessage } = ctx
 
   // null | 'profile' | 'details'
   const pmView = ref(null)
@@ -70,81 +66,36 @@ window.createProfileModal = function createProfileModal(ctx) {
     return parts.join(" ")
   })
 
-  // ---- Statik veri (bkz. dosya basi notlari) ----
-  const pmChatActivity = [
-    { emoji: "\uD83D\uDCAC", label: "Total Messages", current: "4", total: "500", progress: 0.8 },
-    { emoji: "\u2764\uFE0F", label: "Likes received", current: "1", total: "250", progress: 0.4 },
-    { emoji: "\uD83D\uDCB8", label: "Coindrops", current: "0", total: "10", progress: 0 },
-    { emoji: "\u2614", label: "Rains", current: "0", total: "10", progress: 0 },
-  ]
-  const pmChatLevel = "1/5"
-  const pmChatTier = "Junior"
-
-  const pmMetricSections = [
-    {
-      title: "Statistics",
-      metrics: [
-        { label: "Total Wagered", value: "$27,806.07" },
-        { label: "Total Bets", value: "5263" },
-        { label: "Earned Staking", value: "$0.36", help: true },
-      ],
-    },
-    {
-      title: "Activity",
-      metrics: [
-        { label: "Total Tips", value: "$0.00" },
-        { label: "Total Rains", value: "$0.00" },
-        { label: "Total Coindrops", value: "$0.00" },
-      ],
-    },
-    {
-      title: "Crypto Futures",
-      metrics: [
-        { label: "Total Wagered", value: "$0.07" },
-        { label: "Total Bets", value: "1" },
-        { label: "Total Win", value: "$0.00" },
-      ],
-    },
-    {
-      title: "Lootboxes",
-      metrics: [
-        { label: "Total Wagered", value: "$0.27" },
-        { label: "Total Bets", value: "13" },
-        { label: "Total Win", value: "$0.00" },
-      ],
-    },
-  ]
-
-  // Kapaklar canli katalogdan, tutarlar statik.
-  const PM_TOP_WAGERED = ["$15,302.39", "$3,978.00", "$3,093.00", "$1,590.47"]
-  const pmGames = computed(() => {
-    const list = Array.isArray(topSlots.value) ? topSlots.value.slice(0, 4) : []
-    return PM_TOP_WAGERED.map((amount, index) => {
-      const game = list[index] || null
-      return {
-        key: `pm-top-${index}`,
-        name: (game && (game.name || game.title)) || "Slot game",
-        image: (game && (game.banner || game.background || game.img)) || "assets/slot-icon.png",
-        amount,
-      }
-    })
+  const number = (value) => Number.isFinite(Number(value)) ? Number(value) : 0
+  const money = (value) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(number(value))
+  const userStats = computed(() => (accountStats && accountStats.value) || {})
+  const pmChatActivity = computed(() => {
+    const chat = userStats.value.chat || {}
+    return [
+      { label: "Total Messages", current: String(number(chat.messages)), total: String(number(chat.nextLevelAt)), progress: number(chat.nextLevelAt) ? Math.min(100, number(chat.messages) / number(chat.nextLevelAt) * 100) : 0 },
+      { label: "Likes received", current: String(number(chat.likes)), total: String(number(chat.nextLikesAt)), progress: number(chat.nextLikesAt) ? Math.min(100, number(chat.likes) / number(chat.nextLikesAt) * 100) : 0 },
+      { label: "Coindrops", current: String(number(chat.coindrops)), total: String(number(chat.nextCoindropsAt)), progress: number(chat.nextCoindropsAt) ? Math.min(100, number(chat.coindrops) / number(chat.nextCoindropsAt) * 100) : 0 },
+      { label: "Rains", current: String(number(chat.rains)), total: String(number(chat.nextRainsAt)), progress: number(chat.nextRainsAt) ? Math.min(100, number(chat.rains) / number(chat.nextRainsAt) * 100) : 0 },
+    ]
   })
-
-  const pmBattles = [
-    { name: "Lucky Daily", date: "07/06/2024", place: "16", prize: "$2.12", coins: false },
-    { name: "Free-to-play FunFury", date: "12/09/2023", place: "146", prize: "$0.37", coins: true },
-    { name: "Daily", date: "08/02/2024", place: "362", prize: "$0.77", coins: false },
-  ]
-
+  const pmChatLevel = computed(() => String(userStats.value.chat?.level || 0))
+  const pmChatTier = computed(() => String(userStats.value.chat?.tier || "New member"))
+  const pmMetricSections = computed(() => {
+    const stats = userStats.value
+    return [
+      { title: "Statistics", metrics: [{ label: "Total Wagered", value: money(stats.totalWagered) }, { label: "Total Bets", value: String(number(stats.totalBets)) }, { label: "Earned Staking", value: money(stats.earnedStaking), help: true }] },
+      { title: "Activity", metrics: [{ label: "Total Tips", value: money(stats.totalTips) }, { label: "Total Rains", value: money(stats.totalRains) }, { label: "Total Coindrops", value: money(stats.totalCoindrops) }] },
+      { title: "Crypto Futures", metrics: [{ label: "Total Wagered", value: money(stats.futures?.totalWagered) }, { label: "Total Bets", value: String(number(stats.futures?.totalBets)) }, { label: "Total Win", value: money(stats.futures?.totalWin) }] },
+      { title: "Lootboxes", metrics: [{ label: "Total Wagered", value: money(stats.lootboxes?.totalWagered) }, { label: "Total Bets", value: String(number(stats.lootboxes?.totalBets)) }, { label: "Total Win", value: money(stats.lootboxes?.totalWin) }] },
+    ]
+  })
+  const pmGames = computed(() => Array.isArray(userStats.value.topGames) ? userStats.value.topGames.map((game, index) => ({ key: game.gameId || `pm-top-${index}`, name: game.name, image: game.banner || "", amount: money(game.wagered) })) : [])
+  const pmBattles = computed(() => Array.isArray(userStats.value.battleRewards) ? userStats.value.battleRewards : [])
   const pmFilters = ["All games", "Slots", "Live Casino", "Originals"]
-  const pmDetailRows = [
-    { currency: "BNB", amount: "$1,120.76", bet: "53", icon: "assets/coin-bnb.png" },
-    { currency: "BFG", amount: "$9.23", bet: "353", icon: "assets/coin-bfg.png" },
-    { currency: "USDT", amount: "$26,415.33", bet: "4641", icon: "assets/coin-usdt.png" },
-    { currency: "stBFG", amount: "$41.72", bet: "130", icon: "assets/coin-bfg.png" },
-    { currency: "BTC", amount: "$0.10", bet: "4", icon: "assets/coin-btc.png" },
-    { currency: "SHIB", amount: "$0.00", bet: "1", icon: "" },
-  ]
+  const pmDetailRows = computed(() => {
+    const rows = Array.isArray(userStats.value.wageredBreakdown) ? userStats.value.wageredBreakdown : []
+    return rows.filter(row => pmFilter.value === "All games" || row.category === pmFilter.value).map(row => ({ currency: row.currency, amount: money(row.amount), bet: String(number(row.bets)), icon: row.icon || "" }))
+  })
 
   // ---- Aksiyonlar ----
   function pmResetScroll() {
