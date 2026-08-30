@@ -332,28 +332,116 @@ veritabanı bağlı değil. Hangi projenin cevap verdiğini `ss` çıktısındak
 pwdx <PID>     # sürecin cwd'si: velobet mi, bizzocazino mu?
 ```
 
-### Bu projenin backend'ini başlatma
+### Sunucudaki kopya eski — önce bunu düzeltin
 
-`pwdx` velobet'i göstermiyorsa backend hiç çalışmıyor demektir:
+30.08.2026'da ilk başlatma denemesi üç ayrı sorunu ortaya çıkardı:
 
-```bash
-cd /www/raxen/velobet/backend
-[ -f .env ] || { echo "HATA: .env yok"; }
-grep -q '^SERVER_PORT=' .env || echo "UYARI: SERVER_PORT tanımsız → 5000 kullanılır (çakışabilir)"
-
-pnpm install --frozen-lockfile
-pm2 start ecosystem.config.js --update-env
-pm2 save
+```
+[PM2][ERROR] Error: Script not found: /www/raxen/velobet/backend/app.js
+[PM2][WARN]  Applications local-website-backend not running, starting...
+ERR_PNPM_OUTDATED_LOCKFILE
 ```
 
-> **Port çakışması:** öteki proje 5000'i tutuyorsa bu backend ayağa kalkamaz.
-> `.env` içinde `SERVER_PORT=5001` verip nginx `proxy_pass` hedefini de aynı
-> porta çevirin, sonra `nginx -t && systemctl reload nginx`.
+Üçünün de anlamı ayrı:
 
-Uygulama adı `.env`'deki `PROJECT_ID` ve `WEBSITE_NAME`'den üretilir
-(`<PROJECT_ID>-<WEBSITE_NAME>-backend`), yani öteki projeyle karışmaz.
-Doğru çalıştığında `pm2 list` cluster modunda **4 instance** göstermelidir —
-`bizzocazino2-backend` gibi fork modunda tek süreç değil.
+**1. `app.js` aranıyor → sunucudaki checkout eski.** Depoda `script` alanı
+`af2fda5` commit'inde `app.js` → `index.js` olarak düzeltildi (`app.js` diye
+bir dosya hiç yok). Sunucu hâlâ `app.js` istediğine göre o commit orada değil.
+Yani DB dayanıklılık düzeltmeleri de dahil hiçbir yeni commit çekilmemiş.
+
+**2. Uygulama adı `local-website-backend` → `.env` eksik.** Ad
+`<PROJECT_ID>-<WEBSITE_NAME>-backend` şablonundan üretilir. `.env` olsaydı
+`local-Forcelab-backend` çıkardı; `website` görünmesi ikisinin de tanımsız
+olduğu, yani **`.env` dosyasının hiç olmadığı** anlamına gelir. `.env` yoksa
+`DATABASE_URI` de yoktur — backend başlasa bile veritabanına bağlanamaz.
+
+**3. Lockfile uyuşmuyor.** Sunucudaki `package.json` içinde depoda olmayan
+`@types/node ^26.4.0` ve `typescript ^7.0.2` var. Bunlar elle eklenmiş; depo
+sürümünde yoklar. Sunucudaki yerel değişiklikler `git pull`'u da engeller.
+
+### Kurtarma sırası
+
+```bash
+cd /www/raxen/velobet
+
+# 1) Yerel kirliliği görün (körlemesine sıfırlamayın — .env burada olabilir)
+git status
+git stash list
+
+# 2) package.json'daki elle eklenen satırları geri alın
+git checkout -- backend/package.json
+
+# 3) Güncel kodu çekin
+git pull
+
+# 4) .env'i oluşturun (yoksa)
+cd backend
+[ -f .env ] || cp .env.example .env
+```
+
+`.env` içinde en az şunlar dolu olmalı: `DATABASE_URI`, `WEBSITE_NAME`,
+`PROJECT_ID`, `SERVER_PORT`. **`.env.example` şablondur**; `DATABASE_URI`
+gerçek Atlas bağlantı dizesiyle doldurulmadan backend çalışmaz.
+
+```bash
+# 5) Kurulum — lockfile artık package.json ile uyumlu
+pnpm install --frozen-lockfile
+
+# 6) Başlatın
+pm2 start ecosystem.config.js --update-env
+pm2 save
+pm2 list
+```
+
+Doğru çalıştığında `pm2 list` **cluster modunda 4 instance** ve
+`local-Forcelab-backend` benzeri bir ad göstermelidir — `bizzocazino2-backend`
+gibi fork modunda tek süreç değil.
+
+> **`--frozen-lockfile` hata verirse durun.** `--no-frozen-lockfile` ile
+> geçiştirmeyin: bu, lockfile'ı sunucuda sessizce değiştirip depodakinden
+> farklı sürümler kurar ve sunucuyu bir daha tekrarlanamaz hale getirir.
+> Hata devam ediyorsa `git status` ile `backend/package.json`'ın gerçekten
+> temiz olduğunu doğrulayın.
+
+### Port 5000'i Node değil, başka bir şey tutuyor
+
+`ss` çıktısı şunu gösterdi:
+
+```
+LISTEN *:5000  users:(("MainThread",pid=1297003,...))
+```
+
+Bu **pm2'deki süreç değil** (o `pid=1292634`). `MainThread` süreç adı
+tipik olarak bir Python uygulamasına işaret eder. Yani `apivelobet.com`
+üzerinden gelen istekler bu projenin backend'ine değil, **tamamen başka bir
+uygulamaya** gidiyor. Üyeliklerin giriş yapamamasının en olası açıklaması bu.
+
+Kimin tuttuğunu kesinleştirin:
+
+```bash
+pwdx 1297003                    # çalışma dizini
+ls -l /proc/1297003/exe         # gerçek çalıştırılabilir (python? node?)
+systemctl status $(systemctl list-units --type=service --state=running \
+  --no-legend | awk '{print $1}' | head -50) 2>/dev/null | grep -B5 1297003
+```
+
+Bu süreç başka bir sitenin canlı API'siyse **durdurmayın**. Bunun yerine bu
+projeyi farklı bir porta alın:
+
+```bash
+# backend/.env
+SERVER_PORT=5001
+```
+
+Sonra nginx'te `apivelobet.com` sunucu bloğundaki `proxy_pass` hedefini
+`127.0.0.1:5001` yapın ve:
+
+```bash
+nginx -t && systemctl reload nginx
+curl -s -o /dev/null -w '%{http_code}\n' https://apivelobet.com/health
+```
+
+`200` bekliyoruz. `503` gelirse süreç ayakta ama `DATABASE_URI` yanlış.
 
 ## Sorun giderme
 
