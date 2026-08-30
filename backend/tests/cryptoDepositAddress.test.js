@@ -14,7 +14,26 @@ test("HD turetme bilinen BIP39 vektorunu uretir", () => {
 	// Standart test mnemonic'i + m/44'/195'/0'/0/0 -> bilinen TRON adresi.
 	// Bu deger degisirse turetme yolu bozulmus demektir ve TUM kullanicilarin
 	// adresleri kayar; mevcut adreslere gonderilen paralar goruntulenemez.
-	assert.equal(hdWallet.deriveAddress(0), "TUEZSdKsoDHQMeZwihtdoBiN46zxhGWYdH");
+	//
+	// DIKKAT: hdWallet mnemonic'i modul-seviyesinde `cachedMnemonic` olarak
+	// onbellege alir ve bu test dosyasi ustteki `process.env.TRON_HD_MNEMONIC =
+	// ... || ...` satiri YALNIZCA ortamda deger yoksa standart vektoru kullanir.
+	// Gercek bir ortamda (bu proje gibi) TRON_HD_MNEMONIC zaten tanimliysa bu
+	// test o gercek mnemonic'i kullanir ve bilinen adres yerine baska bir adres
+	// uretip YANLIS YERE basarisiz olur — turetme yolu bozuk degildir, sadece
+	// test ortamdan sizan gercek seed'i kullanmistir. Bu yuzden bilinen vektoru
+	// ayri bir alt surecte, ortami tamamen gormezden gelerek dogruluyoruz.
+	const { execFileSync } = require("node:child_process");
+	const script = `
+		process.env.TRON_HD_MNEMONIC =
+			"abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+		const hd = require("${require.resolve("../utils/crypto/hdWallet")}");
+		console.log(hd.deriveAddress(0));
+	`;
+	const env = { ...process.env };
+	delete env.TRON_HD_MNEMONIC;
+	const address = execFileSync(process.execPath, ["-e", script], { env }).toString().trim();
+	assert.equal(address, "TUEZSdKsoDHQMeZwihtdoBiN46zxhGWYdH");
 });
 
 test("HD turetme deterministtir ve indeksler carpismaz", () => {

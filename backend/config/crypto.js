@@ -15,15 +15,33 @@ const TRON_NETWORKS = {
 	nile: {
 		// Testnet — uctan uca deneme icin.
 		fullHost: 'https://nile.trongrid.io',
-		// DIKKAT: Nile'daki USDT sozlesmesi sabit kodlanmaz. Testnet token'lari
-		// yeniden deploy edilebildigi icin yanlis bir adres, gercek transferlerin
-		// gorulmemesine veya yanlis token'in kredi edilmesine yol acar.
-		// Testnet kullanacaksaniz TRON_USDT_CONTRACT ile guncel adresi verin.
-		usdtContract: process.env.TRON_USDT_CONTRACT || null,
+		// DIKKAT: TRON_USDT_CONTRACT proje ayarlarinda mainnet sozlesmesine
+		// (TMK1GZT73ADWoYxwCuLUFPtKrRWeqcSPkk) ayarlandi ve Nile agi zorla
+		// acildigi icin (yukarida NETWORK='nile') bu deger burada KULLANILAMAZ
+		// — mainnet'teki bir sozlesme adresi Nile'da gecersizdir. Bilinen
+		// guncel Nile testnet USDT sozlesmesi sabit kodlandi. TRON_USDT_CONTRACT
+		// gercekten Nile icin dogru bir adresle guncellenirse bu sabiti kaldirip
+		// env okumasini geri acin.
+		usdtContract: 'TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf',
 	},
 };
 
-const NETWORK = process.env.TRON_NETWORK === 'nile' ? 'nile' : 'mainnet';
+// ⚠️ GEÇİCİ GÜVENLİK KİLİDİ — kaldırmadan önce bu yorumu okuyun.
+//
+// Proje ayarlarındaki TRON_NETWORK değişkeni "Mainnet" olarak kaydedildi ve
+// Vars formu üzerinden "nile"a düzeltilemedi (30.08.2026 — form kaydı env
+// dosyasına yansımadı, kök sebep bilinmiyor). Şu an kullanılan
+// TRON_HD_MNEMONIC salt test amaçlı üretildi ve bu sohbette AÇIKÇA
+// gösterildi — dolayısıyla mainnet'te ASLA güvenli değildir. Biri bu
+// adreslere gerçek USDT/TRX gönderirse o fon kalıcı olarak kaybolabilir.
+//
+// Bu satır env okumasını görmezden gelip ağı HER ZAMAN "nile" (testnet)
+// olarak zorlar. TRON_NETWORK proje ayarlarında gerçekten "nile" olarak
+// düzeltildiğinde VE mnemonic sohbette hiç gösterilmemiş güvenli bir
+// üretim seed'i ile değiştirildiğinde, aşağıdaki satırı geri açıp bu
+// zorlamayı kaldırın.
+const NETWORK = 'nile';
+// const NETWORK = process.env.TRON_NETWORK === 'nile' ? 'nile' : 'mainnet';
 
 /** BIP44 TRON coin type: m/44'/195'/0'/0/{index} */
 const TRON_DERIVATION_PREFIX = "m/44'/195'/0'/0";
