@@ -380,8 +380,12 @@ cd backend
 ```
 
 `.env` içinde en az şunlar dolu olmalı: `DATABASE_URI`, `WEBSITE_NAME`,
-`PROJECT_ID`, `SERVER_PORT`. **`.env.example` şablondur**; `DATABASE_URI`
-gerçek Atlas bağlantı dizesiyle doldurulmadan backend çalışmaz.
+`PROJECT_ID`. **`.env.example` şablondur**; `DATABASE_URI` gerçek Atlas
+bağlantı dizesiyle doldurulmadan backend çalışmaz.
+
+`SERVER_PORT` `.env.example`'da **yok**; tanımlanmazsa kod `5000`'e düşer
+(`index.js:253`). Bu sunucuda 5000 dolu olduğu için satırı elle eklemeniz
+gerekir — aşağıya bakın.
 
 ```bash
 # 5) Kurulum — lockfile artık package.json ile uyumlu
