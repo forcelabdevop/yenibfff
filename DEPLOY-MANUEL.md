@@ -356,28 +356,88 @@ olduğu, yani **`.env` dosyasının hiç olmadığı** anlamına gelir. `.env` y
 `DATABASE_URI` de yoktur — backend başlasa bile veritabanına bağlanamaz.
 
 **3. Lockfile uyuşmuyor.** Sunucudaki `package.json` içinde depoda olmayan
-`@types/node ^26.4.0` ve `typescript ^7.0.2` var. Bunlar elle eklenmiş; depo
-sürümünde yoklar. Sunucudaki yerel değişiklikler `git pull`'u da engeller.
+`@types/node ^26.4.0` ve `typescript ^7.0.2` var. Bunlar elle eklenmiş.
+
+**4. `/www/raxen/velobet` bir git deposu DEĞİL.**
+
+```
+fatal: not a git repository (or any of the parent directories): .git
+```
+
+Klasör elle kopyalanmış. Bunun üç sonucu var: `git pull` ile güncelleme
+yapılamaz, `git checkout` ile bozuk `package.json` geri alınamaz, ve
+`.github/workflows/deploy.yml` otomatik dağıtımı da çalışamaz — çünkü o
+workflow `DEPLOY_PATH`'in bir depo olmasını bekliyor.
 
 ### Kurtarma sırası
+
+Önce yedek alın. Aşağıdaki adım takip eden dosyaları değiştirir:
+
+```bash
+cd /www/raxen
+tar czf ~/velobet-yedek-$(date +%F-%H%M).tar.gz velobet
+```
+
+Klasörü yerinde gerçek bir depoya çevirin. Bu yol tercih edilir çünkü
+`.env`, `backend/uploads/` ve `backend/config/` **izlenmeyen** dosyalardır;
+`reset --hard` onlara dokunmaz, yani yüklemeler ve ayarlar yerinde kalır:
 
 ```bash
 cd /www/raxen/velobet
 
-# 1) Yerel kirliliği görün (körlemesine sıfırlamayın — .env burada olabilir)
-git status
-git stash list
+git init
+git remote add origin https://github.com/forcelabdevop/yenibfff.git
+git fetch origin gamelaunch-integration --depth=1
 
-# 2) package.json'daki elle eklenen satırları geri alın
-git checkout -- backend/package.json
+# DİKKAT: bu, izlenen dosyalardaki yerel değişiklikleri siler
+# (bozuk package.json dahil — zaten istediğimiz bu).
+git reset --hard origin/gamelaunch-integration
+```
 
-# 3) Güncel kodu çekin
-git pull
+> **Neden `main` değil:** DB dayanıklılık düzeltmeleri ve bu doküman
+> `gamelaunch-integration` dalında; henüz `main`'e merge edilmedi. `main`'i
+> çekerseniz eski kodu almış olursunuz. Merge ettikten sonra
+> `git fetch origin main && git reset --hard origin/main` ile main'e
+> geçebilirsiniz; otomatik dağıtım da o zaman devreye girer.
 
-# 4) .env'i oluşturun (yoksa)
+Doğrulayın — `app.js` hatasının kaynağı buydu:
+
+```bash
+grep -n 'script:' backend/ecosystem.config.js     # "index.js" olmalı
+grep -cE '@types/node|typescript' backend/package.json   # 0 olmalı
+```
+
+Sonra `.env`:
+
+```bash
 cd backend
 [ -f .env ] || cp .env.example .env
 ```
+
+<details>
+<summary>Alternatif: yerinde <code>git init</code> yerine temiz klasöre klonlama</summary>
+
+Mevcut klasöre dokunmak istemiyorsanız yeni bir klona geçebilirsiniz. Bu
+durumda **izlenmeyen dosyaları elle taşımanız şart** — aksi halde kullanıcı
+yüklemeleri ve ayarlar kaybolur:
+
+```bash
+cd /www/raxen
+git clone -b gamelaunch-integration \
+  https://github.com/forcelabdevop/yenibfff.git velobet-yeni
+
+# git'te OLMAYAN, taşınması zorunlu olanlar:
+cp    velobet/backend/.env       velobet-yeni/backend/.env
+cp -a velobet/backend/uploads/.  velobet-yeni/backend/uploads/   2>/dev/null
+cp -a velobet/backend/config/.   velobet-yeni/backend/config/
+[ -f velobet/deploy.env ] && cp velobet/deploy.env velobet-yeni/deploy.env
+```
+
+Sonra pm2 uygulamasını silip yeni yoldan başlatmanız ve nginx `root`
+yollarını güncellemeniz gerekir. Bu yüzden yerinde `git init` daha az
+hareketli parça içerir.
+
+</details>
 
 `.env` içinde en az şunlar dolu olmalı: `DATABASE_URI`, `WEBSITE_NAME`,
 `PROJECT_ID`. **`.env.example` şablondur**; `DATABASE_URI` gerçek Atlas
@@ -400,6 +460,10 @@ pm2 list
 Doğru çalıştığında `pm2 list` **cluster modunda 4 instance** ve
 `local-Forcelab-backend` benzeri bir ad göstermelidir — `bizzocazino2-backend`
 gibi fork modunda tek süreç değil.
+
+> **Kod değişti:** `reset --hard` frontend ve admin kaynaklarını da
+> güncelledi. Eski derlemeler yayında kalmasın diye **Adım 3 (frontend) ve
+> Adım 4 (admin)** build+yayın işlemlerini tekrarlayın.
 
 > **`--frozen-lockfile` hata verirse durun.** `--no-frozen-lockfile` ile
 > geçiştirmeyin: bu, lockfile'ı sunucuda sessizce değiştirip depodakinden
