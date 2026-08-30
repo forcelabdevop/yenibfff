@@ -141,7 +141,15 @@ Doğrudan web köküne kopyalamayın — kopyalama sürerken site yarım kalır.
 Yanına kurup **takas edin**:
 
 ```bash
-WEB_ROOT=/www/wwwroot/velobet285.com
+WEB_ROOT=/www/wwwroot/ornek.com   # <-- KENDİ YOLUNUZU YAZIN
+
+# Guard: yanlış/yer tutucu yol sessizce çöp klasör oluşturmasın.
+case "$WEB_ROOT" in
+  /*) ;;
+  *) echo "HATA: WEB_ROOT mutlak yol olmalı"; return 2>/dev/null || exit 1 ;;
+esac
+[ -d "$WEB_ROOT" ] || { echo "HATA: $WEB_ROOT yok. Doğru yolu bulun."; return 2>/dev/null || exit 1; }
+[ -f out/index.html ] || { echo "HATA: out/index.html yok, önce build alın."; return 2>/dev/null || exit 1; }
 
 rm -rf "${WEB_ROOT}.new"
 mkdir -p "${WEB_ROOT}.new"
@@ -191,8 +199,26 @@ test -f dist/index.html && echo "admin build OK" || echo "BUILD BOŞ"
 
 ### Yayınlayın
 
+Önce **gerçek** web kökünü bulun. Aşağıdaki yol bir tahmindir; sizin
+sunucunuzda farklı olabilir:
+
 ```bash
-ADMIN_ROOT=/www/wwwroot/panel.velobet285.com   # admin'in kendi web kökü
+# nginx hangi klasörü sunuyor?
+grep -RE "server_name|root " /www/server/panel/vhost/nginx/ | grep -i panel
+```
+
+Bulduğunuz yolu yazın ve **kopyala-yapıştır yapmadan önce değiştirin**:
+
+```bash
+ADMIN_ROOT=/www/wwwroot/panel.ornek.com   # <-- KENDİ YOLUNUZU YAZIN
+
+# Guard: yanlış/yer tutucu yol sessizce çöp klasör oluşturmasın.
+case "$ADMIN_ROOT" in
+  /*) ;;
+  *) echo "HATA: ADMIN_ROOT mutlak yol olmalı (/ ile başlamalı)"; return 2>/dev/null || exit 1 ;;
+esac
+[ -d "$ADMIN_ROOT" ] || { echo "HATA: $ADMIN_ROOT yok. Doğru yolu bulun."; return 2>/dev/null || exit 1; }
+[ -f dist/index.html ] || { echo "HATA: dist/index.html yok, önce build alın."; return 2>/dev/null || exit 1; }
 
 rm -rf "${ADMIN_ROOT}.new"
 mkdir -p "${ADMIN_ROOT}.new"
@@ -202,6 +228,11 @@ rm -rf "${ADMIN_ROOT}.bak"
 mv "${ADMIN_ROOT}" "${ADMIN_ROOT}.bak"
 mv "${ADMIN_ROOT}.new" "${ADMIN_ROOT}"
 ```
+
+> **Neden guard var:** ilk denemede `ADMIN_ROOT` yerine `GERÇEK_KLASÖR`
+> yazıldı. `mv` hata verdi ama önceki satırlar çalıştığı için
+> `/www/raxen/velobet/GERÇEK_KLASÖR` adında çöp bir klasör oluştu.
+> Varsa silin: `rm -rf /www/raxen/velobet/GERÇEK_KLASÖR*`
 
 ### ⚠ Admin alt dizinde sunulamaz
 

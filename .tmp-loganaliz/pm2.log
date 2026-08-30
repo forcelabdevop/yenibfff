@@ -1,0 +1,1028 @@
+dist/assets/VTooltip-93a875d6.js                                           1.50 kB │ gzip:   0.82 kB
+dist/assets/VRadioGroup-c4eb3b2d.js                                        1.51 kB │ gzip:   0.77 kB
+dist/assets/CustomRadios-54139b0e.js                                       1.53 kB │ gzip:   0.83 kB
+dist/assets/coming-soon-2b5ea3b6.js                                        1.65 kB │ gzip:   0.93 kB
+dist/assets/NavBarI18n-7f6cd3ca.js                                         1.65 kB │ gzip:   0.91 kB
+dist/assets/verify-email-v1-a2a1460e.js                                    1.68 kB │ gzip:   0.86 kB
+dist/assets/validators-dcee41fc.js                                         1.69 kB │ gzip:   0.83 kB
+dist/assets/filter-9d79fb9c.js                                             1.77 kB │ gzip:   0.83 kB
+dist/assets/VDialog-5243015e.js                                            1.82 kB │ gzip:   0.97 kB
+dist/assets/VSwitch-bb696421.js                                            1.84 kB │ gzip:   0.99 kB
+dist/assets/verify-email-v2-285a9e13.js                                    1.86 kB │ gzip:   0.97 kB
+dist/assets/VSnackbar-0b9a75e0.js                                          1.89 kB │ gzip:   0.99 kB
+dist/assets/VBadge-f732daaa.js                                             1.90 kB │ gzip:   0.97 kB
+dist/assets/VSlider-3acb080e.js                                            2.10 kB │ gzip:   1.05 kB
+dist/assets/dialog-transition-9ee61ffb.js                                  2.16 kB │ gzip:   1.01 kB
+dist/assets/VDataTableServer-863f6495.js                                   2.18 kB │ gzip:   1.03 kB
+dist/assets/chatService-8647c7d8.js                                        2.37 kB │ gzip:   0.58 kB
+dist/assets/two-steps-v1-6fa87e9d.js                                       2.42 kB │ gzip:   1.11 kB
+dist/assets/welcome-9f0d305f.js                                            2.46 kB │ gzip:   1.20 kB
+dist/assets/NavbarShortcuts-62dc970e.js                                    2.47 kB │ gzip:   1.16 kB
+dist/assets/forgot-password-v1-30b34769.js                                 2.55 kB │ gzip:   1.18 kB
+dist/assets/two-steps-v2-a9a6d1b7.js                                       2.56 kB │ gzip:   1.20 kB
+dist/assets/forgot-password-278ccbbb.js                                    2.60 kB │ gzip:   1.23 kB
+dist/assets/forgot-password-v2-26d3e7d0.js                                 2.64 kB │ gzip:   1.25 kB
+dist/assets/DefaultLayoutWithVerticalNav-4295f146.js                       2.70 kB │ gzip:   1.33 kB
+dist/assets/index-df1cbb17.js                                              2.74 kB │ gzip:   1.15 kB
+dist/assets/VRow-b73acc2d.js                                               2.81 kB │ gzip:   1.07 kB
+dist/assets/NavBarBalanceIndicator-f31d1a21.js                             2.88 kB │ gzip:   1.22 kB
+dist/assets/VToolbar-6141f212.js                                           2.93 kB │ gzip:   1.22 kB
+dist/assets/AppStepper-5acbf506.js                                         2.96 kB │ gzip:   1.30 kB
+dist/assets/VAlert-77c056da.js                                             3.00 kB │ gzip:   1.35 kB
+dist/assets/UserProfile-726880ca.js                                        3.04 kB │ gzip:   1.25 kB
+dist/assets/reset-password-v1-85af1628.js                                  3.10 kB │ gzip:   1.31 kB
+dist/assets/VRating-291aa059.js                                            3.14 kB │ gzip:   1.40 kB
+dist/assets/_article_-f4fc17d8.js                                          3.14 kB │ gzip:   1.35 kB
+dist/assets/VTabs-e8533197.js                                              3.16 kB │ gzip:   1.54 kB
+dist/assets/reset-password-v2-0e35448f.js                                  3.24 kB │ gzip:   1.39 kB
+dist/assets/VFileInput-29798a92.js                                         3.35 kB │ gzip:   1.58 kB
+dist/assets/CardAddEditDialog-e2c6e1c8.js                                  3.35 kB │ gzip:   1.21 kB
+dist/assets/NavBarClock-9d620fe0.js                                        3.47 kB │ gzip:   1.54 kB
+dist/assets/VTextField-8d91f7b1.js                                         3.58 kB │ gzip:   1.68 kB
+dist/assets/login-v1-07ceafb0.js                                           3.62 kB │ gzip:   1.53 kB
+dist/assets/login-24485b4a.js                                              3.66 kB │ gzip:   1.68 kB
+dist/assets/useCasinoUiSettings-1b6391af.js                                3.67 kB │ gzip:   1.31 kB
+dist/assets/vue.runtime.esm-bundler-8d54feba.js                            3.68 kB │ gzip:   1.83 kB
+dist/assets/ConditionBuilder-d192ce6e.js                                   3.78 kB │ gzip:   1.53 kB
+dist/assets/register-v1-3bc5a4f0.js                                        3.80 kB │ gzip:   1.59 kB
+dist/assets/VTimelineItem-2c507ef9.js                                      3.87 kB │ gzip:   1.45 kB
+dist/assets/index-c30f526e.js                                              3.89 kB │ gzip:   1.64 kB
+dist/assets/login-v2-11f64e54.js                                           3.89 kB │ gzip:   1.68 kB
+dist/assets/register-v2-ada8a69d.js                                        3.90 kB │ gzip:   1.67 kB
+dist/assets/icons-a46aa0b1.js                                              3.92 kB │ gzip:   1.18 kB
+dist/assets/index-dd0d2730.js                                              3.95 kB │ gzip:   1.63 kB
+dist/assets/filters-3db3c0d9.js                                            3.98 kB │ gzip:   1.81 kB
+dist/assets/index-fb898f3b.js                                              4.08 kB │ gzip:   1.65 kB
+dist/assets/index-f4ae94cd.js                                              4.17 kB │ gzip:   1.56 kB
+dist/assets/index-e242b366.js                                              4.18 kB │ gzip:   1.92 kB
+dist/assets/index-1810440d.js                                              4.18 kB │ gzip:   1.70 kB
+dist/assets/VExpansionPanel-a7ffb4cb.js                                    4.19 kB │ gzip:   1.52 kB
+dist/assets/index-dfc8581b.js                                              4.29 kB │ gzip:   1.74 kB
+dist/assets/faq-b44c5b49.js                                                4.31 kB │ gzip:   1.89 kB
+dist/assets/typography-1cac41e7.js                                         4.31 kB │ gzip:   0.97 kB
+dist/assets/VCard-121e775e.js                                              4.32 kB │ gzip:   1.61 kB
+dist/assets/VSelectionControl-bff4fff5.js                                  4.35 kB │ gzip:   1.73 kB
+dist/assets/mfa-37a99f40.js                                                4.41 kB │ gzip:   1.95 kB
+dist/assets/VTextarea-5053a3a3.js                                          4.50 kB │ gzip:   1.97 kB
+dist/assets/AppPricing-90617bfd.js                                         4.51 kB │ gzip:   2.03 kB
+dist/assets/index-3ebaaa77.js                                              4.55 kB │ gzip:   1.77 kB
+dist/assets/index-fd9bf1e8.js                                              4.64 kB │ gzip:   1.80 kB
+dist/assets/register-273b48e7.js                                           4.69 kB │ gzip:   2.05 kB
+dist/assets/index-4a42b6e4.js                                              4.71 kB │ gzip:   1.82 kB
+dist/assets/index-9fda5426.js                                              4.72 kB │ gzip:   1.80 kB
+dist/assets/VChip-905cabc8.js                                              4.80 kB │ gzip:   1.89 kB
+dist/assets/index-426b012b.js                                              4.81 kB │ gzip:   1.79 kB
+dist/assets/index-e30e8194.js                                              4.81 kB │ gzip:   1.79 kB
+dist/assets/index-2e89bb1e.js                                              4.85 kB │ gzip:   1.91 kB
+dist/assets/InvoiceSendInvoiceDrawer-b455b791.js                           4.94 kB │ gzip:   1.54 kB
+dist/assets/misc-mask-light-eb104613.js                                    4.96 kB │ gzip:   2.92 kB
+dist/assets/VField-a8f74b9f.js                                             5.07 kB │ gzip:   2.17 kB
+dist/assets/card-actions-968e9927.js                                       5.08 kB │ gzip:   1.73 kB
+dist/assets/VImg-7aa48cd6.js                                               5.08 kB │ gzip:   2.10 kB
+dist/assets/index-69f99edc.js                                              5.15 kB │ gzip:   2.10 kB
+dist/assets/index-ce2bf8e1.js                                              5.20 kB │ gzip:   2.12 kB
+dist/assets/index-700b4f0f.js                                              5.21 kB │ gzip:   2.20 kB
+dist/assets/index-d4c56664.js                                              5.28 kB │ gzip:   1.97 kB
+dist/assets/VSelect-1149968c.js                                            5.45 kB │ gzip:   2.40 kB
+dist/assets/index-a96e60ee.js                                              5.45 kB │ gzip:   2.01 kB
+dist/assets/index-fad0ba13.js                                              5.48 kB │ gzip:   2.01 kB
+dist/assets/VPagination-a52527c8.js                                        5.49 kB │ gzip:   2.06 kB
+dist/assets/index-c5f64719.js                                              5.71 kB │ gzip:   2.23 kB
+dist/assets/VSlideGroup-8569eef0.js                                        5.72 kB │ gzip:   2.23 kB
+dist/assets/VWindowItem-a9f657bd.js                                        5.99 kB │ gzip:   2.41 kB
+dist/assets/useUserListStore-db899729.js                                   6.10 kB │ gzip:   1.26 kB
+dist/assets/index-12a9fc4c.js                                              6.22 kB │ gzip:   1.72 kB
+dist/assets/moderation-aeda6ba0.js                                         6.32 kB │ gzip:   2.16 kB
+dist/assets/index-2cdf3c8f.js                                              6.39 kB │ gzip:   2.30 kB
+dist/assets/items-07b72ed4.js                                              6.43 kB │ gzip:   2.42 kB
+dist/assets/VAutocomplete-751edf72.js                                      6.60 kB │ gzip:   2.75 kB
+dist/assets/index-a0c6036d.js                                              6.64 kB │ gzip:   2.52 kB
+dist/assets/rewards-480d8290.js                                            6.66 kB │ gzip:   2.43 kB
+dist/assets/index-d7393498.js                                              6.70 kB │ gzip:   2.67 kB
+dist/assets/rooms-2de7d879.js                                              6.83 kB │ gzip:   2.39 kB
+dist/assets/VCombobox-5aa25ae0.js                                          6.96 kB │ gzip:   2.95 kB
+dist/assets/pricing-70934988.js                                            6.96 kB │ gzip:   2.31 kB
+dist/assets/index-ce3247fc.js                                              7.06 kB │ gzip:   2.63 kB
+dist/assets/lobby-d8255b5a.js                                              7.09 kB │ gzip:   2.49 kB
+dist/assets/_id_-4ba46ea8.js                                               7.09 kB │ gzip:   2.54 kB
+dist/assets/dayjs.min-e1d37879.js                                          7.11 kB │ gzip:   3.09 kB
+dist/assets/tips-9ec4517f.js                                               7.25 kB │ gzip:   2.43 kB
+dist/assets/VInput-59314cff.js                                             7.30 kB │ gzip:   2.84 kB
+dist/assets/index-dfbff5e7.js                                              7.35 kB │ gzip:   2.28 kB
+dist/assets/TheCustomizer-ee76ff67.js                                      7.40 kB │ gzip:   2.53 kB
+dist/assets/date-time-picker-a1852740.js                                   7.43 kB │ gzip:   1.39 kB
+dist/assets/index-42f6bc6e.js                                              7.67 kB │ gzip:   3.02 kB
+dist/assets/index-2c03277a.js                                              7.74 kB │ gzip:   2.87 kB
+dist/assets/messages-d2aa2766.js                                           7.77 kB │ gzip:   2.95 kB
+dist/assets/missions-357c10d4.js                                           7.80 kB │ gzip:   2.58 kB
+dist/assets/index-2fe52081.js                                              7.93 kB │ gzip:   2.84 kB
+dist/assets/index-e98b0ea1.js                                              7.95 kB │ gzip:   2.67 kB
+dist/assets/index-ec9a59f9.js                                              8.03 kB │ gzip:   3.22 kB
+dist/assets/AppBarSearch-0e248fd2.js                                       8.15 kB │ gzip:   3.00 kB
+dist/assets/settings-0bec1438.js                                           8.44 kB │ gzip:   2.53 kB
+dist/assets/progress-circular-f9911bbe.js                                  8.69 kB │ gzip:   1.53 kB
+dist/assets/file-manager-dab95b3d.js                                       8.73 kB │ gzip:   3.42 kB
+dist/assets/index-5efee857.js                                              8.77 kB │ gzip:   2.91 kB
+dist/assets/VSliderTrack-07cf42d1.js                                       8.80 kB │ gzip:   3.39 kB
+dist/assets/index-b141ac0f.js                                              8.80 kB │ gzip:   3.23 kB
+dist/assets/VNavigationDrawer-6f86018c.js                                  8.88 kB │ gzip:   3.47 kB
+dist/assets/game-providers-66b47982.js                                     8.98 kB │ gzip:   3.20 kB
+dist/assets/index-7bfaa7e7.js                                              9.35 kB │ gzip:   3.21 kB
+dist/assets/BetinoviReportPage-9188bb2a.js                                 9.40 kB │ gzip:   3.51 kB
+dist/assets/index-c5bdd389.js                                              9.48 kB │ gzip:   3.36 kB
+dist/assets/index-9c88dadd.js                                              9.51 kB │ gzip:   2.73 kB
+dist/assets/index-a0e76027.js                                              9.53 kB │ gzip:   3.02 kB
+dist/assets/rating-1b0cca97.js                                             9.67 kB │ gzip:   2.43 kB
+dist/assets/index-203ef9f1.js                                              9.76 kB │ gzip:   3.09 kB
+dist/assets/index-c75dc375.js                                              9.93 kB │ gzip:   3.29 kB
+dist/assets/range-slider-d452343f.js                                       9.97 kB │ gzip:   3.02 kB
+dist/assets/types-71c3e745.js                                             10.13 kB │ gzip:   3.21 kB
+dist/assets/echopayz-transactions-77fc196d.js                             10.46 kB │ gzip:   3.44 kB
+dist/assets/us-6d129631.js                                                10.48 kB │ gzip:   7.39 kB
+dist/assets/progress-linear-08c9367f.js                                   10.49 kB │ gzip:   2.31 kB
+dist/assets/index-21451bcb.js                                             10.53 kB │ gzip:   3.23 kB
+dist/assets/index-0fdac0fe.js                                             10.90 kB │ gzip:   4.14 kB
+dist/assets/pagination-94245ffe.js                                        10.90 kB │ gzip:   2.03 kB
+dist/assets/index-cf5f7571.js                                             10.94 kB │ gzip:   3.51 kB
+dist/assets/index-0a4e1f2f.js                                             11.07 kB │ gzip:   3.43 kB
+dist/assets/DefaultLayoutWithHorizontalNav-a46de035.js                    11.08 kB │ gzip:   3.64 kB
+dist/assets/index-6e7b04d9.js                                             11.50 kB │ gzip:   3.30 kB
+dist/assets/index-acd5b0de.js                                             11.53 kB │ gzip:   3.73 kB
+dist/assets/rain-7728ddf7.js                                              11.65 kB │ gzip:   3.42 kB
+dist/assets/index-e419f10d.js                                             11.68 kB │ gzip:   4.16 kB
+dist/assets/TwoFactorAuthDialog-15bbe132.js                               11.76 kB │ gzip:   6.27 kB
+dist/assets/index-319d70c2.js                                             11.95 kB │ gzip:   3.71 kB
+dist/assets/switch-8c30fefa.js                                            11.99 kB │ gzip:   2.51 kB
+dist/assets/file-input-2df7aba8.js                                        11.99 kB │ gzip:   2.76 kB
+dist/assets/radio-253b418d.js                                             12.61 kB │ gzip:   2.45 kB
+dist/assets/webfontloader-1e5284d6.js                                     12.69 kB │ gzip:   5.17 kB
+dist/assets/index-b3b0791b.js                                             12.78 kB │ gzip:   4.55 kB
+dist/assets/NavBarNotifications-b69f5607.js                               12.87 kB │ gzip:   5.43 kB
+dist/assets/_id_-e8b5b9c7.js                                              13.02 kB │ gzip:   4.19 kB
+dist/assets/index-0b2fbc39.js                                             13.05 kB │ gzip:   3.53 kB
+dist/assets/index-dc3ca560.js                                             13.29 kB │ gzip:   4.08 kB
+dist/assets/tooltip-5f08cf8c.js                                           13.31 kB │ gzip:   2.34 kB
+dist/assets/index-604978dd.js                                             13.47 kB  gzip:   4.11 kB
+dist/assets/index-fe216528.js                                             13.97 kB │ gzip:   3.98 kB
+dist/assets/index-496835fc.js                                             14.02 kB │ gzip:   4.55 kB
+dist/assets/card-basic-2eac220f.js                                        14.02 kB │ gzip:   4.57 kB
+dist/assets/combobox-a1b3d2e8.js                                          14.94 kB │ gzip:   2.80 kB
+dist/assets/api-providers-0d683a41.js                                     15.22 kB │ gzip:   4.55 kB
+dist/assets/index-34ebca8e.js                                             15.29 kB │ gzip:   4.94 kB
+dist/assets/index-9bd982bf.js                                             15.39 kB │ gzip:   4.57 kB
+dist/assets/avatar-12d9dc19.js                                            15.42 kB │ gzip:   2.26 kB
+dist/assets/index-a881ef76.js                                             15.46 kB │ gzip:   5.40 kB
+dist/assets/index-8c4e80d1.js                                             15.48 kB │ gzip:   5.36 kB
+dist/assets/menu-e6243838.js                                              15.70 kB │ gzip:   2.81 kB
+dist/assets/footer-42c25c47.js                                            15.71 kB │ gzip:   3.90 kB
+dist/assets/textarea-e53c48fa.js                                          16.23 kB │ gzip:   2.88 kB
+dist/assets/timeline-a9236143.js                                          16.27 kB │ gzip:   3.95 kB
+dist/assets/index-8ce24829.js                                             16.33 kB │ gzip:   5.10 kB
+dist/assets/register-multi-steps-a40d5748.js                              16.49 kB │ gzip:   7.42 kB
+dist/assets/VList-57cf16cb.js                                             16.58 kB │ gzip:   5.50 kB
+dist/assets/apex-chart-74f5cce4.js                                        16.67 kB │ gzip:   4.24 kB
+dist/assets/property-listing-a12fa1c2.js                                  16.69 kB │ gzip:   3.93 kB
+dist/assets/UserInfoEditDialog-cbb1c5bc.js                                16.81 kB │ gzip:   3.89 kB
+dist/assets/select-3f4d3941.js                                            17.03 kB │ gzip:   3.43 kB
+dist/assets/index-0a252d6f.js                                             17.12 kB │ gzip:   5.03 kB
+dist/assets/custom-input-24fe9888.js                                      17.62 kB │ gzip:   3.13 kB
+dist/assets/UnifiedPaymentTable-bf214903.js                               17.98 kB │ gzip:   5.89 kB
+dist/assets/index-2140ef46.js                                             18.71 kB │ gzip:   4.95 kB
+dist/assets/VDataTable-2d7b176c.js                                        18.97 kB │ gzip:   6.45 kB
+dist/assets/VOverlay-a22d6d7d.js                                          18.98 kB │ gzip:   6.93 kB
+dist/assets/create-deal-56204e6f.js                                       19.09 kB │ gzip:   8.97 kB
+dist/assets/index-e04c8822.js                                             19.18 kB │ gzip:   5.48 kB
+dist/assets/checkbox-0d3b3485.js                                          19.63 kB │ gzip:   3.58 kB
+dist/assets/index-2507de0a.js                                             19.98 kB │ gzip:   6.02 kB
+dist/assets/expansion-panel-afeabd31.js                                   21.79 kB │ gzip:   3.52 kB
+dist/assets/safari-bdfa00cf.js                                            22.18 kB │ gzip:  15.79 kB
+dist/assets/form-validation-99f6c902.js                                   22.19 kB │ gzip:   2.83 kB
+dist/assets/AppCardCode-0c6691ad.js                                       22.20 kB │ gzip:   8.57 kB
+dist/assets/badge-f5424956.js                                             22.47 kB │ gzip:   3.24 kB
+dist/assets/simple-table-6b39525c.js                                      22.72 kB │ gzip:   1.75 kB
+dist/assets/card-widgets-cc947c49.js                                      23.74 kB │ gzip:   5.72 kB
+dist/assets/checkout-f77f275e.js                                          24.15 kB │ gzip:   6.51 kB
+dist/assets/index-f988e79e.js                                             24.38 kB │ gzip:   6.53 kB
+dist/assets/index-7080e70f.js                                             24.57 kB │ gzip:   7.23 kB
+dist/assets/analytics-a0e35f51.js                                         25.47 kB │ gzip:   6.69 kB
+dist/assets/crm-9137c785.js                                               25.49 kB │ gzip:   6.65 kB
+dist/assets/chip-dc36c76f.js                                              25.64 kB │ gzip:   4.13 kB
+dist/assets/card-statistics-2d53ae01.js                                   26.63 kB │ gzip:   5.78 kB
+dist/assets/_tab_-33cdd968.js                                             26.81 kB │ gzip:  10.31 kB
+dist/assets/index-96a2c1d6.js                                             26.91 kB │ gzip:   6.82 kB
+dist/assets/ecommerce-31dc1ade.js                                         27.52 kB │ gzip:   8.07 kB
+dist/assets/snackbar-43b01e0e.js                                          27.84 kB │ gzip:   3.62 kB
+dist/assets/index-5256d2dc.js                                             27.85 kB │ gzip:   8.37 kB
+dist/assets/textfield-db679a6a.js                                         27.85 kB │ gzip:   5.51 kB
+dist/assets/autocomplete-5d5013c2.js                                      28.30 kB │ gzip:   5.49 kB
+dist/assets/button-5c0fa70a.js                                            29.70 kB │ gzip:   4.55 kB
+dist/assets/alert-f66cd73f.js                                             31.27 kB │ gzip:   5.02 kB
+dist/assets/slider-d15b7bf4.js                                            31.55 kB │ gzip:   5.41 kB
+dist/assets/index-698d57c7.js                                             40.70 kB │ gzip:  10.84 kB
+dist/assets/tabs-066cf297.js                                              40.83 kB │ gzip:   5.29 kB
+dist/assets/list-fb0eb466.js                                              41.20 kB │ gzip:   7.14 kB
+dist/assets/index-d9998155.js                                             41.31 kB │ gzip:  12.93 kB
+dist/assets/card-advance-965585b4.js                                      41.62 kB │ gzip:  17.72 kB
+dist/assets/index-d640d80a.js                                             46.76 kB │ gzip:   8.11 kB
+dist/assets/tour-f40dea3a.js                                              48.28 kB │ gzip:  16.93 kB
+dist/assets/dialog-50f4ae3b.js                                            52.08 kB │ gzip:   7.13 kB
+dist/assets/AppDateTimePicker-5bec2b2e.js                                 56.24 kB │ gzip:  17.07 kB
+dist/assets/index-87513d3b.js                                             57.92 kB │ gzip:  10.04 kB
+dist/assets/NavSearchBar-643345da.js                                      60.98 kB │ gzip:  21.37 kB
+dist/assets/form-layouts-f9983370.js                                      69.26 kB │ gzip:   7.53 kB
+dist/assets/_tab_-309fcd3e.js                                             70.90 kB │ gzip:  35.56 kB
+dist/assets/site-settings-9b41ee84.js                                     73.38 kB │ gzip:  15.03 kB
+dist/assets/data-table-91282970.js                                       119.62 kB │ gzip:  18.16 kB
+dist/assets/_id_-6aeb6c90.js                                             124.20 kB │ gzip:  28.95 kB
+dist/assets/chartjs-64a11ec9.js                                          213.70 kB │ gzip:  71.28 kB
+dist/assets/calendar-fca41469.js                                         276.70 kB │ gzip:  82.52 kB
+dist/assets/xlsx-6ed613d4.js                                             429.67 kB │ gzip: 143.27 kB
+dist/assets/vue3-apexcharts.common-fb42076b.js                           491.33 kB │ gzip: 128.94 kB
+dist/assets/index-cdd729aa.js                                          2,582.03 kB │ gzip: 535.22 kB
+✓ built in 23.53s
+root@Ubuntu-2404-noble-amd64-base /www/raxen/velobet/admin # test -f dist/index.html && echo "ADMIN BUILD OK" || echo "ADMIN BUILD BOŞ"
+ADMIN BUILD OK
+root@Ubuntu-2404-noble-amd64-base /www/raxen/velobet/admin # cd /www/raxen/velobet/admin
+pnpm install --frozen-lockfile
+pnpm run build
+Already up to date
+Done in 206ms
+
+> admin@8.0.0 prebuild /www/raxen/velobet/admin
+> pnpm run build:icons
+
+
+> admin@8.0.0 build:icons /www/raxen/velobet/admin
+> node src/@iconify/build-icons.js
+
+Bundled icons from /www/raxen/velobet/admin/node_modules/.pnpm/@iconify-json+tabler@1.1.74/node_modules/@iconify-json/tabler/icons.json
+Bundled icons from /www/raxen/velobet/admin/node_modules/.pnpm/@iconify-json+fa@1.1.4/node_modules/@iconify-json/fa/icons.json
+Bundled 22 icons from src/assets/images/iconify-svg
+Saved /www/raxen/velobet/admin/src/@iconify/icons-bundle.js (1369630 bytes)
+
+> admin@8.0.0 build /www/raxen/velobet/admin
+> vite build
+
+NODE_ENV=production is not supported in the .env file. Only NODE_ENV=development is supported to create a development build of your project. If you need to set process.env.NODE_ENV, you can set it in the Vite config instead.
+[unplugin-vue-components] component "Notifications"(/www/raxen/velobet/admin/src/components/Notifications.vue) has naming conflicts with other components, ignored.
+vite v4.3.3 building for production...
+✓ 1804 modules transformed.
+Generated an empty chunk: "useWithdrawStore".
+dist/index.html                                                            3.24 kB │ gzip:   1.36 kB
+dist/assets/keyboard-d64b293b.svg                                          3.69 kB │ gzip:   0.72 kB
+dist/assets/xamarin-d2086975.png                                           4.18 kB
+dist/assets/python-1d56c267.png                                            4.26 kB
+dist/assets/laptop-cd06b147.svg                                            5.10 kB │ gzip:   0.99 kB
+dist/assets/apple-watch-2ab331cf.png                                       5.29 kB
+dist/assets/discord-f027341f.svg                                           6.38 kB │ gzip:   1.11 kB
+dist/assets/gift-7070c12d.svg                                              6.45 kB │ gzip:   1.41 kB
+dist/assets/sony-dualsense-a97eaf81.png                                    6.48 kB
+dist/assets/5-f951b35f.jpg                                                 6.79 kB
+dist/assets/lightbulb-7ec065e9.svg                                         6.81 kB │ gzip:   1.60 kB
+dist/assets/iphone-50371ede.png                                            6.84 kB
+dist/assets/nike-3e645e07.png                                              7.01 kB
+dist/assets/amazon-echo-dot-aaaed6ad.png                                   7.44 kB
+dist/assets/chrome-391a2294.png                                            7.65 kB
+dist/assets/rocket-e20ca1ca.svg                                            7.91 kB │ gzip:   1.82 kB
+dist/assets/headphone-74446326.png                                         8.75 kB
+dist/assets/google-home-4be81e8d.png                                       9.81 kB
+dist/assets/dollar-coins-flying-pink-piggy-bank-85567cfa.png              10.29 kB
+dist/assets/3d-space-rocket-with-smoke-603bb4f0.png                       11.29 kB
+dist/assets/iphone-11-dc8d7c8d.png                                        11.68 kB
+dist/assets/puma-shoes-bcb87c03.jpeg                                      13.19 kB
+dist/assets/avatar-1-129659bb.png                                         13.54 kB
+dist/assets/avatar-7-644db279.png                                         13.82 kB
+dist/assets/3d-safe-box-with-golden-dollar-coins-fcbc95c7.png             14.27 kB
+dist/assets/avatar-3-47317f35.png                                         14.59 kB
+dist/assets/avatar-5-d340221a.png                                         14.80 kB
+dist/assets/avatar-4-b0163f21.png                                         15.49 kB
+dist/assets/avatar-2-11d6be6e.png                                         15.72 kB
+dist/assets/avatar-14-f13f3dfe.png                                        15.77 kB
+dist/assets/avatar-15-e6f6c08b.png                                        15.85 kB
+dist/assets/avatar-6-c56877f3.png                                         16.28 kB
+dist/assets/avatar-8-e4ad8d8c.png                                         16.38 kB
+dist/assets/2-900bffb1.png                                                16.66 kB
+dist/assets/congo-illustration-d94260b0.png                               17.62 kB
+dist/assets/sidebar-pic-1-24754ce8.png                                    24.54 kB
+dist/assets/custom-checkbox-img-1-ad01355a.png                            25.80 kB
+dist/assets/sidebar-pic-3-c8e8b9bf.png                                    26.76 kB
+dist/assets/19-67e89352.png                                               27.65 kB
+dist/assets/custom-checkbox-img-3-1a4526bb.png                            27.83 kB
+dist/assets/7-35c9f9ff.png                                                28.10 kB
+dist/assets/sitting-girl-with-laptop-7faa3bb5.png                         28.37 kB
+dist/assets/8-a416ad03.png                                                28.66 kB
+dist/assets/23-1ec6e3e4.png                                               29.65 kB
+dist/assets/401-30d2f70f.png                                              29.84 kB
+dist/assets/custom-radio-img-2-81c76549.png                               30.00 kB
+dist/assets/app-search-header-bg-f833aa86.png                             31.10 kB
+dist/assets/14-549a6234.png                                               33.07 kB
+dist/assets/register-multistep-illustration-dark-159ee0de.png             33.11 kB
+dist/assets/misc-coming-soon-e67dd0d7.png                                 33.56 kB
+dist/assets/register-multistep-illustration-light-ff53a568.png            34.02 kB
+dist/assets/404-c6f3c581.png                                              34.39 kB
+dist/assets/custom-checkbox-img-2-2d35a86b.png                            35.28 kB
+dist/assets/20-90ebe797.png                                               35.36 kB
+dist/assets/standingGirlImg-aa22b63d.png                                  35.96 kB
+dist/assets/sidebar-pic-2-a64f09c4.png                                    37.02 kB
+dist/assets/custom-radio-img-3-9150de6f.png                               38.81 kB
+dist/assets/26-ffd2a53c.png                                               39.37 kB
+dist/assets/17-2bc20727.png                                               41.88 kB
+dist/assets/9-cf113219.png                                                44.09 kB
+dist/assets/auth-v2-reset-password-illustration-dark-7eb92536.png         44.55 kB
+dist/assets/custom-radio-img-1-9fd6addb.png                               44.59 kB
+dist/assets/laptop-girl-35162850.png                                      44.79 kB
+dist/assets/4-b014f378.png                                                44.95 kB
+dist/assets/auth-v2-reset-password-illustration-light-bc472d54.png        45.52 kB
+dist/assets/2-131ad046.png                                                46.10 kB
+dist/assets/25-f6cd62ec.png                                               48.04 kB
+dist/assets/10-c386f281.png                                               49.27 kB
+dist/assets/auth-v2-forgot-password-illustration-dark-ade65f2e.png        49.77 kB
+dist/assets/auth-v2-login-illustration-bordered-dark-a595a9b7.png         49.86 kB
+dist/assets/auth-v2-login-illustration-bordered-light-47ee3625.png        50.31 kB
+dist/assets/auth-v2-two-step-illustration-dark-c056383e.png               50.59 kB
+dist/assets/15-a2107a2d.png                                               51.41 kB
+dist/assets/auth-v2-two-step-illustration-light-c8305610.png              51.44 kB
+dist/assets/auth-v2-forgot-password-illustration-light-1ef614ab.png       51.83 kB
+dist/assets/6-16e25357.png                                                52.17 kB
+dist/assets/5-2bebdae3.png                                                52.43 kB
+dist/assets/16-5f05439c.png                                               52.45 kB
+dist/assets/13-4953bfc8.png                                               55.24 kB
+dist/assets/6-cda15124.jpg                                                55.89 kB
+dist/assets/auth-v2-login-illustration-light-d1fd488d.png                 55.97 kB
+dist/assets/18-b7a39955.png                                               56.28 kB
+dist/assets/auth-v2-login-illustration-dark-0878e8b9.png                  57.47 kB
+dist/assets/24-cc54b78e.png                                               57.55 kB
+dist/assets/3-d1fa1b62.png                                                58.41 kB
+dist/assets/auth-v2-verify-email-illustration-dark-d9608fa7.png           59.73 kB
+dist/assets/auth-v2-verify-email-illustration-light-702d1eab.png          59.74 kB
+dist/assets/11-6a1fd56f.png                                               60.62 kB
+dist/assets/user-profile-header-bg-ff6c2352.png                           67.09 kB
+dist/assets/3-4199e0be.png                                                71.61 kB
+dist/assets/auth-v2-register-illustration-bordered-dark-c9ca0f5b.png      82.30 kB
+dist/assets/auth-v2-register-illustration-bordered-light-bbf4b217.png     84.30 kB
+dist/assets/1-092c6dc6.png                                                88.58 kB
+dist/assets/auth-v2-register-illustration-light-cd143341.png              89.11 kB
+dist/assets/auth-v2-register-illustration-dark-2626622e.png               89.77 kB
+dist/assets/misc-under-maintenance-ab2b667a.png                           96.37 kB
+dist/assets/faq-44606315.css                                               0.05 kB │ gzip:   0.06 kB
+dist/assets/blank-3fac9ebf.css                                             0.05 kB │ gzip:   0.07 kB
+dist/assets/index-26d73fec.css                                             0.06 kB │ gzip:   0.08 kB
+dist/assets/index-76150cfa.css                                             0.06 kB │ gzip:   0.08 kB
+dist/assets/index-30f50f65.css                                             0.06 kB │ gzip:   0.08 kB
+dist/assets/index-9089de65.css                                             0.06 kB │ gzip:   0.08 kB
+dist/assets/index-9d6f6cbd.css                                             0.06 kB │ gzip:   0.08 kB
+dist/assets/index-a99292a7.css                                             0.06 kB │ gzip:   0.08 kB
+dist/assets/index-f1359488.css                                             0.06 kB │ gzip:   0.08 kB
+dist/assets/index-5321151b.css                                             0.06 kB │ gzip:   0.08 kB
+dist/assets/items-8771ac59.css                                             0.06 kB │ gzip:   0.08 kB
+dist/assets/index-f0a115ce.css                                             0.06 kB │ gzip:   0.08 kB
+dist/assets/index-a0f2d6fa.css                                             0.06 kB │ gzip:   0.08 kB
+dist/assets/api-providers-dacca7cc.css                                     0.07 kB │ gzip:   0.06 kB
+dist/assets/alert-ab6c264a.css                                             0.07 kB │ gzip:   0.08 kB
+dist/assets/AppOtpInput-a6553b2f.css                                       0.07 kB │ gzip:   0.09 kB
+dist/assets/VCheckbox-1ea139e1.css                                         0.08 kB │ gzip:   0.08 kB
+dist/assets/card-actions-64fcb652.css                                      0.08 kB │ gzip:   0.09 kB
+dist/assets/index-63ddb4e9.css                                             0.09 kB │ gzip:   0.09 kB
+dist/assets/index-29ac3d8a.css                                             0.09 kB │ gzip:   0.09 kB
+dist/assets/_article_-42063540.css                                         0.09 kB │ gzip:   0.09 kB
+dist/assets/NavbarShortcuts-28a25ad1.css                                   0.09 kB │ gzip:   0.10 kB
+dist/assets/chartjs-a0e0da96.css                                           0.10 kB │ gzip:   0.11 kB
+dist/assets/crm-8135828d.css                                               0.11 kB │ gzip:   0.08 kB
+dist/assets/dialog-46c782a5.css                                            0.12 kB │ gzip:   0.10 kB
+dist/assets/index-094994af.css                                             0.13 kB │ gzip:   0.13 kB
+dist/assets/VCounter-66d880d8.css                                          0.14 kB │ gzip:   0.13 kB
+dist/assets/AppPricing-5a8c2fa9.css                                        0.14 kB │ gzip:   0.12 kB
+dist/assets/index-7427d233.css                                             0.14 kB │ gzip:   0.12 kB
+dist/assets/create-deal-5692bf95.css                                       0.14 kB │ gzip:   0.13 kB
+dist/assets/card-widgets-e64909c6.css                                      0.16 kB │ gzip:   0.10 kB
+dist/assets/button-9d41ee73.css                                            0.16 kB │ gzip:   0.14 kB
+dist/assets/checkout-de30cadf.css                                          0.19 kB │ gzip:   0.16 kB
+dist/assets/NavSearchBar-980bd850.css                                      0.20 kB │ gzip:   0.16 kB
+dist/assets/Footer-8d6e367f.css                                            0.20 kB │ gzip:   0.15 kB
+dist/assets/CustomRadios-6f11e2df.css                                      0.20 kB │ gzip:   0.14 kB
+dist/assets/VRadioGroup-d9c771a1.css                                       0.21 kB │ gzip:   0.13 kB
+dist/assets/index-d28f48bf.css                                             0.21 kB │ gzip:   0.16 kB
+dist/assets/VPagination-fcee2a58.css                                       0.21 kB │ gzip:   0.15 kB
+dist/assets/form-layouts-fc9c0ec8.css                                      0.23 kB │ gzip:   0.16 kB
+dist/assets/slider-2c108dbf.css                                            0.23 kB │ gzip:   0.16 kB
+dist/assets/file-manager-b4faaf64.css                                      0.26 kB │ gzip:   0.18 kB
+dist/assets/index-ca2baf73.css                                             0.27 kB │ gzip:   0.20 kB
+dist/assets/not-found-4a4fc11c.css                                         0.29 kB │ gzip:   0.21 kB
+dist/assets/index-1da3c1bf.css                                             0.30 kB │ gzip:   0.19 kB
+dist/assets/TheCustomizer-8b5cb4ae.css                                     0.31 kB │ gzip:   0.19 kB
+dist/assets/index-4ad87bcd.css                                             0.33 kB │ gzip:   0.24 kB
+dist/assets/pricing-7b5d1ab3.css                                           0.33 kB │ gzip:   0.21 kB
+dist/assets/index-746e4f53.css                                             0.34 kB │ gzip:   0.22 kB
+dist/assets/CustomRadiosWithIcon-46fb2b25.css                              0.35 kB │ gzip:   0.19 kB
+dist/assets/NavBarNotifications-f6455d31.css                               0.37 kB │ gzip:   0.20 kB
+dist/assets/index-57247490.css                                             0.37 kB │ gzip:   0.23 kB
+dist/assets/coming-soon-71643d68.css                                       0.37 kB │ gzip:   0.25 kB
+dist/assets/card-basic-04c0ee5b.css                                        0.37 kB │ gzip:   0.22 kB
+dist/assets/VMenu-fe9a8434.css                                             0.37 kB │ gzip:   0.23 kB
+dist/assets/NavBarClock-88d199d0.css                                       0.38 kB │ gzip:   0.24 kB
+dist/assets/_tab_-e4865c29.css                                             0.38 kB │ gzip:   0.23 kB
+dist/assets/AppSearchHeader-b6a987b6.css                                   0.38 kB │ gzip:   0.22 kB
+dist/assets/VFileInput-8efd6550.css                                        0.39 kB │ gzip:   0.20 kB
+dist/assets/_tab_-a9166cc1.css                                             0.41 kB │ gzip:   0.25 kB
+dist/assets/TwoFactorAuthDialog-c3f1bd98.css                               0.44 kB │ gzip:   0.22 kB
+dist/assets/_id_-cc57c1ac.css                                              0.50 kB │ gzip:   0.30 kB
+dist/assets/VDivider-357e019d.css                                          0.54 kB │ gzip:   0.27 kB
+dist/assets/VTooltip-87848aea.css                                          0.56 kB │ gzip:   0.31 kB
+dist/assets/textfield-99ae9ce0.css                                         0.57 kB │ gzip:   0.20 kB
+dist/assets/NavBarBalanceIndicator-3f8f8fb5.css                            0.63 kB │ gzip:   0.28 kB
+dist/assets/VMain-3ab12f43.css                                             0.64 kB │ gzip:   0.29 kB
+dist/assets/index-6110d831.css                                             0.65 kB │ gzip:   0.32 kB
+dist/assets/index-b47da0cf.css                                             0.67 kB │ gzip:   0.33 kB
+dist/assets/verify-email-v1-c63fb811.css                                   0.68 kB │ gzip:   0.31 kB
+dist/assets/VSlideGroup-80d5799a.css                                       0.71 kB │ gzip:   0.31 kB
+dist/assets/VImg-3a095760.css                                              0.74 kB │ gzip:   0.38 kB
+dist/assets/register-multi-steps-ac6481ff.css                              0.77 kB │ gzip:   0.34 kB
+dist/assets/index-8ef4b2eb.css                                             0.78 kB │ gzip:   0.35 kB
+dist/assets/index-8fde7540.css                                             0.78 kB │ gzip:   0.35 kB
+dist/assets/index-cbfc9393.css                                             0.78 kB │ gzip:   0.35 kB
+dist/assets/index-99c9ef23.css                                             0.78 kB │ gzip:   0.35 kB
+dist/assets/index-05a5752a.css                                             0.78 kB │ gzip:   0.35 kB
+dist/assets/VOverlay-b9f3c1b7.css                                          0.83 kB │ gzip:   0.35 kB
+dist/assets/VRating-78fcf190.css                                           0.90 kB │ gzip:   0.41 kB
+dist/assets/VTextarea-13bfb6d6.css                                         1.20 kB │ gzip:   0.41 kB
+dist/assets/VBadge-8f638745.css                                            1.21 kB │ gzip:   0.53 kB
+dist/assets/VSelect-0d86ac08.css                                           1.32 kB │ gzip:   0.54 kB
+dist/assets/custom-input-9762d9c6.css                                      1.37 kB │ gzip:   0.41 kB
+dist/assets/VTextField-ad436dbf.css                                        1.42 kB │ gzip:   0.48 kB
+dist/assets/AppCardCode-4e4ed3de.css                                       1.46 kB │ gzip:   0.62 kB
+dist/assets/login-8a622fa9.css                                             1.52 kB │ gzip:   0.60 kB
+dist/assets/VDialog-f7015bc7.css                                           1.63 kB │ gzip:   0.50 kB
+dist/assets/card-advance-8ea635b6.css                                      1.68 kB │ gzip:   0.67 kB
+dist/assets/VSwitch-b0535746.css                                           1.70 kB │ gzip:   0.57 kB
+dist/assets/VNavigationDrawer-3a8c6f0d.css                                 1.76 kB │ gzip:   0.63 kB
+dist/assets/VTabs-5298fab9.css                                             1.77 kB │ gzip:   0.52 kB
+dist/assets/VWindowItem-72fb4d35.css                                       1.86 kB │ gzip:   0.45 kB
+dist/assets/site-settings-6075074a.css                                     1.88 kB │ gzip:   0.64 kB
+dist/assets/VAvatar-0c2eeb2f.css                                           2.01 kB │ gzip:   0.65 kB
+dist/assets/VCombobox-a8adecaf.css                                         2.01 kB │ gzip:   0.69 kB
+dist/assets/AppBarSearch-0083c74a.css                                      2.13 kB │ gzip:   0.54 kB
+dist/assets/VAutocomplete-65c1fa5a.css                                     2.24 kB │ gzip:   0.71 kB
+dist/assets/VSnackbar-adbe0207.css                                         2.35 kB │ gzip:   0.82 kB
+dist/assets/VSelectionControl-6fd971f3.css                                 2.37 kB │ gzip:   0.64 kB
+dist/assets/VToolbar-fbc6cd89.css                                          2.49 kB │ gzip:   0.82 kB
+dist/assets/index-f27aa8f1.css                                             2.93 kB │ gzip:   0.89 kB
+dist/assets/card-statistics-842dd3fd.css                                   3.09 kB │ gzip:   0.64 kB
+dist/assets/AppStepper-a0da8c77.css                                        3.10 kB │ gzip:   0.57 kB
+dist/assets/index-0aeacbce.css                                             3.12 kB │ gzip:   0.93 kB
+dist/assets/VInput-b8f08c94.css                                            3.15 kB │ gzip:   0.83 kB
+dist/assets/apex-chart-efbb3398.css                                        3.20 kB │ gzip:   0.69 kB
+dist/assets/analytics-9836efaf.css                                         3.26 kB │ gzip:   0.72 kB
+dist/assets/ecommerce-3d7b83e7.css                                         3.34 kB │ gzip:   0.76 kB
+dist/assets/_id_-18ab7d2b.css                                              3.62 kB │ gzip:   0.93 kB
+dist/assets/VAlert-a1e37caa.css                                            4.05 kB │ gzip:   1.08 kB
+dist/assets/VTable-addbf829.css                                            4.24 kB │ gzip:   0.75 kB
+dist/assets/VDataTable-a6310e9f.css                                        4.75 kB │ gzip:   0.88 kB
+dist/assets/tour-52cdf14b.css                                              4.97 kB │ gzip:   1.27 kB
+dist/assets/VCard-299ea093.css                                             5.72 kB │ gzip:   1.39 kB
+dist/assets/VExpansionPanel-f3cc902a.css                                   6.01 kB │ gzip:   1.15 kB
+dist/assets/calendar-44396fbc.css                                          7.52 kB │ gzip:   1.74 kB
+dist/assets/VChip-d0bcd8c1.css                                             9.56 kB │ gzip:   1.63 kB
+dist/assets/VSliderTrack-8fe55d72.css                                     10.03 kB │ gzip:   1.57 kB
+dist/assets/VList-d0f6ebef.css                                            10.99 kB │ gzip:   2.04 kB
+dist/assets/VField-ad850893.css                                           13.70 kB │ gzip:   2.26 kB
+dist/assets/VTimelineItem-4a4a5485.css                                    15.40 kB │ gzip:   1.61 kB
+dist/assets/VRow-37f80755.css                                             18.39 kB │ gzip:   1.96 kB
+dist/assets/AppDateTimePicker-0b0e3e64.css                                22.81 kB │ gzip:   3.98 kB
+dist/assets/index-30fc57f8.css                                           309.42 kB │ gzip:  36.72 kB
+dist/assets/useWithdrawStore-4ed993c7.js                                   0.00 kB │ gzip:   0.02 kB
+dist/assets/route-block-83d24a4e.js                                        0.03 kB │ gzip:   0.05 kB
+dist/assets/currency-59f33ca5.js                                           0.05 kB │ gzip:   0.07 kB
+dist/assets/404-c8391d58.js                                                0.05 kB │ gzip:   0.07 kB
+dist/assets/401-45451090.js                                                0.05 kB │ gzip:   0.07 kB
+dist/assets/laptop-girl-c0871a8e.js                                        0.06 kB │ gzip:   0.08 kB
+dist/assets/useAppAbility-d9b2c42a.js                                      0.07 kB │ gzip:   0.09 kB
+dist/assets/sitting-girl-with-laptop-457cbceb.js                           0.07 kB │ gzip:   0.09 kB
+dist/assets/VSpacer-3819aa2a.js                                            0.10 kB │ gzip:   0.11 kB
+dist/assets/auth-v2-forgot-password-illustration-light-e0c59e4e.js         0.16 kB │ gzip:   0.13 kB
+dist/assets/useResponsiveSidebar-f4a3a920.js                               0.22 kB │ gzip:   0.19 kB
+dist/assets/blank-97f71a6a.js                                              0.23 kB │ gzip:   0.20 kB
+dist/assets/ssrBoot-7818d99c.js                                            0.25 kB │ gzip:   0.21 kB
+dist/assets/useGenerateImageVariant-37253ea8.js                            0.27 kB │ gzip:   0.19 kB
+dist/assets/index-61e4df1a.js                                              0.27 kB │ gzip:   0.17 kB
+dist/assets/lazy-d01e5d02.js                                               0.29 kB │ gzip:   0.22 kB
+dist/assets/auth-v2-register-illustration-light-bc649424.js                0.30 kB │ gzip:   0.16 kB
+dist/assets/sony-dualsense-da619a25.js                                     0.32 kB │ gzip:   0.21 kB
+dist/assets/useInvoiceStore-20035ea9.js                                    0.32 kB │ gzip:   0.20 kB
+dist/assets/VContainer-85bfd37b.js                                         0.33 kB │ gzip:   0.26 kB
+dist/assets/transition-0e26c66e.js                                         0.35 kB │ gzip:   0.26 kB
+dist/assets/VListItemAction-3b4c79c3.js                                    0.35 kB │ gzip:   0.25 kB
+dist/assets/useDepositStore-3f04edbe.js                                    0.35 kB │ gzip:   0.26 kB
+dist/assets/useWithdrawStore-7daf85a4.js                                   0.36 kB │ gzip:   0.27 kB
+dist/assets/VSlideGroupItem-103a2fa2.js                                    0.41 kB │ gzip:   0.28 kB
+dist/assets/DialogCloseBtn-4e1bfc47.js                                     0.43 kB │ gzip:   0.30 kB
+dist/assets/useBankTransferStore-a9dec9e7.js                               0.45 kB │ gzip:   0.31 kB
+dist/assets/Footer-c16d9680.js                                             0.48 kB │ gzip:   0.37 kB
+dist/assets/useBankTransferWithdrawStore-1a801cba.js                       0.49 kB │ gzip:   0.32 kB
+dist/assets/chat-e25f5ba6.js                                               0.51 kB │ gzip:   0.35 kB
+dist/assets/useGameListStore-b11057c1.js                                   0.53 kB │ gzip:   0.30 kB
+dist/assets/useDepositStore-3be3d647.js                                    0.54 kB │ gzip:   0.34 kB
+dist/assets/AppDrawerHeaderSection-39e516cd.js                             0.58 kB │ gzip:   0.42 kB
+dist/assets/ErrorHeader-52b69b43.js                                        0.59 kB │ gzip:   0.32 kB
+dist/assets/AuthProvider-94f01a2f.js                                       0.60 kB │ gzip:   0.42 kB
+dist/assets/useProviderDisplayNames-155f08a4.js                            0.60 kB │ gzip:   0.36 kB
+dist/assets/MoreBtn-c307d328.js                                            0.61 kB │ gzip:   0.39 kB
+dist/assets/formatters-9ef7de78.js                                         0.62 kB │ gzip:   0.39 kB
+dist/assets/VCounter-af6995c6.js                                           0.62 kB │ gzip:   0.39 kB
+dist/assets/historyService-0e64b6b0.js                                     0.66 kB │ gzip:   0.25 kB
+dist/assets/useEchoPayzStore-b66d8e4d.js                                   0.68 kB │ gzip:   0.38 kB
+dist/assets/adminAuth-1db6ce9e.js                                          0.70 kB │ gzip:   0.34 kB
+dist/assets/auth-v1-top-shape-c5f58476.js                                  0.72 kB │ gzip:   0.32 kB
+dist/assets/providerDisplayNames-af5dd664.js                               0.74 kB │ gzip:   0.46 kB
+dist/assets/roleService-8228753f.js                                        0.76 kB │ gzip:   0.30 kB
+dist/assets/VForm-59f1fc98.js                                              0.78 kB │ gzip:   0.49 kB
+dist/assets/VCheckbox-231cb86f.js                                          0.80 kB │ gzip:   0.52 kB
+dist/assets/exportXlsx-f3662709.js                                         0.81 kB │ gzip:   0.56 kB
+dist/assets/AppTextarea-07aa1640.js                                        0.83 kB │ gzip:   0.54 kB
+dist/assets/AppTextField-0c44a3dc.js                                       0.84 kB │ gzip:   0.55 kB
+dist/assets/VDivider-d9dcb595.js                                           0.85 kB │ gzip:   0.49 kB
+dist/assets/VTable-23353b35.js                                             0.87 kB │ gzip:   0.48 kB
+dist/assets/VMain-2fc7f488.js                                              0.91 kB │ gzip:   0.47 kB
+dist/assets/VCheckboxBtn-d91f392f.js                                       0.92 kB │ gzip:   0.49 kB
+dist/assets/AppAutocomplete-0410ebd2.js                                    0.94 kB │ gzip:   0.59 kB
+dist/assets/AppSelect-c7a82c43.js                                          0.96 kB │ gzip:   0.60 kB
+dist/assets/_...all_-5620f93d.js                                           0.97 kB │ gzip:   0.60 kB
+dist/assets/internal-server-error-b88d8d21.js                              0.97 kB │ gzip:   0.62 kB
+dist/assets/not-found-766a11e3.js                                          0.97 kB │ gzip:   0.61 kB
+dist/assets/index-10da7700.js                                              0.98 kB │ gzip:   0.58 kB
+dist/assets/AppCombobox-a1d9cecf.js                                        0.98 kB │ gzip:   0.61 kB
+dist/assets/AppSearchHeader-30b59f9a.js                                    1.00 kB │ gzip:   0.61 kB
+dist/assets/index-51d420b2.js                                              1.01 kB │ gzip:   0.61 kB
+dist/assets/not-authorized-000f5cee.js                                     1.01 kB │ gzip:   0.62 kB
+dist/assets/under-maintenance-60b1a9f7.js                                  1.04 kB │ gzip:   0.63 kB
+dist/assets/access-control-9b4e331e.js                                     1.05 kB │ gzip:   0.52 kB
+dist/assets/NavbarThemeSwitcher-b4425cd4.js                                1.07 kB │ gzip:   0.62 kB
+dist/assets/not-authorized-2fd6abc7.js                                     1.07 kB │ gzip:   0.67 kB
+dist/assets/forwardRefs-a29b5f65.js                                        1.16 kB │ gzip:   0.53 kB
+dist/assets/AppOtpInput-9e0e5378.js                                        1.21 kB │ gzip:   0.72 kB
+dist/assets/by-vendor-fcbdda33.js                                          1.25 kB │ gzip:   0.66 kB
+dist/assets/wager-index-981e0307.js                                        1.26 kB │ gzip:   0.67 kB
+dist/assets/by-agent-13b1220c.js                                           1.26 kB │ gzip:   0.67 kB
+dist/assets/risk-users-ad3fbdda.js                                         1.27 kB │ gzip:   0.66 kB
+dist/assets/settlement-f10886f1.js                                         1.27 kB │ gzip:   0.67 kB
+dist/assets/easing-9f15041e.js                                             1.32 kB │ gzip:   0.66 kB
+dist/assets/VAvatar-d5a789cf.js                                            1.34 kB │ gzip:   0.72 kB
+dist/assets/CustomRadiosWithIcon-675badf4.js                               1.47 kB │ gzip:   0.82 kB
+dist/assets/VMenu-be508b81.js                                              1.49 kB │ gzip:   0.87 kB
+dist/assets/VTooltip-0ef1f243.js                                           1.50 kB │ gzip:   0.82 kB
+dist/assets/VRadioGroup-b8964cb3.js                                        1.51 kB │ gzip:   0.77 kB
+dist/assets/CustomRadios-9f83d6ce.js                                       1.53 kB │ gzip:   0.83 kB
+dist/assets/coming-soon-6b19ee73.js                                        1.65 kB │ gzip:   0.93 kB
+dist/assets/NavBarI18n-d640c744.js                                         1.65 kB │ gzip:   0.91 kB
+dist/assets/verify-email-v1-4c0942b6.js                                    1.68 kB │ gzip:   0.86 kB
+dist/assets/validators-dcee41fc.js                                         1.69 kB │ gzip:   0.83 kB
+dist/assets/filter-93ac3496.js                                             1.77 kB │ gzip:   0.83 kB
+dist/assets/VDialog-d46a7958.js                                            1.82 kB │ gzip:   0.97 kB
+dist/assets/VSwitch-23c2adca.js                                            1.84 kB │ gzip:   0.99 kB
+dist/assets/verify-email-v2-ae08b09d.js                                    1.86 kB │ gzip:   0.97 kB
+dist/assets/VSnackbar-1218fae0.js                                          1.89 kB │ gzip:   0.99 kB
+dist/assets/VBadge-eb04dfba.js                                             1.90 kB │ gzip:   0.97 kB
+dist/assets/VSlider-77ff625d.js                                            2.10 kB │ gzip:   1.05 kB
+dist/assets/dialog-transition-37317938.js                                  2.16 kB │ gzip:   1.01 kB
+dist/assets/VDataTableServer-e90a6aea.js                                   2.18 kB │ gzip:   1.03 kB
+dist/assets/chatService-baa0c383.js                                        2.37 kB │ gzip:   0.58 kB
+dist/assets/two-steps-v1-4c80db0e.js                                       2.42 kB │ gzip:   1.12 kB
+dist/assets/welcome-8530e75c.js                                            2.46 kB │ gzip:   1.20 kB
+dist/assets/NavbarShortcuts-d2f7c522.js                                    2.47 kB │ gzip:   1.16 kB
+dist/assets/forgot-password-v1-0eee279e.js                                 2.55 kB │ gzip:   1.19 kB
+dist/assets/two-steps-v2-657cec9a.js                                       2.56 kB │ gzip:   1.21 kB
+dist/assets/forgot-password-0a61475b.js                                    2.60 kB │ gzip:   1.23 kB
+dist/assets/forgot-password-v2-8035d7db.js                                 2.64 kB │ gzip:   1.25 kB
+dist/assets/DefaultLayoutWithVerticalNav-6de46984.js                       2.70 kB │ gzip:   1.33 kB
+dist/assets/index-d5c4c67d.js                                              2.74 kB │ gzip:   1.15 kB
+dist/assets/VRow-dc1e209b.js                                               2.81 kB │ gzip:   1.07 kB
+dist/assets/NavBarBalanceIndicator-357ecfb6.js                             2.88 kB │ gzip:   1.22 kB
+dist/assets/VToolbar-110a3455.js                                           2.93 kB │ gzip:   1.22 kB
+dist/assets/AppStepper-88497c3f.js                                         2.96 kB │ gzip:   1.30 kB
+dist/assets/VAlert-d76c6bec.js                                             3.00 kB │ gzip:   1.35 kB
+dist/assets/UserProfile-0b843b44.js                                        3.04 kB │ gzip:   1.26 kB
+dist/assets/reset-password-v1-1d110ae3.js                                  3.10 kB │ gzip:   1.31 kB
+dist/assets/VRating-534cbb55.js                                            3.14 kB │ gzip:   1.41 kB
+dist/assets/_article_-684fdcd7.js                                          3.14 kB │ gzip:   1.34 kB
+dist/assets/VTabs-f283e4f4.js                                              3.16 kB │ gzip:   1.54 kB
+dist/assets/reset-password-v2-e2cab126.js                                  3.24 kB │ gzip:   1.39 kB
+dist/assets/VFileInput-9228c029.js                                         3.35 kB │ gzip:   1.58 kB
+dist/assets/CardAddEditDialog-2de2d1c6.js                                  3.35 kB │ gzip:   1.21 kB
+dist/assets/NavBarClock-8e261e5a.js                                        3.47 kB │ gzip:   1.54 kB
+dist/assets/VTextField-1fca4dfd.js                                         3.58 kB │ gzip:   1.68 kB
+dist/assets/login-v1-6cd421bd.js                                           3.62 kB │ gzip:   1.53 kB
+dist/assets/login-5f0633e9.js                                              3.66 kB │ gzip:   1.69 kB
+dist/assets/useCasinoUiSettings-fe5cb00e.js                                3.67 kB │ gzip:   1.31 kB
+dist/assets/vue.runtime.esm-bundler-dbd27d00.js                            3.68 kB │ gzip:   1.83 kB
+dist/assets/ConditionBuilder-5fea2f2c.js                                   3.78 kB │ gzip:   1.52 kB
+dist/assets/register-v1-939d57e3.js                                        3.80 kB │ gzip:   1.59 kB
+dist/assets/VTimelineItem-41c09628.js                                      3.87 kB │ gzip:   1.45 kB
+dist/assets/index-6a1fd15e.js                                              3.89 kB │ gzip:   1.64 kB
+dist/assets/login-v2-022107f8.js                                           3.89 kB │ gzip:   1.68 kB
+dist/assets/register-v2-b142e749.js                                        3.90 kB │ gzip:   1.67 kB
+dist/assets/icons-43ff99b4.js                                              3.92 kB │ gzip:   1.18 kB
+dist/assets/index-3433fc47.js                                              3.95 kB │ gzip:   1.63 kB
+dist/assets/filters-ec110845.js                                            3.98 kB │ gzip:   1.81 kB
+dist/assets/index-73dba01d.js                                              4.08 kB │ gzip:   1.66 kB
+dist/assets/index-75c26b8e.js                                              4.17 kB │ gzip:   1.56 kB
+dist/assets/index-6f02b1ad.js                                              4.18 kB │ gzip:   1.92 kB
+dist/assets/index-0104e473.js                                              4.18 kB │ gzip:   1.70 kB
+dist/assets/VExpansionPanel-f382546e.js                                    4.19 kB │ gzip:   1.52 kB
+dist/assets/index-486042ee.js                                              4.29 kB │ gzip:   1.74 kB
+dist/assets/faq-089fb478.js                                                4.31 kB │ gzip:   1.89 kB
+dist/assets/typography-84a67b4d.js                                         4.31 kB │ gzip:   0.97 kB
+dist/assets/VCard-742c9d8f.js                                              4.32 kB │ gzip:   1.61 kB
+dist/assets/VSelectionControl-a0249aa9.js                                  4.35 kB │ gzip:   1.73 kB
+dist/assets/mfa-76098b86.js                                                4.41 kB │ gzip:   1.95 kB
+dist/assets/VTextarea-ec9dc655.js                                          4.50 kB │ gzip:   1.97 kB
+dist/assets/AppPricing-5928c467.js                                         4.51 kB │ gzip:   2.03 kB
+dist/assets/index-4a014125.js                                              4.55 kB │ gzip:   1.78 kB
+dist/assets/index-c4ad7f56.js                                              4.64 kB │ gzip:   1.80 kB
+dist/assets/register-1005da0d.js                                           4.69 kB │ gzip:   2.05 kB
+dist/assets/index-df67a2c6.js                                              4.71 kB │ gzip:   1.82 kB
+dist/assets/index-ff984c18.js                                              4.72 kB │ gzip:   1.80 kB
+dist/assets/VChip-b5fb4ef7.js                                              4.80 kB │ gzip:   1.89 kB
+dist/assets/index-09798e49.js                                              4.81 kB │ gzip:   1.79 kB
+dist/assets/index-33d22619.js                                              4.81 kB │ gzip:   1.79 kB
+dist/assets/index-a97a5a03.js                                              4.85 kB │ gzip:   1.91 kB
+dist/assets/InvoiceSendInvoiceDrawer-93303452.js                           4.94 kB │ gzip:   1.55 kB
+dist/assets/misc-mask-light-eb104613.js                                    4.96 kB │ gzip:   2.92 kB
+dist/assets/VField-64fce539.js                                             5.07 kB │ gzip:   2.17 kB
+dist/assets/card-actions-46665c1f.js                                       5.08 kB │ gzip:   1.73 kB
+dist/assets/VImg-5dad8ec1.js                                               5.08 kB │ gzip:   2.10 kB
+dist/assets/index-b3168371.js                                              5.15 kB │ gzip:   2.10 kB
+dist/assets/index-b384e045.js                                              5.20 kB │ gzip:   2.13 kB
+dist/assets/index-fd58c82e.js                                              5.21 kB │ gzip:   2.20 kB
+dist/assets/index-4d5d09dc.js                                              5.28 kB │ gzip:   1.97 kB
+dist/assets/VSelect-7d3ab29b.js                                            5.45 kB │ gzip:   2.40 kB
+dist/assets/index-740717b2.js                                              5.45 kB │ gzip:   2.01 kB
+dist/assets/index-d1ce20e3.js                                              5.48 kB │ gzip:   2.01 kB
+dist/assets/VPagination-e50bc625.js                                        5.49 kB │ gzip:   2.06 kB
+dist/assets/index-e01a2c76.js                                              5.71 kB │ gzip:   2.24 kB
+dist/assets/VSlideGroup-98ac5941.js                                        5.72 kB │ gzip:   2.23 kB
+dist/assets/VWindowItem-ed2c92ae.js                                        5.99 kB │ gzip:   2.42 kB
+dist/assets/useUserListStore-ea67efc8.js                                   6.10 kB │ gzip:   1.26 kB
+dist/assets/index-e61d474e.js                                              6.22 kB │ gzip:   1.72 kB
+dist/assets/moderation-adc46b74.js                                         6.32 kB │ gzip:   2.16 kB
+dist/assets/index-00c87f81.js                                              6.39 kB │ gzip:   2.31 kB
+dist/assets/items-a66049a7.js                                              6.43 kB │ gzip:   2.43 kB
+dist/assets/VAutocomplete-12a79be9.js                                      6.60 kB │ gzip:   2.75 kB
+dist/assets/index-d5e3e0bd.js                                              6.64 kB │ gzip:   2.52 kB
+dist/assets/rewards-aa6a93f0.js                                            6.66 kB │ gzip:   2.43 kB
+dist/assets/index-14ce3317.js                                              6.70 kB │ gzip:   2.67 kB
+dist/assets/rooms-0406f03a.js                                              6.83 kB │ gzip:   2.39 kB
+dist/assets/VCombobox-be8053bb.js                                          6.96 kB │ gzip:   2.95 kB
+dist/assets/pricing-bfc60d69.js                                            6.96 kB │ gzip:   2.31 kB
+dist/assets/index-5a3b5f52.js                                              7.06 kB │ gzip:   2.64 kB
+dist/assets/lobby-848e8fe5.js                                              7.09 kB │ gzip:   2.49 kB
+dist/assets/_id_-2f0d91bb.js                                               7.09 kB │ gzip:   2.55 kB
+dist/assets/dayjs.min-2ad38be5.js                                          7.11 kB │ gzip:   3.09 kB
+dist/assets/tips-4501f43c.js                                               7.25 kB │ gzip:   2.44 kB
+dist/assets/VInput-ee846aff.js                                             7.30 kB │ gzip:   2.84 kB
+dist/assets/index-ca078a49.js                                              7.35 kB │ gzip:   2.28 kB
+dist/assets/TheCustomizer-78f3a8cd.js                                      7.40 kB │ gzip:   2.53 kB
+dist/assets/date-time-picker-ae15edfa.js                                   7.43 kB │ gzip:   1.38 kB
+dist/assets/index-02730e9d.js                                              7.67 kB │ gzip:   3.02 kB
+dist/assets/index-428adc37.js                                              7.74 kB │ gzip:   2.87 kB
+dist/assets/messages-a462f1d9.js                                           7.77 kB │ gzip:   2.96 kB
+dist/assets/missions-1d658f7c.js                                           7.80 kB │ gzip:   2.59 kB
+dist/assets/index-9c062130.js                                              7.93 kB │ gzip:   2.84 kB
+dist/assets/index-38b81d70.js                                              7.95 kB │ gzip:   2.67 kB
+dist/assets/index-026b0a2b.js                                              8.03 kB │ gzip:   3.22 kB
+dist/assets/AppBarSearch-d079309d.js                                       8.15 kB │ gzip:   3.00 kB
+dist/assets/settings-9ad916bd.js                                           8.44 kB │ gzip:   2.53 kB
+dist/assets/progress-circular-c1ea2c3f.js                                  8.69 kB │ gzip:   1.53 kB
+dist/assets/file-manager-5efe1db3.js                                       8.73 kB │ gzip:   3.42 kB
+dist/assets/index-4596cc0c.js                                              8.77 kB │ gzip:   2.91 kB
+dist/assets/VSliderTrack-56f38091.js                                       8.80 kB │ gzip:   3.39 kB
+dist/assets/index-34dbcd1b.js                                              8.80 kB │ gzip:   3.23 kB
+dist/assets/VNavigationDrawer-555cfe6c.js                                  8.88 kB │ gzip:   3.48 kB
+dist/assets/game-providers-925296bd.js                                     8.98 kB │ gzip:   3.20 kB
+dist/assets/index-83872caf.js                                              9.35 kB │ gzip:   3.21 kB
+dist/assets/BetinoviReportPage-e230aa77.js                                 9.40 kB │ gzip:   3.51 kB
+dist/assets/index-a4507a66.js                                              9.48 kB │ gzip:   3.37 kB
+dist/assets/index-058cf6f2.js                                              9.51 kB │ gzip:   2.73 kB
+dist/assets/index-b25eecb4.js                                              9.53 kB │ gzip:   3.02 kB
+dist/assets/rating-fa5e1dee.js                                             9.67 kB │ gzip:   2.43 kB
+dist/assets/index-63e4e88e.js                                              9.76 kB │ gzip:   3.09 kB
+dist/assets/index-bd9df84b.js                                              9.93 kB │ gzip:   3.29 kB
+dist/assets/range-slider-d3669ab4.js                                       9.97 kB │ gzip:   3.02 kB
+dist/assets/types-71c3e745.js                                             10.13 kB │ gzip:   3.21 kB
+dist/assets/echopayz-transactions-d398ceb3.js                             10.46 kB │ gzip:   3.45 kB
+dist/assets/us-6d129631.js                                                10.48 kB │ gzip:   7.39 kB
+dist/assets/progress-linear-caa019b6.js                                   10.49 kB │ gzip:   2.31 kB
+dist/assets/index-f93784d0.js                                             10.53 kB │ gzip:   3.23 kB
+dist/assets/index-f1a74e12.js                                             10.90 kB │ gzip:   4.13 kB
+dist/assets/pagination-faaef96a.js                                        10.90 kB │ gzip:   2.03 kB
+dist/assets/index-4ca757ba.js                                             10.94 kB │ gzip:   3.52 kB
+dist/assets/index-236643a6.js                                             11.07 kB │ gzip:   3.43 kB
+dist/assets/DefaultLayoutWithHorizontalNav-9624c1dd.js                    11.08 kB │ gzip:   3.64 kB
+dist/assets/index-ba927102.js                                             11.50 kB │ gzip:   3.30 kB
+dist/assets/index-6d9df537.js                                             11.53 kB │ gzip:   3.74 kB
+dist/assets/rain-95cd35ca.js                                              11.65 kB │ gzip:   3.42 kB
+dist/assets/index-4ba5b709.js                                             11.68 kB │ gzip:   4.16 kB
+dist/assets/TwoFactorAuthDialog-116b7665.js                               11.76 kB │ gzip:   6.27 kB
+dist/assets/index-c2483c63.js                                             11.95 kB │ gzip:   3.71 kB
+dist/assets/switch-69e5e3a9.js                                            11.99 kB │ gzip:   2.51 kB
+dist/assets/file-input-3b50a376.js                                        11.99 kB │ gzip:   2.75 kB
+dist/assets/radio-5af2456d.js                                             12.61 kB │ gzip:   2.45 kB
+dist/assets/webfontloader-91115388.js                                     12.69 kB │ gzip:   5.17 kB
+dist/assets/index-cd4c0376.js                                             12.78 kB │ gzip:   4.56 kB
+dist/assets/NavBarNotifications-5999032c.js                               12.87 kB │ gzip:   5.43 kB
+dist/assets/_id_-ebf19f8e.js                                              13.02 kB │ gzip:   4.19 kB
+dist/assets/index-501b37c8.js                                             13.05 kB │ gzip:   3.53 kB
+dist/assets/index-98b2b112.js                                             13.29 kB │ gzip:   4.08 kB
+dist/assets/tooltip-439a98f6.js                                           13.31 kB │ gzip:   2.34 kB
+dist/assets/index-a5adb8aa.js                                             13.47 kB │ gzip:   4.11 kB
+dist/assets/index-0acc3e04.js                                             13.97 kB │ gzip:   3.98 kB
+dist/assets/index-7a2a6695.js                                             14.02 kB │ gzip:   4.56 kB
+dist/assets/card-basic-d6b7a9c3.js                                        14.02 kB │ gzip:   4.57 kB
+dist/assets/combobox-b12f0fa7.js                                          14.94 kB │ gzip:   2.80 kB
+dist/assets/api-providers-22fb8f9f.js                                     15.22 kB │ gzip:   4.55 kB
+dist/assets/index-e54e009f.js                                             15.29 kB │ gzip:   4.95 kB
+dist/assets/index-c8c27992.js                                             15.39 kB │ gzip:   4.58 kB
+dist/assets/avatar-327c76bc.js                                            15.42 kB │ gzip:   2.25 kB
+dist/assets/index-e40ce5dc.js                                             15.46 kB │ gzip:   5.40 kB
+dist/assets/index-1ac91b9d.js                                             15.48 kB │ gzip:   5.37 kB
+dist/assets/menu-814e34b7.js                                              15.70 kB │ gzip:   2.81 kB
+dist/assets/footer-e7544e7a.js                                            15.71 kB │ gzip:   3.90 kB
+dist/assets/textarea-79e6f1fa.js                                          16.23 kB │ gzip:   2.88 kB
+dist/assets/timeline-a10bd14c.js                                          16.27 kB │ gzip:   3.95 kB
+dist/assets/index-83958012.js                                             16.33 kB │ gzip:   5.10 kB
+dist/assets/register-multi-steps-9192217a.js                              16.49 kB │ gzip:   7.43 kB
+dist/assets/VList-9e7caf09.js                                             16.58 kB │ gzip:   5.50 kB
+dist/assets/apex-chart-fde391c7.js                                        16.67 kB │ gzip:   4.24 kB
+dist/assets/property-listing-416f1d2c.js                                  16.69 kB │ gzip:   3.94 kB
+dist/assets/UserInfoEditDialog-67c3125d.js                                16.81 kB │ gzip:   3.89 kB
+dist/assets/select-bf22c82b.js                                            17.03 kB │ gzip:   3.43 kB
+dist/assets/index-248104a5.js                                             17.12 kB │ gzip:   5.03 kB
+dist/assets/custom-input-f22adfca.js                                      17.62 kB │ gzip:   3.13 kB
+dist/assets/UnifiedPaymentTable-25348411.js                               17.98 kB │ gzip:   5.89 kB
+dist/assets/index-5427275d.js                                             18.71 kB │ gzip:   4.95 kB
+dist/assets/VDataTable-54aac759.js                                        18.97 kB │ gzip:   6.45 kB
+dist/assets/VOverlay-9149ede0.js                                          18.98 kB │ gzip:   6.92 kB
+dist/assets/create-deal-12e094f9.js                                       19.09 kB │ gzip:   8.98 kB
+dist/assets/index-84455885.js                                             19.18 kB │ gzip:   5.48 kB
+dist/assets/checkbox-beaf8ccf.js                                          19.63 kB │ gzip:   3.58 kB
+dist/assets/index-78da207c.js                                             19.98 kB │ gzip:   6.03 kB
+dist/assets/expansion-panel-56a1436b.js                                   21.79 kB │ gzip:   3.52 kB
+dist/assets/safari-bdfa00cf.js                                            22.18 kB │ gzip:  15.79 kB
+dist/assets/form-validation-07aca048.js                                   22.19 kB │ gzip:   2.83 kB
+dist/assets/AppCardCode-290e4956.js                                       22.20 kB │ gzip:   8.57 kB
+dist/assets/badge-eeb9b45e.js                                             22.47 kB │ gzip:   3.24 kB
+dist/assets/simple-table-b56f57d1.js                                      22.72 kB │ gzip:   1.75 kB
+dist/assets/card-widgets-dddd9e64.js                                      23.74 kB │ gzip:   5.72 kB
+dist/assets/checkout-9e962536.js                                          24.15 kB │ gzip:   6.51 kB
+dist/assets/index-a80cedec.js                                             24.38 kB │ gzip:   6.53 kB
+dist/assets/index-bb7cf620.js                                             24.57 kB │ gzip:   7.23 kB
+dist/assets/analytics-e462d026.js                                         25.47 kB │ gzip:   6.69 kB
+dist/assets/crm-4f5cf497.js                                               25.49 kB │ gzip:   6.65 kB
+dist/assets/chip-2a364944.js                                              25.64 kB │ gzip:   4.13 kB
+dist/assets/card-statistics-34764153.js                                   26.63 kB │ gzip:   5.78 kB
+dist/assets/_tab_-795d8637.js                                             26.81 kB │ gzip:  10.31 kB
+dist/assets/index-092785c8.js                                             26.91 kB │ gzip:   6.82 kB
+dist/assets/ecommerce-73a4bb03.js                                         27.52 kB │ gzip:   8.06 kB
+dist/assets/snackbar-72c0ffb9.js                                          27.84 kB │ gzip:   3.62 kB
+dist/assets/textfield-d6415d9e.js                                         27.85 kB │ gzip:   5.51 kB
+dist/assets/index-0020f348.js                                             27.85 kB │ gzip:   8.38 kB
+dist/assets/autocomplete-fab1fc43.js                                      28.30 kB │ gzip:   5.49 kB
+dist/assets/button-7edb75ea.js                                            29.70 kB │ gzip:   4.55 kB
+dist/assets/alert-73853752.js                                             31.27 kB │ gzip:   5.02 kB
+dist/assets/slider-364a73b5.js                                            31.55 kB │ gzip:   5.41 kB
+dist/assets/index-577f7684.js                                             40.70 kB │ gzip:  10.84 kB
+dist/assets/tabs-6e3aafe4.js                                              40.83 kB │ gzip:   5.29 kB
+dist/assets/list-7eb533d6.js                                              41.20 kB │ gzip:   7.15 kB
+dist/assets/index-d9998155.js                                             41.31 kB │ gzip:  12.93 kB
+dist/assets/card-advance-cee40a80.js                                      41.62 kB │ gzip:  17.72 kB
+dist/assets/index-1c0d5888.js                                             46.76 kB │ gzip:   8.11 kB
+dist/assets/tour-9257a30c.js                                              48.28 kB │ gzip:  16.93 kB
+dist/assets/dialog-801efe92.js                                            52.08 kB │ gzip:   7.13 kB
+dist/assets/AppDateTimePicker-4f81b98c.js                                 56.24 kB │ gzip:  17.07 kB
+dist/assets/index-16bb5eae.js                                             57.92 kB │ gzip:  10.04 kB
+dist/assets/NavSearchBar-daa3ad67.js                                      60.98 kB │ gzip:  21.37 kB
+dist/assets/form-layouts-8fefac7c.js                                      69.26 kB │ gzip:   7.54 kB
+dist/assets/_tab_-aa8c88a5.js                                             70.90 kB │ gzip:  35.57 kB
+dist/assets/site-settings-d6bacdb8.js                                     73.38 kB │ gzip:  15.04 kB
+dist/assets/data-table-a1cc6a43.js                                       119.62 kB │ gzip:  18.16 kB
+dist/assets/_id_-40fd9995.js                                             124.20 kB │ gzip:  28.95 kB
+dist/assets/chartjs-8310a5ec.js                                          213.70 kB │ gzip:  71.28 kB
+dist/assets/calendar-b99c3725.js                                         276.70 kB │ gzip:  82.53 kB
+dist/assets/xlsx-6ed613d4.js                                             429.67 kB │ gzip: 143.27 kB
+dist/assets/vue3-apexcharts.common-e5e0b521.js                           491.33 kB │ gzip: 128.94 kB
+dist/assets/index-f1d7b043.js                                          2,582.03 kB │ gzip: 535.21 kB
+✓ built in 23.29s
+root@Ubuntu-2404-noble-amd64-base /www/raxen/velobet/admin # cd /www/raxen/velobet
+pwd
+ls -la
+/www/raxen/velobet
+total 72
+drwxr-xr-x  7 root root 4096 Aug 28 13:10 .
+drwxr-xr-x 65 root root 4096 Aug 28 13:52 ..
+drwxr-xr-x  8 root root 4096 Aug 30 15:26 admin
+drwxr-xr-x 15 www  www  4096 Aug 30 22:27 backend
+-rw-r--r--  1 root root 3792 Aug 28 13:10 BONUS_HISTORY_API.md
+-rw-r--r--  1 root root    1 Aug 28 13:10 BONUS_MERKEZI_API.md
+-rw-r--r--  1 root root    4 Aug 28 13:10 BONUS_MERKEZI_PROMPT.md
+drwxr-xr-x  2 root root 4096 Aug 28 13:10 data
+drwxr-xr-x 16 root root 4096 Aug 30 22:28 frontend
+-rw-r--r--  1 root root   66 Aug 28 13:10 .gitattributes
+-rw-r--r--  1 root root   28 Aug 28 13:10 .gitignore
+-rw-r--r--  1 root root  440 Aug 28 13:10 package.json
+-rw-r--r--  1 root root  114 Aug 28 13:10 pnpm-lock.yaml
+-rw-r--r--  1 root root 5135 Aug 28 13:10 PROMO_CODE_API.md
+-rw-r--r--  1 root root 5998 Aug 28 13:10 PROMO_CODE_FRONTEND_FIX.md
+drwxr-xr-x  2 root root 4096 Aug 28 13:10 scripts
+root@Ubuntu-2404-noble-amd64-base /www/raxen/velobet # ls -la /www/raxen/velobet
+total 72
+drwxr-xr-x  7 root root 4096 Aug 28 13:10 .
+drwxr-xr-x 65 root root 4096 Aug 28 13:52 ..
+drwxr-xr-x  8 root root 4096 Aug 30 15:26 admin
+drwxr-xr-x 15 www  www  4096 Aug 30 22:27 backend
+-rw-r--r--  1 root root 3792 Aug 28 13:10 BONUS_HISTORY_API.md
+-rw-r--r--  1 root root    1 Aug 28 13:10 BONUS_MERKEZI_API.md
+-rw-r--r--  1 root root    4 Aug 28 13:10 BONUS_MERKEZI_PROMPT.md
+drwxr-xr-x  2 root root 4096 Aug 28 13:10 data
+drwxr-xr-x 16 root root 4096 Aug 30 22:28 frontend
+-rw-r--r--  1 root root   66 Aug 28 13:10 .gitattributes
+-rw-r--r--  1 root root   28 Aug 28 13:10 .gitignore
+-rw-r--r--  1 root root  440 Aug 28 13:10 package.json
+-rw-r--r--  1 root root  114 Aug 28 13:10 pnpm-lock.yaml
+-rw-r--r--  1 root root 5135 Aug 28 13:10 PROMO_CODE_API.md
+-rw-r--r--  1 root root 5998 Aug 28 13:10 PROMO_CODE_FRONTEND_FIX.md
+drwxr-xr-x  2 root root 4096 Aug 28 13:10 scripts
+root@Ubuntu-2404-noble-amd64-base /www/raxen/velobet # find /www -maxdepth 4 -type d \( -name "panel.velobet*" -o -name "velobet285.com" \) 2>/dev/null
+root@Ubuntu-2404-noble-amd64-base /www/raxen/velobet # /www/raxen/velobet
+-bash: /www/raxen/velobet: Is a directory
+root@Ubuntu-2404-noble-amd64-base /www/raxen/velobet # ls -la /www/wwwroot
+total 24
+drwxr-xr-x  6 www  www  4096 Aug 11 05:12 .
+drwxr-xr-x 10 root root 4096 Apr 30 13:57 ..
+drwxr-xr-x  7 www  www  4096 Aug 11 05:22 bizzocazino2
+drwxr-xr-x  2 www  www  4096 Apr 30 13:26 default
+drwxr-xr-x  2 www  www  4096 Apr 30 13:31 financeforcalabs.com
+drwxr-xr-x  2 www  www  4096 Apr 30 13:31 frontend.com
+root@Ubuntu-2404-noble-amd64-base /www/raxen/velobet # grep -R "velobet" /www/server/panel/vhost/nginx/ 2>/dev/null
+/www/server/panel/vhost/nginx/node_project_a.conf:    server_name apivelobet.com;
+/www/server/panel/vhost/nginx/node_project_a.conf:    # root /www/raxen/velobet/backend;
+/www/server/panel/vhost/nginx/node_project_a.conf:        root  /www/raxen/velobet/backend;
+root@Ubuntu-2404-noble-amd64-base /www/raxen/velobet # ADMIN_ROOT=GERÇEK_KLASÖR
+
+rm -rf "${ADMIN_ROOT}.new"
+mkdir -p "${ADMIN_ROOT}.new"
+cp -a /www/raxen/velobet/admin/dist/. "${ADMIN_ROOT}.new/"
+rm -rf "${ADMIN_ROOT}.bak"
+mv "${ADMIN_ROOT}" "${ADMIN_ROOT}.bak"
+mv "${ADMIN_ROOT}.new" "${ADMIN_ROOT}"
+mv: cannot stat 'GERÇEK_KLASÖR': No such file or directory
+root@Ubuntu-2404-noble-amd64-base /www/raxen/velobet # ls -la /www/wwwroot
+total 24
+drwxr-xr-x  6 www  www  4096 Aug 11 05:12 .
+drwxr-xr-x 10 root root 4096 Apr 30 13:57 ..
+drwxr-xr-x  7 www  www  4096 Aug 11 05:22 bizzocazino2
+drwxr-xr-x  2 www  www  4096 Apr 30 13:26 default
+drwxr-xr-x  2 www  www  4096 Apr 30 13:31 financeforcalabs.com
+drwxr-xr-x  2 www  www  4096 Apr 30 13:31 frontend.com
+root@Ubuntu-2404-noble-amd64-base /www/raxen/velobet # /www/wwwroot/bizzocazino2
+-bash: /www/wwwroot/bizzocazino2: Is a directory
+root@Ubuntu-2404-noble-amd64-base /www/raxen/velobet # /www/raxen/velobet
+-bash: /www/raxen/velobet: Is a directory
+root@Ubuntu-2404-noble-amd64-base /www/raxen/velobet # cd /www/wwwroot/bizzocazino2
+ls -la
+total 224
+drwxr-xr-x  7 www www   4096 Aug 11 05:22 .
+drwxr-xr-x  6 www www   4096 Aug 11 05:12 ..
+drwxr-xr-x  6 www www   4096 Aug 11 13:35 admin
+drwxr-xr-x 14 www www   4096 Aug 28 01:07 backend
+drwxr-xr-x  6 www www   4096 Aug 11 05:13 frontend
+drwxr-xr-x  8 www www   4096 Aug 11 05:13 .git
+-rwxr-xr-x  1 www www     66 Aug 11 05:13 .gitattributes
+-rwxr-xr-x  1 www www     23 Aug 11 05:13 .gitignore
+-rw-r--r--  1 www www     67 Aug 11 05:20 .htaccess
+drwxr-xr-x 81 www www  16384 Aug 11 05:22 node_modules
+-rw-r--r--  1 www www     48 Aug 11 05:21 package.json
+-rw-r--r--  1 www www 110413 Aug 11 05:22 package-lock.json
+-rwxr-xr-x  1 www www     15 Aug 11 05:13 README.md
+-rw-r--r--  1 www www  57045 Aug 11 05:22 yarn.lock
+root@Ubuntu-2404-noble-amd64-base /www/wwwroot/bizzocazino2 # cd /www/wwwroot/bizzocazino2/backend
+ls -la
+total 544
+drwxr-xr-x  14 www www   4096 Aug 28 01:07 .
+drwxr-xr-x   7 www www   4096 Aug 11 05:22 ..
+-rwxr-xr-x   1 www www    160 Aug 11 05:13 authenticate.sh
+-rwxr-xr-x   1 www www    921 Aug 11 05:13 config.js
+drwxr-xr-x  19 www www   4096 Aug 11 05:13 controllers
+drwxr-xr-x   3 www www   4096 Aug 11 05:13 database
+-rwxr-xr-x   1 www www    229 Aug 11 05:13 dockerfile
+-rwxr-xr-x   1 www www    180 Aug 11 05:13 ecosystem.config.js
+-rwxr-xr-x   1 www www     38 Aug 11 05:13 .editorconfig
+-rw-r--r--   1 www www   2291 Aug 11 05:30 .env
+-rwxr-xr-x   1 www www    259 Aug 11 05:13 .gitignore
+-rwxr-xr-x   1 www www     67 Aug 11 05:13 .htaccess
+-rwxr-xr-x   1 www www   3660 Aug 11 05:13 index.js
+-rwxr-xr-x   1 www www   3773 Aug 28 01:07 index.js.save
+drwxr-xr-x   2 www www   4096 Aug 11 05:13 middleware
+drwxr-xr-x 464 www www  20480 Aug 11 05:28 node_modules
+-rwxr-xr-x   1 www www     29 Aug 11 05:13 .npmrc
+-rwxr-xr-x   1 www www   1243 Aug 11 05:13 package.json
+-rwxr-xr-x   1 www www 276327 Aug 11 05:28 package-lock.json
+-rwxr-xr-x   1 www www 152884 Aug 11 05:13 pnpm-lock.yaml
+drwxr-xr-x  18 www www   4096 Aug 11 05:13 routes
+drwxr-xr-x   4 www www   4096 Aug 11 05:13 scripts
+drwxr-xr-x   2 www www   4096 Aug 11 05:13 services
+drwxr-xr-x  19 www www   4096 Aug 11 05:13 sockets
+drwxr-xr-x   3 www www   4096 Aug 11 05:13 tests
+drwxr-xr-x   4 www www   4096 Aug 11 05:29 uploads
+drwxr-xr-x   8 www www   4096 Aug 11 05:13 utils
+drwxr-xr-x   2 www www   4096 Aug 11 05:13 views
+root@Ubuntu-2404-noble-amd64-base /www/wwwroot/bizzocazino2/backend # ls -la /www/raxen/velobet
+total 76
+drwxr-xr-x  8 root root 4096 Aug 30 22:30 .
+drwxr-xr-x 65 root root 4096 Aug 28 13:52 ..
+drwxr-xr-x  8 root root 4096 Aug 30 15:26 admin
+drwxr-xr-x 15 www  www  4096 Aug 30 22:27 backend
+-rw-r--r--  1 root root 3792 Aug 28 13:10 BONUS_HISTORY_API.md
+-rw-r--r--  1 root root    1 Aug 28 13:10 BONUS_MERKEZI_API.md
+-rw-r--r--  1 root root    4 Aug 28 13:10 BONUS_MERKEZI_PROMPT.md
+drwxr-xr-x  2 root root 4096 Aug 28 13:10 data
+drwxr-xr-x 16 root root 4096 Aug 30 22:28 frontend
+drwxr-xr-x  4 root root 4096 Aug 30 22:29 GERÇEK_KLASÖR
+-rw-r--r--  1 root root   66 Aug 28 13:10 .gitattributes
+-rw-r--r--  1 root root   28 Aug 28 13:10 .gitignore
+-rw-r--r--  1 root root  440 Aug 28 13:10 package.json
+-rw-r--r--  1 root root  114 Aug 28 13:10 pnpm-lock.yaml
+-rw-r--r--  1 root root 5135 Aug 28 13:10 PROMO_CODE_API.md
+-rw-r--r--  1 root root 5998 Aug 28 13:10 PROMO_CODE_FRONTEND_FIX.md
+drwxr-xr-x  2 root root 4096 Aug 28 13:10 scripts
+root@Ubuntu-2404-noble-amd64-base /www/wwwroot/bizzocazino2/backend # pm2 logs --err --lines 200 --nostream
+pm2 describe $(pm2 jlist | node -pe "JSON.parse(require('fs').readFileSync(0)).find(a=>a.name.includes('backend')).name")
+[TAILING] Tailing last 200 lines for [all] processes (change the value with --lines option)
+/root/.pm2/logs/bizzocazino2-backend-error.log last 200 lines:
+0|bizzocaz | ⚠️ UYARI: MAKSIPARA_MERCHANT_SID veya MAKSIPARA_MERCHANT_KEY environment variable'ları tanımlı değil!
+0|bizzocaz | ⚠️ UYARI: MAKSIPARA_MERCHANT_SID veya MAKSIPARA_MERCHANT_KEY environment variable'ları tanımlı değil!
+0|bizzocaz | ⚠️ UYARI: PRADA_API_KEY environment variable tanımlı değil!
+0|bizzocaz | ERROR: Forbidden
+0|bizzocaz | XPayment withdraw error: Hesabınız deneme bonusu incelemesi nedeniyle geçici olarak kilitlendi. Canlı destek ile iletişime geçin.
+0|bizzocaz | XPayment withdraw error: Hesabınız deneme bonusu incelemesi nedeniyle geçici olarak kilitlendi. Canlı destek ile iletişime geçin.
+0|bizzocaz | XPayment withdraw error: Hesabınız deneme bonusu incelemesi nedeniyle geçici olarak kilitlendi. Canlı destek ile iletişime geçin.
+0|bizzocaz | XPayment withdraw error: Hesabınız deneme bonusu incelemesi nedeniyle geçici olarak kilitlendi. Canlı destek ile iletişime geçin.
+0|bizzocaz | XPayment withdraw error: Hesabınız deneme bonusu incelemesi nedeniyle geçici olarak kilitlendi. Canlı destek ile iletişime geçin.
+0|bizzocaz | XPayment withdraw error: Hesabınız deneme bonusu incelemesi nedeniyle geçici olarak kilitlendi. Canlı destek ile iletişime geçin.
+0|bizzocaz | XPayment withdraw error: Hesabınız deneme bonusu incelemesi nedeniyle geçici olarak kilitlendi. Canlı destek ile iletişime geçin.
+
+ Describing process with id 0 - name bizzocazino2-backend 
+┌───────────────────┬────────────────────────────────────────────────┐
+│ status            │ online                                         │
+│ name              │ bizzocazino2-backend                           │
+│ namespace         │ default                                        │
+│ version           │ N/A                                            │
+│ restarts          │ 109                                            │
+│ uptime            │ 44m                                            │
+│ script path       │ /www/server/nodejs/v24.15.0/bin/npm            │
+│ script args       │ run start                                      │
+│ error log path    │ /root/.pm2/logs/bizzocazino2-backend-error.log │
+│ out log path      │ /root/.pm2/logs/bizzocazino2-backend-out.log   │
+│ pid path          │ /root/.pm2/pids/bizzocazino2-backend-0.pid     │
+│ interpreter       │ /www/server/nodejs/v24.15.0/bin/node           │
+│ interpreter args  │ N/A                                            │
+│ script id         │ 0                                              │
+│ exec cwd          │ /www/raxen/bizzocazino/backend                 │
+│ exec mode         │ fork_mode                                      │
+│ node.js version   │ 24.15.0                                        │
+│ node env          │ N/A                                            │
+│ watch & reload    │ ✘                                              │
+│ unstable restarts │ 0                                              │
+│ created at        │ 2026-08-30T19:47:31.484Z                       │
+└───────────────────┴───────────────────────────────────────────────┘
+ Actions available 
+┌────────────────────────┐
+│ km:heapdump            │
+│ km:cpu:profiling:start │
+│ km:cpu:profiling:stop  │
+│ km:heap:sampling:start │
+│ km:heap:sampling:stop  │
+└────────────────────────┘
+ Trigger via: pm2 trigger bizzocazino2-backend <action_name>
+
+ Code metrics value 
+┌────────────────────────┬───────────┐
+│ Used Heap Size         │ 11.19 MiB │
+│ Heap Usage             │ 89.96 %   │
+│ Heap Size              │ 12.44 MiB │
+│ Event Loop Latency p95 │ 1.31 ms   │
+│ Event Loop Latency     │ 0.35 ms   │
+│ Active handles         │ 5         │
+│ Active requests        │ 0         │
+└────────────────────────┴───────────┘
+ Divergent env variables from local env 
+┌────────────────┬────────────────────────────────┐
+│ PWD            │ /www/raxen/bizzocazino/backend │
+│ SSH_CONNECTION │ 127.0.0.1 51876 127.0.0.1 22   │
+│ XDG_SESSION_ID │ 7443                           │
+│ SSH_CLIENT     │ 127.0.0.1 51876 22             │
+│ OLDPWD         │ /root                          │
+└────────────────┴────────────────────────────────┘
+
+ Add your own code metrics: http://bit.ly/code-metrics
+ Use `pm2 logs bizzocazino2-backend [--lines 1000]` to display logs
+ Use `pm2 env 0` to display environment variables
+ Use `pm2 monit` to monitor CPU and Memory usage bizzocazino2-backend
+root@Ubuntu-2404-noble-amd64-base /www/wwwroot/bizzocazino2/backend # 
