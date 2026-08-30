@@ -979,8 +979,10 @@
     .casino-bets-mult { display:inline-flex; align-items:center; justify-content:center; min-height:21px; padding:0 8px; border-radius:12px; background:#263347; color:#10bb42; font-weight:900; line-height:21px; }
     .casino-bets-mult.zero { color:#657792; }
     .casino-bets-row .cell-payout { color:#10bb42; font-weight:900; }
-    .casino-bets-row .cell-payout.zero { color:#657792; }
-    @media (max-width:720px){ .casino-bets { margin-top:30px; } }
+ .casino-bets-row .cell-payout.zero { color:#657792; }
+ .casino-bets-empty { display:flex; min-height:112px; align-items:center; justify-content:center; border-radius:9px; background:rgba(20,31,45,.72); color:#8191a8; font-size:14px; font-weight:800; text-align:center; }
+ .casino-bets-empty.error { color:#f07f8f; }
+ @media (max-width:720px){ .casino-bets { margin-top:30px; } }
     .casino-game-card { position:relative; flex:0 0 203.2px; width:203.2px; height:267.95px; overflow:hidden; border-radius:13px; background:#152230; }
     .casino-game-card img { width:100%; height:100%; object-fit:cover; }
     .casino-game-card::after { content:""; position:absolute; inset:auto 0 0; height:74px; background:linear-gradient(transparent,rgba(6,11,18,.96)); }
@@ -3058,7 +3060,10 @@
 <div class="casino-bets-tablewrap">
 <div class="casino-bets-table">
 <div class="casino-bets-head"><div>Game</div><div>{{betsTab==='rare'?'Date':'Time'}}</div><div>User</div><div>Bet Amount</div><div>Multiplier</div><div>Payout</div></div>
-<div :key="betsTab+'-'+index" class="casino-bets-row" v-for="(row,index) in betsVisibleRows">
+<div class="casino-bets-empty" v-if="betsLoading &amp;&amp; !betsVisibleRows.length">Loading live bets…</div>
+<div class="casino-bets-empty error" v-else-if="betsError">{{betsError}}</div>
+<div class="casino-bets-empty" v-else-if="!betsVisibleRows.length">No settled bets yet.</div>
+<div :key="row.id || (betsTab+'-'+index)" class="casino-bets-row" v-for="(row,index) in betsVisibleRows">
 <div class="cell cell-game"><i :class="betGameIcon(row.game)"></i><span>{{row.game}}</span></div>
 <div class="cell cell-time">{{row.time}}</div>
 <div class="cell cell-user"><span :class="{gold:row.gold}" class="casino-bets-avatar">{{row.avatar}}<em>{{row.level}}</em></span><span>{{row.user}}</span></div>
@@ -5573,7 +5578,7 @@
         });
         // Satır sayısı seçenekleri ve varsayılanı da yönetilebilir.
         const betsRowChoices = computed(() => uiSettings.betsRowOptions.value || [10,20,50]);
-        const betRows = {
+        const legacyBetRows = {
           all:[
             {game:'Dice',time:'09:07:20 PM',user:'User1912134',avatar:'👱',level:6,bet:'$1.03',multiplier:'x1.053',payout:'$1.09'},
             {game:'Mines',time:'09:06:59 PM',user:'BFGSUCCESS',avatar:'S',gold:true,level:13,bet:'$4.80',multiplier:'x1.032',payout:'$4.95'},
@@ -5616,6 +5621,61 @@
             {game:'SpaceDice',time:'02/05/23',user:'User981384',avatar:'👨',level:13,bet:'$8.57',multiplier:'x9902.000',payout:'$84,860.14'}
           ]
         };
+        const betRows = ref([]);
+        const betsLoading = ref(false);
+        const betsError = ref('');
+        let betsRequestId = 0;
+        let betsRefreshTimer = null;
+        const BET_GAME_LABELS = { crash:'Crash', roll:'Dice', blackjack:'Blackjack', duels:'Duels', mines:'Mines', towers:'Towers', unbox:'Unbox', battles:'Battles', upgrader:'Upgrader' };
+        function formatBetMoney(value) {
+          const amount = Number(value || 0) / 1000;
+          return new Intl.NumberFormat('en-US', { style:'currency', currency:'USD', minimumFractionDigits:2, maximumFractionDigits:2 }).format(amount);
+        }
+        function formatBetMultiplier(value) {
+          const multiplier = Number(value || 0) / 100;
+          return 'x' + multiplier.toFixed(3);
+        }
+        function mapLiveBet(bet) {
+          const user = bet && bet.user;
+          const username = user && user.username ? user.username : 'Hidden Player';
+          const date = new Date(bet.updatedAt || bet.createdAt || Date.now());
+          return {
+            id: bet._id || [bet.method, date.getTime(), username].join('-'),
+            game: BET_GAME_LABELS[bet.method] || String(bet.method || 'Game').replace(/^./, letter => letter.toUpperCase()),
+            time: betsTab.value === 'rare' ? date.toLocaleDateString('en-US') : date.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit', second:'2-digit' }),
+            user: username,
+            avatar: username.slice(0, 1).toUpperCase(),
+            level: Number(user && user.level) || 0,
+            gold: Boolean(user && ['admin','vip'].includes(user.rank)),
+            bet: formatBetMoney(bet.amount),
+            multiplier: formatBetMultiplier(bet.multiplier),
+            payout: formatBetMoney(bet.payout),
+            zero: Number(bet.payout || 0) <= 0,
+          };
+        }
+        async function loadLiveBets() {
+          if (!isCasinoPage || activeCategory.value !== 'all') return;
+          const requestId = ++betsRequestId;
+          betsLoading.value = true;
+          betsError.value = '';
+          const token = readAuthToken();
+          try {
+            const response = await fetch(apiUrl('/bets?tab=' + encodeURIComponent(betsTab.value) + '&limit=' + betsRowCount.value), {
+              credentials:'include',
+              headers: token ? { Authorization:'Bearer ' + token } : {},
+            });
+            const payload = await response.json();
+            if (!response.ok || payload.success === false) throw new Error(payload.error && payload.error.message || 'Bets could not be loaded');
+            if (requestId === betsRequestId) betRows.value = (payload.data || []).map(mapLiveBet);
+          } catch (error) {
+            if (requestId === betsRequestId) {
+              betRows.value = [];
+              betsError.value = error instanceof TypeError ? 'Live bets are temporarily unavailable.' : (error.message || 'Bets could not be loaded');
+            }
+          } finally {
+            if (requestId === betsRequestId) betsLoading.value = false;
+          }
+        }
         // Ayarlar geldiğinde varsayılan satır sayısını uygula (kullanıcı henüz
         // seçim yapmadıysa). Seçenek listesinde olmayan değer yok sayılır.
         let betsRowCountTouched = false;
@@ -5623,10 +5683,17 @@
           if (betsRowCountTouched || !value) return;
           if (betsRowChoices.value.includes(value)) betsRowCount.value = value;
         });
-        const betsVisibleRows = computed(() => (betRows[betsTab.value] || []).slice(0, betsRowCount.value));
-        function betGameIcon(game){ return {'Dice':'fas fa-dice-d20','Mines':'fas fa-bomb','Limbo':'fas fa-rocket','Plinko':'fas fa-braille','SpaceDice':'fas fa-dice','Blackjack':'fas fa-address-card','Cryptos':'fab fa-bitcoin'}[game] || 'fas fa-dice'; }
-        function selectBetsTab(id){ betsTab.value = id; betsCountOpen.value = false; }
-        function setBetsCount(c){ betsRowCountTouched = true; betsRowCount.value = c; betsCountOpen.value = false; }
+        const betsVisibleRows = computed(() => betRows.value.slice(0, betsRowCount.value));
+        function betGameIcon(game){ return {'Dice':'fas fa-dice-d20','Mines':'fas fa-bomb','Crash':'fas fa-chart-line','Towers':'fas fa-layer-group','Unbox':'fas fa-box-open','Battles':'fas fa-shield-alt','Duels':'fas fa-khanda','Upgrader':'fas fa-arrow-up','Blackjack':'fas fa-address-card'}[game] || 'fas fa-dice'; }
+        function selectBetsTab(id){
+          if (id === 'my' && !readAuthToken()) { toastMessage('Sign in to view your bets'); return; }
+          betsTab.value = id;
+          betsCountOpen.value = false;
+          loadLiveBets();
+        }
+        function setBetsCount(c){ betsRowCountTouched = true; betsRowCount.value = c; betsCountOpen.value = false; loadLiveBets(); }
+        loadLiveBets();
+        betsRefreshTimer = setInterval(loadLiveBets, 10000);
         function toastMessage(message) {
           toast.value = message;
           clearTimeout(toastTimer);
@@ -5688,8 +5755,8 @@
         }
         // Zil rozeti cekmece acilmadan da dogru olmali: oturum dolunca yukle.
         watch(authUser, (u) => { if (u) loadNotifications(); }, { immediate: true });
-        onBeforeUnmount(()=>{ window.removeEventListener('resize',handleResize); window.removeEventListener('keydown',handleKeydown); window.removeEventListener('storage',handleStorageSync); document.removeEventListener('click',handleDocumentClick); clearTimeout(searchTimer); clearInterval(promoTimer); });
-        return {...casinoPT,...uiSettings,...leaderboardData,betsRowChoices,betsTab,betsRowCount,betsCountOpen,betsTabs,betsVisibleRows,betGameIcon,selectBetsTab,setBetsCount,heroSpinning,heroSpin,heroBackdropCards,balanceMenuOpen,balanceSearch,balanceHideZero,balanceShowVault,balanceDisplayFiat,balanceCurrencies,balanceActiveCode,balanceFiltered,toggleBalanceMenu,selectBalanceCurrency,websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,...notificationsData,toggleNotif,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,slideCasinoRow,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
+        onBeforeUnmount(()=>{ window.removeEventListener('resize',handleResize); window.removeEventListener('keydown',handleKeydown); window.removeEventListener('storage',handleStorageSync); document.removeEventListener('click',handleDocumentClick); clearTimeout(searchTimer); clearInterval(promoTimer); clearInterval(betsRefreshTimer); });
+        return {...casinoPT,...uiSettings,...leaderboardData,betsRowChoices,betsTab,betsRowCount,betsCountOpen,betsTabs,betsVisibleRows,betsLoading,betsError,betGameIcon,selectBetsTab,setBetsCount,heroSpinning,heroSpin,heroBackdropCards,balanceMenuOpen,balanceSearch,balanceHideZero,balanceShowVault,balanceDisplayFiat,balanceCurrencies,balanceActiveCode,balanceFiltered,toggleBalanceMenu,selectBalanceCurrency,websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,...notificationsData,toggleNotif,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,slideCasinoRow,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
           ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage, ...missionsPage, ...bonusesPage, ...cryptoEarnPage, ...promotionsPage, ...referralPage, ...vipPage};
       }
     }).component('game-card', GameCard).mount('#app');
