@@ -24,6 +24,7 @@
 <script src="./crypto-earn-page.js"></script>
 <script src="./promotions-page.js"></script>
 <script src="./referral-page.js"></script>
+<script src="./vip-page.js"></script>
 <script src="./casino-providers-battles.js"></script>
 <link href="./tailwind.css" rel="stylesheet"/>
 <link href="./missions-page.css" rel="stylesheet"/>
@@ -31,6 +32,7 @@
 <link href="./crypto-earn-page.css" rel="stylesheet"/>
 <link href="./promotions-page.css" rel="stylesheet"/>
 <link href="./referral-page.css" rel="stylesheet"/>
+<link href="./vip-page.css" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -2670,6 +2672,21 @@
 </transition>
 </div>
 </template>
+<template v-else-if="isVipPage">
+<div class="vp-page">
+<section class="vp-hero">
+<img class="vp-hero__art" src="assets/vip/hero.png" alt="VIP Club mascot with cryptocurrency coins"/>
+<div class="vp-hero__shade"></div>
+<div class="vp-hero__copy"><p class="vp-eyebrow">Exclusive rewards await</p><h1 class="vp-title">Welcome to the VIP Club</h1><p class="vp-lead">Unlock a world of personalized bonuses, premium service and exceptional rewards created for our most valued players.</p><button class="vp-button" @click="vpNotify('VIP status checked')" type="button">Check my VIP status</button></div>
+</section>
+<section class="vp-section vp-section--soft"><div class="vp-wrap"><div class="vp-heading"><h2>Unlock VIP Benefits</h2><p>Every level brings you closer to bigger rewards, exclusive privileges and premium support.</p></div><nav class="vp-tabs" aria-label="VIP benefit categories"><button v-for="tab in vpTabs" :key="tab" class="vp-tab" :class="{'is-active':vpTab===tab}" @click="vpSelectTab(tab)" type="button">{{tab}}</button></nav><div class="vp-grid"><article v-for="benefit in vpBenefits" :key="benefit[1]" class="vp-card" :class="{'vp-card--manager':vpTab==='Personal Manager'}"><img :src="'assets/vip/'+benefit[0]" :alt="benefit[1]"/><h3>{{benefit[1]}}</h3><p>{{benefit[2]}}</p></article></div></div></section>
+<section class="vp-section vp-transfer"><div class="vp-wrap vp-split"><div class="vp-split__copy"><p class="vp-eyebrow">Bring your status with you</p><h2>VIP Transfer</h2><p>Already a VIP elsewhere? Transfer your level and start enjoying premium privileges without beginning from zero.</p><button class="vp-button" @click="vpOpenChat" type="button">Contact VIP support</button></div><img class="vp-split__image" src="assets/vip/crown.png" alt="Premium VIP crown"/></div></section>
+<section class="vp-super"><img class="vp-super__bg" src="assets/vip/manager-banner.jpg" alt="Personal VIP manager"/><div class="vp-wrap"><div class="vp-super__copy"><p class="vp-eyebrow">The ultimate experience</p><h2>Super VIP</h2><p>At the highest level, your experience becomes entirely personal. Enjoy private bonuses, priority payouts and direct access to a dedicated VIP manager.</p><button class="vp-button" @click="vpOpenChat" type="button">Talk to a VIP manager</button></div></div></section>
+<section class="vp-section vp-section--soft"><div class="vp-wrap"><div class="vp-heading"><h2>Keep in touch</h2><p>Your VIP team is always close, ready to help and share offers selected especially for you.</p></div><div class="vp-contact"><article class="vp-contact__main"><img src="assets/vip/managers.png" alt="VIP manager team"/><div><h3>Your personal VIP manager</h3><p>Receive one-to-one assistance, custom rewards and quick answers from a dedicated manager.</p></div></article><article class="vp-contact__side"><h3>Need some help?</h3><p>Our support team is available around the clock.</p><a href="#" @click.prevent="vpOpenChat">Open live chat →</a></article></div></div></section>
+<section class="vp-section"><div class="vp-wrap"><div class="vp-heading"><h2>Frequently Asked Questions</h2><p>Everything you need to know about the VIP Club.</p></div><div class="vp-faq"><article class="vp-faq__item" v-for="(faq,index) in vpFaqs" :key="faq[0]"><button class="vp-faq__q" @click="vpToggleFaq(index)" :aria-expanded="vpFaqOpen===index" type="button"><span>{{faq[0]}}</span><span>{{vpFaqOpen===index?'−':'+'}}</span></button><div class="vp-faq__a" v-if="vpFaqOpen===index">{{faq[1]}}</div></article></div></div></section>
+<div class="vp-wrap vp-crumb"><b>Home</b> / VIP Club</div>
+</div>
+</template>
 <template v-else-if="isReferralPage">
 <div class="rf-page">
 <!-- ===== Dashboard sekmesi ===== -->
@@ -3198,7 +3215,7 @@
 </template>
 <!-- Account sekme grubundaki sayfalar kendi basligini cizer (.ac-title), route-hero gosterilmez. -->
 <div class="route-hero" v-else-if="!acHasTabs"><div><span class="route-kicker">{{pageContent.kicker}}</span><h1>{{pageContent.title}}</h1><p>{{pageContent.description}}</p></div><span class="route-badge">{{pageContent.badge}}</span></div>
-<div class="empty-panel" v-if="!isCasinoPage && !isGamePage && !isAccountPage && !isBonusesPage && !isCryptoPage && !isPromotionsPage && !isReferralPage"><div class="empty-panel-inner"><span class="empty-icon"><i :class="pageContent.icon"></i></span><h2>{{pageContent.emptyTitle}}</h2><p>{{pageContent.emptyText}}</p></div></div>
+<div class="empty-panel" v-if="!isCasinoPage && !isGamePage && !isAccountPage && !isBonusesPage && !isCryptoPage && !isPromotionsPage && !isReferralPage && !isVipPage"><div class="empty-panel-inner"><span class="empty-icon"><i :class="pageContent.icon"></i></span><h2>{{pageContent.emptyTitle}}</h2><p>{{pageContent.emptyText}}</p></div></div>
 
 <!-- ===== Hesap sayfalari (Wallet / Profile / Account / Transactions / Game History / Sessions / Vault) ===== -->
 <template v-if="isAccountPage">
@@ -4621,7 +4638,7 @@
           {code:'BTC', symbol:'₿', balance:'0.00004821'},
           {code:'ETH', symbol:'Ξ', balance:'0.0128340'},
           {code:'USDT', symbol:'₮', balance:'12.480000'},
-          {code:'DOGE', symbol:'Ð', balance:'184.520100'},
+          {code:'DOGE', symbol:'��', balance:'184.520100'},
         ];
         const dropModalOpen = ref(false);
         const dropMode = ref('rain');
@@ -5387,6 +5404,10 @@
   // Refer & Earn sayfasi mantigi ayri dosyada: casino-ui/referral-page.js
   const referralPage = window.createReferralPage({ ref, computed, currentPage, toastMessage, authUser });
   const isReferralPage = referralPage.isReferralPage;
+
+  // VIP Club sayfasi mantigi ayri dosyada: casino-ui/vip-page.js
+  const vipPage = window.createVipPage({ ref, computed, currentPage, toastMessage, openChat: toggleChat });
+  const isVipPage = vipPage.isVipPage;
   
   // Cuzdan modali mantigi ayri dosyada: casino-ui/wallet-modal.js
         const walletModal = window.createWalletModal({
@@ -5663,7 +5684,7 @@
         watch(authUser, (u) => { if (u) loadNotifications(); }, { immediate: true });
         onBeforeUnmount(()=>{ window.removeEventListener('resize',handleResize); window.removeEventListener('keydown',handleKeydown); window.removeEventListener('storage',handleStorageSync); document.removeEventListener('click',handleDocumentClick); clearTimeout(searchTimer); clearInterval(promoTimer); });
         return {...casinoPT,...uiSettings,...leaderboardData,betsRowChoices,betsTab,betsRowCount,betsCountOpen,betsTabs,betsVisibleRows,betGameIcon,selectBetsTab,setBetsCount,heroSpinning,heroSpin,heroBackdropCards,balanceMenuOpen,balanceSearch,balanceHideZero,balanceShowVault,balanceDisplayFiat,balanceCurrencies,balanceActiveCode,balanceFiltered,toggleBalanceMenu,selectBalanceCurrency,websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,...notificationsData,toggleNotif,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,slideCasinoRow,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
-          ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage, ...missionsPage, ...bonusesPage, ...cryptoEarnPage, ...promotionsPage, ...referralPage};
+          ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage, ...missionsPage, ...bonusesPage, ...cryptoEarnPage, ...promotionsPage, ...referralPage, ...vipPage};
       }
     }).component('game-card', GameCard).mount('#app');
   </script>
