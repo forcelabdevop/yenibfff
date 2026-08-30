@@ -196,6 +196,28 @@ cron.schedule("* * * * *", () => {
 		);
 });
 
+// 🩺 Sağlık kontrolü — kimlik doğrulaması YOK, kasıtlı olarak halka açık.
+//
+// deploy.sh bu ucu kullanır: pm2 reload sonrası buraya istek atar, 200 yanıt
+// gelmezse dağıtımı otomatik geri alır. Bu yüzden UCUZ olmalı — ağır sorgu
+// veya dış servis çağrısı EKLEMEYİN, yoksa her dağıtımda yanlış alarm verir.
+//
+// Veritabanı bağlı değilse 503 döner; süreç ayakta ama iş göremez durumdadır
+// ve yük dengeleyici/deploy script'i bunu başarısızlık saymalıdır.
+app.get("/health", (req, res) => {
+	const mongoose = require("mongoose");
+	// 1 = connected, 2 = connecting
+	const dbReady = mongoose.connection && mongoose.connection.readyState === 1;
+	res.status(dbReady ? 200 : 503).json({
+		ok: dbReady,
+		db: dbReady ? "up" : "down",
+		// Dağıtım sonrası "hangi sürüm canlıda?" sorusunu yanıtlar.
+		commit: process.env.GIT_COMMIT || "unknown",
+		uptime: Math.round(process.uptime()),
+		pid: process.pid,
+	});
+});
+
 // Set app port
 const PORT = process.env.SERVER_PORT || 5000;
 

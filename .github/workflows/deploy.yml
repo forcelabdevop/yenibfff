@@ -1,0 +1,69 @@
+name: Deploy to production
+
+# main'e merge/push olunca sunucuyu gunceller.
+#
+# GEREKLI REPO SECRET'LARI (Settings → Secrets and variables → Actions):
+#   SSH_HOST        sunucu IP veya alan adi
+#   SSH_USER        SSH kullanicisi (ornek: root)
+#   SSH_KEY         private key (tamami, -----BEGIN ... satiri dahil)
+#   SSH_PORT        SSH portu (aaPanel genelde 22 disi bir port kullanir)
+#   DEPLOY_PATH     sunucudaki repo yolu (ornek: /www/wwwroot/forcelab-repo)
+#
+# NOT: Bu is akisi TESTLERI once calistirir; testler kirmiziysa sunucuya
+# hicbir sey gonderilmez. Kirik kodun canliya gitmesini engelleyen kisim budur.
+
+on:
+  push:
+    branches: [main]
+  # Actions sekmesinden elle de tetiklenebilir
+  workflow_dispatch:
+
+# Ayni anda tek dagitim; yeni push gelirse bekleyeni iptal etme (yarim
+# dagitim birakmamak icin cancel-in-progress KAPALI).
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+jobs:
+  test:
+    name: Testler
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: backend/pnpm-lock.yaml
+
+      - name: Backend bagimliliklari
+        working-directory: backend
+        run: pnpm install --frozen-lockfile
+
+      - name: Backend testleri
+        working-directory: backend
+        run: pnpm test
+
+  deploy:
+    name: Sunucuya dagit
+    needs: test          # testler gecmeden calismaz
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH ile deploy.sh calistir
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          # Frontend build'i yavas olabilir; cluster reload + saglik kontrolu dahil
+          command_timeout: 20m
+          script: |
+            set -e
+            cd ${{ secrets.DEPLOY_PATH }}
+            bash scripts/deploy.sh

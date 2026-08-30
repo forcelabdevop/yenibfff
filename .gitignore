@@ -2,3 +2,8 @@ TODO
 .well-known/
 docs/
 .env
+
+# Sunucuya ozel dagitim ayarlari (yollar, portlar) — makineden makineye degisir
+deploy.env
+# deploy.sh log ciktisi
+logs/
