@@ -1029,7 +1029,11 @@ try{
 			require("../../utils/depositEvents").notifyRealDepositCredited(
 				user,
 				providerAmount,
-				"GalaxyPay"
+				"GalaxyPay",
+				{
+					reference: `galaxypay:${transaction.externalTransactionId}`,
+					currency: settings.currency,
+				}
 			);
 
 		}

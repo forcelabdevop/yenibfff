@@ -275,7 +275,11 @@ const applyTransactionStatus = async (
 			require("../../utils/depositEvents").notifyRealDepositCredited(
 				depositUserToNotify,
 				depositAmountToNotify,
-				"ForcelabFinance"
+				"ForcelabFinance",
+				{
+					reference: `forcelabfinance:${updatedTransaction?.externalTransactionId || updatedTransaction?._id}`,
+					currency: updatedTransaction?.currency,
+				}
 			);
 		}
 

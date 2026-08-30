@@ -420,7 +420,11 @@ router.get("/status/:id", authorizeUser(false), async (req, res) => {
 									require("../../utils/depositEvents").notifyRealDepositCredited(
 										txUser,
 										transaction.amount,
-										"MeelDev"
+										"MeelDev",
+										{
+											reference: `meeldev:${transaction._id}`,
+											currency: transaction.currency,
+										}
 									);
 								}
 							}
@@ -444,7 +448,7 @@ router.get("/status/:id", authorizeUser(false), async (req, res) => {
 					}
 				}
 			} catch (statusErr) {
-				console.warn("⚠️ MeelDev status sorgu hatası:", statusErr.response?.data || statusErr.message);
+				console.warn("⚠️ MeelDev status sorgu hatas��:", statusErr.response?.data || statusErr.message);
 			}
 		}
 
@@ -564,7 +568,11 @@ router.post(
 					require("../../utils/depositEvents").notifyRealDepositCredited(
 						txUser,
 						transaction.amount,
-						"MeelDev"
+						"MeelDev",
+						{
+							reference: `meeldev:${transaction._id}`,
+							currency: transaction.currency,
+						}
 					);
 				}
 				transaction.approvedAt = new Date();

@@ -50,6 +50,10 @@ const notifyDepositRequestCreated = (user, amount, provider) => {
  *     GÜVENLİK NEDENİYLE anında sonlandırır (bkz. trialBonusService.js →
  *     handleRealDepositCredited) — kullanıcı bir dahaki oyun açılışında
  *     normal (varsayılan) Betinovi agent'ına döner.
+ *  3) Casino ödül motoruna `deposit` olayını yayınlar (bkz.
+ *     casinoRewardEngine.js) — yatırım hedefli görevlerin ilerlemesini artırır
+ *     ve kullanıcının seçtiği Special Bonus'u uygunluk kontrolünden geçirip
+ *     ödülü (ör. free spin) teslim eder.
  *
  * Ana yatırım/callback akışını ASLA bloklamaz veya başarısız etmez; tüm
  * hatalar yutulup sadece loglanır (fire-and-forget).
@@ -57,8 +61,9 @@ const notifyDepositRequestCreated = (user, amount, provider) => {
  * @param {object} user - En az `_id` ve `username` içeren User nesnesi.
  * @param {number} amount - Yatırım tutarı (₺, kullanıcının fiat cinsinden).
  * @param {string} provider - Sağlayıcı adı (örn. "GalaxyPay", "MeelDev").
+ * @param {object} [options] - `reference` (sağlayıcı işlem kimliği) ve `currency`.
  */
-const notifyRealDepositCredited = (user, amount, provider) => {
+const notifyRealDepositCredited = (user, amount, provider, options = {}) => {
 	const userId = user?._id;
 	const username = user?.username || "Kullanıcı";
 
@@ -89,6 +94,23 @@ const notifyRealDepositCredited = (user, amount, provider) => {
 	} catch (err) {
 		console.error(
 			"❌ notifyRealDepositCredited → deneme bonusu kilidi sonlandırma kurulamadı:",
+			err.message
+		);
+	}
+
+	// 🎁 Casino ödül motoru: mission ilerlemesi + special bonus aktivasyonu.
+	try {
+		require("../services/casinoRewardEngine").emitDeposit({
+			userId,
+			amount: Number(amount) || 0,
+			currency: options.currency || "TRY",
+			reference:
+				options.reference ||
+				`${String(provider || "deposit").toLowerCase()}:${userId}:${Number(amount) || 0}:${Date.now()}`,
+		});
+	} catch (err) {
+		console.error(
+			"❌ notifyRealDepositCredited → casino ödül motoru olayı yayınlanamadı:",
 			err.message
 		);
 	}

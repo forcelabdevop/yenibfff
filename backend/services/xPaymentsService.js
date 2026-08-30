@@ -463,7 +463,11 @@ const applyXPaymentsStatus = async (
 			require("../utils/depositEvents").notifyRealDepositCredited(
 				depositUserToNotify,
 				depositAmountToNotify,
-				"XPayments"
+				"XPayments",
+				{
+					reference: `xpayments:${updatedTransaction?.externalTransactionId || updatedTransaction?._id}`,
+					currency: updatedTransaction?.currency,
+				}
 			);
 		}
 		return { transaction: updatedTransaction, alreadyFinal };

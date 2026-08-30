@@ -34,6 +34,12 @@ const casinoContentSchema = new mongoose.Schema({
     amount: { type: Number, min: 0, default: 0 },
     currency: { type: String, default: "USD", uppercase: true },
     wageringMultiplier: { type: Number, min: 0, default: 0 },
+    // free-spins delivery parameters (Betinovi ApplyFreeRound)
+    spinCount: { type: Number, min: 0, default: 0 },
+    betAmount: { type: Number, min: 0, default: 0 },
+    gameCode: { type: String, default: "", trim: true },
+    providerCode: { type: String, default: "", trim: true },
+    expireHours: { type: Number, min: 0, default: 72 },
   },
   content: { type: mongoose.Schema.Types.Mixed, default: {} },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },

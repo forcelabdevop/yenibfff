@@ -80,10 +80,10 @@ router.patch("/:id", typePermission("update"), async (req, res) => {
     if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ success: false, error: { message: "Invalid id" } });
     if (!String(req.body.reason || "").trim()) return res.status(422).json({ success: false, error: { message: "Change reason is required" } });
     const payload = pickContent(req.body);
-    const errors = validateContent(payload, true);
-    if (errors.length) return res.status(422).json({ success: false, error: { message: errors.join(", "), fields: errors } });
     const item = await CasinoContent.findById(req.params.id);
     if (!item) return res.status(404).json({ success: false, error: { message: "Content not found" } });
+    const errors = validateContent(payload, true, item.toObject());
+    if (errors.length) return res.status(422).json({ success: false, error: { message: errors.join(", "), fields: errors } });
     if (payload.type && payload.type !== item.type) return res.status(409).json({ success: false, error: { message: "Content type cannot be changed" } });
     const before = item.toObject();
     delete payload.type;

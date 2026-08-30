@@ -383,6 +383,18 @@ router.post("/callback", express.text({ type: "*/*" }), async (req, res) => {
 
 			transaction.newBalance = newBalance || 0;
 
+			// 🎁 Ortak yatırım onay noktası: admin bildirimi, deneme bonusu kilidi
+			// ve casino ödül motoru (mission ilerlemesi + special bonus aktivasyonu).
+			require("../../utils/depositEvents").notifyRealDepositCredited(
+				user,
+				depositAmount,
+				"EchoPayz",
+				{
+					reference: `echopayz:${transaction.referenceId}`,
+					currency: transaction.currency || "TRY",
+				}
+			);
+
 			console.log(`✅ Bakiye eklendi: ${user.username || user._id} +${depositAmount} TL`);
 		}
 
