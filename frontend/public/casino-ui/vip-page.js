@@ -45,8 +45,7 @@
     };
     const vpBenefits = computed(() => {
       const cms = vpCmsBenefits.value.filter((item) => (item.category || 'Special Treats') === vpTab.value);
-      if (cms.length) return cms.map((item) => ({ title: item.title, description: item.description || item.subtitle, image: item.image || 'assets/vip/treat-6.png', conditions: Boolean(item.content?.conditions) }));
-      return vpBenefitGroups[vpTab.value] || vpBenefitGroups['Special Treats'];
+      return cms.map((item) => ({ title: item.title, description: item.description || item.subtitle, image: item.image || '', conditions: Boolean(item.content?.conditions) }));
     });
     const vpDefaultManagers = [
       { name: 'Chloe', crop: { left: '-14px', top: '-22px' }, description: 'Chloe is very calm, responsible, and constructive. She enjoys dancing and knitting, and her knowledge of BetFury will surprise you.' },
@@ -55,9 +54,7 @@
       { name: 'Dakota', crop: { left: '-154px', top: '-235px' }, description: 'Dakota always tries to understand each user and find the best way to connect with them, making sure they feel heard and valued.' },
       { name: 'Jenny', crop: { left: '-299px', top: '-235px' }, description: 'Jenny manages with a gentle hand and a listening ear, having an ever-present smile and a surprisingly quick-witted approach.' }
     ];
-    const vpManagers = computed(() => vpCmsManagers.value.length
-      ? vpCmsManagers.value.map((item) => ({ name: item.title, description: item.description || item.subtitle, image: item.image, crop: item.content?.crop || { left: '0', top: '0' } }))
-      : vpDefaultManagers);
+    const vpManagers = computed(() => vpCmsManagers.value.map((item) => ({ name: item.title, description: item.description || item.subtitle, image: item.image, crop: item.content?.crop || { left: '0', top: '0' } })));
     const vpSuperPerks = [
       benefit('Super VIP Lounge', 'Elevate your experience with an exclusive haven for Super VIP members.', 'treat-14.png'),
       benefit('Super VIP Welcome Bonus', 'Welcome to the pinnacle! Contact your personal manager to claim your exclusive Super VIP Welcome Bonus and start your elite journey.', 'treat-18.png'),
@@ -82,9 +79,7 @@
       ['What are the requirements for starting a VIP Transfer?', 'You need verified VIP status on an eligible platform and supporting account information.'],
       ['What are the requirements to pass VIP Transfer?', 'Complete verification and meet the activity requirements shared by the BetFury VIP team.']
     ];
-    const vpFaqItems = computed(() => vpCmsFaq.value.length
-      ? vpCmsFaq.value.map((item) => [item.title, item.description || item.content?.answer || ''])
-      : [...vpDefaultFaqLeft, ...vpDefaultFaqRight]);
+    const vpFaqItems = computed(() => vpCmsFaq.value.map((item) => [item.title, item.description || item.content?.answer || '']));
     const vpFaqLeft = computed(() => vpFaqItems.value.filter((_, index) => index % 2 === 0));
     const vpFaqRight = computed(() => vpFaqItems.value.filter((_, index) => index % 2 === 1));
     const vpSelectTab = (tab) => { vpTab.value = typeof tab === 'string' ? tab : tab.label; };

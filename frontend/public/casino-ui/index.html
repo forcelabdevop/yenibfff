@@ -5140,27 +5140,9 @@
           {label:'News', icon:'fas fa-newspaper', path:'/'}
         ];
 
-        const topSlots = ref([
-          {name:'Sugar Rush Super Scatter', provider:'PRAGMATIC PLAY', image:'assets/image-8.png'},
-          {name:'Sweet Bonanza 2500', provider:'PRAGMATIC PLAY', image:'assets/image-9.png'},
-          {name:'Merge Up 2', provider:'BGAMING', image:'assets/image-10.png'},
-          {name:'Clash of Gods', provider:'BGAMING', image:'assets/image-11.png'},
-          {name:'Starlight Princess 1000', provider:'PRAGMATIC PLAY', image:'assets/image-12.png'},
-          {name:`Gates of ${WEBSITE_NAME} Super Scatter`, provider:'PRAGMATIC PLAY', image:'assets/image-13.png'},
-          {name:'Burning Coins 100', provider:'ENDORPHINA', image:'assets/image-14.png'},
-          {name:'Sugar Rush Super Scatter II', provider:'PRAGMATIC PLAY', image:'assets/image-8.png'}
-        ]);
-        const originals = ref([
-          {name:'Dice',image:'assets/image-15.png'},
-          {name:'Space Dice',image:'assets/image-16.png'},
-          {name:'Futures',image:'assets/image-17.png'},
-          {name:'Keno',image:'assets/image-18.png'},
-          {name:'Mines',image:'assets/image-19.png'},
-          {name:'Heist',image:'assets/image-20.png'},
-          {name:'Lite Crash',image:'assets/image-21.png'},
-          {name:'Dice Again',image:'assets/image-15.png'}
-        ]);
-        const slotDisplayGames = computed(() => routeGames.value.length ? routeGames.value.slice(0,12) : topSlots.value);
+        const topSlots = ref([]);
+        const originals = ref([]);
+        const slotDisplayGames = computed(() => routeGames.value.slice(0, 12));
         const catalogTotal = computed(() => gameCategories.value.reduce((total, category) => total + Number(category.total_games || category.games?.length || 0), 0));
         const activeRailCategory = computed(() => activeCategory.value === 'all' ? null : gameCategories.value.find(category => category.slug === activeCategory.value));
         const visibleCategoryRails = computed(() => activeCategory.value === 'all' ? gameCategories.value.slice(0,12) : []);
@@ -5264,14 +5246,20 @@
         const balanceHideZero = ref(false);
         const balanceShowVault = ref(false);
         const balanceDisplayFiat = ref(true);
-        const balanceCurrencies = ref([
-          {code:'USDT', icon:'assets/coin-usdt.png', fiat:'$0.08'},
-          {code:'BFG', icon:'assets/coin-bfg.png', fiat:'$0.11'},
-          {code:'BNB', icon:'assets/coin-bnb.png', fiat:'$0.11'},
-          {code:'BTC', icon:'assets/coin-btc.png', fiat:'$0.02'},
-          {code:'SHIB', icon:'assets/coin-shib.png', fiat:'$0.00'},
-          {code:'BTTC', icon:'assets/coin-bttc.png', fiat:'$0.00'},
-        ]);
+        const balanceCurrencies = computed(() => {
+          const wallets = Array.isArray(authUser.value?.wallets) ? authUser.value.wallets : [];
+          return wallets.map(wallet => {
+            const code = String(wallet.coinType || wallet.currency || wallet.code || '').toUpperCase();
+            const amount = Number(wallet.balance) || 0;
+            const usdRate = Number(wallet.usd || wallet.usdPrice || wallet.rate) || 0;
+            return {
+              code,
+              icon: wallet.icon || ('assets/coin-' + code.toLowerCase() + '.png'),
+              amount,
+              fiat: new Intl.NumberFormat('en-US', { style:'currency', currency:'USD' }).format(amount * usdRate),
+            };
+          }).filter(currency => currency.code);
+        });
         const balanceActiveCode = ref('USDT');
         const balanceFiltered = computed(() => {
           const q = balanceSearch.value.trim().toUpperCase();
@@ -5294,7 +5282,7 @@
         });
         const bonusCount = computed(() => {
           const u = authUser.value; if (!u) return 0;
-          const raw = u.bonusCount ?? u.availableBonuses ?? (Array.isArray(u.bonuses) ? u.bonuses.length : 2);
+          const raw = u.bonusCount ?? u.availableBonuses ?? (Array.isArray(u.bonuses) ? u.bonuses.length : 0);
           return Number(raw) || 0;
         });
         const rankRingLength = computed(() => (2 * Math.PI * 13.5).toFixed(2));
@@ -5574,49 +5562,6 @@
         });
         // Satır sayısı seçenekleri ve varsayılanı da yönetilebilir.
         const betsRowChoices = computed(() => uiSettings.betsRowOptions.value || [10,20,50]);
-        const legacyBetRows = {
-          all:[
-            {game:'Dice',time:'09:07:20 PM',user:'User1912134',avatar:'👱',level:6,bet:'$1.03',multiplier:'x1.053',payout:'$1.09'},
-            {game:'Mines',time:'09:06:59 PM',user:'BFGSUCCESS',avatar:'S',gold:true,level:13,bet:'$4.80',multiplier:'x1.032',payout:'$4.95'},
-            {game:'Mines',time:'09:06:58 PM',user:'BFGSUCCESS',avatar:'S',gold:true,level:13,bet:'$4.80',multiplier:'x1.032',payout:'$4.95'},
-            {game:'Limbo',time:'09:06:57 PM',user:'User8189532',avatar:'👩',level:5,bet:'$1.46',multiplier:'x0.000',payout:'$0.00',zero:true},
-            {game:'Mines',time:'09:06:56 PM',user:'BFGSUCCESS',avatar:'S',gold:true,level:13,bet:'$4.80',multiplier:'x1.032',payout:'$4.95'},
-            {game:'Mines',time:'09:06:55 PM',user:'BFGSUCCESS',avatar:'S',gold:true,level:13,bet:'$4.80',multiplier:'x1.032',payout:'$4.95'},
-            {game:'Limbo',time:'08:47:22 PM',user:'User4953905',avatar:'👧',level:8,bet:'$2.21',multiplier:'x2.640',payout:'$5.85'},
-            {game:'Dice',time:'08:47:16 PM',user:'User6175033',avatar:'🦝',level:6,bet:'$2.09',multiplier:'x1.904',payout:'$3.99'},
-            {game:'Dice',time:'08:47:14 PM',user:'User7442053',avatar:'👨',level:3,bet:'$8.11',multiplier:'x1.269',payout:'$10.30'},
-            {game:'Dice',time:'08:47:08 PM',user:'User4060569',avatar:'🦝',level:6,bet:'$4.49',multiplier:'x2.829',payout:'$12.70'}
-          ],
-          my:[
-            {game:'Dice',time:'09:03:45 PM',user:'You',avatar:'🦝',level:6,bet:'$0.05',multiplier:'x1.980',payout:'$0.11'},
-            {game:'Mines',time:'08:58:12 PM',user:'You',avatar:'🦝',level:6,bet:'$0.10',multiplier:'x0.000',payout:'$0.00',zero:true},
-            {game:'Limbo',time:'08:51:03 PM',user:'You',avatar:'🦝',level:6,bet:'$0.25',multiplier:'x3.420',payout:'$0.86'}
-          ],
-          high:[
-            {game:'Dice',time:'04:53:25 AM',user:'Boomboom',avatar:'👨',level:7,bet:'$69,105.00',multiplier:'x2.000',payout:'$138,210.00'},
-            {game:'Dice',time:'04:53:19 AM',user:'Boomboom',avatar:'👨',level:7,bet:'$69,105.00',multiplier:'x2.000',payout:'$138,210.00'},
-            {game:'Dice',time:'10:03:22 PM',user:'Boomboom',avatar:'👨',level:7,bet:'$51,828.75',multiplier:'x2.000',payout:'$103,657.50'},
-            {game:'Dice',time:'07:17:29 PM',user:'User516108',avatar:'🦝',level:3,bet:'$42,762.69',multiplier:'x2.000',payout:'$85,525.38'},
-            {game:'Blackjack',time:'06:44:37 PM',user:'User1357824',avatar:'🦝',level:13,bet:'$42,000.00',multiplier:'x2.000',payout:'$84,000.00'},
-            {game:'Cryptos',time:'10:30:11 AM',user:'cinha',avatar:'👩',level:8,bet:'$41,463.00',multiplier:'x6.000',payout:'$248,778.00'},
-            {game:'Limbo',time:'05:19:53 AM',user:'Quasar',avatar:'🤓',level:6,bet:'$41,463.00',multiplier:'x2.000',payout:'$82,926.00'},
-            {game:'Mines',time:'08:12:50 PM',user:'RVSLAN',avatar:'👩',level:8,bet:'$41,463.00',multiplier:'x1.130',payout:'$46,853.18'},
-            {game:'Cryptos',time:'01:06:40 PM',user:'cinha',avatar:'👩',level:9,bet:'$41,463.00',multiplier:'x0.100',payout:'$4,146.30'},
-            {game:'Cryptos',time:'01:02:37 PM',user:'cinha',avatar:'👩',level:8,bet:'$41,463.00',multiplier:'x0.100',payout:'$4,146.30'}
-          ],
-          rare:[
-            {game:'Plinko',time:'06/13/26',user:'Elkham777',avatar:'👨',level:11,bet:'$3.33',multiplier:'x10000.000',payout:'$33,300.00'},
-            {game:'Plinko',time:'05/14/25',user:'Plinkhoe',avatar:'🥷',level:14,bet:'$1.38',multiplier:'x10000.000',payout:'$13,860.77'},
-            {game:'Plinko',time:'05/20/25',user:'Plinkhoe',avatar:'🥷',level:14,bet:'$1.13',multiplier:'x10000.000',payout:'$11,387.38'},
-            {game:'Plinko',time:'02/20/26',user:'Elkham7',avatar:'🦝',level:10,bet:'$1.00',multiplier:'x10000.000',payout:'$10,000.00'},
-            {game:'SpaceDice',time:'04/27/23',user:'User981384',avatar:'👨',level:13,bet:'$19.52',multiplier:'x9902.000',payout:'$193,292.58'},
-            {game:'SpaceDice',time:'12/14/22',user:'User981384',avatar:'👨',level:13,bet:'$15.61',multiplier:'x9902.000',payout:'$154,634.06'},
-            {game:'SpaceDice',time:'02/22/26',user:'User981384',avatar:'👨',level:14,bet:'$15.00',multiplier:'x9902.000',payout:'$148,530.00'},
-            {game:'SpaceDice',time:'08/04/25',user:'User981384',avatar:'👨',level:14,bet:'$12.50',multiplier:'x9902.000',payout:'$123,775.00'},
-            {game:'SpaceDice',time:'11/29/24',user:'User981384',avatar:'👨',level:14,bet:'$11.75',multiplier:'x9902.000',payout:'$116,394.99'},
-            {game:'SpaceDice',time:'02/05/23',user:'User981384',avatar:'👨',level:13,bet:'$8.57',multiplier:'x9902.000',payout:'$84,860.14'}
-          ]
-        };
         const betRows = ref([]);
         const betsLoading = ref(false);
         const betsError = ref('');
@@ -5718,10 +5663,7 @@
             const games = await response.json();
             searchResults.value = Array.isArray(games) ? games.slice(0, 24) : [];
           } catch {
-            const needle = query.toLowerCase();
-            searchResults.value = [...topSlots.value, ...originals.value].filter(game =>
-              String(game.game_name || game.name || '').toLowerCase().includes(needle)
-            ).slice(0, 24);
+            searchResults.value = [];
           } finally { searchLoading.value = false; }
         }
         watch(search, () => {

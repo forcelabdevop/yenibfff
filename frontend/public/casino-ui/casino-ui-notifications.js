@@ -14,45 +14,6 @@
  * gösterilir; böylece bir kesinti çekmeceyi boşaltmaz.
  */
 (function () {
-  const DEFAULT_CARDS = [
-    {
-      id: 'default-1',
-      date: '08/27/26, 06:07 PM',
-      title: 'Share & Win Is Now Bigger!',
-      image: 'banners/banner-1.webp',
-      description:
-        'Your favorite contest just got an upgrade.<br>Join the refreshed <strong>Share & Win</strong> contest and win even bigger rewards.',
-      action: 'Share & Win',
-      expanded: false,
-      read: false,
-      personal: false,
-    },
-    {
-      id: 'default-2',
-      date: '08/27/26, 06:07 PM',
-      title: 'Missions Aren\u2019t Over Yet',
-      image: 'banners/banner-2.webp',
-      description:
-        'There\u2019s still time to finish your <strong>Missions.</strong><br>Complete challenges in <strong>Originals</strong> and unlock your rewards before they\u2019re gone.',
-      action: 'Finish Missions',
-      expanded: false,
-      read: false,
-      personal: false,
-    },
-    {
-      id: 'default-3',
-      date: '08/19/26, 03:48 PM',
-      title: 'Clear 7 Missions & Grab up to $14',
-      image: 'banners/banner-3.webp',
-      description:
-        'Complete seven daily missions and grab your reward.<br>Finish every challenge before time runs out.',
-      action: 'View Missions',
-      expanded: false,
-      read: false,
-      personal: false,
-    },
-  ];
-
   // "08/27/26, 06:07 PM" biçimi — mevcut kart tasarımıyla aynı.
   const formatDate = (value) => {
     const date = value ? new Date(value) : null;
@@ -87,7 +48,7 @@
     const notifLive = ref(false);
     const notifLoading = ref(false);
 
-    const platformItems = ref(DEFAULT_CARDS.map((card) => ({ ...card })));
+    const platformItems = ref([]);
     const personalItems = ref([]);
     const notifUnread = ref(0);
 
@@ -138,10 +99,11 @@
           request('/notices?scope=personal&limit=20'),
         ]);
 
-        // Her ikisi de başarısızsa (oturum yok / backend kapalı) varsayılanlar kalır.
         if (!platform && !personal) {
           notifLive.value = false;
-
+          platformItems.value = [];
+          personalItems.value = [];
+          notifUnread.value = 0;
           return;
         }
 

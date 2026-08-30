@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
-const User = require('../database/models/User'); // Dosya yolunu projenize göre güncelle
+const User = require('../database/models/User');
+const CryptoPrice = require('../database/models/CryptoPrice');
 const { authorizeUser } = require('../middleware/auth');
 
 const coinGeckoIds = {
@@ -13,7 +14,68 @@ const coinGeckoIds = {
   ZELO: 'zelo'
 };
 
-// ⚠️ GÜVENLİK: Kullanıcı giriş yapmalı ve kendi cüzdanını değiştirebilir
+const normalizeCode = (value) => String(value || '').trim().toUpperCase();
+const finitePositive = (value) => Number.isFinite(Number(value)) && Number(value) > 0;
+
+async function loadPriceMap() {
+  const rows = await CryptoPrice.find({ price: { $gt: 0 } }).select('name price fee').lean();
+  return new Map(rows.map((row) => [normalizeCode(row.name), { price: Number(row.price), fee: Number(row.fee) || 0 }]));
+}
+
+router.get('/currencies', authorizeUser(true), async (req, res, next) => {
+  try {
+    const [user, prices] = await Promise.all([User.findById(req.user._id).select('wallets').lean(), loadPriceMap()]);
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    const data = (user.wallets || []).map((wallet) => {
+      const code = normalizeCode(wallet.coinType);
+      const market = prices.get(code) || { price: 0, fee: 0 };
+      return { code, name: code, chain: wallet.chain, type: wallet.type, network: wallet.chain, networks: [{ id: wallet.type, name: wallet.chain }], balance: Number(wallet.balance) || 0, usd: market.price, fee: market.fee, precision: 8, fiat: false, icon: `/casino-ui/assets/coin-${code.toLowerCase()}.png` };
+    });
+    res.json({ success: true, data });
+  } catch (error) { next(error); }
+});
+
+router.get('/quote', authorizeUser(true), async (req, res, next) => {
+  try {
+    const from = normalizeCode(req.query.from);
+    const to = normalizeCode(req.query.to);
+    const amount = Number(req.query.amount);
+    if (!from || !to || from === to || !finitePositive(amount)) return res.status(400).json({ success: false, message: 'Invalid quote request' });
+    const prices = await loadPriceMap();
+    const source = prices.get(from);
+    const target = prices.get(to);
+    if (!source || !target) return res.status(422).json({ success: false, message: 'Live price is unavailable' });
+    const feeRate = Math.max(source.fee, target.fee, 0) / 100;
+    const rate = source.price / target.price;
+    const receive = amount * rate * (1 - feeRate);
+    res.json({ success: true, data: { from, to, amount, rate, receive, feeRate, expiresAt: new Date(Date.now() + 15000).toISOString(), provider: 'CryptoPrice' } });
+  } catch (error) { next(error); }
+});
+
+router.post('/swap', authorizeUser(true), async (req, res, next) => {
+  try {
+    const from = normalizeCode(req.body.from);
+    const to = normalizeCode(req.body.to);
+    const amount = Number(req.body.amount);
+    if (!from || !to || from === to || !finitePositive(amount)) return res.status(400).json({ success: false, message: 'Invalid swap request' });
+    const prices = await loadPriceMap();
+    const source = prices.get(from);
+    const target = prices.get(to);
+    if (!source || !target) return res.status(422).json({ success: false, message: 'Live price is unavailable' });
+    const feeRate = Math.max(source.fee, target.fee, 0) / 100;
+    const receive = amount * (source.price / target.price) * (1 - feeRate);
+    const result = await User.updateOne(
+      { _id: req.user._id, wallets: { $elemMatch: { coinType: from, balance: { $gte: amount } } }, 'wallets.coinType': to },
+      { $inc: { 'wallets.$[source].balance': -amount, 'wallets.$[target].balance': receive } },
+      { arrayFilters: [{ 'source.coinType': from }, { 'target.coinType': to }], runValidators: true },
+    );
+    if (!result.modifiedCount) return res.status(409).json({ success: false, message: 'Wallet unavailable or insufficient balance' });
+    const user = await User.findById(req.user._id).select('wallets').lean();
+    res.json({ success: true, data: { from, to, amount, receive, balances: user.wallets } });
+  } catch (error) { next(error); }
+});
+
+// Kullanıcı giriş yapmalı ve yalnız kendi cüzdanını değiştirebilir.
 router.post('/convert-to-fiat', authorizeUser(true), async (req, res, next) => {
   try {
     const { fiatCurrency } = req.body;

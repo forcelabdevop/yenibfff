@@ -14,19 +14,6 @@ window.createCasinoUiLeaderboard = function createCasinoUiLeaderboard(ctx) {
   const { ref, computed, watch, apiUrl } = ctx
 
   // Backend erişilemezse gösterilen orijinal içerik.
-  const DEFAULT_LEADERS = [
-    { place: 1, badge: 'assets/leaderboard/badge-1.png', image: 'av-1.png', name: 'CircleKing', wager: '$12,018,592.29' },
-    { place: 2, badge: 'assets/leaderboard/badge-2.png', image: 'av-2.png', name: 'Alolnnda', wager: '$8,381,919.85' },
-    { place: 3, badge: 'assets/leaderboard/badge-3.png', image: 'raccoon', name: 'User2037358', wager: '$8,260,119.43' },
-    { place: 4, image: 'raccoon', name: 'Mattosdias', wager: '$5,890,886.99' },
-    { place: 5, image: 'av-3.png', name: 'User8353646', wager: '$4,955,739.66' },
-    { place: 6, image: 'raccoon', name: 'Loochoomus', wager: '$4,779,211.61' },
-    { place: 7, image: 'av-4.png', name: 'sa619', wager: '$4,699,422.63' },
-    { place: 8, image: 'av-5.png', name: 'Michel74', wager: '$4,325,511.94' },
-    { place: 9, image: 'av-6.png', name: 'Mia', wager: '$4,279,952.76' },
-    { place: 10, image: 'raccoon', name: 'User8476234', wager: '$4,132,633.76' },
-  ]
-
   const DEFAULT_MONTHS = ['August', 'July', 'June']
   const FALLBACK_AVATAR = 'assets/user-avatar-raccoon.png'
 
@@ -105,7 +92,7 @@ window.createCasinoUiLeaderboard = function createCasinoUiLeaderboard(ctx) {
   const leaders = computed(() => {
     const rows = payload.value?.rows
 
-    if (!Array.isArray(rows) || !rows.length) return DEFAULT_LEADERS.map(decorate)
+    if (!Array.isArray(rows) || !rows.length) return []
 
     return rows.map(row => decorate({
       place: row.place,
