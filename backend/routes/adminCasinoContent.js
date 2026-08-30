@@ -40,8 +40,19 @@ router.get("/", typePermission("read"), async (req, res) => {
   } catch (error) { sendError(res, error); }
 });
 
+router.get("/summary", typePermission("read"), async (req, res) => {
+  try {
+    const rows = await CasinoContent.aggregate([
+      { $group: { _id: { type: "$type", status: "$status" }, count: { $sum: 1 }, updatedAt: { $max: "$updatedAt" } } },
+      { $sort: { "_id.type": 1, "_id.status": 1 } },
+    ]);
+    res.json({ success: true, data: rows.map((row) => ({ type: row._id.type, status: row._id.status, count: row.count, updatedAt: row.updatedAt })) });
+  } catch (error) { sendError(res, error); }
+});
+
 router.post("/", typePermission("create"), async (req, res) => {
   try {
+    if (!String(req.body.reason || "").trim()) return res.status(422).json({ success: false, error: { message: "Change reason is required" } });
     const payload = pickContent(req.body);
     const errors = validateContent(payload);
     if (errors.length) return res.status(422).json({ success: false, error: { message: errors.join(", "), fields: errors } });
@@ -52,6 +63,8 @@ router.post("/", typePermission("create"), async (req, res) => {
     res.status(201).json({ success: true, data: item });
   } catch (error) { sendError(res, error); }
 });
+
+router.get("/types/meta", typePermission("read"), (req, res) => res.json({ success: true, data: [...PUBLIC_TYPES] }));
 
 router.get("/:id", typePermission("read"), async (req, res) => {
   try {
@@ -65,12 +78,15 @@ router.get("/:id", typePermission("read"), async (req, res) => {
 router.patch("/:id", typePermission("update"), async (req, res) => {
   try {
     if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ success: false, error: { message: "Invalid id" } });
+    if (!String(req.body.reason || "").trim()) return res.status(422).json({ success: false, error: { message: "Change reason is required" } });
     const payload = pickContent(req.body);
     const errors = validateContent(payload, true);
     if (errors.length) return res.status(422).json({ success: false, error: { message: errors.join(", "), fields: errors } });
     const item = await CasinoContent.findById(req.params.id);
     if (!item) return res.status(404).json({ success: false, error: { message: "Content not found" } });
+    if (payload.type && payload.type !== item.type) return res.status(409).json({ success: false, error: { message: "Content type cannot be changed" } });
     const before = item.toObject();
+    delete payload.type;
     Object.assign(item, payload, { updatedBy: req.adminUser?._id });
     await item.save();
     await audit(req, "update", item, before, req.body.reason);
@@ -104,13 +120,25 @@ router.delete("/:id", typePermission("delete"), async (req, res) => {
   } catch (error) { sendError(res, error); }
 });
 
+router.get("/:id/audit", typePermission("read"), async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ success: false, error: { message: "Invalid id" } });
+    const page = Math.max(1, Number(req.query.page) || 1);
+    const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 25));
+    const query = { entityId: req.params.id };
+    const [data, total] = await Promise.all([
+      ContentAuditLog.find(query).populate("actor", "username email").sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit).lean(),
+      ContentAuditLog.countDocuments(query),
+    ]);
+    res.json({ success: true, data, meta: { page, limit, total, pages: Math.ceil(total / limit) } });
+  } catch (error) { sendError(res, error); }
+});
+
 router.get("/:id/activity", typePermission("read"), async (req, res) => {
   try {
     const data = await CasinoUserState.find({ content: req.params.id }).populate("user", "username local.email").sort({ updatedAt: -1 }).limit(500).lean();
     res.json({ success: true, data, meta: { total: data.length } });
   } catch (error) { sendError(res, error); }
 });
-
-router.get("/types/meta", typePermission("read"), (req, res) => res.json({ success: true, data: [...PUBLIC_TYPES] }));
 
 module.exports = router;

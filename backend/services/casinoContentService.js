@@ -19,14 +19,44 @@ function pickContent(input = {}) {
   }, {});
 }
 
+const TYPE_REQUIREMENTS = {
+  mission: [["rules.eventType", "Event type"], ["rules.target", "Target"]],
+  "site-navigation": [["content.href", "Navigation URL"]],
+  "help-article": [["content.answer", "Article answer"]],
+  "provider-showcase": [["content.providerCode", "Provider code"]],
+  "ui-copy": [["content.namespace", "Namespace"]],
+  "crypto-staking": [["content.coin", "Coin"]],
+  "crypto-swap": [["content.fromCoin", "Source coin"], ["content.toCoin", "Target coin"]],
+  "crypto-futures-display": [["content.symbol", "Market symbol"]],
+  "crypto-lootbox-display": [["content.boxId", "Box id"]],
+};
+const valueAt = (input, path) => path.split(".").reduce((value, key) => value?.[key], input);
+const isMissing = (value) => value === undefined || value === null || value === "";
+
 function validateContent(input, partial = false) {
   const errors = [];
   if (!partial || input.type !== undefined) if (!PUBLIC_TYPES.has(input.type)) errors.push("Invalid content type");
   if (!partial || input.slug !== undefined) if (!String(input.slug || "").trim()) errors.push("Slug is required");
   if (!partial || input.title !== undefined) if (!String(input.title || "").trim()) errors.push("Title is required");
+  if (input.startsAt && Number.isNaN(new Date(input.startsAt).getTime())) errors.push("startsAt is invalid");
+  if (input.endsAt && Number.isNaN(new Date(input.endsAt).getTime())) errors.push("endsAt is invalid");
   if (input.startsAt && input.endsAt && new Date(input.startsAt) >= new Date(input.endsAt)) errors.push("endsAt must be after startsAt");
+  if (input.status === "scheduled" && !input.startsAt) errors.push("startsAt is required for scheduled content");
   if (input.reward?.amount != null && (!Number.isFinite(Number(input.reward.amount)) || Number(input.reward.amount) < 0)) errors.push("Reward amount is invalid");
-  return errors;
+  if (input.cta?.href && !/^(\/|https?:\/\/)/i.test(String(input.cta.href))) errors.push("CTA URL must be relative or HTTP(S)");
+  const requirements = TYPE_REQUIREMENTS[input.type] || [];
+  for (const [path, label] of requirements) {
+    const value = valueAt(input, path);
+    if (!partial && isMissing(value)) errors.push(`${label} is required`);
+    if (path === "rules.target" && value !== undefined && (!Number.isFinite(Number(value)) || Number(value) < 1)) errors.push("Target must be at least 1");
+  }
+  const minimum = Number(input.content?.minimum);
+  const maximum = Number(input.content?.maximum);
+  if (Number.isFinite(minimum) && Number.isFinite(maximum) && maximum < minimum) errors.push("Maximum must be greater than or equal to minimum");
+  for (const rate of [input.content?.commissionRate, input.content?.fee, input.content?.apr]) {
+    if (rate !== undefined && (!Number.isFinite(Number(rate)) || Number(rate) < 0)) errors.push("Rate must be a positive number");
+  }
+  return [...new Set(errors)];
 }
 
 function visibilityQuery(type, locale = "en", now = new Date()) {
