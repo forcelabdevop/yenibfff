@@ -17,6 +17,7 @@ const {
 	rateLimiterStrictMiddleware,
 } = require("../../middleware/rateLimiter");
 const { getActiveWallet, emitUserBalance } = require("../../utils/wallet");
+const { buildProfileStats } = require("../../services/profileStatsService");
 const { normalizeWalletState } = require("../../utils/rivoWallet");
 
 /** Para tutarini guvenli sekilde normalize eder. Gecersizse null doner. */
@@ -113,6 +114,26 @@ router.get("/overview", authorizeUser(true), async (req, res) => {
 		});
 	} catch (error) {
 		console.error("account/overview error:", error.message);
+		res.status(500).json({ success: false, message: "Sunucu hatasi." });
+	}
+});
+
+// ---------------------------------------------------------------------------
+// GET /account/profile-stats — Profil modali metrikleri (canli toplamalar)
+//
+// /account/overview'daki `stats` yalnizca denormalize { bet, won, deposit,
+// withdraw } alanidir ve profil modalinin bekledigi sekle uymaz. Buradaki
+// toplamalar gercek koleksiyonlardan hesaplanir.
+//
+// AYRI UC olmasinin sebebi performans: aggregate'ler agirdir ve yalnizca
+// modal acilinca calismalidir. Servis katmani ayrica 30sn onbellekler.
+// ---------------------------------------------------------------------------
+router.get("/profile-stats", authorizeUser(true), async (req, res) => {
+	try {
+		const stats = await buildProfileStats(req.user._id);
+		res.json({ success: true, data: stats });
+	} catch (error) {
+		console.error("account/profile-stats error:", error.message);
 		res.status(500).json({ success: false, message: "Sunucu hatasi." });
 	}
 });

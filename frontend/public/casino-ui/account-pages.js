@@ -358,7 +358,32 @@ window.createAccountPages = function createAccountPages(ctx) {
   const vaultDeposit = () => runVaultTransfer("deposit")
   const vaultWithdraw = () => runVaultTransfer("withdraw")
 
+  /**
+   * Profil modali metriklerini yukler (GET /account/profile-stats).
+   *
+   * Bu uc AYRI tutuluyor cunku sunucuda agir aggregate'ler kosuyor; her sayfa
+   * yuklemesinde degil yalnizca modal acilinca cagrilir.
+   *
+   * Sonuc `accountStats` uzerine BIRLESTIRILIR (uzerine yazilmaz): overview'dan
+   * gelen alanlar korunur, ayrica modal acikken tekrar cagrildiginda mevcut
+   * degerler bir an icin kaybolup kutular 0'a dusmez.
+   */
+  async function loadProfileStats() {
+    try {
+      const response = await authedFetch("/account/profile-stats")
+      if (!response.ok) throw new Error("profile-stats")
+      const payload = await response.json()
+      const data = payload && payload.data
+      if (!data) throw new Error("profile-stats")
+      accountStats.value = Object.assign({}, accountStats.value || {}, data)
+    } catch (error) {
+      // Metrikler ikincil veridir; hata modali kapatmaz, kutular 0 kalir.
+      console.error("[v0] profile-stats yuklenemedi:", error && error.message)
+    }
+  }
+
   return {
+    loadProfileStats,
     isAccountPage,
     accountPageKey,
     setAccountPage,

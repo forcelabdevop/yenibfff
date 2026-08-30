@@ -35,7 +35,7 @@
  * ============================================================================
  */
 window.createProfileModal = function createProfileModal(ctx) {
-  const { ref, computed, nextTick, authUser, userRank, accountStats, toastMessage } = ctx
+  const { ref, computed, nextTick, authUser, userRank, accountStats, toastMessage, loadProfileStats } = ctx
 
   // null | 'profile' | 'details'
   const pmView = ref(null)
@@ -108,6 +108,10 @@ window.createProfileModal = function createProfileModal(ctx) {
     pmActivityOpen.value = false
     pmFilterOpen.value = false
     pmResetScroll()
+    // Metrikler agir aggregate'lerden gelir; sayfa yuklemesinde degil yalnizca
+    // modal acilinca cekilir. Sunucu 30sn onbellekledigi icin modali arka arkaya
+    // acmak veritabanini tekrar yormaz.
+    if (typeof loadProfileStats === "function") loadProfileStats()
   }
   function closeProfileModal() {
     pmView.value = null
