@@ -338,27 +338,52 @@ Dikkat: bu, önceki tahminimi düzeltiyor. "Yanlış veritabanı" senaryosu 404
 değil **401** üretirdi. 404 daha güçlü bir şeyi söylüyor — istek bu
 uygulamaya hiç ulaşmıyor.
 
-### Tek komutluk kesinleştirme
+### `/health` sonucu ve ortaya çıkardığı ikinci hata
 
-`/health` kimlik doğrulama istemez ve bu koda özgü bir gövde döndürür:
+Sunucuda çalıştırıldı:
 
 ```bash
 curl -s https://apivelobet.com/health
+{"success":false,"message":"Endpoint not found"}
 ```
 
-Gövdeye göre kimin cevap verdiği belli olur:
+Bu gövde **bu projenin kodundan** geliyor (`routes/index.js:854`). İki şey
+söylüyor:
+
+**1. Cevap veren bir Express uygulaması, Python değil.** Önceki tahminim
+(`MainThread` → FastAPI) bu ölçüde yanlıştı. Cevap veren, bu kod ailesinden
+bir uygulama: ya bu projenin eski kopyası ya da aynı kod tabanından türeyen
+`bizzocazino`.
+
+**2. `/health` zaten bozuktu — bu bir kod hatasıydı.** Uç, `app.use("/",
+routes)` satırından **sonra** tanımlanmıştı. `routes/index.js` sonundaki
+catch-all 404 handler onu yutuyordu, yani `/health` **hiçbir sürümde**
+çalışmıyordu. `a1c0adc` ile düzeltildi (tanım mount'tan öne alındı) ve
+`tests/healthEndpoint.test.js` ile koruma altına alındı.
+
+> **Bunun yan etkisi ciddiydi:** `deploy.sh` sağlık kontrolünde 200 bekliyor
+> (`scripts/deploy.sh:241`). Uç hiçbir zaman 200 dönmediği için otomatik
+> dağıtım her seferinde başarısız sayılıp **geri alınırdı**. Yani otomatik
+> dağıtım hiç çalışmamış olacaktı.
+
+Dolayısıyla `/health` yanıtı, sunucudaki kodun eski olup olmadığı konusunda
+**hiçbir şey söylemiyor** — yeni kod da aynı cevabı veriyordu.
+
+Ayırt edici kanıt hâlâ `/user/<id>` 404'ü: o rota mevcut kodda mount edilmiş
+durumda (`routes/index.js:85`) ve kimlik doğrulama başarısız olsa **401**
+dönerdi. Catch-all 404 alınması, cevap veren uygulamada o rotanın **hiç
+bulunmadığını** gösterir.
+
+`/health` ancak bu düzeltme sunucuya gittikten **sonra** güvenilir bir
+parmak izi olur:
 
 | Gövde | Cevap veren |
 | --- | --- |
 | `{"ok":true,"db":"up","commit":...,"pid":...}` | **bu backend** (doğru) |
 | `{"ok":false,"db":"down",...}` (503) | bu backend, ama DB bağlı değil |
-| `{"detail":"Not Found"}` | Python/FastAPI uygulaması |
+| `{"success":false,"message":"Endpoint not found"}` | eski kod veya öteki proje |
 | `Cannot GET /health` (HTML) | başka bir Express uygulaması |
 | nginx 404 sayfası | istek hiçbir backend'e gitmiyor |
-
-İlk satır dışındaki her şey, `apivelobet.com`'un yanlış uygulamaya
-yönlendiğini doğrular. `ss` çıktısındaki `MainThread` (pid 1297003) süreci
-bunun en olası sebebi.
 
 ### Teşhis (hiçbir şeyi değiştirmez)
 

@@ -123,6 +123,37 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "/views"));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+// 🩺 Sağlık kontrolü — kimlik doğrulaması YOK, kasıtlı olarak halka açık.
+//
+// KONUM KRİTİK: bu tanım, aşağıdaki `app.use("/", routes)` satırından ÖNCE
+// gelmek ZORUNDA. routes/index.js sonunda her isteği yakalayan bir 404
+// handler var (`router.use(...)` → {"success":false,"message":"Endpoint not
+// found"}). Express sırayla eşleştirdiği için, /health o mount'tan sonra
+// tanımlanırsa catch-all onu yutar ve uç ERİŞİLEMEZ hale gelir.
+//
+// Bu gerçekten yaşandı: /health mount'tan sonra tanımlanmıştı, dolayısıyla
+// her zaman 404 dönüyordu. deploy.sh 200 beklediği için (scripts/deploy.sh:241)
+// otomatik dağıtım her seferinde sağlık kontrolünde kalıp GERİ ALINIRDI.
+//
+// deploy.sh bu ucu kullanır. Bu yüzden UCUZ olmalı — ağır sorgu veya dış
+// servis çağrısı EKLEMEYİN, yoksa her dağıtımda yanlış alarm verir.
+//
+// Veritabanı bağlı değilse 503 döner; süreç ayakta ama iş göremez durumdadır
+// ve yük dengeleyici/deploy script'i bunu başarısızlık saymalıdır.
+app.get("/health", (req, res) => {
+	const mongoose = require("mongoose");
+	// 1 = connected, 2 = connecting
+	const dbReady = mongoose.connection && mongoose.connection.readyState === 1;
+	res.status(dbReady ? 200 : 503).json({
+		ok: dbReady,
+		db: dbReady ? "up" : "down",
+		// Dağıtım sonrası "hangi sürüm canlıda?" sorusunu yanıtlar.
+		commit: process.env.GIT_COMMIT || "unknown",
+		uptime: Math.round(process.uptime()),
+		pid: process.pid,
+	});
+});
+
 // Mount routes
 app.use("/", require("./routes")(io));
 app.use("/public", express.static(path.join(__dirname, "public")));
@@ -225,28 +256,6 @@ cron.schedule("* * * * *", () => {
 		.catch((err) =>
 			console.error("❌ Kripto yatırma tarama hatası:", err.message),
 		);
-});
-
-// 🩺 Sağlık kontrolü — kimlik doğrulaması YOK, kasıtlı olarak halka açık.
-//
-// deploy.sh bu ucu kullanır: pm2 reload sonrası buraya istek atar, 200 yanıt
-// gelmezse dağıtımı otomatik geri alır. Bu yüzden UCUZ olmalı — ağır sorgu
-// veya dış servis çağrısı EKLEMEYİN, yoksa her dağıtımda yanlış alarm verir.
-//
-// Veritabanı bağlı değilse 503 döner; süreç ayakta ama iş göremez durumdadır
-// ve yük dengeleyici/deploy script'i bunu başarısızlık saymalıdır.
-app.get("/health", (req, res) => {
-	const mongoose = require("mongoose");
-	// 1 = connected, 2 = connecting
-	const dbReady = mongoose.connection && mongoose.connection.readyState === 1;
-	res.status(dbReady ? 200 : 503).json({
-		ok: dbReady,
-		db: dbReady ? "up" : "down",
-		// Dağıtım sonrası "hangi sürüm canlıda?" sorusunu yanıtlar.
-		commit: process.env.GIT_COMMIT || "unknown",
-		uptime: Math.round(process.uptime()),
-		pid: process.pid,
-	});
 });
 
 // Set app port
