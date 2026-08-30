@@ -55,20 +55,43 @@
 /* ===== Special bonuses ===== */
 .bn-page .special{padding-top:18px}
 .bn-page .special .section-head{height:32px}
+/* Artık birden çok bonus render ediliyor (önce tek sabit kart vardı), bu yüzden
+   kartlar responsive bir grid'e alındı. align-items:start -> satırdaki uzun bir
+   kart kısa kartları gereksiz yere uzatmaz. */
+.bn-page .special-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px;align-items:start}
 .bn-page .history-small{height:28px;padding:0 12px;border-radius:7px;background:#2e3642;color:#d5d9de;font-size:11px}
 .bn-page .history-small i{margin-right:5px}
-.bn-page .special-card{position:relative;margin-top:10px;width:337px;height:195px;border-radius:16px;background:radial-gradient(circle at 22% 8%,rgba(139,35,55,.57),transparent 63%),linear-gradient(145deg,#311c29 0%,#111d29 72%);padding:13px 12px 12px;overflow:hidden}
+/* Satır sayısı admin kaydına göre değiştiği için sabit yükseklik yerine
+   min-height; aksi halde çok satırlı bonuslar overflow:hidden ile kırpılıyordu.
+   Alt boşluk mutlak konumlu .special-actions için ayrılır. */
+.bn-page .special-card{position:relative;width:100%;min-height:195px;border-radius:16px;background:radial-gradient(circle at 22% 8%,rgba(139,35,55,.57),transparent 63%),linear-gradient(145deg,#311c29 0%,#111d29 72%);padding:13px 12px 60px;overflow:hidden}
 .bn-page .special-card:after{content:"";position:absolute;inset:auto 0 0 0;height:52px;background:radial-gradient(circle at 76% 100%,rgba(194,27,59,.13),transparent 60%);pointer-events:none}
 .bn-page .special-top{height:51px;display:flex;align-items:flex-start;border-bottom:1px solid #25303b;position:relative;z-index:1}
 .bn-page .fs-icon{width:49px;height:40px;object-fit:contain;margin:-1px 7px 0 -1px}
 .bn-page .special-label{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:#b7c1d4;margin-top:1px}
 .bn-page .special-name{font-size:15px;color:#fff;margin-top:5px}
 .bn-page .dots{margin-left:auto;color:#aab6c9;font-size:17px;letter-spacing:0;line-height:12px;writing-mode:vertical-rl;background:transparent}
-.bn-page .special-details{display:grid;grid-template-columns:1fr auto;grid-template-rows:repeat(3,22px);padding-top:8px;font-size:12px;color:#aebdd3;position:relative;z-index:1}
+/* Satır sayısı artık admin kaydına göre değişiyor (3 sabit satır değil),
+   bu yüzden yükseklik içeriğe bırakıldı. */
+.bn-page .special-details{display:grid;grid-template-columns:1fr auto;gap:4px 8px;align-content:start;padding-top:8px;font-size:12px;color:#aebdd3;position:relative;z-index:1}
 .bn-page .special-details span:nth-child(even){text-align:right}
 .bn-page .special-details b{font-weight:700}
 .bn-page .special-actions{position:absolute;z-index:2;left:12px;right:12px;bottom:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px;height:36px}
 .bn-page .time-btn{border-radius:9px;border:1px solid #34404d;background:#192532;color:#afbed2;font-size:12px}
+
+/* Çevrim ilerlemesi ve durum notları */
+.bn-page .special-progress{position:relative;z-index:1;margin-top:8px}
+.bn-page .special-progress-bar{height:5px;border-radius:99px;background:#22303f;overflow:hidden}
+.bn-page .special-progress-bar span{display:block;height:100%;border-radius:99px;background:#f5a524;transition:width .3s ease}
+.bn-page .special-progress small{display:block;margin-top:5px;font-size:11px;color:#8fa0b6}
+.bn-page .special-note,.bn-page .special-info{position:relative;z-index:1;margin-top:8px;font-size:11px;line-height:1.45;color:#8fa0b6}
+.bn-page .special-note{color:#e7828a}
+
+/* Durum rozeti tonları: teslim hatası ile tamamlandı ayırt edilebilmeli. */
+.bn-page .time-btn.tone-pending{border-color:#4a3d1f;background:#2a2313;color:#f5c451}
+.bn-page .time-btn.tone-active{border-color:#1f3f4a;background:#132630;color:#63c6e0}
+.bn-page .time-btn.tone-done{border-color:#22452f;background:#132a1d;color:#67c98a}
+.bn-page .time-btn.tone-error{border-color:#4d2830;background:#2c161b;color:#e7828a}
 .bn-page .small-red{border-radius:9px;font-size:12px}
 
 /* ===== Bonus calendar ===== */
@@ -408,7 +431,7 @@
   .bn-page .rank-title{font-size:16px}
   .bn-page .claim-box{left:50%;right:auto;top:139px;transform:translateX(-50%);width:calc(100% - 24px)}
   .bn-page .special{padding-top:20px}
-  .bn-page .special-card{width:100%;height:205px}
+  .bn-page .special-card{width:100%;min-height:205px}
   .bn-page .calendar-section{margin-top:32px}
   .bn-page .calendar-banner{height:230px}
   .bn-page .banner-left,.bn-page .banner-right{opacity:.42;width:180px}

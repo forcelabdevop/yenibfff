@@ -141,9 +141,9 @@ window.createMissionsPage = function createMissionsPage(ctx) {
       { label: "Condition", value: conditionText(mission) },
       { label: "Repeats", value: periodLabels[rules.period] || "One time" },
     ]
-    if (rules.minimumAmount > 0) detailRows.push({ label: "Min. per action", value: `${rules.minimumAmount} ${rules.currency || ""}`.trim() })
-    if (rules.currency && rules.metric === "amount") detailRows.push({ label: "Currency", value: rules.currency })
-    if (mission.userState) detailRows.push({ label: "Progress", value: `${mission.progress} / ${mission.target}` })
+    // Not: "Min. per action", "Currency" ve "Progress" bilinçli olarak
+    // eklenmiyor — üçü de Condition satırında veya modalın CTA butonunda
+    // zaten görünüyordu ve modal tekrar eden satırlarla doluyordu.
     if (mission.deadline && mission.deadline !== "ONGOING") detailRows.push({ label: "Ends in", value: mission.deadline })
 
     selectedMission.value = {
