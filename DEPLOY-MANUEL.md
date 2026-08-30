@@ -308,12 +308,57 @@ Ama `pm2 logs --nostream` **tüm** süreçler için tek bir log dosyası listele
 `bizzocazino2-backend` (fork mode, cwd `/www/raxen/bizzocazino/backend`).
 Yani **bu projenin backend'i pm2'de hiç çalışmıyor.**
 
-Bunun iki olası sonucu var ve ikisi farklı belirti verir:
+### `/user/<id>` 404 dönüyorsa: cevap veren bu kod DEĞİL
 
-- Port 5000'de kimse yoksa → giriş isteği **502/ağ hatası** alır.
-- Port 5000'i **öteki proje** tutuyorsa → istek yanıtlanır ama **yanlış
-  veritabanına** gider; hesaplar orada olmadığı için "kullanıcı bulunamadı"
-  benzeri hata döner. Üyeliklerin giriş yapamaması tam olarak buna benzer.
+Tarayıcı konsolunda şunu görürseniz:
+
+```
+apivelobet.com/user/6a9491a432ecfaac070bf730  404 (Not Found)
+```
+
+bu, **cevabı bu kodun üretmediğinin kanıtıdır**. Sebebi şu zincir:
+
+`GET /user/:id` (`routes/user/index.js:266`) `authorizeUser(true)`
+middleware'inin arkasında. O middleware daha handler'a girmeden
+`User.findById(userId)` çalıştırıyor ve kullanıcı yoksa **401** dönüyor
+(`middleware/auth.js:38-39`). Yani:
+
+| Durum | Bu kodun döndürdüğü |
+| --- | --- |
+| Token yok / geçersiz | **401** |
+| Doğru DB değil, kullanıcı yok | **401** (middleware'de yakalanır) |
+| Başkasının profili isteniyor | **403** |
+| Rota gerçekten var, kullanıcı silinmiş | 404 (pratikte erişilemez) |
+
+Handler'daki 404 satırı ancak kullanıcı, middleware ile handler arasındaki
+mikrosaniyelerde silinirse çalışır. **Sistematik ve tekrarlayan 404**, bu
+rotanın cevap veren uygulamada hiç bulunmadığı anlamına gelir.
+
+Dikkat: bu, önceki tahminimi düzeltiyor. "Yanlış veritabanı" senaryosu 404
+değil **401** üretirdi. 404 daha güçlü bir şeyi söylüyor — istek bu
+uygulamaya hiç ulaşmıyor.
+
+### Tek komutluk kesinleştirme
+
+`/health` kimlik doğrulama istemez ve bu koda özgü bir gövde döndürür:
+
+```bash
+curl -s https://apivelobet.com/health
+```
+
+Gövdeye göre kimin cevap verdiği belli olur:
+
+| Gövde | Cevap veren |
+| --- | --- |
+| `{"ok":true,"db":"up","commit":...,"pid":...}` | **bu backend** (doğru) |
+| `{"ok":false,"db":"down",...}` (503) | bu backend, ama DB bağlı değil |
+| `{"detail":"Not Found"}` | Python/FastAPI uygulaması |
+| `Cannot GET /health` (HTML) | başka bir Express uygulaması |
+| nginx 404 sayfası | istek hiçbir backend'e gitmiyor |
+
+İlk satır dışındaki her şey, `apivelobet.com`'un yanlış uygulamaya
+yönlendiğini doğrular. `ss` çıktısındaki `MainThread` (pid 1297003) süreci
+bunun en olası sebebi.
 
 ### Teşhis (hiçbir şeyi değiştirmez)
 
@@ -321,12 +366,10 @@ Bunun iki olası sonucu var ve ikisi farklı belirti verir:
 pm2 list                                  # kaç süreç var, adları ne
 ss -ltnp | grep -E ':(5000|3000)\b'       # 5000'i kim tutuyor (PID + komut)
 grep -RA3 "apivelobet" /www/server/panel/vhost/nginx/ | grep proxy_pass
-curl -s -o /dev/null -w '%{http_code}\n' https://apivelobet.com/health
 ```
 
-`/health` **200** dönüyorsa bir backend var; **503** dönüyorsa süreç ayakta ama
-veritabanı bağlı değil. Hangi projenin cevap verdiğini `ss` çıktısındaki PID'in
-çalışma dizininden görürsünüz:
+Hangi projenin cevap verdiğini `ss` çıktısındaki PID'in çalışma dizininden
+görürsünüz:
 
 ```bash
 pwdx <PID>     # sürecin cwd'si: velobet mi, bizzocazino mu?
