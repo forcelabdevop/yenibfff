@@ -179,6 +179,23 @@ cron.schedule("* * * * *", () => {
 		);
 });
 
+// 🪙 TRON yatırma izleyicisi: kendi HD adreslerimize gelen transferleri tespit
+// eder ve onay eşiği aşıldığında bakiyeye ekler.
+//
+// GÜVENLİK: Bu cron 4 PM2 instance'ının HEPSİNDE kurulur; mükerrer kredi
+// koruması servisin kendi içindeki JobLock leader-election'ı ile sağlanır
+// (services/cryptoDepositWatcher.js). Buraya ek bir instance kontrolü
+// EKLEMEYİN — kilit zaten tek çalıştırıcıyı garanti eder ve kilidi tutan
+// instance çökerse süre dolunca bir diğeri devralır.
+const cryptoDepositWatcher = require("./services/cryptoDepositWatcher");
+cron.schedule("* * * * *", () => {
+	cryptoDepositWatcher
+		.runOnce()
+		.catch((err) =>
+			console.error("❌ Kripto yatırma tarama hatası:", err.message),
+		);
+});
+
 // Set app port
 const PORT = process.env.SERVER_PORT || 5000;
 

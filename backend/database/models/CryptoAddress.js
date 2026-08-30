@@ -20,8 +20,26 @@ const cryptoAddressSchema = new mongoose.Schema({
     derivationIndex: { type: Number, required: true },
 
     user: { type: mongoose.Schema.ObjectId, ref: 'User', required: true },
+
+    /**
+     * Izleyicinin bu adresi en son ne zaman taradigi.
+     * Adresler bu alana gore en eskiden yeniye siralanarak taranir; boylece
+     * kullanici sayisi arttikca hicbir adres ac kalmaz (round-robin).
+     */
+    lastScannedAt: { type: Date, default: null },
+
+    /**
+     * Bu adres icin islenmis en son transferin zaman damgasi (ms).
+     * TronGrid sorgularinda min_timestamp olarak kullanilir; her taramada tum
+     * gecmisi yeniden cekmemek icin.
+     */
+    lastSeenTimestamp: { type: Number, default: 0 },
+
     createdAt: { type: Date, default: Date.now }
 });
+
+// Round-robin tarama sirasi icin.
+cryptoAddressSchema.index({ lastScannedAt: 1 });
 
 // Ayni adresin iki kayda girmesini engeller.
 cryptoAddressSchema.index({ address: 1 }, { unique: true });

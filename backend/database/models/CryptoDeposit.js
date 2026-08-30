@@ -53,10 +53,19 @@ const cryptoDepositSchema = new mongoose.Schema({
 /**
  * MUKERRER KREDIYE KARSI SON SAVUNMA HATTI.
  * PM2 cluster'da 4 instance calisiyor. Leader-election kilidi herhangi bir
- * sebeple basarisiz olursa bile bu index ayni islemin ikinci kez yazilmasini
- * — dolayisiyla ikinci kez kredi edilmesini — veritabani seviyesinde engeller.
+ * sebeple basarisiz olursa bile bu index ayni transferin ikinci kez
+ * yazilmasini veritabani seviyesinde engeller.
+ *
+ * Neden yalniz txHash DEGIL: tek bir islem birden fazla Transfer olayi
+ * icerebilir (or. bir sozlesme ayni tx icinde iki farkli kullanicimizin
+ * adresine gonderim yapar). Yalniz txHash unique olsaydi ikinci kullanici
+ * hicbir zaman kredi alamazdi. Adres + para birimi ile birlestirerek hem
+ * mukerrer kredi engellenir hem de bu senaryo dogru calisir.
  */
-cryptoDepositSchema.index({ txHash: 1 }, { unique: true });
+cryptoDepositSchema.index(
+	{ txHash: 1, address: 1, currency: 1 },
+	{ unique: true },
+);
 
 cryptoDepositSchema.index({ user: 1, createdAt: -1 });
 cryptoDepositSchema.index({ status: 1, blockNumber: 1 });
