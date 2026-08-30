@@ -40,7 +40,9 @@ const installMock = (modulePath, exports) => {
 	};
 };
 
+const actualMongoose = require(mongoosePath);
 installMock(mongoosePath, {
+	...actualMongoose,
 	startSession: async () => {
 		activeSession = {
 			committed: false,
