@@ -23,8 +23,11 @@
 }
 .rf-page * { box-sizing: border-box; }
 /* NOT: `font: inherit` KULLANMA — `.rf-page button` (0,1,1) alttaki tekil buton
-   kurallarini (0,1,0) yener ve tum butonlar 14px'e sabitlenir. */
-.rf-page button { border: 0; background: transparent; color: inherit; cursor: pointer; font-family: inherit; }
+   kurallarini (0,1,0) yener ve tum butonlar 14px'e sabitlenir.
+   Ayni sebeple reset `:where(button)` ile yaziliyor: ozgulluk (0,1,0)'a duser,
+   boylece `.rf-claim-btn` gibi tekil sinif kurallari background/color'i ezebilir. */
+.rf-page :where(button) { border: 0; background: transparent; color: inherit; cursor: pointer; font-family: inherit; }
+.rf-page :where(button):disabled { cursor: not-allowed; }
 .rf-page h1, .rf-page h2, .rf-page h3 { margin: 0; }
 .rf-page img { display: block; }
 
