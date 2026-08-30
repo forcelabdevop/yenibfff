@@ -15,18 +15,6 @@ window.createPromotionsPage = function createPromotionsPage(ctx) {
   const prCards = ref([])
 
   const prStatusOptions = ["Active", "Upcoming", "Expired"]
-  const fallbackCards = [
-    { id: "promo-codes", title: "Promo Codes", type: "casino", image: "assets/promo/card-1.png", status: "Active", content: "Enter a promo code to unlock an available reward." },
-    { id: "missions", title: "Complete Missions - Get Rewards", type: "casino", image: "assets/promo/card-2.png", status: "Active" },
-    { id: "sports-bonuses", title: "Sports Bonuses", type: "sports", image: "assets/promo/card-3.png", status: "Active" },
-    { id: "summer-festival", title: "Million Drops: Summer Festival", type: "casino", image: "assets/promo/card-4.png", status: "Active" },
-    { id: "early-payout", title: "Early Payout", type: "sports", image: "assets/promo/card-5.png", status: "Active" },
-    { id: "lucky-races", title: "Lucky Races", type: "casino", image: "assets/promo/card-6.png", status: "Active" },
-    { id: "drops-wins", title: "Drops & Wins", type: "casino", image: "assets/promo/card-7.png", status: "Active" },
-    { id: "sports-cashback", title: "Sports Cashback", type: "sports", image: "assets/promo/card-8.png", status: "Active" },
-    { id: "battles", title: "BetFury Battles", type: "casino", image: "assets/promo/card-9.png", status: "Active" },
-  ]
-
   const statusFor = (item) => {
     const now = Date.now()
     if (item.startsAt && new Date(item.startsAt).getTime() > now) return "Upcoming"
@@ -60,7 +48,7 @@ window.createPromotionsPage = function createPromotionsPage(ctx) {
       }
     } catch (error) {
       prError.value = error.message || "Promotions could not be loaded"
-      prCards.value = fallbackCards
+      prCards.value = []
     } finally {
       prLoading.value = false
     }

@@ -4,7 +4,12 @@ const casinoContentSchema = new mongoose.Schema({
   type: {
     type: String,
     required: true,
-    enum: ["mission", "bonus", "promotion", "vip-benefit", "vip-manager", "vip-faq", "referral-tier", "home-section"],
+    enum: [
+      "mission", "bonus", "promotion", "vip-benefit", "vip-manager", "vip-faq", "referral-tier",
+      "site-navigation", "site-footer", "help-article", "home-hero", "home-section", "casino-rail",
+      "provider-showcase", "battle-showcase", "ui-copy", "crypto-staking", "crypto-swap",
+      "crypto-futures-display", "crypto-lootbox-display",
+    ],
     index: true,
   },
   slug: { type: String, required: true, trim: true, lowercase: true },

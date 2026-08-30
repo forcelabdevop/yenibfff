@@ -4,7 +4,12 @@ const CasinoUserState = require("../database/models/CasinoUserState");
 const User = require("../database/models/User");
 const { updateUserBalance } = require("../utils/wallet");
 
-const PUBLIC_TYPES = new Set(["mission", "bonus", "promotion", "vip-benefit", "vip-manager", "vip-faq", "referral-tier", "home-section"]);
+const PUBLIC_TYPES = new Set([
+  "mission", "bonus", "promotion", "vip-benefit", "vip-manager", "vip-faq", "referral-tier",
+  "site-navigation", "site-footer", "help-article", "home-hero", "home-section", "casino-rail",
+  "provider-showcase", "battle-showcase", "ui-copy", "crypto-staking", "crypto-swap",
+  "crypto-futures-display", "crypto-lootbox-display",
+]);
 const MUTABLE_FIELDS = ["type", "slug", "title", "subtitle", "description", "image", "mobileImage", "category", "locale", "status", "startsAt", "endsAt", "order", "cta", "rules", "reward", "content"];
 
 function pickContent(input = {}) {

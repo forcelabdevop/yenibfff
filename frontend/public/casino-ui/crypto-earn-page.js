@@ -1,84 +1,63 @@
-/* Crypto & Earn sayfasi (route: /crypto-and-earn).
-   Veri simdilik STATIK — referans tasarimla birebir. Backend hazir olunca:
-     GET /public/staking          -> [{name,symbol,label,rate,duration,icon}]
-     GET /public/futures/tickers  -> [{symbol,price,leverage}]
-     GET /public/lootboxes        -> [{name,items,price,art,isNew,included:[{icon,label,amount}]}]
-   index.html icindeki markup revert tuzagina takilmasin diye mantik burada durur. */
+/* Crypto & Earn page. Product configuration comes from CasinoContent,
+   market prices from CryptoPrice, and loot boxes from the Box catalog. */
 window.createCryptoEarnPage = function createCryptoEarnPage(ctx) {
-  const { ref, currentPage, toastMessage } = ctx
+  const { ref, onMounted, currentPage, toastMessage, apiUrl, backendAssetUrl } = ctx
   const isCryptoPage = currentPage === "crypto-and-earn"
 
   const ceAssets = {
-    hero: "assets/ce/hero.png",
-    bfg: "assets/ce/coin-bfg.png",
-    btc: "assets/ce/coin-btc.png",
-    eth: "assets/ce/coin-eth.png",
-    bnb: "assets/ce/coin-bnb.png",
-    usdt: "assets/coin-usdt.png",
-    shib: "assets/coin-shib.png",
-    boxYellow: "assets/ce/box-yellow.png",
-    boxBlue: "assets/ce/box-blue.png",
+    hero: "assets/ce/hero.png", bfg: "assets/ce/coin-bfg.png", btc: "assets/ce/coin-btc.png",
+    eth: "assets/ce/coin-eth.png", bnb: "assets/ce/coin-bnb.png", usdt: "assets/coin-usdt.png",
+    shib: "assets/coin-shib.png", boxYellow: "assets/ce/box-yellow.png", boxBlue: "assets/ce/box-blue.png",
     boxRed: "assets/ce/box-red.png",
   }
-
-  const ceStaking = [
-    { name: "BFG Staking", symbol: "BFG", label: "APY", rate: "39.1%", duration: "Flexible", icon: ceAssets.bfg },
-    { name: "Binance Coin", symbol: "BNB", label: "Est.APR", rate: "60%", duration: "365 Days", icon: ceAssets.bnb },
-    { name: "Bitcoin", symbol: "BTC", label: "Est.APR", rate: "60%", duration: "365 Days", icon: ceAssets.btc },
-    { name: "Ethereum", symbol: "ETH", label: "Est.APR", rate: "60%", duration: "365 Days", icon: ceAssets.eth },
-  ]
-
-  const ceSwapCoins = [
-    { type: "img", src: ceAssets.bfg, alt: "BFG" },
-    { type: "img", src: ceAssets.btc, alt: "BTC" },
-    { type: "img", src: ceAssets.usdt, alt: "USDT" },
-    { type: "img", src: ceAssets.shib, alt: "SHIB" },
-    { type: "img", src: ceAssets.eth, alt: "ETH" },
-    { type: "img", src: ceAssets.bnb, alt: "BNB" },
-    { type: "glyph", glyph: "$", bg: "#2e75ba" },
-  ]
-
-  const ceFutures = [
-    { symbol: "BTC", price: "78,167.53", icon: ceAssets.btc },
-    { symbol: "ETH", price: "2,451.560", icon: ceAssets.eth },
-    { symbol: "BNB", price: "693.1250", icon: ceAssets.bnb },
-    { symbol: "XRP", price: "1.392400", kind: "is-xrp" },
-    { symbol: "DOGE", price: "0.085090", kind: "is-doge", glyph: "\u00D0" },
-  ]
-
-  // NOT: Montserrat'ta XRP'nin ⌁ isareti ve ≋ YOK (tofu kutusu cizilir),
-  // bu yuzden XRP inline SVG, digerleri gercek coin gorseli olarak veriliyor.
-  const ceLootboxes = [
-    { name: "1 BNB", items: 4, price: "$181.88", art: ceAssets.boxYellow, isNew: true },
-    { name: "Up to $2K in ETH", items: 4, price: "$130.09", art: ceAssets.boxBlue, isNew: true },
-    { name: "10 TRX", items: 2, price: "$0.51", art: ceAssets.boxRed, isNew: true },
-    { name: "10,000 TRX", items: 5, price: "$26.12", art: ceAssets.boxRed, isNew: true },
-    { name: "$2,000 in ETH", items: 5, price: "$94.77", art: ceAssets.boxBlue, isNew: false },
-  ]
-
+  const iconMap = { BFG: ceAssets.bfg, BTC: ceAssets.btc, ETH: ceAssets.eth, BNB: ceAssets.bnb, USDT: ceAssets.usdt, SHIB: ceAssets.shib }
+  const ceStaking = ref([])
+  const ceSwapCoins = ref([])
+  const ceFutures = ref([])
+  const ceLootboxes = ref([])
+  const ceLoading = ref(false)
+  const ceError = ref("")
   const ceInfoOpen = ref(2)
 
-  function ceToggleInfo(index) {
-    ceInfoOpen.value = ceInfoOpen.value === index ? -1 : index
+  function asset(path, fallback) {
+    if (!path) return fallback
+    return typeof backendAssetUrl === "function" ? backendAssetUrl(path) : path
   }
+  async function ceLoad() {
+    if (!isCryptoPage || typeof apiUrl !== "function") return
+    ceLoading.value = true
+    ceError.value = ""
+    try {
+      const response = await fetch(apiUrl("/content/crypto/earn"), { credentials: "include", headers: { Accept: "application/json" } })
+      const payload = await response.json()
+      if (!response.ok || payload.success === false) throw new Error(payload.error?.message || "Crypto Earn could not be loaded")
+      const data = payload.data || {}
+      const content = data.content || {}
+      ceStaking.value = (content["crypto-staking"] || []).map(item => {
+        const symbol = String(item.content?.symbol || item.category || "").toUpperCase()
+        return { id: item._id, name: item.title, symbol, label: "Est.APR", rate: `${Number(item.rules?.apr || 0)}%`, duration: Number(item.rules?.lockDays || 0) ? `${item.rules.lockDays} Days` : "Flexible", icon: asset(item.image, iconMap[symbol] || "") }
+      })
+      const swapSymbols = new Set()
+      ;(content["crypto-swap"] || []).forEach(item => { swapSymbols.add(item.content?.from); swapSymbols.add(item.content?.to) })
+      ceSwapCoins.value = [...swapSymbols].filter(Boolean).map(symbol => ({ type: "img", src: iconMap[symbol] || "", alt: symbol }))
+      const wanted = new Set((content["crypto-futures-display"]?.[0]?.content?.symbols || []).map(symbol => String(symbol).replace(/USDT$/i, "").toUpperCase()))
+      ceFutures.value = (data.prices || []).filter(item => !wanted.size || wanted.has(String(item.name).replace(/USDT$/i, "").toUpperCase())).map(item => {
+        const symbol = String(item.name || "").replace(/USDT$/i, "").toUpperCase()
+        return { symbol, price: Number(item.price || 0).toLocaleString("en-US", { maximumFractionDigits: 8 }), icon: iconMap[symbol] || "" }
+      })
+      ceLootboxes.value = (data.boxes || []).map((box, index) => ({ id: box._id, name: box.name, items: Array.isArray(box.items) ? box.items.length : 0, price: `$${Number(box.amount || 0).toFixed(2)}`, art: index % 3 === 0 ? ceAssets.boxYellow : index % 3 === 1 ? ceAssets.boxBlue : ceAssets.boxRed, isNew: false }))
+    } catch (error) {
+      ceError.value = error.message || "Crypto Earn could not be loaded"
+      ceStaking.value = []; ceSwapCoins.value = []; ceFutures.value = []; ceLootboxes.value = []
+    } finally { ceLoading.value = false }
+  }
+  function ceToggleInfo(index) { ceInfoOpen.value = ceInfoOpen.value === index ? -1 : index }
   function ceSlide(event, direction) {
-    const track = event.currentTarget.closest(".ce-section").querySelector(".ce-track")
+    const section = event.currentTarget.closest(".ce-section")
+    const track = section && section.querySelector(".ce-track")
     if (track) track.scrollBy({ left: direction * 230, behavior: "smooth" })
   }
-  function ceNotify(message) {
-    toastMessage(message)
-  }
-
-  return {
-    isCryptoPage,
-    ceAssets,
-    ceStaking,
-    ceSwapCoins,
-    ceFutures,
-    ceLootboxes,
-    ceInfoOpen,
-    ceToggleInfo,
-    ceSlide,
-    ceNotify,
-  }
+  function ceNotify(message) { toastMessage(message) }
+  if (typeof onMounted === "function") onMounted(ceLoad)
+  return { isCryptoPage, ceAssets, ceStaking, ceSwapCoins, ceFutures, ceLootboxes, ceLoading, ceError, ceInfoOpen, ceToggleInfo, ceSlide, ceNotify, ceLoad }
 }

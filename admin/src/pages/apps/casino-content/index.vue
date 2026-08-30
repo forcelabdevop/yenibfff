@@ -12,7 +12,19 @@ const types = [
   { title: "VIP Managers", value: "vip-manager" },
   { title: "VIP FAQ", value: "vip-faq" },
   { title: "Referral Tiers", value: "referral-tier" },
+  { title: "Site Navigation", value: "site-navigation" },
+  { title: "Site Footer", value: "site-footer" },
+  { title: "Help Articles", value: "help-article" },
+  { title: "Homepage Hero", value: "home-hero" },
   { title: "Homepage Sections", value: "home-section" },
+  { title: "Casino Rails", value: "casino-rail" },
+  { title: "Provider Showcases", value: "provider-showcase" },
+  { title: "Battle Showcases", value: "battle-showcase" },
+  { title: "UI Copy", value: "ui-copy" },
+  { title: "Crypto Staking", value: "crypto-staking" },
+  { title: "Crypto Swap", value: "crypto-swap" },
+  { title: "Crypto Futures", value: "crypto-futures-display" },
+  { title: "Crypto Lootboxes", value: "crypto-lootbox-display" },
 ]
 const statuses = ["draft", "scheduled", "published", "archived"]
 const rewardTypes = ["none", "balance", "bonus", "free-spins", "xp"]

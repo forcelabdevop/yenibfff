@@ -4,6 +4,7 @@ const controller = require("../controllers/apiController");
 const Banner = require("../database/models/Banner");
 const Category = require("../database/models/Category");
 const Game = require("../database/models/Game");
+const GameProvider = require("../database/models/GameProvider");
 const ShopItem = require("../database/models/ShopItem");
 const SiteSettings = require("../database/models/SiteSettings");
 
@@ -131,6 +132,19 @@ router.get("/games/featured/list", controller.getFeaturedGames);
 router.get("/games/categories/with-games", controller.getCategoriesWithGames);
 router.get("/games/detail/:code", controller.getGameDetailByCode);
 router.get("/providers/category/:slug", controller.getProvidersByCategorySlug);
+router.get("/providers", async (req, res) => {
+	try {
+		const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 30));
+		const providers = await GameProvider.find({ status: 1 })
+			.select("code name slug logo featured order gameCount")
+			.sort({ featured: -1, order: 1, gameCount: -1, name: 1 })
+			.limit(limit)
+			.lean();
+		res.json({ success: true, data: providers, meta: { total: providers.length, limit } });
+	} catch (error) {
+		res.status(500).json({ success: false, error: { code: "PROVIDERS_LOAD_FAILED", message: error.message } });
+	}
+});
 
 router.get("/shop/items", async (req, res) => {
 	try {

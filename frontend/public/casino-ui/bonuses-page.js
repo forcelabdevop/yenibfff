@@ -15,29 +15,12 @@ window.createBonusesPage = function createBonusesPage(ctx) {
     avatar: "assets/bonus-avatar.png",
   }
 
-  const fallbackVipCards = [
-    { title: "VIP Bounty", image: bonusAssets.vip1, copy: "Play Games and bet on Sports to increase the bonus." },
-    { title: "Welcome VIP", image: bonusAssets.vip2, copy: "Join the VIP club to get a welcome bonus." },
-    { title: "Personal VIP", image: bonusAssets.vip3, copy: "Get Personal VIP bonuses based on your activity." },
-    { title: "Birthday", image: bonusAssets.vip4, copy: "Sweeten your birthday celebration with a bonus ready for you." },
-  ]
-  const fallbackOtherCards = [
-    { title: "Coindrops", image: bonusAssets.drops, class: "coins", copy: "Get free coins in the Internal chat in one simple action." },
-    { title: "Crypto Rains", image: bonusAssets.rains, class: "rains", copy: "Send crypto to random active users in the Internal Chat." },
-    { title: "Tips", image: bonusAssets.tips, class: "tips", copy: "Communicate in the chat to get some crypto treats." },
-  ]
   const bonusItems = ref([])
   const bonusLoading = ref(false)
   const bonusError = ref("")
   const bonusActionLoading = ref("")
-  const vipCards = computed(() => {
-    const items = bonusItems.value.filter((item) => item.category === "vip")
-    return items.length ? items : fallbackVipCards
-  })
-  const otherCards = computed(() => {
-    const items = bonusItems.value.filter((item) => item.category === "other")
-    return items.length ? items : fallbackOtherCards
-  })
+  const vipCards = computed(() => bonusItems.value.filter((item) => item.category === "vip"))
+  const otherCards = computed(() => bonusItems.value.filter((item) => item.category === "other"))
   const specialBonuses = computed(() => bonusItems.value.filter((item) => item.category === "special"))
   const regularBonuses = computed(() => bonusItems.value.filter((item) => !["vip", "other", "special"].includes(item.category)))
 

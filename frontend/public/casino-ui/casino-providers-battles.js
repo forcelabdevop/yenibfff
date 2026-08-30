@@ -22,19 +22,33 @@
     const notify = typeof ctx.notify === 'function' ? ctx.notify : function () {};
     const onOpenGame = typeof ctx.onOpenGame === 'function' ? ctx.onOpenGame : null;
 
-    const ptProviders = ref([
-      { name: 'BETFURY', games: '24', logo: ASSETS + 'image-5.png', width: 142, height: 25 },
-      { name: '100HP', games: '29', logo: ASSETS + 'image-6.png', width: 116, height: 30 },
-      { name: 'Abeplay', games: '26', logo: ASSETS + 'image-7.png', width: 114, height: 31 },
-      { name: 'Pragmatic Play', games: '1050', logo: ASSETS + 'image-8.png', width: 117, height: 53 },
-      { name: 'Evolution', games: '588', logo: ASSETS + 'image-9.png', width: 118, height: 24 },
-      { name: 'BGAMING', games: '274', logo: ASSETS + 'image-10.png', width: 122, height: 28 },
-      { name: 'Hacksaw Gaming', games: '247', logo: ASSETS + 'image-11.png', width: 128, height: 38 },
-      { name: 'Pocket Games Soft', games: '166', logo: ASSETS + 'image-12.png', width: 119, height: 35 },
-      { name: 'Top Games', games: '318', logo: '', mark: '🏆' }
-    ]);
+    const ptProviders = ref([]);
+    const ptProviderTotal = ref(0);
+    const ptLoading = ref(false);
+    const ptError = ref('');
 
-    const ptProviderTotal = ref(75);
+    async function ptLoadProviders() {
+      if (typeof ctx.apiUrl !== 'function') return;
+      ptLoading.value = true;
+      ptError.value = '';
+      try {
+        const response = await fetch(ctx.apiUrl('/public/providers?limit=75'), { headers: { Accept: 'application/json' } });
+        if (!response.ok) throw new Error('Providers could not be loaded');
+        const payload = await response.json();
+        const rows = Array.isArray(payload.data) ? payload.data : [];
+        ptProviders.value = rows.map(function (provider) {
+          return { code: provider.code, name: provider.name, games: String(provider.gameCount || 0), logo: provider.logo || '', width: 122, height: 36 };
+        });
+        ptProviderTotal.value = Number(payload.meta && payload.meta.total) || rows.length;
+      } catch (error) {
+        ptProviders.value = [];
+        ptProviderTotal.value = 0;
+        ptError.value = error && error.message ? error.message : 'Providers could not be loaded';
+      } finally {
+        ptLoading.value = false;
+      }
+    }
+    if (typeof ctx.onMounted === 'function') ctx.onMounted(ptLoadProviders);
 
     // ===== "Recent Top Wins" rayi =====
     // VERI ODAKLI: her kart, gercek bir oyunun gorseli + uzerine bindirilen
@@ -166,7 +180,7 @@
     }
 
     return {
-      ptProviders, ptProviderTotal, ptTournaments, ptRaccoon,
+      ptProviders, ptProviderTotal, ptLoading, ptError, ptTournaments, ptRaccoon,
       ptWins, ptWinIcon, ptOpenWin,
       ptSlide, ptOpenProvider, ptOpenTournament, ptAllProviders
     };

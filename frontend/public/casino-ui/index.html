@@ -7,10 +7,6 @@
 <title>Crypto Casino &amp; Sports Betting</title>
 <script src="https://registry.npmmirror.com/vue/3.3.11/files/dist/vue.global.prod.js"></script>
 <script src="https://registry.npmmirror.com/socket.io-client/4.7.5/files/dist/socket.io.min.js"></script>
-<!-- GECICI: offline/mock backend katmani. socket.io'dan SONRA, uygulama
-     script'inden ONCE yuklenmeli (window.fetch ve window.io'yu sarar).
-     Backend'e geri baglanirken bu satir silinir — bkz. MOCK-BACKEND.md -->
-<script src="./mock-backend.js"></script>
 <script src="./casino-ui-settings.js"></script>
 <script src="./casino-ui-leaderboard.js"></script>
 <script src="./casino-ui-notifications.js"></script>
@@ -5384,8 +5380,8 @@
         const isGamePage = gamePage.isGamePage;
 
         // Providers + Battles bloklari ayri dosyada: casino-ui/casino-providers-battles.js
-        const casinoPT = window.createCasinoProvidersBattles({
-          ref, computed, navigate, notify: toastMessage,
+ const casinoPT = window.createCasinoProvidersBattles({
+ ref, computed, onMounted, apiUrl, navigate, notify: toastMessage,
           games: topSlots, onOpenGame: (game) => selectGame(game),
         });
 
@@ -5404,7 +5400,7 @@
   const isBonusesPage = bonusesPage.isBonusesPage;
 
   // Crypto & Earn sayfasi mantigi ayri dosyada: casino-ui/crypto-earn-page.js
-  const cryptoEarnPage = window.createCryptoEarnPage({ ref, currentPage, toastMessage });
+  const cryptoEarnPage = window.createCryptoEarnPage({ ref, onMounted, currentPage, toastMessage, apiUrl, backendAssetUrl });
   const isCryptoPage = cryptoEarnPage.isCryptoPage;
 
   // Promotions sayfasi mantigi ayri dosyada: casino-ui/promotions-page.js

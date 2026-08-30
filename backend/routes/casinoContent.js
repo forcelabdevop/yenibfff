@@ -2,7 +2,9 @@ const express = require("express");
 const { authorizeUser } = require("../middleware/auth");
 const CasinoContent = require("../database/models/CasinoContent");
 const CasinoUserState = require("../database/models/CasinoUserState");
-const { listPublished, joinContent, claimContent, visibilityQuery } = require("../services/casinoContentService");
+const CryptoPrice = require("../database/models/CryptoPrice");
+const Box = require("../database/models/Box");
+const { PUBLIC_TYPES, listPublished, joinContent, claimContent, visibilityQuery } = require("../services/casinoContentService");
 
 const router = express.Router();
 const sendError = (res, error) => res.status(error.status || 500).json({ success: false, error: { message: error.message || "Server error" } });
@@ -10,7 +12,7 @@ const sendError = (res, error) => res.status(error.status || 500).json({ success
 router.get("/bootstrap", authorizeUser(false), async (req, res) => {
   try {
     const locale = String(req.query.locale || "en").toLowerCase();
-    const types = ["home-section", "promotion", "bonus", "mission", "vip-benefit", "vip-manager", "vip-faq", "referral-tier"];
+    const types = [...PUBLIC_TYPES];
     const visibility = visibilityQuery("home-section", locale);
     delete visibility.type;
     const entries = await CasinoContent.find({ type: { $in: types }, ...visibility }).lean();
@@ -18,6 +20,23 @@ router.get("/bootstrap", authorizeUser(false), async (req, res) => {
     entries.forEach((entry) => grouped[entry.type]?.push(entry));
     Object.values(grouped).forEach((list) => list.sort((a, b) => a.order - b.order));
     res.json({ success: true, data: grouped, meta: { locale, generatedAt: new Date().toISOString() } });
+  } catch (error) { sendError(res, error); }
+});
+
+router.get("/crypto/earn", authorizeUser(false), async (req, res) => {
+  try {
+    const locale = String(req.query.locale || "en").toLowerCase();
+    const types = ["crypto-staking", "crypto-swap", "crypto-futures-display", "crypto-lootbox-display"];
+    const visibility = visibilityQuery("crypto-staking", locale);
+    delete visibility.type;
+    const [content, prices, boxes] = await Promise.all([
+      CasinoContent.find({ type: { $in: types }, ...visibility }).sort({ order: 1 }).lean(),
+      CryptoPrice.find({ price: { $gt: 0 } }).select("name price fee").lean(),
+      Box.find({ state: { $in: ["active", "published"] } }).select("name slug amount levelMin categories type items state").sort({ createdAt: -1 }).limit(24).lean(),
+    ]);
+    const grouped = types.reduce((result, type) => ({ ...result, [type]: [] }), {});
+    content.forEach(item => grouped[item.type].push(item));
+    res.json({ success: true, data: { content: grouped, prices, boxes }, meta: { generatedAt: new Date().toISOString() } });
   } catch (error) { sendError(res, error); }
 });
 
