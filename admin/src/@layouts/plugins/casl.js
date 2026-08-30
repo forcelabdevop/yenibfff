@@ -138,8 +138,13 @@ export const canNavigate = (to) => {
 				canWithFallback(route.meta.action, route.meta.subject)
 			);
 
-		// 2) Otherwise look up by route name from navigation config
-		const aclFromNav = navAclMap.get(to.name);
+		// 2) Otherwise look up by route name from navigation config.
+		// Some nav items use the route's `name` as `to` (e.g. "apps-casino-content"),
+		// while others use a literal URL path (e.g. "/apps/casino-content/missions")
+		// that points to a dynamic route ("apps-casino-content-type"). The path form
+		// never matches `to.name`, so we also try `to.path` before giving up —
+		// otherwise every path-based nav entry falls through to "deny by default".
+		const aclFromNav = navAclMap.get(to.name) || navAclMap.get(to.path);
 		if (aclFromNav)
 			return canWithFallback(aclFromNav.action, aclFromNav.subject);
 
