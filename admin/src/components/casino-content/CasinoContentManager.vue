@@ -33,8 +33,12 @@ const defaultRules = () => {
   return {}
 }
 const emptyForm = () => ({
+  // Frontend (canlı site) sadece "en" locale'i sorguluyor (casino-ui script'leri
+  // hiç ?locale= parametresi göndermiyor, backend varsayılan olarak "en" kullanıyor).
+  // Varsayılanı "tr" bırakmak, kayıt published olsa bile sitede asla görünmemesine
+  // yol açıyordu — burada elle "en" seçilmediği sürece.
   type: props.config.type, slug: "", title: "", subtitle: "", description: "", image: "", mobileImage: "",
-  category: "", locale: "tr", status: "draft", order: 0, startsAt: null, endsAt: null,
+  category: "", locale: "en", status: "published", order: 0, startsAt: null, endsAt: null,
   cta: { label: "", href: "" }, reward: { type: "none", amount: 0, currency: "USD", wageringMultiplier: 0, spinCount: 0, betAmount: 0, gameCode: "", providerCode: "", expireHours: 72 },
   rules: defaultRules(), content: {}, reason: "",
 })
