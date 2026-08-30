@@ -292,10 +292,74 @@ Sırayla kontrol edin:
 
 ---
 
+## Giriş çalışmıyor → önce HANGİ backend'in cevap verdiğine bakın
+
+Bu sunucuda **birden fazla kumarhane projesi** var ve hepsi varsayılan olarak
+**aynı 5000 portunu** kullanır:
+
+| Dizin | Ne |
+| --- | --- |
+| `/www/raxen/velobet` | **bu proje** (backend + frontend + admin) |
+| `/www/raxen/bizzocazino` | başka proje — pm2'de çalışan bu |
+| `/www/wwwroot/bizzocazino2` | eskimiş kopya (Ağustos) |
+
+nginx `apivelobet.com` alan adını `/www/raxen/velobet/backend`'e yönlendiriyor.
+Ama `pm2 logs --nostream` **tüm** süreçler için tek bir log dosyası listeledi:
+`bizzocazino2-backend` (fork mode, cwd `/www/raxen/bizzocazino/backend`).
+Yani **bu projenin backend'i pm2'de hiç çalışmıyor.**
+
+Bunun iki olası sonucu var ve ikisi farklı belirti verir:
+
+- Port 5000'de kimse yoksa → giriş isteği **502/ağ hatası** alır.
+- Port 5000'i **öteki proje** tutuyorsa → istek yanıtlanır ama **yanlış
+  veritabanına** gider; hesaplar orada olmadığı için "kullanıcı bulunamadı"
+  benzeri hata döner. Üyeliklerin giriş yapamaması tam olarak buna benzer.
+
+### Teşhis (hiçbir şeyi değiştirmez)
+
+```bash
+pm2 list                                  # kaç süreç var, adları ne
+ss -ltnp | grep -E ':(5000|3000)\b'       # 5000'i kim tutuyor (PID + komut)
+grep -RA3 "apivelobet" /www/server/panel/vhost/nginx/ | grep proxy_pass
+curl -s -o /dev/null -w '%{http_code}\n' https://apivelobet.com/health
+```
+
+`/health` **200** dönüyorsa bir backend var; **503** dönüyorsa süreç ayakta ama
+veritabanı bağlı değil. Hangi projenin cevap verdiğini `ss` çıktısındaki PID'in
+çalışma dizininden görürsünüz:
+
+```bash
+pwdx <PID>     # sürecin cwd'si: velobet mi, bizzocazino mu?
+```
+
+### Bu projenin backend'ini başlatma
+
+`pwdx` velobet'i göstermiyorsa backend hiç çalışmıyor demektir:
+
+```bash
+cd /www/raxen/velobet/backend
+[ -f .env ] || { echo "HATA: .env yok"; }
+grep -q '^SERVER_PORT=' .env || echo "UYARI: SERVER_PORT tanımsız → 5000 kullanılır (çakışabilir)"
+
+pnpm install --frozen-lockfile
+pm2 start ecosystem.config.js --update-env
+pm2 save
+```
+
+> **Port çakışması:** öteki proje 5000'i tutuyorsa bu backend ayağa kalkamaz.
+> `.env` içinde `SERVER_PORT=5001` verip nginx `proxy_pass` hedefini de aynı
+> porta çevirin, sonra `nginx -t && systemctl reload nginx`.
+
+Uygulama adı `.env`'deki `PROJECT_ID` ve `WEBSITE_NAME`'den üretilir
+(`<PROJECT_ID>-<WEBSITE_NAME>-backend`), yani öteki projeyle karışmaz.
+Doğru çalıştığında `pm2 list` cluster modunda **4 instance** göstermelidir —
+`bizzocazino2-backend` gibi fork modunda tek süreç değil.
+
 ## Sorun giderme
 
 | Belirti | Sebep |
 | --- | --- |
+| Giriş çalışmıyor / üyelik bulunamıyor | Yanlış backend cevap veriyor (üstteki bölüm) |
 | Build "must be set before building" hatası | `NEXT_PUBLIC_API_BASE_URL` / `NEXT_PUBLIC_WEBSITE_NAME` tanımsız |
 | Site eski sürümü gösteriyor | Statik dosyalar kopyalanmadı ya da CDN/tarayıcı önbelleği |
 | Panel beyaz ekran | Admin alt dizinde sunuluyor (`base` sorunu) |
