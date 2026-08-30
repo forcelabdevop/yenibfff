@@ -17,6 +17,7 @@ const sections = {
   "buy-crypto": "Buy Crypto",
   "crypto-and-earn": "Crypto & Earn",
   promotions: "Promotions",
+  "refer-and-earn": "Refer & Earn",
   // Kullanici hesap sayfalari — profil menusunden acilir.
   wallet: "Wallet",
   profile: "My Profile",

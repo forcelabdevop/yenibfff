@@ -1,0 +1,339 @@
+/* Refer & Earn / Referral Cabinet sayfasi (route: /refer-and-earn).
+   Kullanicinin referans HTML'inden (index-woOD5.html) BIREBIR port edildi.
+   Referanstaki header / sidebar / chat / footer ATLANDI — site kabugunda zaten var;
+   sadece .main-shell govdesi (Dashboard / Campaigns / Referrals sekmeleri) + kampanya
+   modali alindi.
+   Referanstaki generic isimler (.tab-bar, .section-title, .empty-state, .toast, .modal-card,
+   .flag, .breadcrumb ...) site kabuguyla cakisirdi -> HEPSI `rf-` onekiyle YENIDEN ADLANDIRILDI. */
+.rf-page {
+  --rf-panel: #1d2a3b;
+  --rf-line: #263649;
+  --rf-muted: #657792;
+  --rf-soft: #afbdd2;
+  --rf-white: #f7f9fc;
+  --rf-blue: #2788f6;
+  margin: -34px -32px 0;
+  padding-bottom: 30px;
+  min-height: calc(100vh - 63px);
+  background: #0b141f;
+  color: var(--rf-white);
+  font-family: "Montserrat Variable", "Montserrat", Arial, sans-serif;
+  font-size: 14px;
+  letter-spacing: normal;
+}
+.rf-page * { box-sizing: border-box; }
+/* NOT: `font: inherit` KULLANMA — `.rf-page button` (0,1,1) alttaki tekil buton
+   kurallarini (0,1,0) yener ve tum butonlar 14px'e sabitlenir. */
+.rf-page button { border: 0; background: transparent; color: inherit; cursor: pointer; font-family: inherit; }
+.rf-page h1, .rf-page h2, .rf-page h3 { margin: 0; }
+.rf-page img { display: block; }
+
+.rf-width { width: calc(100% - 130px); max-width: 1040px; margin: 0 auto; }
+.rf-top { padding-top: 34px; }
+
+/* ===== Baslik + sekmeler ===== */
+.rf-headline { min-height: 34px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.rf-title { font-size: 24px; line-height: 1.2; font-weight: 900; letter-spacing: -0.4px; }
+.rf-headline-actions { display: flex; gap: 16px; }
+.rf-neutral-btn {
+  height: 33px; padding: 0 15px; border-radius: 8px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  color: #e5e9ee; background: #2b3440; font-size: 13px; font-weight: 900; white-space: nowrap;
+}
+.rf-neutral-btn i { color: #9eb0c9; }
+.rf-blue-btn {
+  height: 36px; padding: 0 16px; border-radius: 9px; color: #fff;
+  background: linear-gradient(180deg, #35a5ff 0%, #157cf4 50%, #0660ee 100%);
+  box-shadow: 0 4px 0 #0649b6, 0 0 18px rgba(42, 137, 255, 0.32), inset 0 2px 3px rgba(255, 255, 255, 0.24);
+  font-size: 13px; font-weight: 900; white-space: nowrap;
+}
+.rf-tabbar {
+  height: 45px; margin-top: 27px; padding: 4px; border-radius: 10px;
+  display: grid; grid-template-columns: repeat(3, 1fr); background: #1b2637;
+}
+.rf-tab { border-radius: 9px; color: #60728e; font-size: 13px; font-weight: 900; transition: 0.18s ease; }
+.rf-tab.is-active { color: #fff; background: var(--rf-blue); box-shadow: 0 5px 15px rgba(35, 125, 238, 0.18); }
+
+/* ===== Kampanya ozeti ===== */
+.rf-overview { margin-top: 24px; padding: 16px; border-radius: 12px; background: var(--rf-panel); }
+.rf-overview-top { min-height: 118px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.rf-stats {
+  border: 1px solid #345d59; border-radius: 9px;
+  display: grid; grid-template-columns: 1fr 1fr; align-items: center;
+  background: linear-gradient(115deg, #214a43 0%, #193845 50%, #1a2b3b 100%);
+  overflow: hidden;
+}
+.rf-stat { min-height: 80px; display: flex; align-items: center; gap: 12px; padding: 0 22px; min-width: 0; }
+.rf-stat + .rf-stat { border-left: 2px solid rgba(40, 79, 87, 0.7); }
+.rf-stat img { width: 45px; max-height: 48px; object-fit: contain; filter: drop-shadow(0 0 8px rgba(33, 214, 116, 0.2)); flex: 0 0 auto; }
+.rf-stat-text { min-width: 0; }
+.rf-stat-label { color: #aebcd1; font-size: 12px; line-height: 1.2; font-weight: 800; white-space: nowrap; }
+.rf-stat-value { margin-top: 2px; color: #fff; font-size: 21px; line-height: 1; font-weight: 900; }
+.rf-help {
+  display: inline-flex; width: 15px; height: 15px; align-items: center; justify-content: center;
+  border: 1px solid #607591; border-radius: 50%; color: #607591; font-size: 9px; margin-left: 5px;
+}
+.rf-invite {
+  position: relative; overflow: hidden; border-radius: 9px; padding: 15px 16px;
+  background: linear-gradient(105deg, #0c3f91 0%, #0a55b7 56%, #077cd7 100%);
+}
+.rf-invite h3 { position: relative; z-index: 2; margin-bottom: 7px; font-size: 21px; line-height: 1.05; font-weight: 900; letter-spacing: -0.2px; }
+.rf-invite-line { position: relative; z-index: 2; color: #b6c7e2; font-size: 18px; line-height: 1.7; font-weight: 700; white-space: nowrap; }
+.rf-invite-line i { width: 20px; font-size: 11px; margin-right: 4px; }
+.rf-invite-art {
+  position: absolute; z-index: 1; right: -12px; top: -15px; width: 245px; height: 150px;
+  object-fit: cover; object-position: center; opacity: 0.97;
+  mask-image: linear-gradient(to right, transparent 0%, #000 30%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 30%);
+}
+.rf-campaign-heading { display: flex; align-items: center; gap: 7px; margin-top: 18px; font-size: 17px; line-height: 1; font-weight: 900; }
+.rf-default-badge { padding: 2px 7px; border-radius: 8px; background: #2789f7; color: #fff; font-size: 10px; line-height: 14px; font-weight: 900; }
+.rf-link-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 15px; }
+.rf-link-box {
+  height: 58px; border: 1px solid #2f4056; border-radius: 10px;
+  display: grid; grid-template-columns: 34px 1fr auto; align-items: center; gap: 10px;
+  padding: 7px 7px 7px 14px; background: #0d1622; min-width: 0;
+}
+.rf-link-box > i { color: #627793; font-size: 20px; }
+.rf-link-label { color: #637691; font-size: 12px; line-height: 1.1; font-weight: 800; }
+.rf-link-value { margin-top: 5px; color: #fff; font-size: 15px; line-height: 1; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rf-copy-btn { height: 42px; min-width: 63px; border-radius: 7px; padding: 0 12px; background: #303743; color: #e8ebef; font-size: 15px; font-weight: 900; }
+.rf-campaign-foot { min-height: 53px; display: flex; align-items: flex-end; padding-top: 14px; }
+.rf-terms { color: #aebbd0; font-size: 13px; font-weight: 800; padding-bottom: 3px; }
+.rf-terms b { color: #fff; }
+.rf-term-sep { display: inline-block; height: 19px; border-left: 1px solid #8090a5; margin: 0 12px -5px; }
+.rf-campaign-actions { margin-left: auto; display: flex; gap: 20px; align-items: center; }
+.rf-share-btn { height: 33px; border-radius: 8px; background: #35404f; color: #e2e7ed; font-weight: 900; font-size: 13px; padding: 0 16px; }
+
+/* ===== Bakiye paneli ===== */
+.rf-balance-panel {
+  min-height: 336px; margin-top: 20px; padding: 17px 16px; border-radius: 12px;
+  background: linear-gradient(105deg, #244d80 0%, #203b60 40%, #1d2c3e 100%);
+}
+.rf-section-title { font-size: 19px; line-height: 1.2; font-weight: 900; }
+.rf-balance-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 19px; }
+.rf-balance-card {
+  min-height: 244px; border: 1px solid #2b3d53; border-radius: 9px;
+  background: rgba(19, 30, 44, 0.78); display: flex; flex-direction: column; overflow: hidden;
+}
+.rf-balance-top { min-height: 102px; padding: 15px 16px; border-bottom: 1px solid #293a4d; }
+.rf-balance-heading { display: flex; align-items: center; justify-content: space-between; color: #fff; font-size: 15px; font-weight: 900; }
+.rf-detail-link { color: #278afb; font-size: 13px; font-weight: 900; display: inline-flex; align-items: center; gap: 6px; }
+.rf-detail-link i { font-size: 11px; }
+.rf-available { text-align: center; color: #60738e; font-size: 11px; font-weight: 800; margin-top: 16px; line-height: 1; }
+.rf-available-value { margin-top: 4px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 27px; line-height: 1; font-weight: 900; }
+.rf-flag { width: 20px; height: 14px; border-radius: 2px; object-fit: cover; margin-right: 6px; flex: 0 0 auto; }
+.rf-locked-row { display: flex; align-items: center; justify-content: center; gap: 9px; padding-top: 14px; color: #aabbd2; font-size: 13px; font-weight: 800; }
+.rf-lock {
+  width: 23px; height: 28px; display: flex; align-items: center; justify-content: center;
+  border-radius: 12px 12px 15px 15px; color: #fff; background: linear-gradient(#2aa4ff, #0873ed); box-shadow: 0 0 7px #278af7;
+}
+.rf-locked-value { color: #fff; margin-top: 1px; font-size: 16px; }
+.rf-coin-dots { display: flex; justify-content: center; margin-top: 17px; }
+.rf-coin-dot { width: 22px; height: 22px; margin-left: -4px; border-radius: 50%; border: 4px solid #263349; background: #52647e; box-shadow: 0 2px 3px #08101a; }
+.rf-coin-dot:nth-child(n + 7) { background: #334157; }
+.rf-history-link { display: flex; align-items: center; justify-content: center; gap: 6px; color: #60748f; font-size: 13px; font-weight: 900; margin-top: 11px; }
+.rf-history-link.blue { color: #2789f8; }
+.rf-history-link i { font-size: 11px; }
+.rf-claim-btn {
+  margin: auto 16px 16px; height: 35px; border-radius: 8px;
+  background: linear-gradient(#842840, #6e1933); color: #80909e;
+  box-shadow: 0 0 14px rgba(133, 30, 62, 0.35); font-size: 13px; font-weight: 900; cursor: not-allowed;
+}
+
+/* ===== Insight kartlari ===== */
+.rf-insights { width: calc(100% - 130px); max-width: 1040px; margin: 20px auto 0; padding-bottom: 20px; }
+.rf-insights-top { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.rf-insight-card {
+  position: relative; height: 232px; border-radius: 12px; overflow: hidden; padding: 17px 16px;
+  background: linear-gradient(110deg, #284d7c 0%, #1d2a3b 100%);
+}
+.rf-insight-card.profit { background: linear-gradient(110deg, #216d3a 0%, #18362f 65%, #18313a 100%); }
+.rf-insight-filter {
+  position: absolute; right: 16px; top: 16px; height: 36px; min-width: 150px; padding: 0 14px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  background: #26354a; color: #fff; font-size: 13px; font-weight: 900;
+}
+.rf-empty { height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; color: #b2c0d4; font-size: 15px; font-weight: 700; }
+.rf-empty img { width: 150px; height: 126px; object-fit: cover; object-position: top; border-radius: 50%; margin-bottom: -2px; mix-blend-mode: screen; }
+.rf-time-rail {
+  position: absolute; right: 16px; top: 64px; width: 48px; height: 118px; border-radius: 10px;
+  display: flex; flex-direction: column; align-items: center; justify-content: space-around;
+  background: rgba(44, 62, 83, 0.72); color: #afbdd1; font-size: 13px; font-weight: 900;
+}
+.rf-time-rail button { width: 34px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; color: inherit; }
+.rf-time-rail button.is-active { color: #fff; background: #2789f7; }
+.rf-insights-top .rf-empty { padding-right: 42px; }
+.rf-insights-lower { display: grid; grid-template-columns: 3fr 2.1fr; gap: 20px; margin-top: 20px; }
+.rf-rewards-history, .rf-live { min-height: 552px; border-radius: 12px; background: var(--rf-panel); overflow: hidden; }
+.rf-rewards-history { position: relative; padding: 20px 16px; }
+.rf-rewards-history .rf-empty { height: 325px; justify-content: flex-end; }
+.rf-rewards-history .rf-empty img { width: 190px; height: 160px; }
+.rf-viewall-disabled { position: absolute; left: 16px; right: 16px; bottom: 16px; height: 34px; border-radius: 8px; background: #273343; color: #6d7785; font-weight: 900; font-size: 13px; cursor: not-allowed; }
+.rf-live { background: linear-gradient(135deg, #215f3b 0%, #1b3535 38%, #1d2938 70%); }
+.rf-live-head { position: relative; height: 282px; padding: 20px 16px 0; overflow: hidden; }
+.rf-confetti { position: absolute; inset: 0; pointer-events: none; color: #86782a; font-size: 34px; opacity: 0.7; }
+.rf-confetti i { position: absolute; }
+.rf-total {
+  position: relative; z-index: 2; height: 90px; margin-top: 18px; border: 1px solid #2b3d52; border-radius: 9px;
+  background: rgba(18, 30, 43, 0.82); display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.rf-total small { color: #60738e; font-weight: 900; font-size: 12px; }
+.rf-total strong { margin-top: 10px; font-size: 28px; line-height: 1; font-weight: 900; }
+.rf-money { position: absolute; z-index: 3; top: 92px; width: 54px; opacity: 0.95; }
+.rf-money.left { left: 4px; }
+.rf-money.right { right: 4px; transform: scaleX(-1); }
+.rf-live-list { position: relative; z-index: 3; height: 120px; padding-top: 17px; overflow: hidden; }
+.rf-live-track { animation: rfLiveDown 8s linear infinite; }
+.rf-live-user { height: 40px; display: grid; grid-template-columns: 1fr 96px; align-items: center; color: #fff; font-size: 15px; font-weight: 800; }
+@keyframes rfLiveDown {
+  0%, 12% { transform: translateY(0); }
+  24%, 36% { transform: translateY(40px); }
+  48%, 60% { transform: translateY(80px); }
+  72%, 84% { transform: translateY(120px); }
+  100% { transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) { .rf-live-track { animation: none; } }
+.rf-live-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.rf-live-left > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rf-mini-avatar { width: 25px; height: 25px; border-radius: 50%; object-fit: cover; flex: 0 0 auto; }
+.rf-claimed { color: #5f718b; }
+.rf-reward-value { display: flex; align-items: center; justify-content: flex-end; gap: 4px; color: #05be4a; font-weight: 900; white-space: nowrap; }
+.rf-leaderboard { min-height: 270px; padding: 18px 16px 16px; background: #202d3e; }
+.rf-leader-visual {
+  position: relative; height: 130px; margin-top: 20px; border: 1px solid #1769bd; border-radius: 10px;
+  background: radial-gradient(circle at 50% 40%, #3a4d69, #162331 68%); overflow: hidden;
+}
+.rf-leader-avatars { position: absolute; inset: 16px 50px 12px; display: flex; justify-content: space-around; align-items: center; filter: blur(3px); opacity: 0.65; }
+.rf-leader-person { width: 70px; height: 70px; border-radius: 50%; border: 8px double #6e7290; overflow: hidden; background: #395066; }
+.rf-leader-person img { width: 100%; height: 100%; object-fit: cover; }
+.rf-coming-soon {
+  position: absolute; z-index: 3; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  padding: 11px 16px; border: 1px solid #657998; border-radius: 7px; background: rgba(29, 41, 57, 0.9);
+  color: #fff; font-size: 15px; font-weight: 800; white-space: nowrap;
+}
+.rf-leader-btn {
+  width: 100%; height: 35px; margin-top: 25px; border-radius: 8px;
+  background: linear-gradient(#2d68a8, #1e4d9f); color: #8894a2; font-weight: 900; font-size: 13px;
+  box-shadow: 0 0 14px rgba(40, 114, 229, 0.22);
+}
+
+/* ===== Liste basliklari (Campaigns / Referrals) ===== */
+.rf-list-head { min-height: 40px; margin-top: 24px; display: flex; align-items: center; gap: 7px; }
+.rf-list-title { font-size: 19px; font-weight: 900; }
+.rf-count-badge { min-width: 22px; height: 21px; padding: 0 6px; border-radius: 7px; background: #18263a; color: #2789f8; line-height: 21px; font-weight: 900; font-size: 13px; }
+.rf-list-controls { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.rf-filter-btn {
+  height: 36px; padding: 0 14px; border-radius: 9px; display: flex; align-items: center; gap: 10px;
+  background: #1b2839; color: #fff; font-size: 13px; font-weight: 900; white-space: nowrap;
+}
+.rf-filter-btn.dark { background: #202c3c; }
+.rf-filter-btn.gray { background: #2d3541; color: #e1e6eb; }
+.rf-filter-btn .cal { color: #647893; font-size: 16px; }
+.rf-filter-btn .down { color: #6f819b; font-size: 12px; }
+.rf-referrals-empty { height: 290px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #aebdd2; font-size: 16px; font-weight: 700; }
+.rf-referrals-empty img { width: 180px; height: 151px; object-fit: cover; object-position: top; border-radius: 50%; margin-bottom: 14px; mix-blend-mode: screen; }
+.rf-crumb { height: 39px; display: flex; align-items: center; gap: 13px; font-size: 19px; font-weight: 900; margin: 14px 0 18px; }
+.rf-crumb .dim { color: #8c929b; }
+.rf-crumb i { color: #454f5e; font-size: 14px; }
+
+/* ===== Kampanya tablosu ===== */
+.rf-table-head, .rf-row {
+  display: grid;
+  grid-template-columns: 1.1fr 0.78fr 1.45fr 1.28fr 1.55fr 1.16fr 98px;
+  column-gap: 8px;
+  padding: 0 12px;
+  align-items: center;
+}
+.rf-table-head { margin-top: 9px; height: 29px; color: #63748f; font-size: 12px; letter-spacing: 0.6px; font-weight: 900; }
+.rf-row { position: relative; min-height: 72px; border-radius: 7px; background: #121e2b; margin-bottom: 12px; font-size: 14px; }
+.rf-row.is-default:before {
+  content: "DEFAULT"; position: absolute; left: 0; top: -7px; height: 15px; padding: 0 7px;
+  border-radius: 8px 8px 8px 0; background: #2789f7; color: #fff; font-size: 10px; line-height: 15px; font-weight: 900;
+}
+.rf-cell-title { min-width: 0; }
+.rf-cell-title strong { display: block; color: #fff; font-size: 15px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rf-cell-title small { color: #adbbd0; font-size: 12px; font-weight: 800; }
+.rf-edit-mark { margin-left: 6px; color: #60748f; }
+.rf-big-cell { color: #fff; font-size: 16px; font-weight: 900; }
+.rf-sub-cell { color: #aebbd0; font-size: 12px; font-weight: 800; }
+.rf-split-cell { display: grid; grid-template-columns: 1fr 12px 1fr; gap: 7px; align-items: center; }
+.rf-split-cell i { color: #788aa2; font-size: 10px; }
+.rf-profit-cell { display: flex; align-items: center; color: #fff; font-size: 16px; font-weight: 900; }
+.rf-link-cell { min-width: 0; }
+.rf-link-line { color: #fff; font-size: 15px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rf-link-line.secondary { color: #adbbd0; font-size: 12px; margin-top: 7px; }
+.rf-copy-mark { color: #60748f; margin-left: 6px; }
+.rf-code-cell { color: #fff; font-size: 15px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rf-row-actions { display: flex; align-items: center; justify-content: flex-end; gap: 9px; }
+.rf-row-action { width: 28px; height: 28px; border-radius: 7px; background: #2d3744; color: #dde2e7; font-size: 12px; }
+.rf-row-action.is-disabled { color: #6f7b88; background: #202b3b; }
+.rf-row-chevron { color: #60748f; margin-left: 7px; font-size: 12px; }
+
+/* ===== Yeni kampanya modali ===== */
+.rf-modal-backdrop { position: fixed; z-index: 90; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(3, 9, 16, 0.77); }
+.rf-modal-card { width: 420px; max-width: calc(100vw - 28px); padding: 22px; border: 1px solid #33465d; border-radius: 14px; background: #1b2838; box-shadow: 0 18px 60px rgba(0, 0, 0, 0.5); }
+.rf-modal-title { font-size: 21px; font-weight: 900; margin-bottom: 18px; }
+.rf-modal-input { width: 100%; height: 45px; border: 1px solid #32465f; border-radius: 9px; background: #111c29; color: #fff; outline: none; padding: 0 13px; font-family: inherit; font-size: 14px; font-weight: 700; }
+.rf-modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+
+/* ===== Responsive ===== */
+@media (max-width: 1350px) {
+  .rf-width, .rf-insights { width: calc(100% - 64px); }
+  .rf-invite-line { font-size: 15px; }
+  .rf-invite h3 { font-size: 18px; }
+  .rf-stat { padding: 0 12px; }
+  .rf-table-head, .rf-row { grid-template-columns: 1.05fr 0.6fr 1.3fr 1.15fr 1.45fr 1fr 88px; }
+}
+@media (max-width: 1120px) {
+  .rf-width, .rf-insights { width: calc(100% - 40px); max-width: none; }
+  .rf-link-grid { gap: 10px; }
+  .rf-overview-top { gap: 10px; }
+  .rf-overview { padding: 12px; }
+  .rf-link-value { font-size: 13px; }
+  .rf-copy-btn { min-width: 52px; padding: 0 8px; }
+}
+@media (max-width: 900px) {
+  .rf-overview-top { grid-template-columns: 1fr; }
+  .rf-campaign-heading { margin-top: 16px; }
+  .rf-link-grid { grid-template-columns: 1fr; }
+  .rf-campaign-foot { height: auto; padding: 15px 0 3px; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .rf-campaign-actions { width: 100%; margin-left: 0; }
+  .rf-balance-grid { grid-template-columns: 1fr; }
+  .rf-balance-panel { padding-bottom: 20px; }
+  .rf-insights-top, .rf-insights-lower { grid-template-columns: 1fr; }
+  .rf-table-wrap { overflow-x: auto; padding-bottom: 5px; }
+  .rf-table-head, .rf-row { width: 980px; }
+}
+@media (max-width: 760px) {
+  /* .route-page mobilde 14px/12px padding kullanir — negatif marj birebir ayni
+     olmazsa sayfa yatayda tasar (scrollWidth > innerWidth). */
+  .rf-page { margin: -14px -12px 0; min-height: auto; }
+  .rf-width, .rf-insights { width: calc(100% - 28px); }
+  .rf-top { padding-top: 24px; }
+  .rf-title { font-size: 22px; }
+  .rf-headline { align-items: flex-start; }
+  .rf-headline-actions { gap: 8px; }
+  .rf-headline-actions .rf-neutral-btn span { display: none; }
+  .rf-headline-actions .rf-neutral-btn { padding: 0 9px; }
+  .rf-tabbar { margin-top: 20px; }
+  .rf-tab { font-size: 12px; }
+  .rf-stats { grid-template-columns: 1fr; padding: 10px 0; }
+  .rf-stat { min-height: 62px; }
+  .rf-stat + .rf-stat { border-left: 0; border-top: 1px solid rgba(40, 79, 87, 0.7); }
+  .rf-invite h3 { font-size: 17px; max-width: 70%; }
+  .rf-invite-line { font-size: 13px; white-space: normal; }
+  .rf-overview { padding: 10px; }
+  .rf-terms { font-size: 12px; }
+  .rf-campaign-actions { flex-direction: column; }
+  .rf-campaign-actions button { width: 100%; }
+  .rf-balance-grid { gap: 12px; }
+  .rf-insights-top .rf-insight-card { height: 250px; }
+  .rf-insight-filter { min-width: 120px; }
+  .rf-rewards-history, .rf-live { min-height: 500px; }
+  .rf-list-head { flex-wrap: wrap; }
+  .rf-list-controls { width: 100%; margin-left: 0; overflow-x: auto; }
+  .rf-filter-btn { flex: 0 0 auto; }
+  .rf-referrals-empty { height: 245px; }
+  .rf-crumb { font-size: 16px; }
+}

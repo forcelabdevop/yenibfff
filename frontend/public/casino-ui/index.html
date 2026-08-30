@@ -23,12 +23,14 @@
 <script src="./bonuses-page.js"></script>
 <script src="./crypto-earn-page.js"></script>
 <script src="./promotions-page.js"></script>
+<script src="./referral-page.js"></script>
 <script src="./casino-providers-battles.js"></script>
 <link href="./tailwind.css" rel="stylesheet"/>
 <link href="./missions-page.css" rel="stylesheet"/>
 <link href="./bonuses-page.css" rel="stylesheet"/>
 <link href="./crypto-earn-page.css" rel="stylesheet"/>
 <link href="./promotions-page.css" rel="stylesheet"/>
+<link href="./referral-page.css" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -2668,6 +2670,217 @@
 </transition>
 </div>
 </template>
+<template v-else-if="isReferralPage">
+<div class="rf-page">
+<!-- ===== Dashboard sekmesi ===== -->
+<section class="rf-dashboard" v-if="rfTab === 'Dashboard'">
+<div class="rf-width rf-top">
+<div class="rf-headline">
+<h1 class="rf-title">Referral program</h1>
+<div class="rf-headline-actions">
+<button @click="rfNotify('Referral guide opened')" class="rf-neutral-btn" type="button"><i class="fas fa-bullhorn"></i><span>About referral system</span></button>
+<button @click="rfNotify('Promo materials opened')" class="rf-neutral-btn" type="button"><i class="fas fa-download"></i><span>Promo materials</span></button>
+</div>
+</div>
+<nav class="rf-tabbar">
+<button :class="{'is-active': rfTab === tab}" :key="'rf-tab-'+tab" @click="rfSelectTab(tab)" class="rf-tab" type="button" v-for="tab in rfTabs">{{tab}}</button>
+</nav>
+<article class="rf-overview">
+<div class="rf-overview-top">
+<div class="rf-stats">
+<div class="rf-stat">
+<img alt="Total profit" src="assets/ref/profit.png"/>
+<div class="rf-stat-text"><div class="rf-stat-label">My total profit: <span class="rf-help">?</span></div><div class="rf-stat-value">$0.00</div></div>
+</div>
+<div class="rf-stat">
+<img alt="Total referrals" src="assets/ref/referrals.png"/>
+<div class="rf-stat-text"><div class="rf-stat-label">Total referrals <span class="rf-help">?</span></div><div class="rf-stat-value">0</div></div>
+</div>
+</div>
+<div class="rf-invite">
+<h3>INVITE NEW USERS TO GET:</h3>
+<div class="rf-invite-line"><i class="fas fa-rocket"></i> $1,500 bonus per referral</div>
+<div class="rf-invite-line"><i class="fas fa-rocket"></i> Up to 30% commissions from users activity</div>
+<img alt="Megaphone and coins" class="rf-invite-art" src="assets/ref/invite.jpg"/>
+</div>
+</div>
+<div class="rf-campaign-heading">My referral campaign <span class="rf-default-badge">DEFAULT</span></div>
+<div class="rf-link-grid">
+<div class="rf-link-box">
+<i class="fas fa-link"></i>
+<div style="min-width:0"><div class="rf-link-label">Web referral link</div><div class="rf-link-value">{{rfWebLink}}</div></div>
+<button @click="rfCopy(rfWebLink)" class="rf-copy-btn" type="button">Copy</button>
+</div>
+<div class="rf-link-box">
+<i class="fas fa-link"></i>
+<div style="min-width:0"><div class="rf-link-label">Telegram referral link</div><div class="rf-link-value">{{rfTelegramLink}}</div></div>
+<button @click="rfCopy(rfTelegramLink)" class="rf-copy-btn" type="button">Copy</button>
+</div>
+<div class="rf-link-box">
+<i class="fas fa-tags"></i>
+<div style="min-width:0"><div class="rf-link-label">Your referral code</div><div class="rf-link-value">{{rfCode}}</div></div>
+<button @click="rfCopy(rfCode)" class="rf-copy-btn" type="button">Copy</button>
+</div>
+</div>
+<div class="rf-campaign-foot">
+<div class="rf-terms">Your commissions: <b>100%</b><span class="rf-term-sep"></span>Shares for referrals: <b>0%</b></div>
+<div class="rf-campaign-actions"><button @click="rfNotify('Share menu opened')" class="rf-share-btn" type="button">Share my offer</button><button @click="rfModal = true" class="rf-blue-btn" type="button">Create new campaign</button></div>
+</div>
+</article>
+<section class="rf-balance-panel">
+<h2 class="rf-section-title">My balance</h2>
+<div class="rf-balance-grid">
+<article class="rf-balance-card">
+<div class="rf-balance-top">
+<div class="rf-balance-heading"><span>Referral bonus</span><button @click="rfNotify('Referral bonus details opened')" class="rf-detail-link" type="button">Details <i class="fas fa-angle-right"></i></button></div>
+<div class="rf-available">Available</div>
+<div class="rf-available-value"><img alt="USD" class="rf-flag" src="assets/flag-usd.png"/>$0.00</div>
+</div>
+<div class="rf-locked-row"><span class="rf-lock"><i class="fas fa-lock"></i></span><div>Locked balance<div class="rf-locked-value">$0.00</div></div></div>
+<button class="rf-claim-btn" disabled type="button">Minimal claim: $1.5</button>
+</article>
+<article class="rf-balance-card">
+<div class="rf-balance-top">
+<div class="rf-balance-heading"><span>Commission rewards</span><button @click="rfNotify('Commission details opened')" class="rf-detail-link" type="button">Details <i class="fas fa-angle-right"></i></button></div>
+<div class="rf-available">Available</div>
+<div class="rf-available-value"><img alt="USD" class="rf-flag" src="assets/flag-usd.png"/>$0.00</div>
+</div>
+<div class="rf-coin-dots"><span :key="'rf-dot-a'+n" class="rf-coin-dot" v-for="n in 10"></span></div>
+<div class="rf-history-link">View all my commission balances <i class="fas fa-angle-right"></i></div>
+<button class="rf-claim-btn" disabled type="button">Claim commission</button>
+</article>
+<article class="rf-balance-card">
+<div class="rf-balance-top">
+<div class="rf-balance-heading"><span>Crypto Staking rewards</span><button @click="rfNotify('Staking details opened')" class="rf-detail-link" type="button">Details <i class="fas fa-angle-right"></i></button></div>
+<div class="rf-available">Available</div>
+<div class="rf-available-value"><img alt="USD" class="rf-flag" src="assets/flag-usd.png"/>$0.00</div>
+</div>
+<div class="rf-coin-dots"><span :key="'rf-dot-b'+n" class="rf-coin-dot" v-for="n in 5"></span></div>
+<div class="rf-history-link blue">View my accrual history <i class="fas fa-angle-right"></i></div>
+<button class="rf-claim-btn" disabled type="button">Claim commission</button>
+</article>
+</div>
+</section>
+</div>
+<section class="rf-insights">
+<div class="rf-insights-top">
+<article class="rf-insight-card">
+<h2 class="rf-section-title">My referrals</h2>
+<button @click="rfNotify('Campaign filter opened')" class="rf-insight-filter" type="button">All campaigns <i class="fas fa-chevron-down" style="color:#a8b7cc"></i></button>
+<div class="rf-empty"><img alt="Mascot" src="assets/ref/mascot.png"/><span>Oops! You don't have data to display</span></div>
+<div class="rf-time-rail"><button :class="{'is-active': rfReferralsRange === range}" :key="'rf-rr'+range" @click="rfSetReferralsRange(range)" type="button" v-for="range in rfRanges">{{range}}</button></div>
+</article>
+<article class="rf-insight-card profit">
+<h2 class="rf-section-title">My profit</h2>
+<button @click="rfNotify('Campaign filter opened')" class="rf-insight-filter" type="button">All campaigns <i class="fas fa-chevron-down" style="color:#a8b7cc"></i></button>
+<div class="rf-empty"><img alt="Mascot" src="assets/ref/mascot.png"/><span>Oops! You don't have data to display</span></div>
+<div class="rf-time-rail"><button :class="{'is-active': rfProfitRange === range}" :key="'rf-pr'+range" @click="rfSetProfitRange(range)" type="button" v-for="range in rfRanges">{{range}}</button></div>
+</article>
+</div>
+<div class="rf-insights-lower">
+<article class="rf-rewards-history">
+<h2 class="rf-section-title" style="font-size:23px">My rewards history</h2>
+<div class="rf-empty"><img alt="Mascot" src="assets/ref/mascot.png"/><span>Oops! You don't have data to display</span></div>
+<button class="rf-viewall-disabled" disabled type="button">View all rewards</button>
+</article>
+<article class="rf-live">
+<div class="rf-live-head">
+<h2 class="rf-section-title" style="font-size:23px">Live rewards</h2>
+<div class="rf-confetti"><i class="fas fa-square" style="left:50%;top:-2px;transform:rotate(18deg)"></i><i class="fas fa-certificate" style="left:64%;top:4px;transform:rotate(-22deg)"></i><i class="fas fa-square" style="right:12%;top:9px;transform:rotate(17deg)"></i></div>
+<div class="rf-total"><small>Total Rewards Sent To-Date</small><strong>$7,081,188.27</strong></div>
+<img alt="" class="rf-money left" src="assets/ref/profit.png"/>
+<img alt="" class="rf-money right" src="assets/ref/profit.png"/>
+<div class="rf-live-list">
+<div class="rf-live-track">
+<div :key="'rf-live'+index" class="rf-live-user" v-for="(item,index) in rfLiveRewards">
+<div class="rf-live-left"><img alt="" class="rf-mini-avatar" src="assets/ref/avatar.png"/><span>{{item.user}} <span class="rf-claimed">claimed</span></span></div>
+<span class="rf-reward-value"><img alt="USD" class="rf-flag" src="assets/flag-usd.png" style="margin:0"/>{{item.amount}}</span>
+</div>
+</div>
+</div>
+</div>
+<div class="rf-leaderboard">
+<h2 class="rf-section-title" style="font-size:23px">Leaderboard</h2>
+<div class="rf-leader-visual">
+<div class="rf-leader-avatars"><span class="rf-leader-person"><img alt="" src="assets/ref/leader-1.png"/></span><span class="rf-leader-person"><img alt="" src="assets/ref/avatar.png"/></span><span class="rf-leader-person"><img alt="" src="assets/ref/leader-3.png"/></span></div>
+<span class="rf-coming-soon">Coming soon</span>
+</div>
+<button class="rf-leader-btn" disabled type="button">Go to leaderboard</button>
+</div>
+</article>
+</div>
+</section>
+</section>
+<!-- ===== Campaigns sekmesi ===== -->
+<section class="rf-campaigns" v-else-if="rfTab === 'Campaigns'">
+<div class="rf-width rf-top">
+<div class="rf-headline">
+<h1 class="rf-title">Referral program</h1>
+<div class="rf-headline-actions">
+<button @click="rfNotify('Referral guide opened')" class="rf-neutral-btn" type="button"><i class="fas fa-bullhorn"></i><span>About referral system</span></button>
+<button @click="rfNotify('Promo materials opened')" class="rf-neutral-btn" type="button"><i class="fas fa-download"></i><span>Promo materials</span></button>
+</div>
+</div>
+<nav class="rf-tabbar">
+<button :class="{'is-active': rfTab === tab}" :key="'rf-tabc-'+tab" @click="rfSelectTab(tab)" class="rf-tab" type="button" v-for="tab in rfTabs">{{tab}}</button>
+</nav>
+<div class="rf-list-head">
+<span class="rf-list-title">My campaigns</span><span class="rf-count-badge">{{rfCampaignCount}}/20</span>
+<div class="rf-list-controls">
+<button @click="rfNotify('Date range opened')" class="rf-filter-btn dark" type="button"><i class="fas fa-calendar cal"></i>23/08/2026-06/09/2026 <i class="fas fa-chevron-down down"></i></button>
+<button @click="rfModal = true" class="rf-blue-btn" type="button">Create a new campaign</button>
+</div>
+</div>
+<div class="rf-table-wrap">
+<div class="rf-table-head"><span>CAMPAIGN NAME</span><span>REFERRALS</span><span>COMMISSION SHARES</span><span>MY PROFIT</span><span>REFERRAL LINKS</span><span>REFERRAL CODE</span><span></span></div>
+<div :class="{'is-default': campaign.default}" :key="'rf-camp'+campaign.id" class="rf-row" v-for="campaign in rfCampaigns">
+<div class="rf-cell-title"><strong>{{campaign.name}} <i class="far fa-edit rf-edit-mark"></i></strong><small>Created {{campaign.created}}</small></div>
+<div class="rf-big-cell">0</div>
+<div class="rf-split-cell"><div><div class="rf-big-cell">100%</div><div class="rf-sub-cell">My commission</div></div><i class="fas fa-chevron-right"></i><div><div class="rf-big-cell">0%</div><div class="rf-sub-cell">Shared</div></div></div>
+<div class="rf-profit-cell"><img alt="USD" class="rf-flag" src="assets/flag-usd.png"/>$0.00</div>
+<div class="rf-link-cell"><div class="rf-link-line">{{rfWebLink}} <i class="far fa-copy rf-copy-mark"></i></div><div class="rf-link-line secondary">{{rfTelegramLink}} <i class="far fa-copy rf-copy-mark"></i></div></div>
+<div class="rf-code-cell">{{campaign.code}} <i class="far fa-copy rf-copy-mark"></i></div>
+<div class="rf-row-actions"><button @click="rfNotify('Share menu opened')" class="rf-row-action" type="button"><i class="fas fa-share-alt"></i></button><button :class="{'is-disabled': campaign.default}" @click="rfRemoveCampaign(campaign)" class="rf-row-action" type="button"><i class="fas fa-trash"></i></button><i class="fas fa-chevron-down rf-row-chevron"></i></div>
+</div>
+</div>
+<div class="rf-crumb"><span class="dim">{{websiteName}}</span><i class="fas fa-chevron-right"></i><span>Referral Cabinet</span></div>
+</div>
+</section>
+<!-- ===== Referrals sekmesi ===== -->
+<section class="rf-referrals" v-else>
+<div class="rf-width rf-top">
+<div class="rf-headline">
+<h1 class="rf-title">Referral program</h1>
+<div class="rf-headline-actions">
+<button @click="rfNotify('Referral guide opened')" class="rf-neutral-btn" type="button"><i class="fas fa-bullhorn"></i><span>About referral system</span></button>
+<button @click="rfNotify('Promo materials opened')" class="rf-neutral-btn" type="button"><i class="fas fa-download"></i><span>Promo materials</span></button>
+</div>
+</div>
+<nav class="rf-tabbar">
+<button :class="{'is-active': rfTab === tab}" :key="'rf-tabr-'+tab" @click="rfSelectTab(tab)" class="rf-tab" type="button" v-for="tab in rfTabs">{{tab}}</button>
+</nav>
+<div class="rf-list-head">
+<span class="rf-list-title">My referrals</span><span class="rf-count-badge">0</span>
+<div class="rf-list-controls">
+<button @click="rfNotify('Campaign filter opened')" class="rf-filter-btn" type="button">All campaigns <i class="fas fa-chevron-down down"></i></button>
+<button @click="rfNotify('Activity dates opened')" class="rf-filter-btn" type="button"><i class="fas fa-calendar cal"></i>Choose activity dates <i class="fas fa-chevron-down down"></i></button>
+<button @click="rfNotify('Rows per page')" class="rf-filter-btn" type="button">10 <i class="fas fa-chevron-down down"></i></button>
+<button @click="rfNotify('CSV file downloaded')" class="rf-filter-btn gray" type="button"><i class="fas fa-download"></i>Download as CSV file</button>
+</div>
+</div>
+<div class="rf-referrals-empty"><img alt="Mascot" src="assets/ref/mascot.png"/><span>Oops! You don't have data to display</span></div>
+<div class="rf-crumb"><span class="dim">{{websiteName}}</span><i class="fas fa-chevron-right"></i><span>Referral Cabinet</span></div>
+</div>
+</section>
+<div @click.self="rfModal = false" class="rf-modal-backdrop" v-if="rfModal">
+<div class="rf-modal-card">
+<div class="rf-modal-title">Create a new campaign</div>
+<input @keyup.enter="rfCreateCampaign" class="rf-modal-input" placeholder="Campaign name" v-model="rfNewCampaignName"/>
+<div class="rf-modal-actions"><button @click="rfModal = false" class="rf-neutral-btn" type="button">Cancel</button><button @click="rfCreateCampaign" class="rf-blue-btn" type="button">Create campaign</button></div>
+</div>
+</div>
+</div>
+</template>
 <template v-else-if="isCasinoPage">
   <div @scroll="syncPromoIndex" class="casino-promos no-scrollbar" id="casino-promos">
 <button :key="banner.id" @click="navigate(banner.href)" class="casino-promo" v-for="banner in promoBanners">
@@ -2985,7 +3198,7 @@
 </template>
 <!-- Account sekme grubundaki sayfalar kendi basligini cizer (.ac-title), route-hero gosterilmez. -->
 <div class="route-hero" v-else-if="!acHasTabs"><div><span class="route-kicker">{{pageContent.kicker}}</span><h1>{{pageContent.title}}</h1><p>{{pageContent.description}}</p></div><span class="route-badge">{{pageContent.badge}}</span></div>
-<div class="empty-panel" v-if="!isCasinoPage && !isGamePage && !isAccountPage && !isBonusesPage && !isCryptoPage && !isPromotionsPage"><div class="empty-panel-inner"><span class="empty-icon"><i :class="pageContent.icon"></i></span><h2>{{pageContent.emptyTitle}}</h2><p>{{pageContent.emptyText}}</p></div></div>
+<div class="empty-panel" v-if="!isCasinoPage && !isGamePage && !isAccountPage && !isBonusesPage && !isCryptoPage && !isPromotionsPage && !isReferralPage"><div class="empty-panel-inner"><span class="empty-icon"><i :class="pageContent.icon"></i></span><h2>{{pageContent.emptyTitle}}</h2><p>{{pageContent.emptyText}}</p></div></div>
 
 <!-- ===== Hesap sayfalari (Wallet / Profile / Account / Transactions / Game History / Sessions / Vault) ===== -->
 <template v-if="isAccountPage">
@@ -4897,7 +5110,7 @@
           {label:'Crypto & Earn', icon:'fas fa-money-bill-wave', arrow:true, path:'/crypto-and-earn'},
           {label:`${WEBSITE_NAME} Token`, image:'/logo.svg', path:'/buy-crypto'},
           {label:'Promotions', icon:'fas fa-bullhorn', path:'/promotions'},
-          {label:'Refer & Earn', icon:'fas fa-user-friends', path:'/bonuses'},
+          {label:'Refer & Earn', icon:'fas fa-user-friends', path:'/refer-and-earn'},
           {label:'VIP Club', icon:'fas fa-crown', vip:true, path:'/vip'},
           {label:'Rank System', icon:'fas fa-chart-bar', path:'/vip'},
           {label:'Free Crypto Boxes', icon:'fas fa-cube', path:'/crypto-and-earn'},
@@ -5170,6 +5383,10 @@
   // Promotions sayfasi mantigi ayri dosyada: casino-ui/promotions-page.js
   const promotionsPage = window.createPromotionsPage({ ref, computed, currentPage, toastMessage });
   const isPromotionsPage = promotionsPage.isPromotionsPage;
+
+  // Refer & Earn sayfasi mantigi ayri dosyada: casino-ui/referral-page.js
+  const referralPage = window.createReferralPage({ ref, computed, currentPage, toastMessage, authUser });
+  const isReferralPage = referralPage.isReferralPage;
   
   // Cuzdan modali mantigi ayri dosyada: casino-ui/wallet-modal.js
         const walletModal = window.createWalletModal({
@@ -5446,7 +5663,7 @@
         watch(authUser, (u) => { if (u) loadNotifications(); }, { immediate: true });
         onBeforeUnmount(()=>{ window.removeEventListener('resize',handleResize); window.removeEventListener('keydown',handleKeydown); window.removeEventListener('storage',handleStorageSync); document.removeEventListener('click',handleDocumentClick); clearTimeout(searchTimer); clearInterval(promoTimer); });
         return {...casinoPT,...uiSettings,...leaderboardData,betsRowChoices,betsTab,betsRowCount,betsCountOpen,betsTabs,betsVisibleRows,betGameIcon,selectBetsTab,setBetsCount,heroSpinning,heroSpin,heroBackdropCards,balanceMenuOpen,balanceSearch,balanceHideZero,balanceShowVault,balanceDisplayFiat,balanceCurrencies,balanceActiveCode,balanceFiltered,toggleBalanceMenu,selectBalanceCurrency,websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,...notificationsData,toggleNotif,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,slideCasinoRow,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
-          ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage, ...missionsPage, ...bonusesPage, ...cryptoEarnPage, ...promotionsPage};
+          ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage, ...missionsPage, ...bonusesPage, ...cryptoEarnPage, ...promotionsPage, ...referralPage};
       }
     }).component('game-card', GameCard).mount('#app');
   </script>
