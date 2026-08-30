@@ -29,6 +29,7 @@ const shopRoutes = require("./shopRoutes");
 const vipRoutes = require("./vipRoutes");
 const battlepassRoutes = require("./battlepassRoutes");
 const Wallet = require("./wallet");
+const cryptoDepositRoutes = require("./crypto/deposit");
 const bannerRoutes = require("./banner");
 const exchangeRates = require("./exchangeRates");
 const wingoRoutes = require("./wingoRoutes");
@@ -50,6 +51,9 @@ const sportsTournamentApiRoute = require("./sportsTournamentApi");
 const sportsTournamentUserApiRoute = require("./sportsTournamentUserApi");
 const promoCodesRoutes = require("./promoCodes");
 const userRoutes = require("./user");
+const casinoContentRoutes = require("./casinoContent");
+const adminCasinoContentRoutes = require("./adminCasinoContent");
+const betsFeedRoutes = require("./betsFeed");
 router.use("/poker_api", pockersGamesRoute);
 router.use("/promo-codes", promoCodesRoutes);
 router.use("/api/race", raceApiRoute);
@@ -76,8 +80,13 @@ router.use("/vip", vipRoutes);
 router.use("/gamehistory", gamehistory);
 router.use("/battlepass", battlepassRoutes);
 router.use("/wallet", Wallet);
+router.use("/crypto/deposit", cryptoDepositRoutes);
 router.use("/wingo", wingoRoutes);
 router.use("/user", userRoutes);
+router.use("/content", casinoContentRoutes);
+router.use("/bets", betsFeedRoutes);
+router.use("/admin/content", adminCasinoContentRoutes);
+router.use("/account", require("./account"));
 
 router.use("/chat", require("./chatConfig"));
 router.use("/settings", require("./settings"));
@@ -705,13 +714,16 @@ router.get(
 	},
 );
 
-router.get("/game-history/:identifier", async (req, res) => {
+router.get("/game-history/:identifier", authorizeUser(true), async (req, res) => {
 	try {
 		const { identifier } = req.params;
 		let { page = 1, limit = 20 } = req.query;
 
 		page = parseInt(page) || 1;
 		limit = parseInt(limit) || 20;
+		// Sayfa boyutunu sınırla (kaynak tüketimi koruması)
+		limit = Math.min(Math.max(limit, 1), 100);
+		page = Math.max(page, 1);
 
 		let userId = null;
 
@@ -725,6 +737,15 @@ router.get("/game-history/:identifier", async (req, res) => {
 			return res
 				.status(404)
 				.json({ error: "User not found" });
+		}
+
+		// ⚠️ GÜVENLİK: Kullanıcı sadece kendi oyun geçmişini görebilir (IDOR koruması).
+		// Kardeş uçlar (/transaction-history, /bonus-history) ile aynı davranış.
+		if (String(req.user?._id || "") !== String(userId)) {
+			return res.status(403).json({
+				success: false,
+				error: "Yalnızca kendi oyun geçmişinizi görüntüleyebilirsiniz.",
+			});
 		}
 
 		// 2) Toplam kayıt sayısı
@@ -762,11 +783,15 @@ router.get("/game-history/:identifier", async (req, res) => {
 				txn_type: tx.txn_type,
 				game_code: tx.game_code,
 
-				// Game’den gelen alanlar
-				game_name: game.game_name || "Unknown",
-				game_type: game.game_type || "other",
-				banner: game.banner || null,
-				provider: game.provider || null,
+					// Game’den gelen alanlar
+					game_name: game.game_name || "Unknown",
+					game_type: game.game_type || "other",
+					banner: game.banner || null,
+					// NOT: `provider` bir GameProvider ObjectId ref'idir ve burada
+					// populate EDILMEZ — arayuzde gosterilemez. Insan-okunur
+					// saglayici etiketi icin `provider_code` doner.
+					provider: game.provider || null,
+					provider_code: game.provider_code || null,
 			};
 		});
 

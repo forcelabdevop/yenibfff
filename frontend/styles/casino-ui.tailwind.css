@@ -1,0 +1,21 @@
+/* casino-ui (Vue SPA) icin Tailwind girdi dosyasi.
+ *
+ * Neden bu dosya var:
+ *   casino-ui, public/ altinda duran statik bir HTML oldugu icin Next.js'in
+ *   PostCSS hattindan gecmez. Bu yuzden Tailwind'i CLI ile derleyip
+ *   public/casino-ui/tailwind.css dosyasini uretiyoruz. Boylece
+ *   cdn.tailwindcss.com'a (production icin uygun degil) ihtiyac kalmiyor.
+ *
+ * Yeniden uretmek icin:  pnpm run casino-ui:css
+ *
+ * Not: Tailwind'in preflight'i layer(base) icinde kaldigi icin, index.html
+ * icindeki katmansiz (unlayered) el yazimi CSS her zaman ondedir. Yani
+ * preflight yalnizca sitenin hic tanimlamadigi ozellikleri etkiler.
+ */
+
+@import "tailwindcss";
+
+/* Sinif taramasi yalnizca casino-ui dosyalari uzerinden yapilir. */
+@source "../public/casino-ui/index.html";
+@source "../public/casino-ui/account-pages.js";
+@source "../public/casino-ui/game-detail.js";

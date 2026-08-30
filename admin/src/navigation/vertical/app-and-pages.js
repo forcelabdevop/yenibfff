@@ -63,6 +63,13 @@ export default [
     subject: "finance.withdraws",
   },
   {
+    title: "Kripto Yatırmalar",
+    icon: { icon: "tabler-currency-bitcoin" },
+    to: "apps-finance-crypto-deposits",
+    action: "read",
+    subject: "finance.deposits",
+  },
+  {
     title: "Manuel İşlemler",
     icon: { icon: "tabler-adjustments" },
     to: "apps-finance-manual-adjustments",
@@ -84,6 +91,37 @@ export default [
     to: "apps-reports-balance-analysis",
     action: "read",
     subject: "finance.balanceAnalysis",
+  },
+
+  { heading: "İçerik Yönetimi" },
+  {
+    title: "Casino İçerikleri",
+    icon: { icon: "tabler-layout-dashboard" },
+    action: "read",
+    subject: "casinoContent",
+    children: [
+      { title: "İçerik Özeti", to: "apps-casino-content", action: "read", subject: "casinoContent" },
+      { title: "Görevler", to: "/apps/casino-content/missions", action: "read", subject: "casinoContent" },
+      { title: "Bonuslar", to: "/apps/casino-content/bonuses", action: "read", subject: "casinoContent" },
+      { title: "Promosyonlar", to: "/apps/casino-content/promotions", action: "read", subject: "casinoContent" },
+      { title: "Refer & Earn", to: "/apps/casino-content/referral-tiers", action: "read", subject: "casinoContent" },
+      { title: "VIP Avantajları", to: "/apps/casino-content/vip-benefits", action: "read", subject: "casinoContent" },
+      { title: "VIP Yöneticileri", to: "/apps/casino-content/vip-managers", action: "read", subject: "casinoContent" },
+      { title: "VIP SSS", to: "/apps/casino-content/vip-faq", action: "read", subject: "casinoContent" },
+      { title: "Site Menüsü", to: "/apps/casino-content/site-navigation", action: "read", subject: "casinoContent" },
+      { title: "Footer", to: "/apps/casino-content/site-footer", action: "read", subject: "casinoContent" },
+      { title: "Yardım Merkezi", to: "/apps/casino-content/help-articles", action: "read", subject: "casinoContent" },
+      { title: "Ana Sayfa Hero", to: "/apps/casino-content/home-heroes", action: "read", subject: "casinoContent" },
+      { title: "Ana Sayfa Bölümleri", to: "/apps/casino-content/home-sections", action: "read", subject: "casinoContent" },
+      { title: "Casino Rayları", to: "/apps/casino-content/casino-rails", action: "read", subject: "casinoContent" },
+      { title: "Sağlayıcı Vitrini", to: "/apps/casino-content/provider-showcases", action: "read", subject: "casinoContent" },
+      { title: "Battle Vitrini", to: "/apps/casino-content/battle-showcases", action: "read", subject: "casinoContent" },
+      { title: "UI Metinleri", to: "/apps/casino-content/ui-copy", action: "read", subject: "casinoContent" },
+      { title: "Crypto Staking", to: "/apps/casino-content/crypto-staking", action: "read", subject: "casinoContent" },
+      { title: "Crypto Swap", to: "/apps/casino-content/crypto-swap", action: "read", subject: "casinoContent" },
+      { title: "Crypto Futures", to: "/apps/casino-content/crypto-futures", action: "read", subject: "casinoContent" },
+      { title: "Crypto Lootboxes", to: "/apps/casino-content/crypto-lootboxes", action: "read", subject: "casinoContent" },
+    ],
   },
 
   { heading: "Promosyon Yönetimi" },
@@ -410,6 +448,26 @@ export default [
   },
 
   { heading: "CMS Yönetimi" },
+  {
+    title: "Casino Arayüzü",
+    icon: { icon: "tabler-layout-bottombar" },
+    action: "read",
+    subject: "platform",
+    children: [
+      {
+        title: "Footer",
+        to: "apps-casino-ui-footer",
+        action: "read",
+        subject: "platform",
+      },
+      {
+        title: "Lobi Bileşenleri",
+        to: "apps-casino-ui-lobby",
+        action: "read",
+        subject: "platform",
+      },
+    ],
+  },
   {
     title: "Bannerlar",
     icon: { icon: "tabler-photo" },

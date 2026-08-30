@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 
 const vipLevelSchema = new mongoose.Schema({
-  level: { type: Number, required: true },
-  levelName: { type: String, required: true },
+  level: { type: Number, required: true, min: 0 },
+  levelName: { type: String, required: true, trim: true, maxlength: 80 },
+  active: { type: Boolean, default: true },
 
   requiredXp: { type: Number, required: true }, 
   

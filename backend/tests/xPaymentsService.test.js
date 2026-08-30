@@ -35,7 +35,9 @@ const installMock = (modulePath, exports) => {
 	};
 };
 
+const actualMongoose = require(mongoosePath);
 installMock(mongoosePath, {
+	...actualMongoose,
 	startSession: () => activeHarness.startSession(),
 });
 installMock(userPath, {

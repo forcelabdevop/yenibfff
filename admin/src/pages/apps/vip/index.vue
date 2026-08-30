@@ -15,6 +15,7 @@ const vips = ref([])
 const vipToEdit = ref({
   level: '',
   levelName: '',
+  active: true,
   requiredXp: '',
   requiredWager: '',
   requiredDeposit: '',
@@ -53,6 +54,7 @@ const openDrawer = (vip = null) => {
         _id: vip._id,
         level: vip.level,
         levelName: vip.levelName,
+        active: vip.active !== false,
         requiredXp: vip.requiredXp,
         requiredWager: vip.requiredWager,
         requiredDeposit: vip.requiredDeposit,
@@ -71,7 +73,7 @@ const openDrawer = (vip = null) => {
         vipHeaderImageUrl: vip.vipHeaderImage,
         vipHeaderImage: null,
       }
-    : { level: '', levelName: '', requiredXp: '', requiredWager: '', requiredDeposit: '', dailyCashback: '', weeklyCashback: '', monthlyCashback: '', upgradeReward: '', dailyVipReward: '', weeklyVipReward: '', vipDayReward: '', vipDay: 'Friday', withdrawLimit: '', vipSupportInfo: '', vipBadgeImage: null, vipBadgeImageUrl: '', vipHeaderImage: null, vipHeaderImageUrl: '' }
+    : { level: '', levelName: '', active: true, requiredXp: '', requiredWager: '', requiredDeposit: '', dailyCashback: '', weeklyCashback: '', monthlyCashback: '', upgradeReward: '', dailyVipReward: '', weeklyVipReward: '', vipDayReward: '', vipDay: 'Friday', withdrawLimit: '', vipSupportInfo: '', vipBadgeImage: null, vipBadgeImageUrl: '', vipHeaderImage: null, vipHeaderImageUrl: '' }
   isVIPDrawerOpen.value = true
 }
 
@@ -190,6 +192,9 @@ onMounted(fetchVIPs)
                 </VCol>
                 <VCol cols="12">
                   <AppTextField v-model="vipToEdit.levelName" :label="t('vip.levelName')" :rules="[requiredValidator]" />
+                </VCol>
+                <VCol cols="12">
+                  <VSwitch v-model="vipToEdit.active" label="Active rank" color="primary" inset />
                 </VCol>
                 <VCol cols="12">
                   <AppTextField v-model="vipToEdit.requiredXp" :label="t('vip.requiredXp')" type="number" />

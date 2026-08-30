@@ -5,6 +5,31 @@ process.env.PUPPETEER_CACHE_DIR = "/tmp/puppeteer";
 
 require("dotenv").config();
 
+/**
+ * Surec seviyesi hata yakalayicilar — mumkun olan en erken noktada kurulur ki
+ * baslangic sirasindaki hatalari da yakalayabilsinler.
+ *
+ * Bunlar olmadan yakalanmamis bir promise reddi Node 16+ uzerinde sureci
+ * SESSIZCE sonlandiriyordu: nginx logunda yalnizca "Connection refused"
+ * goruluyor, sebep hicbir yere yazilmiyordu.
+ *
+ * Davranis farki bilincli:
+ *  - unhandledRejection: loglanir, surec YASAR. Genelde tek bir istegin
+ *    hatasidir; tum siteyi dusurmesi icin sebep yok.
+ *  - uncaughtException: loglanir ve surec KONTROLLU sekilde biter. Bu
+ *    noktada uygulama durumu guvenilmezdir; PM2 temiz bir worker baslatir.
+ */
+process.on("unhandledRejection", (reason) => {
+	const detail = reason instanceof Error ? reason.stack : String(reason);
+	console.error(`[unhandledRejection] ${detail}`);
+});
+
+process.on("uncaughtException", (err) => {
+	console.error(`[uncaughtException] ${err.stack || err.message}`);
+	// Cikmadan once loglarin diske yazilmasina firsat ver.
+	setTimeout(() => process.exit(1), 100).unref();
+});
+
 const path = require("path");
 const express = require("express");
 const http = require("http");
@@ -65,7 +90,13 @@ require("./utils/io").init(io);
 
 //initTelegramBot(io);
 
-require("./database")();
+// Bilincli olarak beklenmiyor (await): sunucu, veritabani hazir olmadan da
+// dinlemeye baslar. /health ucu readyState'i kontrol ettigi icin yuk
+// dengeleyici hazir olmayan instance'a trafik gondermez.
+// .catch() sart: bagli olmayan bir promise reddi sureci sessizce oldururdu.
+require("./database")().catch((err) => {
+	console.error(`Veritabani baslangici basarisiz: ${err.stack || err.message}`);
+});
 require("./utils/setting").settingInitDatabase();
 
 // Initialize avatar helper (preload fallback cache)
@@ -91,6 +122,37 @@ app.use(hpp());
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "/views"));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// 🩺 Sağlık kontrolü — kimlik doğrulaması YOK, kasıtlı olarak halka açık.
+//
+// KONUM KRİTİK: bu tanım, aşağıdaki `app.use("/", routes)` satırından ÖNCE
+// gelmek ZORUNDA. routes/index.js sonunda her isteği yakalayan bir 404
+// handler var (`router.use(...)` → {"success":false,"message":"Endpoint not
+// found"}). Express sırayla eşleştirdiği için, /health o mount'tan sonra
+// tanımlanırsa catch-all onu yutar ve uç ERİŞİLEMEZ hale gelir.
+//
+// Bu gerçekten yaşandı: /health mount'tan sonra tanımlanmıştı, dolayısıyla
+// her zaman 404 dönüyordu. deploy.sh 200 beklediği için (scripts/deploy.sh:241)
+// otomatik dağıtım her seferinde sağlık kontrolünde kalıp GERİ ALINIRDI.
+//
+// deploy.sh bu ucu kullanır. Bu yüzden UCUZ olmalı — ağır sorgu veya dış
+// servis çağrısı EKLEMEYİN, yoksa her dağıtımda yanlış alarm verir.
+//
+// Veritabanı bağlı değilse 503 döner; süreç ayakta ama iş göremez durumdadır
+// ve yük dengeleyici/deploy script'i bunu başarısızlık saymalıdır.
+app.get("/health", (req, res) => {
+	const mongoose = require("mongoose");
+	// 1 = connected, 2 = connecting
+	const dbReady = mongoose.connection && mongoose.connection.readyState === 1;
+	res.status(dbReady ? 200 : 503).json({
+		ok: dbReady,
+		db: dbReady ? "up" : "down",
+		// Dağıtım sonrası "hangi sürüm canlıda?" sorusunu yanıtlar.
+		commit: process.env.GIT_COMMIT || "unknown",
+		uptime: Math.round(process.uptime()),
+		pid: process.pid,
+	});
+});
 
 // Mount routes
 app.use("/", require("./routes")(io));
@@ -161,6 +223,39 @@ cron.schedule("* * * * *", () => {
 	sportsTournamentService.advanceTournamentStates().catch((err) =>
 		console.error("❌ Spor Turnuvası durum güncelleme hatası:", err.message)
 	);
+});
+
+// 🎁 Casino ödül motoru: sağlayıcıya teslim edilemeyen bonus ödüllerini (free
+// spin vb.) üstel geri çekilme ile yeniden dener + süresi dolan seçimleri kapatır.
+const casinoRewardEngine = require("./services/casinoRewardEngine");
+cron.schedule("* * * * *", () => {
+	casinoRewardEngine
+		.processDeliveryQueue()
+		.catch((err) =>
+			console.error("❌ Casino bonus teslim kuyruğu hatası:", err.message),
+		);
+	casinoRewardEngine
+		.expireStaleStates()
+		.catch((err) =>
+			console.error("❌ Casino bonus süre aşımı taraması hatası:", err.message),
+		);
+});
+
+// 🪙 TRON yatırma izleyicisi: kendi HD adreslerimize gelen transferleri tespit
+// eder ve onay eşiği aşıldığında bakiyeye ekler.
+//
+// GÜVENLİK: Bu cron 4 PM2 instance'ının HEPSİNDE kurulur; mükerrer kredi
+// koruması servisin kendi içindeki JobLock leader-election'ı ile sağlanır
+// (services/cryptoDepositWatcher.js). Buraya ek bir instance kontrolü
+// EKLEMEYİN — kilit zaten tek çalıştırıcıyı garanti eder ve kilidi tutan
+// instance çökerse süre dolunca bir diğeri devralır.
+const cryptoDepositWatcher = require("./services/cryptoDepositWatcher");
+cron.schedule("* * * * *", () => {
+	cryptoDepositWatcher
+		.runOnce()
+		.catch((err) =>
+			console.error("❌ Kripto yatırma tarama hatası:", err.message),
+		);
 });
 
 // Set app port

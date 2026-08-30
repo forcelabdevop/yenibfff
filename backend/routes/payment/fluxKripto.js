@@ -862,7 +862,11 @@ router.post("/callback", async (req, res) => {
 			require("../../utils/depositEvents").notifyRealDepositCredited(
 				depositUserToNotify,
 				depositAmountToNotify,
-				"FluxKripto"
+				"FluxKripto",
+				{
+					reference: `fluxkripto:${updatedTransaction?.externalTransactionId || updatedTransaction?._id}`,
+					currency: updatedTransaction?.currency,
+				}
 			);
 		}
 

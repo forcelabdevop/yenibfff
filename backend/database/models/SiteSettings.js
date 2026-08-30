@@ -544,6 +544,319 @@ const SiteSettingsSchema = new mongoose.Schema(
 				},
 			},
 		},
+		// Casino arayüzü (casino-ui) yönetimi: footer, hero oyun seçici, canlı bahis tablosu.
+		// Metin alanlarında {{websiteName}} yer tutucusu kullanılabilir.
+		casinoUi: {
+			footer: {
+				enabled: { type: Boolean, default: true },
+				columns: {
+					type: [
+						{
+							title: { type: String, default: "" },
+							order: { type: Number, default: 0 },
+							enabled: { type: Boolean, default: true },
+							links: [
+								{
+									label: { type: String, default: "" },
+									url: { type: String, default: "#" },
+									external: { type: Boolean, default: false },
+									order: { type: Number, default: 0 },
+								},
+							],
+						},
+					],
+					default: () => [
+						{
+							title: "I-GAMING",
+							order: 0,
+							links: [
+								{ label: "All games", url: "#originals", order: 0 },
+								{ label: "Dice", url: "#originals", order: 1 },
+								{ label: "Slots", url: "#top-slots", order: 2 },
+								{ label: "Rank system", url: "#activity", order: 3 },
+								{ label: "Live casino", url: "#originals", order: 4 },
+								{ label: "Plinko", url: "#originals", order: 5 },
+								{ label: "Crypto Poker", url: "#originals", order: 6 },
+							],
+						},
+						{
+							title: "FEATURES",
+							order: 1,
+							links: [
+								{ label: "{{websiteName}} Staking", url: "#staking", order: 0 },
+								{ label: "Crypto Staking", url: "#staking", order: 1 },
+								{ label: "{{websiteName}} Box", url: "#buy-crypto", order: 2 },
+								{ label: "Daily tasks", url: "#activity", order: 3 },
+								{
+									label: "Affiliate Program",
+									url: "#footer",
+									external: true,
+									order: 4,
+								},
+								{ label: "Futures", url: "#originals", order: 5 },
+							],
+						},
+						{
+							title: "PROMO",
+							order: 2,
+							links: [{ label: "Promotions", url: "#home", order: 0 }],
+						},
+						{
+							title: "ABOUT US",
+							order: 3,
+							links: [
+								{ label: "News", url: "#news", order: 0 },
+								{ label: "About {{websiteName}}", url: "#news", order: 1 },
+								{ label: "About team", url: "#news", order: 2 },
+								{
+									label: "{{websiteName}} Whitepaper",
+									url: "#news",
+									external: true,
+									order: 3,
+								},
+								{
+									label: "{{websiteName}} Docs",
+									url: "#news",
+									external: true,
+									order: 4,
+								},
+								{
+									label: "Official Mirrors",
+									url: "#news",
+									external: true,
+									order: 5,
+								},
+								{ label: "Download application", url: "#news", order: 6 },
+							],
+						},
+						{
+							title: "HELP",
+							order: 4,
+							links: [
+								{ label: "Fairness", url: "#footer", order: 0 },
+								{
+									label: "Privacy Policy",
+									url: "#footer",
+									external: true,
+									order: 1,
+								},
+								{
+									label: "Terms of Service",
+									url: "#footer",
+									external: true,
+									order: 2,
+								},
+								{
+									label: "Sportsbetting T&C",
+									url: "#footer",
+									external: true,
+									order: 3,
+								},
+								{
+									label: "Bug Bounty Program",
+									url: "#footer",
+									external: true,
+									order: 4,
+								},
+								{
+									label: "Business Inquiries",
+									url: "#footer",
+									external: true,
+									order: 5,
+								},
+								{ label: "Responsible Gambling", url: "#footer", order: 6 },
+							],
+						},
+					],
+				},
+				contact: {
+					enabled: { type: Boolean, default: true },
+					title: { type: String, default: "CONTACT US" },
+					// Mail adresleri <user>@<emailDomain>.com olarak kurulur.
+					emailDomain: { type: String, default: "", trim: true },
+					items: {
+						type: [
+							{
+								label: { type: String, default: "" },
+								mailbox: { type: String, default: "support" },
+								description: { type: String, default: "" },
+								order: { type: Number, default: 0 },
+							},
+						],
+						default: () => [
+							{
+								label: "Live Support",
+								mailbox: "support",
+								description: "For quick help with any question",
+								order: 0,
+							},
+							{
+								label: "",
+								mailbox: "support",
+								description: "For questions and technical issues",
+								order: 1,
+							},
+							{
+								label: "",
+								mailbox: "bugbounty",
+								description: "For bugbounty reports",
+								order: 2,
+							},
+							{
+								label: "",
+								mailbox: "pr",
+								description: "For marketing and partnership proposals",
+								order: 3,
+							},
+							{
+								label: "",
+								mailbox: "affiliate",
+								description: "To become {{websiteName}} affiliate partner",
+								order: 4,
+							},
+						],
+					},
+				},
+				legal: {
+					enabled: { type: Boolean, default: true },
+					ageBadge: { type: String, default: "18+" },
+					licenseBadge: { type: String, default: "SIO" },
+					riskText: {
+						type: String,
+						default:
+							"This website offers gaming with risk experience. To be a user of our site you must be over 18 years old. We are not responsible for the violation of your local laws related to i-gaming. Play responsibly and have fun on {{websiteName}}.",
+					},
+					brandText: {
+						type: String,
+						default:
+							"{{websiteName}} is a brand name of Universe B Games N.V. Company Address: Dr. H. Fergusonweg 1, Curacao. {{websiteName}} is authorised to operate by the Curacao Gaming Control Board under its valid Certificate of Operation until the process of the application has concluded.",
+					},
+				},
+				partners: {
+					type: [
+						{
+							label: { type: String, default: "" },
+							url: { type: String, default: "" },
+							big: { type: Boolean, default: false },
+							order: { type: Number, default: 0 },
+						},
+					],
+					default: () => [
+						{ label: "₿bitcoin", big: true, order: 0 },
+						{ label: "♦ ethereum", order: 1 },
+						{ label: "Ⓣ tether", order: 2 },
+						{ label: "▽ TRON", order: 3 },
+						{ label: "CRYPTO RANK ↗", order: 4 },
+						{ label: "◉ CoinGecko", order: 5 },
+						{ label: "Ⓜ CoinMarketCap", order: 6 },
+						{ label: "◉ DappRadar", order: 7 },
+						{ label: "◈ COIN98", order: 8 },
+					],
+				},
+				socials: {
+					type: [
+						{
+							name: { type: String, default: "" },
+							// casino-ui'deki .social-square renk sınıfı
+							variant: { type: String, default: "tg" },
+							// Font Awesome sınıfı; boşsa `text` gösterilir
+							icon: { type: String, default: "" },
+							text: { type: String, default: "" },
+							url: { type: String, default: "" },
+							enabled: { type: Boolean, default: true },
+							order: { type: Number, default: 0 },
+						},
+					],
+					default: () => [
+						{
+							name: "Telegram",
+							variant: "tg",
+							icon: "fab fa-telegram-plane",
+							order: 0,
+						},
+						{ name: "X", variant: "xnet", text: "𝕏", order: 1 },
+						{
+							name: "Instagram",
+							variant: "ig",
+							icon: "fab fa-instagram",
+							order: 2,
+						},
+						{ name: "Bitcoin Talk", variant: "orange", text: "₿", order: 3 },
+						{
+							name: "Discord",
+							variant: "discord",
+							icon: "fab fa-discord",
+							order: 4,
+						},
+						{
+							name: "Reddit",
+							variant: "reddit",
+							icon: "fab fa-reddit-alien",
+							order: 5,
+						},
+						{
+							name: "TikTok",
+							variant: "tiktok",
+							icon: "fab fa-tiktok",
+							order: 6,
+						},
+						{
+							name: "YouTube",
+							variant: "youtube",
+							icon: "fab fa-youtube",
+							order: 7,
+						},
+						{ name: "{{websiteName}}", variant: "bicon", text: "B", order: 8 },
+					],
+				},
+				tokenWidgets: {
+					enabled: { type: Boolean, default: true },
+					walletLabel: { type: String, default: "SITE　›　🦊 Metamask" },
+					rateLabel: { type: String, default: "🇹🇷 1 ₺ = $0.02　ⓘ" },
+				},
+				copyright: {
+					type: String,
+					default:
+						"Copyright © 2019-2026 {{websiteName}}. All rights reserved.",
+				},
+			},
+
+			// Lobideki "hero" oyun seçici kartı
+			heroChooser: {
+				enabled: { type: Boolean, default: true },
+				title: { type: String, default: "Can't choose a game?" },
+				subtitle: {
+					type: String,
+					default: "Let luck decide — spin and jump straight into a random game.",
+				},
+				buttonText: { type: String, default: "Choose for me" },
+				backdropEnabled: { type: Boolean, default: true },
+			},
+
+			// Lobideki canlı bahis tablosu
+			betsTable: {
+				enabled: { type: Boolean, default: true },
+				title: { type: String, default: "Live bets" },
+				defaultRowCount: { type: Number, default: 10 },
+				rowCountOptions: { type: [Number], default: () => [10, 20, 50] },
+				tabs: {
+					type: [
+						{
+							key: { type: String, default: "" },
+							label: { type: String, default: "" },
+							enabled: { type: Boolean, default: true },
+							order: { type: Number, default: 0 },
+						},
+					],
+					default: () => [
+						{ key: "all", label: "All bets", order: 0 },
+						{ key: "my", label: "My bets", order: 1 },
+						{ key: "high", label: "High rollers", order: 2 },
+						{ key: "rare", label: "Rare wins", order: 3 },
+					],
+				},
+			},
+		},
 	},
 	{ timestamps: true }
 );

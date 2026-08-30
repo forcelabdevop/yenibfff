@@ -15,11 +15,21 @@ const freeSpinGrantSchema = new mongoose.Schema({
 	expireHours: { type: Number, required: true },
 	expiresAt: { type: Date, required: true },
 	providerResponse: { type: Object },
+	// 🎁 Bonus motoru üzerinden verilen freespinler için kaynak ve teslim izleme
+	source: { type: String, enum: ["admin", "bonus", "mission"], default: "admin" },
+	sourceContent: { type: mongoose.Schema.Types.ObjectId, ref: "CasinoContent", default: null },
+	sourceState: { type: mongoose.Schema.Types.ObjectId, ref: "CasinoUserState", default: null },
+	deliveryKey: { type: String, default: null },
+	deliveryStatus: { type: String, enum: ["delivered", "pending", "failed"], default: "delivered" },
+	attempts: { type: Number, min: 0, default: 1 },
+	lastError: { type: String, default: "" },
 	createdAt: { type: Date, default: Date.now },
 });
 
 freeSpinGrantSchema.index({ targetUser: 1, createdAt: -1 });
 freeSpinGrantSchema.index({ createdAt: -1 });
 freeSpinGrantSchema.index({ targetUser: 1, gameCode: 1, createdAt: 1, expiresAt: 1 });
+freeSpinGrantSchema.index({ deliveryKey: 1 }, { unique: true, sparse: true });
+freeSpinGrantSchema.index({ deliveryStatus: 1, createdAt: -1 });
 
 module.exports = mongoose.model("FreeSpinGrant", freeSpinGrantSchema);

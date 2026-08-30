@@ -26,6 +26,8 @@ transactionSchema.index({ provider_code: 1 });
 transactionSchema.index({ round_id: 1 });
 transactionSchema.index({ txn_type: 1, created_at: -1 });
 transactionSchema.index({ win_money: 1, created_at: -1 });
+// Oyun detay sayfasindaki "Top 3 wins" sorgusu icin
+transactionSchema.index({ game_code: 1, win_money: -1 });
 transactionSchema.index({
     user_code: 1,
     provider_code: 1,

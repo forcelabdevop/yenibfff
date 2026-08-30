@@ -1,0 +1,154 @@
+/* Crypto & Earn — referans tasarimdan birebir port.
+   Tum secicilar .ce-page altina scope'lanmistir; referanstaki generic isimler
+   (.hero, .section-heading, .arrow-button, .footer ...) site kabuguyla cakisirdi,
+   bu yuzden hepsi ce- onekiyle yeniden adlandirildi. */
+.ce-page{
+  --ce-bg:#09121d;--ce-panel:#0e1a26;--ce-card:#0f1b27;--ce-line:#1e2b38;
+  --ce-muted:#aab8cf;--ce-dim:#61738f;--ce-blue:#2188ff;--ce-page-w:1040px;
+  margin:-34px -32px 0;background:var(--ce-bg);color:#f7f8fb;
+  font-family:'Montserrat Variable','Montserrat',Arial,sans-serif;font-weight:600;letter-spacing:normal;
+  padding-bottom:60px;
+}
+.ce-page *{box-sizing:border-box}
+.ce-page button{border:0;font:inherit;font-family:inherit;cursor:pointer}
+.ce-page h1,.ce-page h2{margin:0}
+
+.ce-shell{width:calc(100% - 64px);max-width:var(--ce-page-w);margin-left:auto;margin-right:auto}
+.ce-red{
+  border-radius:9px;padding:0 17px;
+  background:linear-gradient(180deg,#ff1c55 0%,#ef0041 45%,#d40038 100%);
+  color:#fff;font-weight:900;font-size:13px;border:1px solid rgba(255,72,116,.7);
+  box-shadow:0 0 16px rgba(241,0,61,.45),inset 0 2px 5px rgba(255,255,255,.28),inset 0 -5px rgba(151,0,39,.28);
+  transition:.16s;
+}
+.ce-red:hover{transform:translateY(-1px);filter:brightness(1.08)}
+
+/* ===== Hero ===== */
+.ce-hero{
+  position:relative;height:365px;overflow:hidden;
+  background:
+    radial-gradient(circle at 78% 14%,rgba(143,26,46,.82) 0%,rgba(80,18,31,.56) 32%,rgba(23,14,25,.12) 65%),
+    linear-gradient(90deg,#0e111b 0%,#16111b 43%,#501421 77%,#72182b 100%);
+}
+.ce-hero:after{content:"";position:absolute;inset:auto 0 0 0;height:120px;background:linear-gradient(180deg,transparent,#09121d 86%);pointer-events:none}
+.ce-hero__inner{position:relative;height:100%;z-index:2}
+.ce-hero__copy{position:absolute;left:0;top:117px;z-index:3}
+.ce-hero__title{font-weight:900;font-size:36px;line-height:1.02;letter-spacing:.2px;color:#fff}
+.ce-hero__sub{margin:12px 0 0;color:#c8c8cb;font-size:17px;line-height:25px;font-weight:800}
+.ce-hero__cta{margin-top:25px;height:48px;min-width:137px;font-size:15px}
+.ce-hero__art{position:absolute;width:414px;height:auto;right:125px;top:44px;z-index:1;display:block}
+
+/* ===== Bolum basliklari ===== */
+.ce-section{width:calc(100% - 64px);max-width:var(--ce-page-w);margin-left:auto;margin-right:auto}
+.ce-section--staking{margin-top:24px}
+.ce-section--swap{margin-top:60px}
+.ce-section--futures{margin-top:65px}
+.ce-section--loot{margin-top:64px}
+.ce-head{height:24px;display:flex;align-items:center;justify-content:space-between}
+.ce-head h2{font-size:18px;line-height:24px;font-weight:900;color:#f8f9fb}
+.ce-head__link{display:flex;align-items:center;gap:18px;color:var(--ce-blue);font-weight:800;font-size:14px;white-space:nowrap}
+.ce-head__link>button:first-child{background:none;color:inherit}
+.ce-arrow{background:none;color:#708099;font-size:17px;width:15px;height:24px;display:grid;place-items:center;padding:0}
+.ce-arrow.is-active{color:#e9eef6}
+
+/* ===== Crypto Staking ===== */
+.ce-stakes{margin-top:10px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}
+.ce-stake{height:121px;border-radius:12px;background:#101b28;overflow:hidden;border:1px solid rgba(255,255,255,.015)}
+.ce-stake.is-featured{background:linear-gradient(135deg,#751c2d 0%,#311522 78%)}
+.ce-stake__top{height:76px;display:flex;align-items:center;padding:0 14px}
+.ce-stake__icon{width:48px;height:48px;object-fit:cover;flex:0 0 48px;border-radius:50%}
+.ce-stake__copy{margin-left:10px;min-width:0}
+.ce-stake__name{color:#acbad0;font-size:13px;line-height:18px;font-weight:700;white-space:nowrap}
+.ce-stake__symbol{color:#f8f9fb;font-size:19px;line-height:24px;font-weight:900}
+.ce-stake__rate{margin-left:auto;text-align:right;padding-left:7px;white-space:nowrap}
+.ce-stake__label{color:#adbacf;font-size:12px;line-height:18px;font-weight:700}
+.ce-stake__value{color:#f6f8fb;font-size:19px;line-height:25px;font-weight:900}
+.ce-stake__bottom{height:45px;border-top:1px solid #24303c;background:rgba(255,255,255,.025);padding:0 14px;display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:800}
+.ce-stake__bottom span:first-child{color:#61748f}
+.ce-stake__bottom span:last-child{color:#adbad0}
+
+/* ===== Swap Crypto ===== */
+.ce-swap{margin-top:11px;height:97px;border-radius:14px;background:#0f1b27;display:flex;align-items:center;padding:0 24px}
+.ce-swap__coins{display:flex;align-items:center;min-width:245px}
+.ce-swap__coins img,.ce-swap__glyph{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid #0f1b27;margin-left:-7px}
+.ce-swap__coins>:first-child{margin-left:0}
+.ce-swap__glyph{background:#101820;color:#fff;display:grid;place-items:center;font-weight:900;font-size:19px}
+.ce-swap__caption{flex:1;text-align:center;color:#aebbd0;font-size:15px;font-weight:700}
+.ce-swap__button{height:45px;min-width:129px;font-size:15px}
+
+/* ===== Futures ===== */
+.ce-futures{margin-top:16px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:15px}
+.ce-future{height:162px;border-radius:13px;background:#0e1a26;padding:16px}
+.ce-future__title{display:flex;align-items:center;gap:9px;font-size:16px;font-weight:900}
+.ce-future__title img{width:32px;height:32px;border-radius:50%;object-fit:cover}
+.ce-future__mark{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:17px;font-weight:900;border:2px solid rgba(255,255,255,.35)}
+.ce-future__mark.is-xrp{background:#24292f;color:#fff}
+.ce-future__mark.is-xrp svg{width:15px;height:15px;fill:currentColor}
+.ce-future__mark.is-doge{background:#c8a82d;color:#fff;font-size:18px}
+.ce-future__label{color:#aab8cd;font-size:14px;font-weight:700;margin-top:16px;line-height:18px}
+.ce-future__price{color:#f7f8fa;font-size:21px;line-height:26px;letter-spacing:.2px;font-weight:900;white-space:nowrap}
+.ce-future__lev{color:#aab8cd;margin-top:16px;font-size:14px;font-weight:700;white-space:nowrap}
+.ce-future__lev strong{color:#f5f7fa;font-weight:800}
+
+/* ===== NFT Lootboxes ===== */
+.ce-loot-wrap{position:relative}
+.ce-loots{margin-top:15px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:15px}
+.ce-loot{position:relative;height:287px;border-radius:14px;overflow:visible;background:#182330;border:1px solid #2b3645;box-shadow:inset 0 -26px 28px rgba(163,0,38,.08)}
+.ce-loot__new{position:absolute;z-index:3;top:16px;left:16px;height:24px;min-width:49px;padding:0 9px;border-radius:13px;background:#12be40;display:grid;place-items:center;font-weight:900;font-size:12px;box-shadow:0 6px 18px rgba(20,193,63,.32)}
+.ce-loot__info{position:absolute;z-index:5;top:19px;right:18px;width:23px;height:23px;border-radius:50%;background:#dce3ed;border:3px solid #586a83;color:#1b2634;display:grid;place-items:center;font-size:12px;font-weight:900;padding:0;line-height:1}
+.ce-loot__art{position:absolute;top:42px;left:50%;transform:translateX(-50%);width:135px;height:112px;object-fit:contain}
+.ce-loot__meta{position:absolute;left:9px;right:9px;bottom:58px}
+.ce-loot__name{color:#f4f6f9;font-weight:900;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ce-loot__sub{margin-top:5px;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:800}
+.ce-loot__items{color:#60718c}
+.ce-loot__price{color:#fff;font-size:13px;font-weight:900}
+.ce-loot__open{position:absolute;left:8px;right:8px;bottom:12px;width:calc(100% - 16px);height:35px;font-size:13px;padding:0}
+.ce-tip{position:absolute;z-index:30;right:18px;top:53px;width:158px;padding:11px 12px;border-radius:10px;background:#202d3e;box-shadow:0 14px 30px rgba(0,0,0,.55);border:1px solid #2b3a4d}
+.ce-tip:before{content:"";position:absolute;top:-7px;right:8px;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:8px solid #202d3e}
+.ce-tip__title{font-size:16px;font-weight:900;color:#fff;margin-bottom:8px;line-height:1.2}
+.ce-tip__row{height:39px;display:grid;grid-template-columns:30px 1fr 20px;align-items:center;border-bottom:1px solid rgba(255,255,255,.045);color:#aebbd0;font-size:12px;font-weight:800}
+.ce-tip__row:last-child{border-bottom:0}
+.ce-tip__row img{width:27px;height:24px;object-fit:contain}
+.ce-tip__row strong{color:#fff;text-align:right}
+
+/* ===== Breadcrumb ===== */
+.ce-crumb{width:calc(100% - 64px);max-width:var(--ce-page-w);margin:57px auto 0;height:28px;display:flex;align-items:center;gap:12px;font-size:19px;font-weight:900}
+.ce-crumb .dim{color:#727982}
+.ce-crumb i{color:#505a67;font-size:15px}
+.ce-crumb .bright{color:#f5f6f8}
+
+@media (max-width:1350px){
+  .ce-shell,.ce-section,.ce-crumb{width:calc(100% - 32px)}
+  .ce-hero__art{right:20px;opacity:.9}
+  .ce-stake__name{font-size:11px}
+  .ce-stake__top{padding:0 10px}
+  .ce-future{padding:13px 10px}
+  .ce-future__price{font-size:18px}
+}
+@media (max-width:900px){
+  .ce-page{margin:-14px -12px 0}
+  .ce-shell,.ce-section,.ce-crumb{width:calc(100% - 32px)}
+  .ce-hero{height:450px}
+  .ce-hero__art{right:-75px;top:70px;width:440px;opacity:.52}
+  .ce-hero__copy{top:100px;max-width:540px}
+  .ce-hero__title{font-size:34px}
+  .ce-hero__sub{max-width:360px}
+  .ce-stakes{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ce-futures,.ce-loots{display:flex;overflow-x:auto;padding-bottom:5px;scrollbar-width:none}
+  .ce-future,.ce-loot{min-width:210px}
+  .ce-tip{display:none}
+}
+@media (max-width:620px){
+  .ce-hero{height:420px}
+  .ce-hero__copy{top:72px}
+  .ce-hero__title{font-size:30px}
+  .ce-hero__sub{font-size:15px;max-width:270px}
+  .ce-hero__art{width:390px;right:-125px;top:115px}
+  .ce-stakes{grid-template-columns:1fr}
+  .ce-swap{padding:18px;height:auto;min-height:150px;flex-wrap:wrap;gap:15px}
+  .ce-swap__coins{min-width:100%;justify-content:center}
+  .ce-swap__caption{min-width:100%;order:2}
+  .ce-swap__button{width:100%;order:3}
+  .ce-head__link{gap:9px;font-size:12px}
+  .ce-crumb{font-size:16px}
+}

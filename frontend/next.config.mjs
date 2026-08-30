@@ -20,9 +20,24 @@ if (process.env.NODE_ENV === "production" && missingPublicEnv.length) {
 
 const nextConfig = {
   // Frontend yalnızca statik dosya olarak yayınlanır.
+  // output: "export" ciktisi standart "out/" klasorune yazilir; Vercel'in
+  // Next.js preset'i bunu otomatik bulur. Ozel distDir vermiyoruz.
   output: "export",
-  distDir: "dist",
-  trailingSlash: true,
+
+  // trailingSlash KULLANMIYORUZ — bilerek.
+  //
+  // `trailingSlash: true` ile export dizin yapisi uretir (out/wallet/index.html)
+  // ve kanonik adres `/wallet/` olur. Ancak bu projenin yayin ortami sondaki
+  // egik cizgiyi SILIYOR: `/wallet/` icin 308 -> `/wallet` donuyor. Next ise
+  // `/wallet` icin 308 -> `/wallet/` bekliyor. Sonuc: tarayici iki adres
+  // arasinda sonsuz ziplayip ERR_TOO_MANY_REDIRECTS veriyor ("sizi cok fazla
+  // kez yonlendirdi") ve hesap sayfalarinin hicbiri acilmiyor.
+  //
+  // Varsayilan (false) ile export duz dosyalar uretir (out/wallet.html) ve
+  // sunucunun egik-cizgi-silen davranisiyla uyumlu olur.
+  //
+  // Buna geri eklemeden once TUM linkler egik cizgili olmali; su an tersi
+  // gecerli (`/game?code=...`, `/wallet`) — karistirmak ayni dongu demek.
 
   // Deployment'ın server-side env adlarını static browser bundle'ına aktar.
   env: publicEnv,

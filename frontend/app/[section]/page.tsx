@@ -3,16 +3,43 @@ import { notFound } from "next/navigation"
 import { CasinoFrame } from "@/components/casino-shell/casino-frame"
 import { WEBSITE_NAME } from "@/lib/config"
 
+// NOT: "casino" burada YOK — /casino rotasi app/casino/page.tsx tarafindan
+// karsilanir. Iki yerde tanimlanmasi trailingSlash ile sonsuz yonlendirme
+// dongusune (ERR_TOO_MANY_REDIRECTS) yol aciyordu.
 const sections = {
-  casino: "Casino",
   slots: "Slots",
   originals: `${WEBSITE_NAME} Originals`,
   "live-casino": "Live Casino",
   sports: "Sports Betting",
+  missions: "Missions",
   bonuses: "Bonuses & Promotions",
   vip: "VIP Club",
   "buy-crypto": "Buy Crypto",
+  "crypto-and-earn": "Crypto & Earn",
+  promotions: "Promotions",
+  "refer-and-earn": "Refer & Earn",
+  // Kullanici hesap sayfalari — profil menusunden acilir.
+  wallet: "Wallet",
+  profile: "My Profile",
+  account: "Account",
+  transactions: "Transaction History",
+  "game-history": "Game History",
+  sessions: "Sessions",
+  vault: "Vault",
+  verification: "Verification",
 } as const
+
+// Kisisel veri gosteren sayfalar — arama motorlarina kapatiliyor.
+const privateSections = new Set<string>([
+  "wallet",
+  "profile",
+  "account",
+  "transactions",
+  "game-history",
+  "sessions",
+  "vault",
+  "verification",
+])
 
 type Section = keyof typeof sections
 
@@ -27,9 +54,17 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { section } = await params
   const title = sections[section as Section]
-  return title
-    ? { title: `${title} | ${WEBSITE_NAME}`, description: `Explore ${title} on ${WEBSITE_NAME}.` }
-    : {}
+  if (!title) return {}
+
+  if (privateSections.has(section)) {
+    return {
+      title: `${title} | ${WEBSITE_NAME}`,
+      description: `Manage your ${title.toLowerCase()} on ${WEBSITE_NAME}.`,
+      robots: { index: false, follow: false },
+    }
+  }
+
+  return { title: `${title} | ${WEBSITE_NAME}`, description: `Explore ${title} on ${WEBSITE_NAME}.` }
 }
 
 export default async function SectionPage({

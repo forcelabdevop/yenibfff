@@ -10,7 +10,18 @@ const { t } = useI18n()
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
 const isCategoryDrawerOpen = ref(false)
 const categories = ref([])
-const categoryToEdit = ref({ name: '', slug: '', img: null, imgUrl: '' })
+const emptyCategory = () => ({
+  name: '',
+  slug: '',
+  img: null,
+  imgUrl: '',
+  isActive: true,
+  showOnHomepage: true,
+  order: 0,
+  gameSelectionMode: 'dynamic',
+  gameLimit: 20,
+})
+const categoryToEdit = ref(emptyCategory())
 const formValid = ref(false)
 const refForm = ref()
 const searchQuery = ref('')
@@ -32,8 +43,13 @@ const openDrawer = (category = null) => {
         slug: category.slug,
         imgUrl: category.img,
         img: null,
+        isActive: category.isActive !== false,
+        showOnHomepage: category.showOnHomepage !== false,
+        order: category.order || 0,
+        gameSelectionMode: category.gameSelectionMode || 'dynamic',
+        gameLimit: category.gameLimit || 20,
       }
-    : { name: '', slug: '', img: null, imgUrl: '' }
+    : emptyCategory()
   isCategoryDrawerOpen.value = true
 }
 
@@ -52,6 +68,11 @@ const onSubmit = () => {
     const formData = new FormData()
     formData.append('name', categoryToEdit.value.name)
     formData.append('slug', categoryToEdit.value.slug)
+    formData.append('isActive', String(categoryToEdit.value.isActive))
+    formData.append('showOnHomepage', String(categoryToEdit.value.showOnHomepage))
+    formData.append('order', String(categoryToEdit.value.order))
+    formData.append('gameSelectionMode', categoryToEdit.value.gameSelectionMode)
+    formData.append('gameLimit', String(categoryToEdit.value.gameLimit))
     if (categoryToEdit.value.img instanceof File) {
       formData.append('img', categoryToEdit.value.img)
     }
@@ -163,6 +184,39 @@ onMounted(fetchCategories)
                     :label="t('slug')"
                     :rules="[requiredValidator]"
                   />
+                </VCol>
+                <VCol cols="12" md="6">
+                  <AppTextField
+                    v-model.number="categoryToEdit.order"
+                    label="Ana sayfa sırası"
+                    type="number"
+                    min="0"
+                  />
+                </VCol>
+                <VCol cols="12" md="6">
+                  <AppTextField
+                    v-model.number="categoryToEdit.gameLimit"
+                    label="Raf oyun limiti"
+                    type="number"
+                    min="1"
+                    max="100"
+                  />
+                </VCol>
+                <VCol cols="12">
+                  <VSelect
+                    v-model="categoryToEdit.gameSelectionMode"
+                    :items="[
+                      { title: 'Kategori etiketine göre dinamik', value: 'dynamic' },
+                      { title: 'Seçili oyunlar (manuel)', value: 'manual' },
+                    ]"
+                    label="Oyun seçim modu"
+                  />
+                </VCol>
+                <VCol cols="12" md="6">
+                  <VSwitch v-model="categoryToEdit.isActive" label="Aktif" hide-details />
+                </VCol>
+                <VCol cols="12" md="6">
+                  <VSwitch v-model="categoryToEdit.showOnHomepage" label="Ana sayfada göster" hide-details />
                 </VCol>
                 <VCol cols="12">
                   <VFileInput

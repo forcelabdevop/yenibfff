@@ -4568,40 +4568,54 @@ router.delete(
 );
 
 // 2. CATEGORY
+const categoryFields = body => ({
+	name: String(body.name || "").trim(),
+	slug: String(body.slug || "").trim().toLowerCase(),
+	isActive: body.isActive === true || body.isActive === "true",
+	showOnHomepage: body.showOnHomepage === true || body.showOnHomepage === "true",
+	order: Math.max(0, Number.parseInt(body.order, 10) || 0),
+	gameSelectionMode: body.gameSelectionMode === "manual" ? "manual" : "dynamic",
+	gameLimit: Math.min(100, Math.max(1, Number.parseInt(body.gameLimit, 10) || 20)),
+});
+
 router.post("/categories", checkPermission("platform.create"), upload.single("img"), async (req, res) => {
 	try {
-		const { name, slug } = req.body;
-		const img = `/uploads/${req.file.filename}`;
-		const category = new Category({ name, slug, img });
-		await category.save();
+		const fields = categoryFields(req.body);
+		if (!fields.name || !fields.slug || !req.file) {
+			return res.status(400).json({ success: false, message: "Ad, slug ve görsel zorunludur" });
+		}
+		const category = await Category.create({ ...fields, img: `/uploads/${req.file.filename}` });
 		res.status(201).json({ success: true, data: category });
 	} catch (err) {
-		res.status(500).json({
+		res.status(err?.code === 11000 ? 409 : 500).json({
 			success: false,
-			message: "Kategori eklenemedi",
+			message: err?.code === 11000 ? "Bu slug zaten kullanılıyor" : "Kategori eklenemedi",
 		});
 	}
 });
 
 router.get("/categories", checkPermission("platform.read"), async (req, res) => {
-	const categories = await Category.find().sort({ created_at: -1 });
+	const categories = await Category.find().sort({ order: 1, created_at: -1 });
 	res.json({ success: true, data: categories });
 });
 
 router.put("/categories/:id", checkPermission("platform.update"), upload.single("img"), async (req, res) => {
 	try {
-		const updates = { ...req.body };
+		const updates = categoryFields(req.body);
+		if (!updates.name || !updates.slug) {
+			return res.status(400).json({ success: false, message: "Ad ve slug zorunludur" });
+		}
 		if (req.file) updates.img = `/uploads/${req.file.filename}`;
-		const category = await Category.findByIdAndUpdate(
-			req.params.id,
-			updates,
-			{ new: true },
-		);
+		const category = await Category.findByIdAndUpdate(req.params.id, updates, {
+			new: true,
+			runValidators: true,
+		});
+		if (!category) return res.status(404).json({ success: false, message: "Kategori bulunamadı" });
 		res.json({ success: true, data: category });
 	} catch (err) {
-		res.status(500).json({
+		res.status(err?.code === 11000 ? 409 : 500).json({
 			success: false,
-			message: "Kategori güncellenemedi",
+			message: err?.code === 11000 ? "Bu slug zaten kullanılıyor" : "Kategori güncellenemedi",
 		});
 	}
 });
@@ -5316,11 +5330,30 @@ router.post("/notices", checkPermission("notice.create"), upload.single("image")
 
 router.get("/notices", checkPermission("notice.read"), async (req, res) => {
 	const notices = await Notice.find().sort({ createdAt: -1 }).lean();
-	const data = notices.map((notice) => ({
-		...notice,
-		recipientsCount: Array.isArray(notice.recipients) ? notice.recipients.length : null,
-		readCount: Array.isArray(notice.readBy) ? notice.readBy.length : 0,
-	}));
+
+	// Okundu sayısı tek başına anlamsız; hedef kitle büyüklüğüne oranlanır.
+	// Yayın bildirimlerinde (recipients boş) hedef tüm kullanıcılardır.
+	const hasBroadcast = notices.some(
+		(notice) => !notice.recipientId && (!Array.isArray(notice.recipients) || notice.recipients.length === 0),
+	);
+	const totalUsers = hasBroadcast ? await User.countDocuments() : 0;
+
+	const data = notices.map((notice) => {
+		const recipientsCount = Array.isArray(notice.recipients) ? notice.recipients.length : null;
+
+		let audienceSize;
+		if (notice.recipientId) audienceSize = 1;
+		else if (recipientsCount) audienceSize = recipientsCount;
+		else audienceSize = totalUsers;
+
+		return {
+			...notice,
+			recipientsCount,
+			readCount: Array.isArray(notice.readBy) ? notice.readBy.length : 0,
+			audienceSize,
+		};
+	});
+
 	res.json({ success: true, data });
 });
 
@@ -8292,6 +8325,11 @@ const xPaymentsAdminRoutes = require("./xPayments");
 router.use("/fluxkripto", fluxKriptoAdminRoutes);
 router.use("/xpayments", xPaymentsAdminRoutes);
 
+// Kendi HD altyapimizdaki on-chain yatirmalarin izleme ekrani (salt okunur).
+// fluxkripto/xpayments saglayici tabanli akislardir; bu ondan ayridir.
+const cryptoDepositsAdminRoutes = require("./cryptoDeposits");
+router.use("/crypto-deposits", cryptoDepositsAdminRoutes);
+
 // ==================== BETINOVI ADMIN API ROUTES ====================
 const betinoviAdminRoutes = require("./betinoviAdminRoutes");
 router.use("/betinovi-admin", betinoviAdminRoutes);
@@ -9233,7 +9271,7 @@ router.get("/my-permissions", authenticateAdmin, async (req, res) => {
 	}
 });
 
-// ═══��══���══════════════════════════════════���═════════════════════════════════
+// ═══��══���══════════════════════════════════���═══════════════════════���═════════
 // 🎨 SITE SETTINGS ENDPOINTS
 // ═════════════════════════════════════════════════════════════��═════════════
 
@@ -10137,7 +10175,7 @@ router.get(
 
 // ═══════════════════════════════════════════════���═══════════════════════════
 // 🎨 CUSTOM CSS/JS ENDPOINTS
-// ════════════════════════════════════════════════════════════════�����══════════
+// ════════════════════════════════════════════════════════════════�������══════════
 
 // Update custom CSS
 router.put(

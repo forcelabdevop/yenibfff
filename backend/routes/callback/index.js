@@ -243,7 +243,8 @@ module.exports = (io) => {
         require("../../utils/depositEvents").notifyRealDepositCredited(
           { _id: userId, username: user.username },
           totalAmount,
-          "Oxapay (Kripto)"
+          "Oxapay (Kripto)",
+          { reference: `oxapay:${transactionId}`, currency: userFiat }
         );
       } else {
         console.error("İşlem zaten işlenmiş veya geçersiz ödeme durumu.");

@@ -3,6 +3,25 @@ const Category = require("../database/models/Category");
 const Game = require("../database/models/Game");
 const GameProvider = require("../database/models/GameProvider");
 const { serializeBanner } = require("../utils/banner");
+const mongoose = require("mongoose");
+const Transaction = require("../database/models/Transaction");
+const User = require("../database/models/User");
+
+// Oyun kartlari / raflar icin yeterli olan alan seti
+const GAME_LIST_FIELDS =
+	"game_name game_code banner background views featured provider_code provider categories category distribution rtp";
+
+// Oyun detay sayfasinin "Game Attributes" bolumu icin ek alanlar
+const GAME_DETAIL_FIELDS = `${GAME_LIST_FIELDS} game_type technology is_mobile has_freespins has_tables has_lobby only_demo description created_at`;
+
+// Top wins listesinde gercek kullanici adini sizdirmadan taninabilir bir etiket uretir.
+const maskUsername = (user) => {
+	if (!user || user.anonymous) return "Gizli oyuncu";
+	const name = String(user.username || "").trim();
+	if (!name) return "Gizli oyuncu";
+	if (name.length <= 3) return `${name.slice(0, 1)}**`;
+	return `${name.slice(0, 3)}${"*".repeat(Math.min(5, name.length - 3))}`;
+};
 
 // ===== BANNER =====
 exports.getAllBanners = async (req, res) => {
@@ -117,37 +136,146 @@ exports.getFeaturedGames = async (req, res) => {
 
 exports.getCategoriesWithGames = async (req, res) => {
 	try {
-		const categories = await Category.find().sort({ created_at: -1 });
+		const homepageOnly = req.query.homepage === "true";
+		const categoryFilter = { isActive: { $ne: false } };
+		if (homepageOnly) categoryFilter.showOnHomepage = { $ne: false };
 
+		const categories = await Category.find(categoryFilter).sort({ order: 1, created_at: 1 });
 		const categoriesWithGames = await Promise.all(
-			categories.map(async (cat) => {
-				// Hem yeni categories array hem de eski category alanını destekle
-				const categoryQuery = {
+			categories.map(async cat => {
+				const dynamicQuery = {
+					status: 1,
 					$or: [{ categories: cat.slug }, { category: cat.slug }],
 				};
-
+				const gameQuery =
+					cat.gameSelectionMode === "manual" && cat.games.length
+						? { _id: { $in: cat.games }, status: 1 }
+						: dynamicQuery;
+				const limit = Math.min(100, Math.max(1, Number(cat.gameLimit) || 20));
 				const [games, totalCount] = await Promise.all([
-					Game.find(categoryQuery)
-						.select(
-							"game_name game_code banner background views featured provider_code provider categories category distribution rtp"
-						)
+					Game.find(gameQuery)
+						.select(GAME_LIST_FIELDS)
 						.sort({ featured: -1, views: -1 })
-						.limit(20)
+						.limit(limit)
 						.populate("provider", "name"),
-					Game.countDocuments(categoryQuery),
+					Game.countDocuments(gameQuery),
 				]);
 
-				return {
-					...cat.toObject(),
-					total_games: totalCount,
-					games,
-				};
+				return { ...cat.toObject(), total_games: totalCount, games };
 			})
 		);
 
-		res.json({ data: categoriesWithGames });
+		res.json({ success: true, data: categoriesWithGames, meta: { total: categoriesWithGames.length } });
 	} catch (err) {
-		res.status(500).json({ error: err.message });
+		res.status(500).json({ success: false, error: { code: "CATALOG_LOAD_FAILED", message: err.message } });
+	}
+};
+
+// ===== GAME DETAIL (oyun sayfasi) =====
+// Tek istekte oyun detayi + saglayici bilgisi + kategoriler + gercek top 3 kazanc
+// + "Best <provider> games" ve "Most popular games" raflarini dondurur.
+exports.getGameDetailByCode = async (req, res) => {
+	try {
+		const code = String(req.params.code || "").trim();
+		if (!code) {
+			return res
+				.status(400)
+				.json({ success: false, message: "Game code is required" });
+		}
+
+		const game = await Game.findOne({ game_code: code })
+			.select(GAME_DETAIL_FIELDS)
+			.populate("provider", "name");
+
+		if (!game) {
+			return res.status(404).json({ success: false, message: "Game not found" });
+		}
+
+		const providerCode = game.provider_code || null;
+		const slugs =
+			Array.isArray(game.categories) && game.categories.length
+				? game.categories
+				: game.category
+					? [game.category]
+					: [];
+
+		const popularQuery = { game_code: { $ne: game.game_code } };
+		if (slugs.length) {
+			popularQuery.$or = [
+				{ categories: { $in: slugs } },
+				{ category: { $in: slugs } },
+			];
+		}
+
+		const [providerGames, popularGames, winTransactions, providerDoc, categories] =
+			await Promise.all([
+				providerCode
+					? Game.find({
+							provider_code: providerCode,
+							game_code: { $ne: game.game_code },
+						})
+							.select(GAME_LIST_FIELDS)
+							.sort({ featured: -1, views: -1 })
+							.limit(18)
+							.populate("provider", "name")
+					: [],
+				Game.find(popularQuery)
+					.select(GAME_LIST_FIELDS)
+					.sort({ views: -1, featured: -1 })
+					.limit(18)
+					.populate("provider", "name"),
+				Transaction.find({ game_code: game.game_code, win_money: { $gt: 0 } })
+					.select("user_code bet_money win_money created_at")
+					.sort({ win_money: -1 })
+					.limit(3)
+					.lean(),
+				providerCode
+					? GameProvider.findOne({ code: providerCode }).select("code name")
+					: null,
+				slugs.length
+					? Category.find({ slug: { $in: slugs } }).select("name slug img")
+					: [],
+			]);
+
+		const userIds = winTransactions
+			.map((txn) => String(txn.user_code || ""))
+			.filter((value) => mongoose.Types.ObjectId.isValid(value));
+
+		const users = userIds.length
+			? await User.find({ _id: { $in: userIds } }).select("username anonymous")
+			: [];
+
+		const userMap = new Map(users.map((user) => [user._id.toString(), user]));
+
+		const topWins = winTransactions.map((txn) => {
+			const bet = Number(txn.bet_money) || 0;
+			const win = Number(txn.win_money) || 0;
+			return {
+				username: maskUsername(userMap.get(String(txn.user_code))),
+				bet_money: bet,
+				win_money: win,
+				multiplier: bet > 0 ? Number((win / bet).toFixed(2)) : null,
+				created_at: txn.created_at,
+			};
+		});
+
+		res.json({
+			success: true,
+			data: {
+				game,
+				provider: {
+					code: providerCode,
+					name:
+						game.provider?.name || providerDoc?.name || providerCode || null,
+				},
+				categories,
+				topWins,
+				providerGames,
+				popularGames,
+			},
+		});
+	} catch (err) {
+		res.status(500).json({ success: false, message: err.message });
 	}
 };
 

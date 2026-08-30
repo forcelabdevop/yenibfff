@@ -18,6 +18,37 @@ export interface CasinoGame {
   distribution?: string
 }
 
+/** /public/games/detail/:code yanıtındaki genişletilmiş oyun alanları. */
+export interface CasinoGameDetail extends CasinoGame {
+  game_type?: string
+  technology?: string
+  is_mobile?: number
+  has_freespins?: number
+  has_tables?: number
+  has_lobby?: number
+  only_demo?: number
+  description?: string | null
+  rtp?: number
+  created_at?: string
+}
+
+export interface CasinoTopWin {
+  username: string
+  bet_money: number
+  win_money: number
+  multiplier: number | null
+  created_at: string
+}
+
+export interface CasinoGameDetailPayload {
+  game: CasinoGameDetail
+  provider: { code: string | null; name: string | null }
+  categories: CasinoCategory[]
+  topWins: CasinoTopWin[]
+  providerGames: CasinoGame[]
+  popularGames: CasinoGame[]
+}
+
 export interface CasinoCategory {
   _id: string
   name: string
@@ -47,6 +78,7 @@ export const casinoEndpoints = {
   categoriesWithGames: "/public/games/categories/with-games",
   categories: "/public/categories",
   gamesByCategory: (slug: string) => `/public/games/category/${encodeURIComponent(slug)}`,
+  gameDetail: (code: string) => `/public/games/detail/${encodeURIComponent(code)}`,
   search: "/public/games/search",
   featured: "/public/games/featured/list",
 }

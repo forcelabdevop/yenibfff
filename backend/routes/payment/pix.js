@@ -160,6 +160,15 @@ router.post("/callback", async (req, res) => {
 			transaction.processedAt = new Date();
 			await transaction.save();
 
+			// 🎁 Ortak yatırım onay noktası: admin bildirimi, deneme bonusu kilidi
+			// ve casino ödül motoru (mission ilerlemesi + special bonus aktivasyonu).
+			require("../../utils/depositEvents").notifyRealDepositCredited(
+				user,
+				transaction.amount,
+				"PradaPay (Pix)",
+				{ reference: `pix:${transaction._id}`, currency: transaction.data?.currency }
+			);
+
 			console.log(
 				`✅ Kullanıcı ${
 					user.username || user._id

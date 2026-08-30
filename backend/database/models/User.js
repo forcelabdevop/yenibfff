@@ -158,6 +158,25 @@ const userSchema = new mongoose.Schema(
 			coins: { type: Number, default: 0 },
 		},
 
+		/**
+		 * Bakiyeye ISLENMIS on-chain yatirma kimlikleri (son 500).
+		 *
+		 * NEDEN BURADA: Kredi verirken $inc ile ayni belgede atomik bir koruma
+		 * gerekiyor. Guard baska bir koleksiyonda olsaydi, "kredi kaydini yaz"
+		 * ile "bakiyeyi artir" arasinda cokme yasandiginda ya cift kredi ya da
+		 * kayip kredi olusurdu. Ayni belgede $ne kontrolu + $inc tek atomik
+		 * islem oldugu icin yeniden deneme guvenlidir (exactly-once).
+		 *
+		 * $slice ile son 500 kayitla sinirlanir; sinirsiz buyume onlenir.
+		 * Yeniden denemeler dakikalar icinde oldugundan bu pencere fazlasiyla
+		 * yeterlidir.
+		 */
+		appliedDeposits: {
+			type: [mongoose.Schema.ObjectId],
+			default: [],
+			select: false,
+		},
+
 		xp: { type: Number, default: 0 },
 
 		vault: {
