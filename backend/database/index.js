@@ -142,34 +142,153 @@ const seedSystemPermissions = async () => {
 	console.log("System permissions seeded");
 };
 
-const connectDB = async () => {
-	try {
-		const conn = await mongoose.connect(process.env.DATABASE_URI, {
-			maxPoolSize: 70,
-			minPoolSize: 10,
+const MONGO_OPTIONS = {
+	maxPoolSize: 70,
+	minPoolSize: 10,
 
-			serverSelectionTimeoutMS: 5000,
-			socketTimeoutMS: 45000,
+	serverSelectionTimeoutMS: 5000,
+	socketTimeoutMS: 45000,
 
-			// Stability
-			family: 4,
+	// Stability
+	family: 4,
 
-			useNewUrlParser: true,
-			useUnifiedTopology: true,
-		});
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+};
 
-		console.log(`MongoDB Connected: ${conn.connection.host}`);
-		await cleanupInvalidAffiliateReferrers();
-		await syncAllIndexes();
-		await migrateUsersToRivoWallet();
-		await seedSystemPermissions();
-		await ensureSportsbookGames();
-	} catch (err) {
-		console.error(`Error: ${err.message}`);
-		process.exit(1);
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
+ * PM2 cluster modunda her worker'a NODE_APP_INSTANCE verir ("0", "1", ...).
+ * PM2 disinda (yerel `node index.js`) tanimsizdir; o durumda tek surec
+ * oldugumuz icin kendimizi birincil sayariz.
+ *
+ * Bunun onemi: baslangic gorevleri (index senkronu, migration, seed) 4
+ * worker'da ayni anda calisirsa ayni koleksiyonlar uzerinde yarisirlar.
+ */
+const isPrimaryInstance = () => {
+	const id = process.env.NODE_APP_INSTANCE;
+	return id === undefined || id === "" || id === "0";
+};
+
+/**
+ * Baglanti kurulana kadar ustel bekleme ile yeniden dener.
+ *
+ * Eskiden ilk deneme basarisiz olunca `process.exit(1)` cagriliyordu. PM2
+ * cluster'da bu su zinciri uretiyordu: Atlas birkac saniye erisilemez ->
+ * dort worker da aninda olur -> PM2 hepsini hemen yeniden baslatir -> yine
+ * erisilemez -> varsayilan 16 denemede PM2 uygulamayi "errored" isaretleyip
+ * BIRAKIR. Site, biri elle `pm2 restart` yazana kadar kapali kalirdi.
+ * (nginx logunda 2,8 saate kadar suren kesintiler bu sekilde olustu.)
+ *
+ * Artik surec olmuyor; baglanana kadar sessizce yeniden dener. Mongoose ilk
+ * baglanti kurulduktan SONRAKI kopmalari zaten kendi icinde toparlar.
+ */
+const connectWithRetry = async () => {
+	const baseDelayMs = 1000;
+	const maxDelayMs = 30000;
+	let attempt = 0;
+
+	// eslint-disable-next-line no-constant-condition
+	while (true) {
+		attempt += 1;
+		try {
+			const conn = await mongoose.connect(
+				process.env.DATABASE_URI,
+				MONGO_OPTIONS,
+			);
+			console.log(
+				`MongoDB Connected: ${conn.connection.host}` +
+					(attempt > 1 ? ` (${attempt}. denemede)` : ""),
+			);
+			return conn;
+		} catch (err) {
+			// 1s, 2s, 4s ... 30s'de tavan yapar. Tavan onemli: aksi halde
+			// uzun kesintide bekleme saatlere cikar ve Atlas geri geldiginde
+			// site hala kapali gorunur.
+			const delay = Math.min(baseDelayMs * 2 ** (attempt - 1), maxDelayMs);
+			console.error(
+				`MongoDB baglanti hatasi (deneme ${attempt}): ${err.message}. ` +
+					`${Math.round(delay / 1000)} sn sonra yeniden denenecek.`,
+			);
+			await sleep(delay);
+		}
 	}
+};
+
+/**
+ * Baglanti yasam dongusu gorunurlugu. Bunlar olmadan loglarda yalnizca
+ * nginx'in "Connection refused" satirlari kaliyor ve kopmanin ne zaman
+ * basladigi anlasilamiyordu.
+ */
+const registerConnectionListeners = () => {
+	const connection = mongoose.connection;
+
+	connection.on("disconnected", () => {
+		console.error("MongoDB baglantisi koptu; surucu yeniden baglanmayi deniyor");
+	});
+
+	connection.on("reconnected", () => {
+		console.log("MongoDB yeniden baglandi");
+	});
+
+	connection.on("error", (err) => {
+		// Baglanti kurulduktan sonraki hatalar; surucu kendi toparlar,
+		// burada yalnizca gorunurluk icin loglariz.
+		console.error(`MongoDB baglanti hatasi: ${err.message}`);
+	});
+};
+
+/**
+ * Baslangic gorevleri: index senkronu, migration'lar, seed.
+ *
+ * Kritik: bunlar ARTIK sunucuyu dusuremez. Eskiden hepsi baglantiyla ayni
+ * try/catch icindeydi, yani veritabani gayet saglikliyken bile bir
+ * migration hata verirse `process.exit(1)` calisiyordu.
+ *
+ * Her gorev tek tek sarmalanir; biri patlarsa loglanir ve digerleri devam
+ * eder. Site ayakta kalir, sorun loglardan gorulur.
+ */
+const runTasksSafely = async (tasks) => {
+	for (const [label, task] of tasks) {
+		try {
+			await task();
+		} catch (err) {
+			console.error(
+				`Baslangic gorevi basarisiz (${label}): ${err.message}. ` +
+					"Sunucu calismaya devam ediyor.",
+			);
+		}
+	}
+};
+
+const runStartupTasks = async () => {
+	if (!isPrimaryInstance()) {
+		console.log(
+			`Baslangic gorevleri atlandi (instance ${process.env.NODE_APP_INSTANCE}; ` +
+				"yalnizca instance 0 calistirir)",
+		);
+		return;
+	}
+
+	await runTasksSafely([
+		["affiliate referrer temizligi", cleanupInvalidAffiliateReferrers],
+		["index senkronu", syncAllIndexes],
+		["Rivo cuzdan migrasyonu", migrateUsersToRivoWallet],
+		["izin seed", seedSystemPermissions],
+		["sportsbook oyunlari", ensureSportsbookGames],
+	]);
+};
+
+const connectDB = async () => {
+	registerConnectionListeners();
+	await connectWithRetry();
+	await runStartupTasks();
 };
 
 module.exports = connectDB;
 module.exports.cleanupInvalidAffiliateReferrers =
 	cleanupInvalidAffiliateReferrers;
+module.exports.isPrimaryInstance = isPrimaryInstance;
+module.exports.runStartupTasks = runStartupTasks;
+module.exports.runTasksSafely = runTasksSafely;
