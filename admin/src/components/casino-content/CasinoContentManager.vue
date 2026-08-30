@@ -80,7 +80,12 @@ function editItem(item: any) {
 async function save() {
   saving.value = true; error.value = ""
   try {
-    const payload = structuredClone(form.value)
+    // form bir ref olduğundan form.value derin reaktif bir Proxy'dir;
+    // structuredClone bu Proxy'yi klonlarken tarayıcıya göre
+    // "#<Object> could not be cloned" hatasıyla çökebiliyordu. Bu veri
+    // zaten JSON olarak API'ye gönderileceği için JSON tabanlı klonlama
+    // hem sorunu çözer hem de serileştirilemeyen değerleri sessizce atar.
+    const payload = JSON.parse(JSON.stringify(form.value))
     payload.type = props.config.type
     for (const key of ["_id", "__v", "createdAt", "updatedAt", "createdBy", "updatedBy"]) delete payload[key]
     if (!String(payload.reason || "").trim()) throw new Error("Değişiklik nedeni zorunludur.")
@@ -171,7 +176,7 @@ onMounted(load)
         <!-- Kaydetme hataları diyalog içinde gösterilir; liste kartındaki alert
              modalın arkasında kalıp görünmez oluyordu. -->
         <VAlert v-if="error && dialog" type="error" variant="tonal" class="mx-6 mb-2" closable @click:close="error = ''">{{ error }}</VAlert>
-        <VCardActions class="pa-6 border-t"><VSpacer /><VBtn variant="text" @click="dialog = false">Vazgeç</VBtn><VBtn :color="config.accent" :loading="saving" prepend-icon="tabler-device-floppy" @click="save">Kaydet</VBtn></VCardActions>
+        <VCardActions class="pa-6 border-t"><VSpacer /><VBtn variant="text" @click="dialog = false; error = ''">Vazgeç</VBtn><VBtn :color="config.accent" :loading="saving" prepend-icon="tabler-device-floppy" @click="save">Kaydet</VBtn></VCardActions>
       </VCard>
     </VDialog>
 
