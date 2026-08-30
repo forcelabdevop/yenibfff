@@ -1041,7 +1041,7 @@ router.post("/callback", async (req, res) => {
 							return;
 						}
 
-						// 🎯 Bet Limitleme: transaction içinde tekrar doğrula (race condition güvenliği).
+						// ��� Bet Limitleme: transaction içinde tekrar doğrula (race condition güvenliği).
 						if (normalizedTxnType === 0) {
 							const betCategory =
 								SINGLE_GAME_VENDORS[normalizedVendorCode]
@@ -1446,6 +1446,45 @@ router.post("/callback", async (req, res) => {
 								err.message,
 							),
 						);
+
+					// 🎁 Casino ödül motoru: görev ilerlemesi + bonus çevrim takibi.
+					// txnCode her işlem için benzersizdir ve yukarıda duplicate
+					// kontrolünden geçtiği için idempotency anahtarı olarak kullanılır.
+					try {
+						const rewardEngine = require("../services/casinoRewardEngine");
+						if (normalizedTxnType === 0) {
+							rewardEngine.emitWager({
+								userId: user._id,
+								amount: normalizedAmount,
+								gameCode: normalizedGameCode,
+								providerCode: normalizedVendorCode,
+								category: "casino",
+								reference: `betinovi:bet:${normalizedTxnCode}`,
+							});
+							// Bir tur = bir debit işlemi (free round dahil).
+							rewardEngine.emitGameRound({
+								userId: user._id,
+								gameCode: normalizedGameCode,
+								providerCode: normalizedVendorCode,
+								category: "casino",
+								reference: `betinovi:round:${roundId || normalizedTxnCode}`,
+							});
+						} else if (normalizedTxnType === 1) {
+							rewardEngine.emitWin({
+								userId: user._id,
+								amount: normalizedAmount,
+								gameCode: normalizedGameCode,
+								providerCode: normalizedVendorCode,
+								category: "casino",
+								reference: `betinovi:win:${normalizedTxnCode}`,
+							});
+						}
+					} catch (rewardErr) {
+						console.error(
+							"Betinovi casino ödül motoru hatası (non-fatal):",
+							rewardErr.message,
+						);
+					}
 
 					try {
 						if (normalizedTxnType === 0) {

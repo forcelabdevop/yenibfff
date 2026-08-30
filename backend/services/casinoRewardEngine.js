@@ -249,6 +249,13 @@ async function applyFreeSpins({ userId, content, state }) {
   const { betinoviAdminRequest } = require("./betinoviAdminApiService");
   const providerResponse = await betinoviAdminRequest("controlGame", "ApplyFreeRound", payload);
 
+  // Sağlayıcı HTTP 200 dönüp gövdede hata bildirebilir (status !== 0). Bu durumda
+  // teslim başarılı sayılmaz; kayıt kuyrukta kalır ve backoff ile yeniden denenir.
+  const providerStatus = Number(providerResponse?.status);
+  if (Number.isFinite(providerStatus) && providerStatus !== 0) {
+    throw new Error(`ApplyFreeRound rejected (status ${providerStatus}): ${providerResponse?.msg || "unknown"}`);
+  }
+
   await FreeSpinGrant.findOneAndUpdate(
     { deliveryKey },
     {
@@ -337,6 +344,17 @@ async function processDeliveryQueue({ limit = 25 } = {}) {
     if (result.delivered) delivered += 1;
   }
   return { processed: due.length, delivered };
+}
+
+// Süresi dolan bonus seçimlerini ve çevrim pencerelerini kapatır. Teslim edilmiş
+// ("claimed") kayıtlara dokunmaz; yalnızca hâlâ bekleyen kayıtları sonlandırır.
+async function expireStaleStates() {
+  const now = new Date();
+  const result = await CasinoUserState.updateMany(
+    { kind: "bonus", status: { $in: ["awaiting-deposit", "eligible", "wagering"] }, expiresAt: { $ne: null, $lte: now } },
+    { $set: { status: "expired", nextDeliveryAt: null } }
+  );
+  return { expired: result.modifiedCount || 0 };
 }
 
 async function retryDelivery({ stateId }) {
@@ -482,6 +500,7 @@ module.exports = {
   creditReward,
   deliverBonus,
   processDeliveryQueue,
+  expireStaleStates,
   retryDelivery,
   cancelDelivery,
   publishedQuery,

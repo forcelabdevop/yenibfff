@@ -163,6 +163,22 @@ cron.schedule("* * * * *", () => {
 	);
 });
 
+// 🎁 Casino ödül motoru: sağlayıcıya teslim edilemeyen bonus ödüllerini (free
+// spin vb.) üstel geri çekilme ile yeniden dener + süresi dolan seçimleri kapatır.
+const casinoRewardEngine = require("./services/casinoRewardEngine");
+cron.schedule("* * * * *", () => {
+	casinoRewardEngine
+		.processDeliveryQueue()
+		.catch((err) =>
+			console.error("❌ Casino bonus teslim kuyruğu hatası:", err.message),
+		);
+	casinoRewardEngine
+		.expireStaleStates()
+		.catch((err) =>
+			console.error("❌ Casino bonus süre aşımı taraması hatası:", err.message),
+		);
+});
+
 // Set app port
 const PORT = process.env.SERVER_PORT || 5000;
 

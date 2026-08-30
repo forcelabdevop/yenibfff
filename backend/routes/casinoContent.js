@@ -5,6 +5,7 @@ const CasinoUserState = require("../database/models/CasinoUserState");
 const CryptoPrice = require("../database/models/CryptoPrice");
 const Box = require("../database/models/Box");
 const { PUBLIC_TYPES, listPublished, joinContent, claimContent, visibilityQuery } = require("../services/casinoContentService");
+const { selectBonus } = require("../services/casinoRewardEngine");
 
 const router = express.Router();
 const sendError = (res, error) => res.status(error.status || 500).json({ success: false, error: { message: error.message || "Server error" } });
@@ -53,6 +54,43 @@ router.get("/:type/:slug", authorizeUser(false), async (req, res) => {
     if (!item) return res.status(404).json({ success: false, error: { message: "Content not found" } });
     const userState = req.user ? await CasinoUserState.findOne({ user: req.user._id, content: item._id }).lean() : null;
     res.json({ success: true, data: { ...item, userState } });
+  } catch (error) { sendError(res, error); }
+});
+
+// Special bonus seçimi. "instant" bonuslar anında teslim edilir; "deposit"
+// aktivasyonlu bonuslar ilk uygun yatırıma kadar "awaiting-deposit" bekler.
+router.post("/bonuses/:id/select", authorizeUser(true), async (req, res) => {
+  try {
+    const result = await selectBonus({ userId: req.user._id, contentId: req.params.id });
+    res.status(result.duplicate ? 200 : 201).json({
+      success: true,
+      data: result.state,
+      meta: { duplicate: result.duplicate },
+    });
+  } catch (error) { sendError(res, error); }
+});
+
+// Kullanıcının açık bonusu: seçim penceresi, çevrim ilerlemesi ve teslim durumu.
+router.get("/me/bonuses/active", authorizeUser(true), async (req, res) => {
+  try {
+    const data = await CasinoUserState.find({
+      user: req.user._id,
+      kind: "bonus",
+      status: { $in: ["awaiting-deposit", "eligible", "delivery-pending", "delivery-failed", "wagering"] },
+    })
+      .populate("content", "title slug image reward rules")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    res.json({
+      success: true,
+      data: data.map((state) => ({
+        ...state,
+        // Çevrim yüzdesi UI'da doğrudan kullanılabilsin diye burada hesaplanır.
+        wagerPercent: state.target > 0 ? Math.min(100, Math.round((state.progress / state.target) * 100)) : 0,
+      })),
+      meta: { total: data.length },
+    });
   } catch (error) { sendError(res, error); }
 });
 

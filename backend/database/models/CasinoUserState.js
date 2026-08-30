@@ -33,7 +33,20 @@ const casinoUserStateSchema = new mongoose.Schema({
 }, { timestamps: true, minimize: false });
 
 casinoUserStateSchema.index({ user: 1, content: 1, periodKey: 1 }, { unique: true });
-casinoUserStateSchema.index({ user: 1, idempotencyKey: 1 }, { unique: true, sparse: true });
+// ⚠️ `sparse: true` BURADA YETMEZ: bu alanların şema varsayılanı `null` olduğu
+// için alan dokümanda AÇIKÇA var sayılır ve sparse index onu atlamaz — sonuçta
+// aynı kullanıcının ikinci kaydı "duplicate null" hatasıyla reddedilirdi.
+// `partialFilterExpression` ile yalnızca gerçek string değerler indekslenir.
+casinoUserStateSchema.index(
+  { user: 1, idempotencyKey: 1 },
+  { unique: true, partialFilterExpression: { idempotencyKey: { $type: "string" } } }
+);
 casinoUserStateSchema.index({ kind: 1, status: 1, createdAt: -1 });
+// Teslim kuyruğu taraması ve aynı yatırımın iki bonusu tetiklemesini engelleme.
+casinoUserStateSchema.index({ status: 1, nextDeliveryAt: 1 });
+casinoUserStateSchema.index(
+  { user: 1, triggerEventKey: 1 },
+  { unique: true, partialFilterExpression: { triggerEventKey: { $type: "string" } } }
+);
 
 module.exports = mongoose.models.CasinoUserState || mongoose.model("CasinoUserState", casinoUserStateSchema);

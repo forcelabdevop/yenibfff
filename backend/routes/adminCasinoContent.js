@@ -5,6 +5,7 @@ const CasinoUserState = require("../database/models/CasinoUserState");
 const ContentAuditLog = require("../database/models/ContentAuditLog");
 const { checkPermission } = require("../middleware/permission");
 const { PUBLIC_TYPES, pickContent, validateContent } = require("../services/casinoContentService");
+const casinoRewardEngine = require("../services/casinoRewardEngine");
 
 const router = express.Router();
 const typePermission = (action) => checkPermission([`casinoContent.${action}`, "casinoContent.manage"]);
@@ -65,6 +66,69 @@ router.post("/", typePermission("create"), async (req, res) => {
 });
 
 router.get("/types/meta", typePermission("read"), (req, res) => res.json({ success: true, data: [...PUBLIC_TYPES] }));
+
+// ⚠️ Teslim kuyruğu rotaları "/:id" ÜSTÜNDE tanımlanmalıdır; aksi halde
+// "deliveries" bir içerik id'si sanılır ve 400 döner.
+const DELIVERY_STATUSES = ["delivery-pending", "delivery-failed", "eligible", "awaiting-deposit", "wagering"];
+
+// Sağlayıcıya teslim edilemeyen / bekleyen bonus ödüllerinin operasyon kuyruğu.
+router.get("/deliveries/queue", typePermission("read"), async (req, res) => {
+  try {
+    const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 25));
+    const page = Math.max(1, Number(req.query.page) || 1);
+    const status = String(req.query.status || "").trim();
+    const query = { kind: "bonus", status: status && DELIVERY_STATUSES.includes(status) ? status : { $in: DELIVERY_STATUSES } };
+
+    const [data, total, counts] = await Promise.all([
+      CasinoUserState.find(query)
+        .populate("content", "title slug type reward")
+        .populate("user", "username local.email")
+        .sort({ nextDeliveryAt: 1, updatedAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .lean(),
+      CasinoUserState.countDocuments(query),
+      CasinoUserState.aggregate([
+        { $match: { kind: "bonus", status: { $in: DELIVERY_STATUSES } } },
+        { $group: { _id: "$status", count: { $sum: 1 } } },
+      ]),
+    ]);
+
+    res.json({
+      success: true,
+      data,
+      meta: {
+        total, page, limit,
+        pages: Math.ceil(total / limit) || 1,
+        counts: counts.reduce((result, row) => ({ ...result, [row._id]: row.count }), {}),
+        maxAttempts: casinoRewardEngine.MAX_DELIVERY_ATTEMPTS,
+      },
+    });
+  } catch (error) { sendError(res, error); }
+});
+
+// Başarısız/bekleyen bir teslimi hemen yeniden dener.
+router.post("/deliveries/:stateId/retry", typePermission("update"), async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.stateId)) return res.status(400).json({ success: false, error: { message: "Invalid id" } });
+    const result = await casinoRewardEngine.retryDelivery({ stateId: req.params.stateId });
+    const state = await CasinoUserState.findById(req.params.stateId).lean();
+    await audit(req, "delivery-retry", { _id: req.params.stateId, type: "casino-user-state", ...state }, null, req.body?.reason || "");
+    res.json({ success: true, data: state, meta: { delivered: result.delivered, error: result.error || null } });
+  } catch (error) { sendError(res, error); }
+});
+
+// Teslimi iptal eder: kayıt "rejected" olur ve kuyruktan düşer.
+router.post("/deliveries/:stateId/cancel", typePermission("update"), async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.stateId)) return res.status(400).json({ success: false, error: { message: "Invalid id" } });
+    const reason = String(req.body?.reason || "").trim();
+    if (!reason) return res.status(422).json({ success: false, error: { message: "Change reason is required" } });
+    const state = await casinoRewardEngine.cancelDelivery({ stateId: req.params.stateId, reason });
+    await audit(req, "delivery-cancel", { _id: state._id, type: "casino-user-state", ...state.toObject() }, null, reason);
+    res.json({ success: true, data: state });
+  } catch (error) { sendError(res, error); }
+});
 
 router.get("/:id", typePermission("read"), async (req, res) => {
   try {

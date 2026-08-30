@@ -157,6 +157,17 @@ const handleDeposit = async (data, res) => {
 		await updateUserBalance(user, totalAmount, { emitSocket: true });
 		console.log("Kullanıcı bakiyesi güncellendi:", user._id);
 
+		// 🎁 Ortak yatırım onay noktası: admin bildirimi, deneme bonusu kilidi
+		// ve casino ödül motoru (mission ilerlemesi + special bonus aktivasyonu).
+		// Not: mission/bonus koşulları saf yatırım tutarına göre değerlendirilir,
+		// %20 promosyon bonusu hariç tutulur.
+		require("../utils/depositEvents").notifyRealDepositCredited(
+			user,
+			parseFloat(amount),
+			"Maksipara",
+			{ reference: `maksipara:${transaction_id}`, currency }
+		);
+
 		// Başarılı yanıt döndür
 		return res.status(200).json({
 			code: 200,

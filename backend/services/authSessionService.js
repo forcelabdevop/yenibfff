@@ -96,6 +96,14 @@ const finalizeUserLoginSession = async ({ userId, req }) => {
 		amount: 1,
 	});
 
+	// 🎁 Casino ödül motoru: günlük giriş görevleri. Referans gün bazlıdır, bu
+	// yüzden aynı gün içindeki tekrar girişler ilerlemeyi bir kez artırır.
+	try {
+		require("./casinoRewardEngine").emitLogin({ userId: updatedUser._id });
+	} catch (err) {
+		console.error("❌ casino ödül motoru login olayı hatası:", err.message);
+	}
+
 	const userWithAvatar = await processUserAvatar(updatedUser);
 
 	return {
