@@ -38,11 +38,11 @@
     };
     const vpBenefits = computed(() => vpBenefitGroups[vpTab.value] || vpBenefitGroups['Special Treats']);
     const vpManagers = [
-      { name: 'Chloe', position: '0% 0%', description: 'Chloe is very calm, responsible, and constructive. She enjoys dancing and knitting, and her knowledge of BetFury will surprise you.' },
-      { name: 'Freya', position: '50% 0%', description: 'Freya is an open-minded and friendly person with a good sense of humor. Her biggest passions are sports, traveling and animals.' },
-      { name: 'Kim', position: '0% 100%', description: 'A smiley girl with a good sense of humour. She likes jokes, music and never misses new releases of her favourite artists.' },
-      { name: 'Dakota', position: '50% 100%', description: 'Dakota always tries to understand each user and find the best way to connect with them, making sure they feel heard and valued.' },
-      { name: 'Jenny', position: '100% 100%', description: 'Jenny manages with a gentle hand and a listening ear, having an ever-present smile and a surprisingly quick-witted approach.' }
+      { name: 'Chloe', crop: { left: '-14px', top: '-22px' }, description: 'Chloe is very calm, responsible, and constructive. She enjoys dancing and knitting, and her knowledge of BetFury will surprise you.' },
+      { name: 'Freya', crop: { left: '-154px', top: '-22px' }, description: 'Freya is an open-minded and friendly person with a good sense of humor. Her biggest passions are sports, traveling and animals.' },
+      { name: 'Kim', crop: { left: '-14px', top: '-235px' }, description: 'A smiley girl with a good sense of humour. She likes jokes, music and never misses new releases of her favourite artists.' },
+      { name: 'Dakota', crop: { left: '-154px', top: '-235px' }, description: 'Dakota always tries to understand each user and find the best way to connect with them, making sure they feel heard and valued.' },
+      { name: 'Jenny', crop: { left: '-299px', top: '-235px' }, description: 'Jenny manages with a gentle hand and a listening ear, having an ever-present smile and a surprisingly quick-witted approach.' }
     ];
     const vpSuperPerks = [
       benefit('Super VIP Lounge', 'Elevate your experience with an exclusive haven for Super VIP members.', 'treat-14.png'),
