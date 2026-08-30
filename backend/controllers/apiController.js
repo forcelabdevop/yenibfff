@@ -136,37 +136,38 @@ exports.getFeaturedGames = async (req, res) => {
 
 exports.getCategoriesWithGames = async (req, res) => {
 	try {
-		const categories = await Category.find().sort({ created_at: -1 });
+		const homepageOnly = req.query.homepage === "true";
+		const categoryFilter = { isActive: { $ne: false } };
+		if (homepageOnly) categoryFilter.showOnHomepage = { $ne: false };
 
+		const categories = await Category.find(categoryFilter).sort({ order: 1, created_at: 1 });
 		const categoriesWithGames = await Promise.all(
-			categories.map(async (cat) => {
-				// Hem yeni categories array hem de eski category alanını destekle
-				const categoryQuery = {
+			categories.map(async cat => {
+				const dynamicQuery = {
+					status: 1,
 					$or: [{ categories: cat.slug }, { category: cat.slug }],
 				};
-
+				const gameQuery =
+					cat.gameSelectionMode === "manual" && cat.games.length
+						? { _id: { $in: cat.games }, status: 1 }
+						: dynamicQuery;
+				const limit = Math.min(100, Math.max(1, Number(cat.gameLimit) || 20));
 				const [games, totalCount] = await Promise.all([
-					Game.find(categoryQuery)
-						.select(
-							"game_name game_code banner background views featured provider_code provider categories category distribution rtp"
-						)
+					Game.find(gameQuery)
+						.select(GAME_LIST_FIELDS)
 						.sort({ featured: -1, views: -1 })
-						.limit(20)
+						.limit(limit)
 						.populate("provider", "name"),
-					Game.countDocuments(categoryQuery),
+					Game.countDocuments(gameQuery),
 				]);
 
-				return {
-					...cat.toObject(),
-					total_games: totalCount,
-					games,
-				};
+				return { ...cat.toObject(), total_games: totalCount, games };
 			})
 		);
 
-		res.json({ data: categoriesWithGames });
+		res.json({ success: true, data: categoriesWithGames, meta: { total: categoriesWithGames.length } });
 	} catch (err) {
-		res.status(500).json({ error: err.message });
+		res.status(500).json({ success: false, error: { code: "CATALOG_LOAD_FAILED", message: err.message } });
 	}
 };
 

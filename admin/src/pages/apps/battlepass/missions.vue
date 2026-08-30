@@ -30,21 +30,43 @@ const missionToEdit = ref({
   imageUrl: '',
 })
 
-const missionTypes = ['DAILY', 'WEEKLY', 'SEASONAL', 'SPECIAL', 'GAME_SPECIFIC']
+const missionTypes = [
+  { title: 'Bahis tutarı', value: 'bet' },
+  { title: 'Tamamlanan oyun turu', value: 'spin' },
+  { title: 'Oyun başlatma', value: 'game_start' },
+  { title: 'Giriş', value: 'login' },
+  { title: 'Stake', value: 'stake' },
+]
+
+const toMissionForm = item => ({
+  ...item,
+  name: item.title,
+  seasonId: item.slug,
+  missionType: item.rules?.eventType || 'bet',
+  targetValue: item.rules?.target || 1,
+  xpReward: item.reward?.type === 'xp' ? item.reward.amount : 0,
+  tokenReward: item.reward?.type === 'balance' ? item.reward.amount : 0,
+  gameSpecific: item.rules?.gameCodes?.join(', ') || '',
+  isRepeatable: item.rules?.repeatable === true,
+  startDate: item.startsAt?.slice(0, 10) || '',
+  endDate: item.endsAt?.slice(0, 10) || '',
+  imageUrl: item.image || '',
+  image: null,
+})
 
 const fetchMissions = async () => {
-  const res = await axios.get('/admin/mission')
-  missions.value = res.data.data || []
+  const res = await axios.get('/admin/content', { params: { type: 'mission', limit: 100 } })
+  missions.value = (res.data.data || []).map(toMissionForm)
 }
 
 const openDrawer = (mission = null) => {
   missionToEdit.value = mission
     ? {
         ...mission,
-        imageUrl: mission.image || '',
+        imageUrl: mission.imageUrl || mission.image || '',
         image: null,
-        startDate: mission.startDate?.slice(0, 10),
-        endDate: mission.endDate?.slice(0, 10),
+        startDate: mission.startDate || '',
+        endDate: mission.endDate || '',
       }
     : {
         seasonId: '',
@@ -78,21 +100,36 @@ const onSubmit = async () => {
   const { valid } = await refForm.value?.validate()
   if (!valid) return
 
-  const fd = new FormData()
-  for (const key in missionToEdit.value) {
-    if (missionToEdit.value[key] && !(missionToEdit.value[key] instanceof File)) {
-      fd.append(key, missionToEdit.value[key])
-    }
-  }
-  if (missionToEdit.value.image instanceof File) {
-    fd.append('image', missionToEdit.value.image)
+  const mission = missionToEdit.value
+  const payload = {
+    type: 'mission',
+    slug: mission.seasonId.trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-'),
+    title: mission.name,
+    description: mission.description,
+    image: mission.imageUrl || '',
+    category: mission.gameSpecific ? 'casino' : 'sports',
+    locale: mission.locale || 'en',
+    status: mission.status || 'published',
+    startsAt: mission.startDate || null,
+    endsAt: mission.endDate || null,
+    rules: {
+      eventType: mission.missionType,
+      target: Number(mission.targetValue),
+      gameCodes: mission.gameSpecific ? mission.gameSpecific.split(',').map(value => value.trim()).filter(Boolean) : [],
+      repeatable: mission.isRepeatable,
+    },
+    reward: {
+      type: Number(mission.tokenReward) > 0 ? 'balance' : 'xp',
+      amount: Number(mission.tokenReward) > 0 ? Number(mission.tokenReward) : Number(mission.xpReward),
+      currency: 'USD',
+    },
   }
 
   try {
-    if (missionToEdit.value._id) {
-      await axios.put(`/admin/mission/${missionToEdit.value._id}`, fd)
+    if (mission._id) {
+      await axios.patch(`/admin/content/${mission._id}`, payload)
     } else {
-      await axios.post('/admin/mission', fd)
+      await axios.post('/admin/content', payload)
     }
     fetchMissions()
     closeDrawer()
@@ -103,7 +140,7 @@ const onSubmit = async () => {
 
 const deleteMission = async id => {
   try {
-    await axios.delete(`/admin/mission/${id}`)
+    await axios.delete(`/admin/content/${id}`, { data: { reason: 'Mission removed from mission management' } })
     fetchMissions()
   } catch (err) {
     console.error('❌ Delete error:', err)
@@ -207,7 +244,7 @@ onMounted(fetchMissions)
                 />
               </VCol>
 
-              <VCol v-if="missionToEdit.missionType === 'GAME_SPECIFIC'" cols="12">
+              <VCol v-if="['bet', 'spin', 'game_start', 'stake'].includes(missionToEdit.missionType)" cols="12">
                 <AppTextField
                   v-model="missionToEdit.gameSpecific"
                   :label="t('gameId')"

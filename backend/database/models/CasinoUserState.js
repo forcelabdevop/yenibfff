@@ -13,6 +13,7 @@ const casinoUserStateSchema = new mongoose.Schema({
   claimedAt: { type: Date, default: null },
   idempotencyKey: { type: String, default: null },
   rewardSnapshot: { type: mongoose.Schema.Types.Mixed, default: {} },
+  processedEvents: [{ type: String }],
   metadata: { type: mongoose.Schema.Types.Mixed, default: {} },
 }, { timestamps: true, minimize: false });
 

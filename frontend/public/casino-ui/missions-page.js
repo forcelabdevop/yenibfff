@@ -1,8 +1,9 @@
 window.createMissionsPage = function createMissionsPage(ctx) {
-  const { ref, computed, onMounted, currentPage, toastMessage, apiUrl, readAuthToken } = ctx
+  const { ref, computed, onMounted, currentPage, toastMessage, apiUrl, backendAssetUrl, readAuthToken } = ctx
   const isMissionsPage = currentPage === "missions"
   const missionLoading = ref(false)
   const missionError = ref("")
+  const missionActionLoading = ref(false)
 
   const missionAssets = {
     virtual: "assets/mission-virtual.png",
@@ -35,12 +36,15 @@ window.createMissionsPage = function createMissionsPage(ctx) {
     deadline: deadlineLabel(item.endsAt),
     reward: `${item.reward?.amount || 0} ${item.reward?.currency || "USD"}`,
     rewardIcon: item.reward?.type === "free-spins" ? "fs" : "freebet",
-    image: item.image || missionAssets.originals,
+    image: item.image ? backendAssetUrl(item.image) : missionAssets.originals,
     category: item.category || "casino",
-    status: item.userState?.status === "claimed" || item.userState?.status === "completed" ? "completed" : "active",
+    status: ["claimed", "completed"].includes(item.userState?.status) ? "completed" : "active",
     description: item.description || "",
     rules: item.rules || {},
     userState: item.userState || null,
+    progress: Number(item.userState?.progress || 0),
+    target: Number(item.userState?.target || item.rules?.target || 1),
+    action: item.userState?.status === "completed" ? "claim" : item.userState ? "progress" : "join",
   })
   async function loadMissions() {
     if (!isMissionsPage) return
@@ -112,18 +116,29 @@ window.createMissionsPage = function createMissionsPage(ctx) {
     missionCategoryOpen.value = false
     missionStatusOpen.value = false
   }
-  async function joinMission() {
+  async function runMissionAction() {
     const mission = selectedMission.value
-    if (!mission) return
+    if (!mission || missionActionLoading.value || mission.action === "progress") return
+    if (!authHeaders().Authorization) {
+      toastMessage("Please sign in to join missions")
+      return
+    }
+    missionActionLoading.value = true
+    const isClaim = mission.action === "claim"
     try {
-      const response = await fetch(apiUrl(`/content/missions/${mission.id}/join`), { method: "POST", headers: { ...authHeaders(), "Content-Type": "application/json" } })
+      const headers = { ...authHeaders(), "Content-Type": "application/json" }
+      if (isClaim) headers["Idempotency-Key"] = `mission-${mission.id}-${Date.now()}`
+      const path = isClaim ? `/content/mission/${mission.id}/claim` : `/content/missions/${mission.id}/join`
+      const response = await fetch(apiUrl(path), { method: "POST", headers })
       const payload = await response.json()
-      if (!response.ok || payload.success === false) throw new Error(payload.error?.message || "Mission could not be joined")
+      if (!response.ok || payload.success === false) throw new Error(payload.error?.message || `Mission could not be ${isClaim ? "claimed" : "joined"}`)
       selectedMission.value = null
-      toastMessage("Mission joined successfully")
+      toastMessage(isClaim ? "Mission reward claimed" : "Mission joined successfully")
       await loadMissions()
     } catch (error) {
-      toastMessage(error.message || "Mission could not be joined")
+      toastMessage(error.message || "Mission action failed")
+    } finally {
+      missionActionLoading.value = false
     }
   }
 
@@ -132,7 +147,7 @@ window.createMissionsPage = function createMissionsPage(ctx) {
   return {
     isMissionsPage, missionAssets, missionCategories, missionStatuses, missionFaqs,
     missionCategoryOpen, missionStatusOpen, missionExpanded, missionOpenFaq, selectedMission,
-    missionCategoryLabel, missionStatusLabel, filteredMissions, visibleMissions, missionLoading, missionError,
-    selectMissionCategory, selectMissionStatus, openMission, closeMissionMenus, joinMission, loadMissions,
+    missionCategoryLabel, missionStatusLabel, filteredMissions, visibleMissions, missionLoading, missionError, missionActionLoading,
+    selectMissionCategory, selectMissionStatus, openMission, closeMissionMenus, runMissionAction, loadMissions,
   }
 }

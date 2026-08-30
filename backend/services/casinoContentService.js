@@ -58,6 +58,37 @@ async function joinContent({ userId, contentId }) {
   );
 }
 
+async function recordMissionEvent({ userId, eventType, eventKey, amount = 1, gameCode = "", providerCode = "", category = "" }) {
+  if (!userId || !eventType || !eventKey) return { matched: 0, completed: 0 };
+  const increment = Math.max(0, Number(amount) || 0);
+  if (!increment) return { matched: 0, completed: 0 };
+
+  const missions = await CasinoContent.find(visibilityQuery("mission")).select("rules").lean();
+  let matched = 0;
+  let completed = 0;
+  for (const mission of missions) {
+    const rules = mission.rules || {};
+    if (rules.eventType && rules.eventType !== eventType) continue;
+    if (rules.gameCodes?.length && !rules.gameCodes.includes(gameCode)) continue;
+    if (rules.providerCodes?.length && !rules.providerCodes.includes(providerCode)) continue;
+    if (rules.categories?.length && !rules.categories.includes(category)) continue;
+    if (Number(rules.minimumAmount || 0) > increment) continue;
+
+    const state = await CasinoUserState.findOne({ user: userId, content: mission._id, periodKey: "lifetime", status: { $in: ["joined", "active"] } });
+    if (!state || state.processedEvents.includes(eventKey)) continue;
+    matched += 1;
+    state.processedEvents.push(eventKey);
+    state.progress = Math.min(state.target, state.progress + increment);
+    state.status = state.progress >= state.target ? "completed" : "active";
+    if (state.status === "completed" && !state.completedAt) {
+      state.completedAt = new Date();
+      completed += 1;
+    }
+    await state.save();
+  }
+  return { matched, completed };
+}
+
 async function claimContent({ userId, contentId, idempotencyKey }) {
   if (!mongoose.isValidObjectId(contentId)) throw Object.assign(new Error("Invalid content id"), { status: 400 });
   if (!String(idempotencyKey || "").trim()) throw Object.assign(new Error("Idempotency-Key header is required"), { status: 400 });
@@ -100,4 +131,4 @@ async function claimContent({ userId, contentId, idempotencyKey }) {
   }
 }
 
-module.exports = { PUBLIC_TYPES, pickContent, validateContent, visibilityQuery, listPublished, joinContent, claimContent };
+module.exports = { PUBLIC_TYPES, pickContent, validateContent, visibilityQuery, listPublished, joinContent, recordMissionEvent, claimContent };
