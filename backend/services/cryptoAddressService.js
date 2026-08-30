@@ -69,6 +69,9 @@ function format(doc, currency) {
 	return {
 		address: doc.address,
 		currency: currency.code,
+		// Kullaniciya GOSTERILECEK ad ("USDT"). `currency` ic anahtardir
+		// ("USDT_TRC20") ve arayuzde gosterilmemelidir.
+		displayCode: currency.walletCode,
 		label: currency.label,
 		chain: currency.chain,
 		network: currency.network,

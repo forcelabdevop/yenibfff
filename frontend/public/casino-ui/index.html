@@ -1561,11 +1561,22 @@
       .footer-social { flex-wrap:wrap; height:auto; padding:18px 0; }
     }
     /* ===== Cuzdan modali (Wallet / Crypto Swap / Deposit) — referans olculer ===== */
-    .wm-modal { position:relative; width:490px; max-width:calc(100vw - 16px); border-radius:12px; background:#111d29; box-shadow:0 18px 55px rgba(0,0,0,.38); overflow:hidden; font-family:'Poppins','Montserrat',Arial,sans-serif; }
+    /* max-height + overflow-y:auto: yatirma sekmesindeki ag uyarisi ve onay
+       notu icerigi uzatinca sabit yukseklikte ALT KISIM KIRPILIYORDU (adres
+       ve uyari gorunmez oluyordu). Artik modal ekrana sigacak kadar buyur,
+       tasarsa kendi icinde kayar. */
+    /* max-width backdrop'un 18px'lik yan dolgusunu da dusmeli (2*18=36),
+       yoksa dar ekranda modal viewport'u tasip saga kayiyor. */
+    .wm-modal { position:relative; width:490px; max-width:calc(100vw - 36px); max-height:calc(100vh - 90px); overflow-y:auto; overscroll-behavior:contain; border-radius:12px; background:#111d29; box-shadow:0 18px 55px rgba(0,0,0,.38); font-family:'Poppins','Montserrat',Arial,sans-serif; }
+    .wm-modal::-webkit-scrollbar { width:8px; }
+    .wm-modal::-webkit-scrollbar-thumb { border-radius:8px; background:#2c3b4e; }
     .wm-modal__inner { width:100%; height:100%; padding:24px; }
     .wm-modal--wallet { height:449px; background:linear-gradient(180deg,#0d3a70 0,#122641 54px,#111d29 140px); }
     .wm-modal--swap { height:561px; }
-    .wm-modal--deposit-crypto { height:443px; }
+    /* height DEGIL min-height: sabit 443px, adres + ag uyarisi + onay notu
+       birlikte gorununce alt kismi kirpiyordu. Tasarim boyu korunur,
+       icerik uzarsa modal buyur (max-height'e kadar, sonra kayar). */
+    .wm-modal--deposit-crypto { min-height:443px; }
     .wm-modal--deposit-cash { height:475px; }
     .wm-modal--deposit-buy { height:720px; }
 
@@ -1636,9 +1647,14 @@
     .wm-note strong { color:#8ea3c0; }
     /* Uyari notu: yanlis aga gonderim geri alinamaz, bu yuzden gorsel olarak
        one cikar. Metin uzun oldugu icin sabit yukseklik/nowrap gevsetilir. */
-    .wm-note--warn { height:auto; min-height:36px; padding:9px 12px; margin-top:8px; white-space:normal; text-align:center; line-height:1.5; border-color:#7a4a1e; background:rgba(214,124,40,.09); color:#e0a468; }
+    .wm-notes { display:flex; flex-direction:column; gap:8px; margin-top:12px; }
+    /* Notlar tam genislikte akar; uzun metin sarilir. */
+    /* display:block — .wm-note flex + gap:6px oldugu icin <strong>'lar flex
+       ogesi olup kelime araligini bozuyordu. Sarmali notlarda metin normal
+       satir ici akmali. */
+    .wm-notes .wm-note { height:auto; min-height:36px; display:block; padding:9px 12px; white-space:normal; text-align:center; line-height:1.5; }
+    .wm-note--warn { border-color:#7a4a1e; background:rgba(214,124,40,.09); color:#e0a468; }
     .wm-note--warn strong { color:#ffc078; }
-    .wm-note + .wm-note { margin-top:8px; }
     .wm-state--error { flex-direction:column; gap:12px; color:#e08a8a; text-align:center; padding:0 16px; }
     .wm-retry { padding:7px 18px; border:1px solid #2c3b4e; border-radius:8px; background:#1b2735; color:#cfe0f5; font-size:12px; font-weight:600; cursor:pointer; }
     .wm-retry:hover { background:#22323f; }
@@ -1690,7 +1706,7 @@
       .wm-modal__inner { padding:20px 18px; }
       .wm-modal--wallet { height:min(449px,calc(100vh - 16px)); }
       .wm-modal--swap { height:min(620px,calc(100vh - 16px)); overflow-y:auto; }
-      .wm-modal--deposit-crypto { height:min(443px,calc(100vh - 16px)); }
+      .wm-modal--deposit-crypto { min-height:min(443px,calc(100vh - 16px)); }
       .wm-modal--deposit-cash { height:min(475px,calc(100vh - 16px)); }
       .wm-modal--deposit-buy { height:min(720px,calc(100vh - 16px)); }
       .wm-action span, .wm-buy-row > span { font-size:16px; }
@@ -4347,10 +4363,14 @@
               <button @click="copyDepositAddress" aria-label="Adresi kopyala" class="wm-copy" type="button"><i class="far fa-copy"></i></button>
             </div>
             <div class="wm-min">The min deposit amount <strong>{{depositAddress.minDeposit}} {{depositCurrency && depositCurrency.code}}</strong><i class="wm-info">?</i></div>
-            <div class="wm-note wm-note--warn">Yalnizca <strong>{{depositAddress.network}}</strong> agi uzerinden <strong>{{depositAddress.currency}}</strong> gonderin. Farkli ag veya farkli coin gonderirseniz varliklariniz kaybolur.</div>
-            <div class="wm-note">Yatiriminiz <strong>{{depositAddress.confirmationsRequired}}</strong> ag onayindan sonra bakiyenize eklenir.</div>
           </div>
           <img :src="depositAddress.qr" alt="Yatirma adresi QR kodu" class="wm-qr"/>
+        </div>
+        <!-- Notlar grid satirinin DISINDA: sol sutun 300px sabit oldugu icin
+             uzun uyari metni iceride kirpiliyordu. Tam genislikte akiyor. -->
+        <div class="wm-notes" v-if="depositAddress && !addressLoading && !depositAddressError">
+          <div class="wm-note wm-note--warn">Yalnizca <strong>{{depositAddress.network}}</strong> agi uzerinden <strong>{{depositAddress.displayCode || depositAddress.currency}}</strong> gonderin. Farkli ag veya farkli coin gonderirseniz varliklariniz kaybolur.</div>
+          <div class="wm-note">Yatiriminiz <strong>{{depositAddress.confirmationsRequired}}</strong> ag onayindan sonra bakiyenize eklenir.</div>
         </div>
       </template>
 
