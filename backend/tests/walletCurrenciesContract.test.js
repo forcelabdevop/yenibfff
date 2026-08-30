@@ -20,6 +20,11 @@ const path = require("node:path");
 
 const { listCurrencies } = require("../config/crypto");
 const { RIVO_WALLET } = require("../utils/rivoWallet");
+const {
+	buildCurrencyList,
+	networkLabel,
+	coinIconPath,
+} = require("../utils/walletCurrencies");
 
 const backendRoot = path.join(__dirname, "..");
 const repoRoot = path.join(backendRoot, "..");
@@ -33,28 +38,52 @@ const indexHtmlSource = () =>
 	fs.readFileSync(path.join(casinoUi, "index.html"), "utf8");
 
 test("backend her ag girdisine kullaniciya gosterilecek bir label koyar", () => {
-	// `label` dusarse Ag secici tekrar bosalir.
-	assert.match(
-		walletRouteSource(),
-		/networks:\s*\[\{[^}]*label:\s*networkLabel\(chain,\s*type\)/,
-		"buildEntry icindeki networks girdisi `label` alanini kaybetmis",
-	);
+	// `label` dusarse Ag secici tekrar bosalir. Gercek fonksiyonu cagiriyoruz.
+	const list = buildCurrencyList([], new Map());
+	assert.ok(list.length > 0, "yatirilabilir para birimi listesi bos");
+
+	for (const entry of list) {
+		assert.ok(
+			Array.isArray(entry.networks) && entry.networks.length > 0,
+			`${entry.code} icin ag listesi yok`,
+		);
+		for (const network of entry.networks) {
+			assert.equal(
+				typeof network.label,
+				"string",
+				`${entry.code} agi label tasimiyor`,
+			);
+			assert.ok(network.label.length > 0, `${entry.code} agi bos label tasiyor`);
+		}
+	}
 });
 
 test("ag etiketi zincirin yani sira token standardini da icerir", () => {
 	// Yanlis agda gonderilen kripto GERI ALINAMAZ; "TRON" tek basina
-	// kullaniciya TRC-20 mi ERC-20 mi oldugunu soylemez. Etiketin
-	// standardi da tasidigini kaynak uzerinden dogruluyoruz.
-	const source = walletRouteSource();
-	assert.match(
-		source,
-		/if \(!standard \|\| standard === 'NATIVE'\) return chainName;/,
-		"native zincirler icin sade zincir adi kurali kaybolmus",
-	);
-	assert.match(
-		source,
-		/return `\$\{chainName\} \(\$\{standard\}\)`;/,
-		"token standardi artik etikete eklenmiyor",
+	// kullaniciya TRC-20 mi ERC-20 mi oldugunu soylemez.
+	assert.equal(networkLabel("TRON", "trc-20"), "TRON (TRC-20)");
+	assert.equal(networkLabel("tron", "TRC-20"), "TRON (TRC-20)");
+
+	// Native transferde parantezli standart anlamsiz olurdu.
+	assert.equal(networkLabel("TRON", "native"), "TRON");
+	assert.equal(networkLabel("TRON", ""), "TRON");
+
+	// Gercek listede USDT token, TRX native olmali.
+	const list = buildCurrencyList([], new Map());
+	const usdt = list.find((entry) => entry.code === "USDT");
+	const trx = list.find((entry) => entry.code === "TRX");
+	assert.equal(usdt.networks[0].label, "TRON (TRC-20)");
+	assert.equal(trx.networks[0].label, "TRON");
+});
+
+test("yatirilabilir birimler cuzdan olmasa bile listelenir", () => {
+	// Cuzdan ilk yatirim kredi edildiginde olusuyor. Bu satir dusserse
+	// kullanici USDT'yi hic goremeden para yatiramaz (tavuk-yumurta).
+	const codes = buildCurrencyList([], new Map()).map((entry) => entry.code);
+	assert.ok(codes.includes("USDT"), "cuzdansiz kullanici USDT goremiyor");
+	assert.ok(
+		buildCurrencyList([], new Map()).every((entry) => entry.depositable),
+		"yatirilabilir isareti dusmus",
 	);
 });
 
@@ -102,11 +131,18 @@ test("backendin uretebilecegi her coin ikonu diskte gercekten var", () => {
 });
 
 test("backend ikon yolunu assets klasoruyle ayni sekilde uretir", () => {
-	assert.match(
-		walletRouteSource(),
-		/const icon = `\/casino-ui\/assets\/coin-\$\{code\.toLowerCase\(\)\}\.png`/,
-		"ikon yolu semasi degismis; ustteki varlik testi artik dogrulamiyor",
-	);
+	// Ustteki varlik testi bu sema uzerine kurulu; sema degisirse o test
+	// yanlis yeri kontrol etmeye baslar ve sessizce degersizlesir.
+	assert.equal(coinIconPath("USDT"), "/casino-ui/assets/coin-usdt.png");
+
+	// Uretilen her ikon yolu gercekten diskteki bir dosyaya karsilik gelmeli.
+	for (const entry of buildCurrencyList([], new Map())) {
+		const diskPath = path.join(casinoUi, entry.icon.replace("/casino-ui/", ""));
+		assert.ok(
+			fs.existsSync(diskPath),
+			`${entry.code} ikonu bulunamadi: ${entry.icon}`,
+		);
+	}
 });
 
 test("openDeposit oturum kontrolu yapar", () => {

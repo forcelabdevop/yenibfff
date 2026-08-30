@@ -4,7 +4,7 @@ const axios = require('axios');
 const User = require('../database/models/User');
 const CryptoPrice = require('../database/models/CryptoPrice');
 const { authorizeUser } = require('../middleware/auth');
-const { listCurrencies: listDepositCurrencies } = require('../config/crypto');
+const { buildCurrencyList, normalizeCode } = require('../utils/walletCurrencies');
 
 const coinGeckoIds = {
   BTC: 'bitcoin',
@@ -15,7 +15,6 @@ const coinGeckoIds = {
   ZELO: 'zelo'
 };
 
-const normalizeCode = (value) => String(value || '').trim().toUpperCase();
 const finitePositive = (value) => Number.isFinite(Number(value)) && Number(value) > 0;
 
 async function loadPriceMap() {
@@ -28,68 +27,11 @@ router.get('/currencies', authorizeUser(true), async (req, res, next) => {
     const [user, prices] = await Promise.all([User.findById(req.user._id).select('wallets').lean(), loadPriceMap()]);
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
-    // Yatirilabilir cuzdan kodlari (USDT, TRX). Rivo gibi ic bakiye birimlerinin
-    // zincir uzerinde adresi YOKTUR; yatirma ekraninda sunulurlarsa kullanici
-    // "Desteklenmeyen para birimi" hatasi alir.
-    const depositable = new Set(
-      listDepositCurrencies().map((currency) => normalizeCode(currency.walletCode))
-    );
-
-    // Kullaniciya gosterilecek ag adi. Arayuz `label` okur; `name` geriye
-    // donuk uyumluluk icin korunur.
-    //
-    // ONEMLI: Yanlis agda gonderilen kripto GERI ALINAMAZ. Bu yuzden etiket
-    // yalnizca zinciri ("TRON") degil token standardini da ("TRC-20")
-    // icermelidir; kullanici cuzdanindan bu ikisini birlikte secer.
-    const networkLabel = (chain, type) => {
-      const chainName = String(chain || '').toUpperCase();
-      const standard = String(type || '').toUpperCase();
-      if (!standard || standard === 'NATIVE') return chainName;
-      return `${chainName} (${standard})`;
-    };
-
-    const buildEntry = ({ code, chain, type, balance }) => {
-      const market = prices.get(code) || { price: 0, fee: 0 };
-      const icon = `/casino-ui/assets/coin-${code.toLowerCase()}.png`;
-      return {
-        code,
-        name: code,
-        chain,
-        type,
-        network: chain,
-        networks: [{ id: type, name: chain, label: networkLabel(chain, type), icon }],
-        balance,
-        usd: market.price,
-        fee: market.fee,
-        precision: 8,
-        fiat: false,
-        depositable: depositable.has(code),
-        icon,
-      };
-    };
-
-    const data = (user.wallets || []).map((wallet) =>
-      buildEntry({
-        code: normalizeCode(wallet.coinType),
-        chain: wallet.chain,
-        type: wallet.type,
-        balance: Number(wallet.balance) || 0,
-      })
-    );
-
-    // Yatirilabilir kripto para birimleri, kullanicinin HENUZ cuzdani olmasa
-    // bile listeye eklenir. Cuzdan ilk yatirim kredi edildiginde olusur; aksi
-    // halde kullanici yatirma ekraninda USDT'yi hic goremez ve para
-    // yatiramazdi (tavuk-yumurta problemi).
-    const known = new Set(data.map((entry) => entry.code));
-    for (const currency of listDepositCurrencies()) {
-      const code = normalizeCode(currency.walletCode);
-      if (known.has(code)) continue;
-      known.add(code);
-      data.push(buildEntry({ code, chain: currency.chain, type: currency.type, balance: 0 }));
-    }
-
-    res.json({ success: true, data });
+    // Liste kurulumu utils/walletCurrencies.js icinde. Ayri modul olmasinin
+    // sebebi: arayuz sozlesmesi (ozellikle networks[].label) sessizce bozulup
+    // ag kutusunun hep bos gorunmesine yol acmisti; testler artik gercek
+    // fonksiyonu cagiriyor.
+    res.json({ success: true, data: buildCurrencyList(user.wallets, prices) });
   } catch (error) { next(error); }
 });
 

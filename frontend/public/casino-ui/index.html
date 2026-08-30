@@ -4367,16 +4367,22 @@
         </div>
         <div class="wm-address-row" v-else-if="depositAddress">
           <div>
+            <!-- Basliktaki, tutardaki ve uyaridaki para birimi TEK kaynaktan
+                 (depositAddress) okunur. depositCurrency secimle ANINDA
+                 degisir, adres ise ancak istek donunce; ikisi karisirsa
+                 kullanici "Your TRX deposit address" basligi altinda USDT
+                 adresi gorebilir. Yanlis coin gonderimi GERI ALINAMAZ. -->
             <div class="wm-address-box">
               <div class="wm-address-text">
-                <small>Your {{depositCurrency && depositCurrency.code}} deposit address</small>
+                <small>Your {{depositAddress.displayCode || depositAddress.currency}} deposit address</small>
                 <strong>{{depositAddress.address}}</strong>
               </div>
               <button @click="copyDepositAddress" aria-label="Adresi kopyala" class="wm-copy" type="button"><i class="far fa-copy"></i></button>
             </div>
-            <div class="wm-min">The min deposit amount <strong>{{depositAddress.minDeposit}} {{depositCurrency && depositCurrency.code}}</strong><i class="wm-info">?</i></div>
+            <div class="wm-min">The min deposit amount <strong>{{depositAddress.minDeposit}} {{depositAddress.displayCode || depositAddress.currency}}</strong><i class="wm-info">?</i></div>
           </div>
-          <img :src="depositAddress.qr" alt="Yatirma adresi QR kodu" class="wm-qr"/>
+          <!-- QR sunucuda uretilir; gelmezse kirik gorsel yerine hic gosterme. -->
+          <img :src="depositAddress.qr" v-if="depositAddress.qr" alt="Yatirma adresi QR kodu" class="wm-qr"/>
         </div>
         <!-- Notlar grid satirinin DISINDA: sol sutun 300px sabit oldugu icin
              uzun uyari metni iceride kirpiliyordu. Tam genislikte akiyor. -->
