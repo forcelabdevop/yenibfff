@@ -3180,7 +3180,7 @@
           <h2>Best {{detailProviderName || 'provider'}} games</h2>
           <div class="gl-arrows">
             <button :disabled="bestOffset <= 0" @click="slideRail('best',-1)" aria-label="Previous games" class="gl-arrow" type="button"><i class="fas fa-chevron-left"></i></button>
-            <button :disabled="bestOffset >= railMax(gameDetail.providerGames.length)" @click="slideRail('best',1)" aria-label="Next games" class="gl-arrow" type="button"><i class="fas fa-chevron-right"></i></button>
+            <button :disabled="bestOffset >= bestRailMax" @click="slideRail('best',1)" aria-label="Next games" class="gl-arrow" type="button"><i class="fas fa-chevron-right"></i></button>
           </div>
         </div>
         <div class="gl-clip">
@@ -3195,7 +3195,7 @@
           <h2>Most popular games</h2>
           <div class="gl-arrows">
             <button :disabled="popularOffset <= 0" @click="slideRail('popular',-1)" aria-label="Previous popular games" class="gl-arrow" type="button"><i class="fas fa-chevron-left"></i></button>
-            <button :disabled="popularOffset >= railMax(gameDetail.popularGames.length)" @click="slideRail('popular',1)" aria-label="Next popular games" class="gl-arrow" type="button"><i class="fas fa-chevron-right"></i></button>
+            <button :disabled="popularOffset >= popularRailMax" @click="slideRail('popular',1)" aria-label="Next popular games" class="gl-arrow" type="button"><i class="fas fa-chevron-right"></i></button>
           </div>
         </div>
         <div class="gl-clip">

@@ -238,12 +238,13 @@ window.createGameDetail = function createGameDetail(ctx) {
     return Math.max(0, (Number(count) || 0) - visible) * pitch
   }
 
+  const bestRailMax = computed(() => railMax(gameDetail.value?.providerGames?.length || 0))
+  const popularRailMax = computed(() => railMax(gameDetail.value?.popularGames?.length || 0))
+
   function slideRail(which, direction) {
     const isBest = which === "best"
     const target = isBest ? bestOffset : popularOffset
-    const detail = gameDetail.value
-    const list = detail ? (isBest ? detail.providerGames : detail.popularGames) : []
-    const max = railMax(list ? list.length : 0)
+    const max = isBest ? bestRailMax.value : popularRailMax.value
     target.value = Math.max(0, Math.min(max, target.value + direction * railPitch()))
   }
 
@@ -269,7 +270,8 @@ window.createGameDetail = function createGameDetail(ctx) {
     notifyGame,
     setDemoMode,
     slideRail,
-    railMax,
+    bestRailMax,
+    popularRailMax,
     openGameFullscreen,
     isGamePage,
     gameDetail,
