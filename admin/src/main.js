@@ -41,7 +41,13 @@ const bootstrapAcl = async () => {
 
 	try {
 		const permissionStore = usePermissionStore(pinia);
-		await permissionStore.fetchPermissions();
+		const ok = await permissionStore.fetchPermissions();
+
+		// Istek basarisizsa DOKUNMA. Aksi halde gecici bir ag/500 hatasi
+		// calisan bir super admin'in ability'lerini bosaltip onu panelden
+		// kilitler. Bu durumda localStorage'daki mevcut (gecerli) yetkiler
+		// oldugu gibi kalsin.
+		if (!ok) return;
 
 		const abilities = permissionStore.getAbilities();
 		localStorage.setItem("userAbilities", JSON.stringify(abilities));

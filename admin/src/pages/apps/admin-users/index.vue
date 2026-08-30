@@ -94,11 +94,15 @@ const handleAssignRole = async () => {
 		const currentUserId = JSON.parse(
 			localStorage.getItem("userData") || "{}"
 		).id;
-		if (currentUserId && selectedUser.value._id === currentUserId) {
-			await permissionStore.fetchPermissions();
-			const abilities = permissionStore.getAbilities();
-			localStorage.setItem("userAbilities", JSON.stringify(abilities));
-			ability.update(abilities);
+			if (currentUserId && selectedUser.value._id === currentUserId) {
+				// Basarisiz istekte ability'leri sifirlamayalim; yoksa kendi
+				// rolunu guncelleyen admin panelden kilitlenebilir.
+				const ok = await permissionStore.fetchPermissions();
+				if (!ok) return;
+
+				const abilities = permissionStore.getAbilities();
+				localStorage.setItem("userAbilities", JSON.stringify(abilities));
+				ability.update(abilities);
 
 			const userData = JSON.parse(
 				localStorage.getItem("userData") || "{}"

@@ -13,38 +13,57 @@ const JWT_SECRET =
 
 const getRequestIp = getClientIp;
 
+/**
+ * Giris yanitindaki CASL yetkilerini uretir.
+ *
+ * ⚠️ Bu fonksiyon middleware/permission.js `authenticateAdmin` ile AYNI
+ * kurallari uygulamak ZORUNDADIR. Ikisi ayrisirsa panel ile API birbirine
+ * ters duser ve admin, API'nin izin verdigi sayfada /not-authorized gorur.
+ *
+ * Kural: adminRole ATANMAMIS (legacy) adminler super admin sayilir.
+ * Bu bir yetki genislemesi DEGILDIR — authenticateAdmin zaten bu kullanicilara
+ * her API ucunda `["*"]` veriyor (bkz. extractPermissions isLegacyAdmin).
+ * Onceden burasi onlara yalnizca `read Auth` veriyordu; sonucta rol sistemi
+ * oncesinden kalma admin girisi yapinca panelde her sayfadan kilitleniyordu.
+ */
 const buildAdminAbilities = (user) => {
-	let userAbilities = [];
-	let isSuperAdmin = false;
-	let userPermissions = [];
+	const SUPER_ADMIN_ABILITIES = [{ action: "manage", subject: "all" }];
 
-	if (user.adminRole) {
-		isSuperAdmin = user.adminRole.isSuperAdmin;
+	// adminRole hic atanmamis (legacy admin) → tam yetki.
+	// Not: populate edilmemis bir ObjectId de gelebilir; o durumda
+	// isSuperAdmin okunamaz ve kullaniciyi yanlislikla kilitlemek yerine
+	// legacy kabul etmek API davranisiyla tutarlidir.
+	const hasAdminRole = Boolean(user.adminRole && user.adminRole._id);
 
-		if (isSuperAdmin) {
-			userAbilities = [{ action: "manage", subject: "all" }];
-			userPermissions = ["*"];
-		} else {
-			const permissions = user.adminRole.permissions || [];
-			userPermissions = permissions.map((permission) => permission.code);
-
-			permissions.forEach((permission) => {
-				userAbilities.push({
-					action: permission.action,
-					subject: permission.resource,
-				});
-			});
-
-			userAbilities.push({ action: "read", subject: "Auth" });
-		}
-	} else {
-		userAbilities = [{ action: "read", subject: "Auth" }];
+	if (!hasAdminRole) {
+		return {
+			isSuperAdmin: true,
+			userAbilities: SUPER_ADMIN_ABILITIES,
+			userPermissions: ["*"],
+		};
 	}
 
+	if (user.adminRole.isSuperAdmin) {
+		return {
+			isSuperAdmin: true,
+			userAbilities: SUPER_ADMIN_ABILITIES,
+			userPermissions: ["*"],
+		};
+	}
+
+	const permissions = user.adminRole.permissions || [];
+	const userAbilities = permissions.map((permission) => ({
+		action: permission.action,
+		subject: permission.resource,
+	}));
+
+	// Her admin en azindan kendi oturum/karsilama sayfalarini gorebilmeli.
+	userAbilities.push({ action: "read", subject: "Auth" });
+
 	return {
-		isSuperAdmin,
+		isSuperAdmin: false,
 		userAbilities,
-		userPermissions,
+		userPermissions: permissions.map((permission) => permission.code),
 	};
 };
 

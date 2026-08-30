@@ -87,26 +87,37 @@ export const usePermissionStore = defineStore("permission", () => {
 	};
 
 	/**
-	 * Backend'den güncel permission'ları al
+	 * Backend'den güncel permission'ları al.
+	 *
+	 * @returns {Promise<boolean>} İstek gerçekten başarılı olduysa `true`.
+	 *
+	 * ⚠️ Dönüş değerini yok saymayın. Çağıran taraf başarısızlıkta CASL
+	 * ability'lerini YENİDEN YAZMAMALIDIR: istek geçici olarak düşerse
+	 * (ağ hatası, 500) elde yalnızca boş permission listesi kalır ve bu,
+	 * çalışan bir süper admini "yetkisiz" durumuna düşürüp panelden kilitler.
 	 */
 	const fetchPermissions = async () => {
 		loading.value = true;
 		try {
 			const { data } = await axios.get("/admin/my-permissions");
 
-			if (data.success) {
-				permissions.value = data.data.permissions || [];
-				role.value = data.data.role || null;
-				isSuperAdmin.value = data.data.isSuperAdmin || false;
-				isLoaded.value = true;
+			if (!data.success) return false;
 
-				localStorage.setItem(
-					"userPermissions",
-					JSON.stringify(permissions.value)
-				);
-			}
+			permissions.value = data.data.permissions || [];
+			role.value = data.data.role || null;
+			isSuperAdmin.value = data.data.isSuperAdmin || false;
+			isLoaded.value = true;
+
+			localStorage.setItem(
+				"userPermissions",
+				JSON.stringify(permissions.value)
+			);
+
+			return true;
 		} catch (err) {
 			console.error("Error fetching permissions:", err);
+
+			return false;
 		} finally {
 			loading.value = false;
 		}
