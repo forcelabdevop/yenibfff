@@ -358,7 +358,7 @@ bir uygulama: ya bu projenin eski kopyası ya da aynı kod tabanından türeyen
 **2. `/health` zaten bozuktu — bu bir kod hatasıydı.** Uç, `app.use("/",
 routes)` satırından **sonra** tanımlanmıştı. `routes/index.js` sonundaki
 catch-all 404 handler onu yutuyordu, yani `/health` **hiçbir sürümde**
-çalışmıyordu. `a1c0adc` ile düzeltildi (tanım mount'tan öne alındı) ve
+çalışmıyordu. `35b6bd5` ile düzeltildi (tanım mount'tan öne alındı) ve
 `tests/healthEndpoint.test.js` ile koruma altına alındı.
 
 > **Bunun yan etkisi ciddiydi:** `deploy.sh` sağlık kontrolünde 200 bekliyor
