@@ -3,46 +3,75 @@
   window.createVipPage = function ({ ref, computed, currentPage, toastMessage, openChat }) {
     const isVipPage = currentPage === 'vip';
     const vpTab = ref('Special Treats');
-    const vpFaqOpen = ref(0);
-    const vpTabs = ['Special Treats', 'Additional Perks', 'Higher Bonuses', 'Personal Manager'];
-    const allBenefits = {
+    const vpFaqOpen = ref(null);
+    const vpTabs = [
+      { label: 'Special Treats', icon: 'fas fa-gift' },
+      { label: 'Additional Perks', icon: 'fas fa-rocket' },
+      { label: 'Higher Bonuses', icon: 'fas fa-gift' },
+      { label: 'Personal Manager', icon: 'fas fa-comment' }
+    ];
+    const benefit = (title, description, image, conditions) => ({ title, description, image: 'assets/vip/' + image, conditions: !!conditions });
+    const vpBenefitGroups = {
       'Special Treats': [
-        ['icon-6.png', 'Premium Bonus', 'Enjoy exclusive rewards tailored to your play.'],
-        ['icon-7.png', 'Monthly Bonus', 'Receive a special bonus every month.'],
-        ['icon-8.png', 'Weekly Gift', 'A fresh reward is waiting every week.'],
-        ['icon-9.png', 'Birthday Gift', 'Celebrate your day with a personal surprise.']
+        benefit('VIP Welcome Bonus', 'Contact your personal manager to claim your VIP Welcome Bonus and unlock your royal status.', 'treat-6.png'),
+        benefit('Bounty Bonus', 'VIP Club entry sweetens your life three times a week with a tasty crypto bonus based on your activity and profit.', 'treat-7.png'),
+        benefit('Personal VIP Bonuses', 'Get special Bonuses from VIP managers in addition to the regular ones.', 'treat-8.png'),
+        benefit('VIP Birthday Bonus', 'More fun on Big day! Sweeten your B-day celebration with tasty bonus ready for you.', 'treat-9.png'),
+        benefit('Promo codes', 'Catch exclusive Promo codes in VIP Notices Channel to get free BFG.', 'treat-10.png'),
+        benefit('Various special bonuses', 'Play games and have encouraging bonuses for your huge wins.', 'treat-11.png')
       ],
       'Additional Perks': [
-        ['icon-10.png', 'VIP Tickets', 'Access private tournaments and events.'],
-        ['icon-11.png', 'Fury Points', 'Earn more loyalty points as you play.'],
-        ['icon-12.png', 'Fast Cashback', 'Get enhanced cashback with priority processing.'],
-        ['icon-18.png', 'Surprise Gifts', 'Unlock gifts made especially for VIP members.']
+        benefit('Huge Payouts', 'Win more with the increased Max Bet. Max payouts are also sky-high for our VIP users.', 'treat-12.png'),
+        benefit('Withdrawal Priority', 'No more waiting. Your withdrawals will be processed almost immediately.', 'treat-7.png'),
+        benefit('Exclusive Pre-releases', 'Experience the brand new games prior to other players.', 'treat-9.png'),
+        benefit('VIP Customization', 'Be unique with a personalized User Profile.', 'treat-13.png'),
+        benefit('VIP Lounge', 'Receive your bonuses and enjoy all the VIP benefits in one place.', 'treat-14.png'),
+        benefit('VIP Chat', 'Join us in our exclusive VIP chat room for discreet and elite discussions.', 'treat-15.png')
       ],
       'Higher Bonuses': [
-        ['icon-13.png', 'Boosted Rewards', 'Receive increased bonuses on selected offers.'],
-        ['icon-14.png', 'Level Privileges', 'Your VIP status unlocks stronger benefits.'],
-        ['icon-15.png', 'Recharge Bonus', 'Stay in the game with exclusive recharge offers.'],
-        ['icon-16.png', 'Private Drops', 'Join limited rewards available only to VIPs.']
-      ],
-      'Personal Manager': [
-        ['managers.png', 'Personal VIP Manager', 'Dedicated help, tailored offers and priority care.'],
-        ['manager-banner.jpg', 'Priority Support', 'Get quick assistance whenever you need it.'],
-        ['icon-8.png', 'Custom Offers', 'Your manager prepares rewards around your preferences.'],
-        ['icon-18.png', 'Private Service', 'A premium experience designed around you.']
+        benefit('Cashback', 'Get up to 25% of your money back twice a week.', 'treat-12.png', true),
+        benefit('Monthly Bonus', 'Receive monthly bonuses based on your activity.', 'treat-7.png', true),
+        benefit('Rakeback', 'Enjoy a bonus every 20 minutes and multiply it with a Rakeback boost.', 'treat-16.png', true),
+        benefit('Calendar Bonus', 'Claim calendar bonuses three times a day and activate a Rakeback boost.', 'treat-9.png', true),
+        benefit('Weekly Bonus', 'Catch weekly bonuses based on your activity.', 'treat-8.png', true)
       ]
     };
-    const vpBenefits = computed(() => allBenefits[vpTab.value] || allBenefits['Special Treats']);
-    const vpFaqs = [
-      ['How can I become a VIP?', 'Play regularly and progress through the loyalty levels. Our VIP team will contact eligible players.'],
-      ['What is the VIP transfer program?', 'Qualified players can transfer their status from another casino and receive an equivalent VIP offer.'],
-      ['How do I contact my personal manager?', 'Once assigned, your manager is available directly through our live chat service.'],
-      ['Are VIP rewards available to everyone?', 'Benefits depend on your current VIP level and account activity.'],
-      ['Can VIP benefits change?', 'Offers are personalized and may evolve as your level and activity change.']
+    const vpBenefits = computed(() => vpBenefitGroups[vpTab.value] || vpBenefitGroups['Special Treats']);
+    const vpManagers = [
+      { name: 'Chloe', position: '0% 0%', description: 'Chloe is very calm, responsible, and constructive. She enjoys dancing and knitting, and her knowledge of BetFury will surprise you.' },
+      { name: 'Freya', position: '50% 0%', description: 'Freya is an open-minded and friendly person with a good sense of humor. Her biggest passions are sports, traveling and animals.' },
+      { name: 'Kim', position: '0% 100%', description: 'A smiley girl with a good sense of humour. She likes jokes, music and never misses new releases of her favourite artists.' },
+      { name: 'Dakota', position: '50% 100%', description: 'Dakota always tries to understand each user and find the best way to connect with them, making sure they feel heard and valued.' },
+      { name: 'Jenny', position: '100% 100%', description: 'Jenny manages with a gentle hand and a listening ear, having an ever-present smile and a surprisingly quick-witted approach.' }
     ];
-    const vpSelectTab = (tab) => { vpTab.value = tab; };
-    const vpToggleFaq = (index) => { vpFaqOpen.value = vpFaqOpen.value === index ? -1 : index; };
+    const vpSuperPerks = [
+      benefit('Super VIP Lounge', 'Elevate your experience with an exclusive haven for Super VIP members.', 'treat-14.png'),
+      benefit('Super VIP Welcome Bonus', 'Welcome to the pinnacle! Contact your personal manager to claim your exclusive Super VIP Welcome Bonus and start your elite journey.', 'treat-18.png'),
+      benefit('Instant Bonuses', 'Receive bonuses directly to your balance without calendar distribution, except the Weekly Sport Bonus.', 'treat-12.png'),
+      benefit('VIP Concierge', 'Make a personal request not related to the platform: order a pizza, book tickets, etc.', 'treat-16.png'),
+      benefit('Highest Bonuses', 'Unlock the highest platform bonus percentages and enhanced VIP rewards as a tribute to your outstanding activity.', 'treat-13.png'),
+      benefit('Rakeback Booster', 'Request a supercharge of your winnings any time during the day.', 'treat-15.png')
+    ];
+    const vpFaqLeft = [
+      ['Why should I become a VIP on BetFury?', 'VIP Club members receive exclusive bonuses, premium support and access to special community events.'],
+      ['What is a Bounty Bonus? How is it calculated?', 'The Bounty Bonus is a personal crypto reward based on your platform activity and profit.'],
+      ['Why do I need to contact my VIP Manager?', 'Your VIP Manager helps you claim personal rewards and resolves VIP-related questions.'],
+      ['When will the new VIP members have access to the closed VIP Community?', 'Access is provided after your VIP status has been verified by your personal manager.'],
+      ['What is the difference between VIP Manager and Live Support?', 'Live Support handles general requests, while a VIP Manager provides personalized VIP assistance.'],
+      ['What is the difference between VIP and SVIP statuses?', 'Super VIP status unlocks the highest rewards, instant bonuses and additional concierge privileges.']
+    ];
+    const vpFaqRight = [
+      ['What are the VIP bonuses based on?', 'VIP bonuses are based on rank, activity, wagering and overall platform performance.'],
+      ['What should I do to get a VIP Welcome Bonus?', 'Reach VIP status and contact your personal VIP Manager to claim the welcome reward.'],
+      ['What is the VIP Transfer?', 'VIP Transfer lets eligible players move their VIP status to BetFury and receive VIP perks instantly.'],
+      ['How do I enter the VIP Transfer?', 'Choose “Become a VIP” and follow the verification instructions from the VIP team.'],
+      ['What are the requirements for starting a VIP Transfer?', 'You need verified VIP status on an eligible platform and supporting account information.'],
+      ['What are the requirements to pass VIP Transfer?', 'Complete verification and meet the activity requirements shared by the BetFury VIP team.']
+    ];
+    const vpSelectTab = (tab) => { vpTab.value = typeof tab === 'string' ? tab : tab.label; };
+    const vpToggleFaq = (key) => { vpFaqOpen.value = vpFaqOpen.value === key ? null : key; };
     const vpNotify = (message) => toastMessage(message);
     const vpOpenChat = () => { if (typeof openChat === 'function') openChat(); else toastMessage('Live support opened'); };
-    return { isVipPage, vpTab, vpTabs, vpBenefits, vpFaqs, vpFaqOpen, vpSelectTab, vpToggleFaq, vpNotify, vpOpenChat };
+    return { isVipPage, vpTab, vpTabs, vpBenefits, vpManagers, vpSuperPerks, vpFaqLeft, vpFaqRight, vpFaqOpen, vpSelectTab, vpToggleFaq, vpNotify, vpOpenChat };
   };
 })();
