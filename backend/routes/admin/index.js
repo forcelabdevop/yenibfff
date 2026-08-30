@@ -8325,6 +8325,11 @@ const xPaymentsAdminRoutes = require("./xPayments");
 router.use("/fluxkripto", fluxKriptoAdminRoutes);
 router.use("/xpayments", xPaymentsAdminRoutes);
 
+// Kendi HD altyapimizdaki on-chain yatirmalarin izleme ekrani (salt okunur).
+// fluxkripto/xpayments saglayici tabanli akislardir; bu ondan ayridir.
+const cryptoDepositsAdminRoutes = require("./cryptoDeposits");
+router.use("/crypto-deposits", cryptoDepositsAdminRoutes);
+
 // ==================== BETINOVI ADMIN API ROUTES ====================
 const betinoviAdminRoutes = require("./betinoviAdminRoutes");
 router.use("/betinovi-admin", betinoviAdminRoutes);
@@ -9266,7 +9271,7 @@ router.get("/my-permissions", authenticateAdmin, async (req, res) => {
 	}
 });
 
-// ═══��══���══════════════════════════════════���═════════════════════════════════
+// ═══��══���══════════════════════════════════���═══════════════════════���═════════
 // 🎨 SITE SETTINGS ENDPOINTS
 // ═════════════════════════════════════════════════════════════��═════════════
 

@@ -63,6 +63,13 @@ export default [
     subject: "finance.withdraws",
   },
   {
+    title: "Kripto Yatırmalar",
+    icon: { icon: "tabler-currency-bitcoin" },
+    to: "apps-finance-crypto-deposits",
+    action: "read",
+    subject: "finance.deposits",
+  },
+  {
     title: "Manuel İşlemler",
     icon: { icon: "tabler-adjustments" },
     to: "apps-finance-manual-adjustments",
