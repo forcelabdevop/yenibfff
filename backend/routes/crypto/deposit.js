@@ -1,4 +1,5 @@
 const express = require('express');
+const QRCode = require('qrcode');
 const router = express.Router();
 
 const { authorizeUser } = require('../../middleware/auth');
@@ -48,10 +49,20 @@ router.get('/address', authorizeUser(true), async (req, res, next) => {
 			req.user._id,
 			req.query.currency,
 		);
+
+		// QR SUNUCUDA uretilir. Ucuncu parti bir QR servisine adres gondermek,
+		// kullanicinin yatirma adresini disariya sizdirmak demektir.
+		const qr = await QRCode.toDataURL(data.address, {
+			errorCorrectionLevel: 'M',
+			margin: 1,
+			width: 240,
+		});
+
 		res.json({
 			success: true,
 			data: {
 				...data,
+				qr,
 				minDeposit: formatUnits(data.minDepositUnits, data.decimals),
 				confirmationsRequired: CONFIRMATIONS_REQUIRED,
 			},

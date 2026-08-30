@@ -92,6 +92,25 @@ test("desteklenmeyen para birimi null doner", () => {
 
 test("para birimi kodu buyuk/kucuk harf duyarsizdir", () => {
 	assert.equal(getCurrency("trx").code, "TRX");
+	assert.equal(getCurrency("usdt").code, "USDT_TRC20");
+});
+
+test("arayuzun gonderdigi cuzdan kodu ile para birimi bulunur", () => {
+	// Arayuz, bakiye listesinden gelen cuzdan kodunu gonderir ("USDT"); config
+	// anahtari ise "USDT_TRC20". Yalnizca tam anahtar kabul edilseydi kullanici
+	// yatirma adresi ALAMAZDI. Her iki bicim de calismali.
+	for (const currency of listCurrencies()) {
+		assert.equal(
+			getCurrency(currency.code)?.code,
+			currency.code,
+			`tam anahtar calismali: ${currency.code}`,
+		);
+		assert.equal(
+			getCurrency(currency.walletCode)?.code,
+			currency.code,
+			`cuzdan kodu calismali: ${currency.walletCode}`,
+		);
+	}
 });
 
 test("config cuzdan tanimlari rivoWallet korumasiyla birebir uyusur", () => {

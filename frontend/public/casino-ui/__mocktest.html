@@ -2,6 +2,87 @@
 
 <html lang="en">
 <head>
+<script>
+(() => {
+  // Ad alani index.html'de 'website' varsayilanini kullanir.
+  const NS = "website";
+  try {
+    localStorage.setItem(NS + ".token", "mock-token");
+    localStorage.setItem(NS + ".userId", "mock-user");
+  } catch {}
+
+  // 1x1 seffaf PNG — gercek QR yerine; boyut/yerlesim dogrulamasi icin yeterli.
+  const QR =
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+
+  // Gercek /wallet/currencies ciktisiyla ayni sekil. Rivo ic bakiye birimidir:
+  // depositable=false, cunku zincir uzerinde adresi yoktur.
+  const CURRENCIES = [
+    { code: "Rivo", name: "Rivo", chain: "TRON", type: "trc-20", network: "TRON",
+      networks: [{ id: "trc-20", name: "TRON" }], balance: 250.5, usd: 1, fee: 0,
+      precision: 8, fiat: false, depositable: false, icon: "assets/coin-usdt.png" },
+    { code: "USDT", name: "USDT", chain: "TRON", type: "trc-20", network: "TRON",
+      networks: [{ id: "trc-20", name: "TRON" }], balance: 0, usd: 1, fee: 0,
+      precision: 8, fiat: false, depositable: true, icon: "assets/coin-usdt.png" },
+    { code: "TRX", name: "TRX", chain: "TRON", type: "native", network: "TRON",
+      networks: [{ id: "native", name: "TRON" }], balance: 0, usd: 0.12, fee: 0,
+      precision: 8, fiat: false, depositable: true, icon: "assets/coin-trx.png" },
+  ];
+
+  const ADDRESS_PAYLOAD = {
+    address: "TSeJkUh4Qv67VNFwY8LaAxERygNdy6NQZK",
+    qr: QR,
+    currency: "USDT_TRC20",
+    chain: "TRON",
+    network: "TRC20",
+    decimals: 6,
+    minDeposit: "1",
+    minDepositUnits: 1000000,
+    confirmationsRequired: 20,
+  };
+
+  const json = (data) =>
+    Promise.resolve(new Response(JSON.stringify({ success: true, data }), {
+      status: 200, headers: { "Content-Type": "application/json" },
+    }));
+
+  // /user/:id sarmalanmamis {user:{...}} bekler (bkz. refreshAuthUser).
+  const raw = (data) =>
+    Promise.resolve(new Response(JSON.stringify(data), {
+      status: 200, headers: { "Content-Type": "application/json" },
+    }));
+
+  const realFetch = window.fetch.bind(window);
+  window.fetch = (input, init) => {
+    const url = String((input && input.url) || input || "");
+    if (url.includes("/crypto/deposit/address")) {
+      // Gercek backend gibi davran: yalnizca yatirilabilir kodlar adres alir.
+      const code = new URL(url, location.origin).searchParams.get("currency");
+      const ok = CURRENCIES.some((c) => c.code === code && c.depositable);
+      if (!ok) {
+        return Promise.resolve(new Response(
+          JSON.stringify({ success: false, message: "Desteklenmeyen para birimi: " + code }),
+          { status: 400, headers: { "Content-Type": "application/json" } },
+        ));
+      }
+      return json({ ...ADDRESS_PAYLOAD, requested: code });
+    }
+    if (url.includes("/wallet/currencies")) return json(CURRENCIES);
+    if (url.includes("/user/"))
+      return raw({
+        user: {
+          _id: "mock-user", username: "testuser", email: "test@x.test",
+          wallets: CURRENCIES.map((c) => ({
+            coinType: c.code, chain: c.chain, type: c.type, balance: c.balance,
+          })),
+        },
+      });
+    // Oyun listesi vb. gercek istekler dev sunucusuna gitsin.
+    return realFetch(input, init);
+  };
+})();
+</script>
+
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Crypto Casino &amp; Sports Betting</title>

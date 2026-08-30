@@ -12,10 +12,15 @@
  *     kendisi uretiyor (assets/coin-<code>.png). Backend baglanirken ya ayni
  *     isimlendirmeyi kullanin ya da `icon` alanini mutlaka doldurun.
  *
- *  2) GET /wallet/deposit-address?currency=USDT&network=BEP20
- *     -> { success, data: { address, qr, minDeposit, currency, network } }
- *     `qr` bir data-URI veya URL olmali. Mock sabit bir PNG donuyor.
- *     GUVENLIK: adres kullaniciya ozel olmali; cache'lemeyin.
+ *  2) GET /crypto/deposit/address?currency=USDT   [CANLI]
+ *     -> { success, data: { address, qr, currency, chain, network, decimals,
+ *                           minDeposit, confirmationsRequired } }
+ *     Kaynak: backend/routes/crypto/deposit.js (kendi HD cuzdanimiz).
+ *     Adres kullanici + para birimi basina KALICIDIR; her cagrida ayni adres
+ *     doner (Stake modeli). `network` parametresi GONDERILMEZ — zincir para
+ *     biriminin kendi tanimindan gelir.
+ *     `qr` sunucuda uretilen bir data-URI'dir; adres ucuncu parti bir QR
+ *     servisine gonderilmez.
  *
  *  3) GET /wallet/quote?from=USD&to=BTC&amount=100&kind=buy|swap
  *     -> { success, data: { rate, receive, provider, methods:[
@@ -51,6 +56,9 @@ window.createWalletModal = function createWalletModal(ctx) {
   const currencies = ref([])
   const depositAddress = ref(null)
   const addressLoading = ref(false)
+  const depositAddressError = ref("")
+  // Gec gelen adres yanitlarinin yeni secimi ezmesini onleyen istek sayaci.
+  let depositAddressRequestId = 0
 
   // Secimler
   const depositCurrency = ref(null)
@@ -78,6 +86,22 @@ window.createWalletModal = function createWalletModal(ctx) {
 
   const cryptoCurrencies = computed(() => currencies.value.filter((c) => !c.fiat))
   const fiatCurrencies = computed(() => currencies.value.filter((c) => c.fiat))
+
+  /**
+   * Yatirma ekraninda sunulabilecek para birimleri.
+   *
+   * Rivo gibi ic bakiye birimlerinin zincir uzerinde adresi YOKTUR; listede
+   * birakilirlarsa varsayilan secim onlara duser ve kullanici yatirma adresi
+   * yerine "Desteklenmeyen para birimi" hatasi gorur.
+   *
+   * Backend `depositable` gondermiyorsa (eski surum) listeyi bosaltmamak icin
+   * tum kriptolara geri duseriz.
+   */
+  const depositCurrencies = computed(() => {
+    const list = cryptoCurrencies.value
+    const flagged = list.filter((c) => c.depositable)
+    return flagged.length ? flagged : list
+  })
 
   /** Yetkili istek yardimcisi — account-pages.js ile ayni desen. */
   async function walletFetch(path, options) {
@@ -186,7 +210,11 @@ window.createWalletModal = function createWalletModal(ctx) {
         )
         if (freshNetwork) depositNetwork.value = freshNetwork
       }
-      if (!depositCurrency.value) depositCurrency.value = crypto[0] || null
+      // Yatirma varsayilani YATIRILABILIR listeden secilmeli; aksi halde
+      // varsayilan Rivo'ya duser ve adres alinamaz.
+      if (!depositCurrency.value || !depositCurrencies.value.includes(depositCurrency.value)) {
+        depositCurrency.value = depositCurrencies.value[0] || null
+      }
       if (!depositNetwork.value && depositCurrency.value) {
         depositNetwork.value = (depositCurrency.value.networks || [])[0] || null
       }
@@ -202,21 +230,37 @@ window.createWalletModal = function createWalletModal(ctx) {
     }
   }
 
+  /**
+   * Kullanicinin kalici yatirma adresini alir.
+   *
+   * Adres kullanici + para birimi basina SABITTIR; her cagrida ayni adres
+   * doner. Bu yuzden ag (network) parametresi gonderilmez: zincir zaten para
+   * biriminin kendi tanimindan gelir.
+   */
   async function loadDepositAddress() {
     const cur = depositCurrency.value
     if (!cur) return
+
+    // Istek sirasi korumasi: kullanici hizlica para birimi degistirirse geç
+    // gelen eski yanit, yeni secimin adresinin uzerine YAZMAMALI. Yanlis
+    // adres gosterimi paranin kaybi demektir.
+    const requestId = ++depositAddressRequestId
+    const requestedCode = cur.code
+
     addressLoading.value = true
+    depositAddressError.value = ""
     try {
-      const query =
-        "?currency=" +
-        encodeURIComponent(cur.code) +
-        (depositNetwork.value ? "&network=" + encodeURIComponent(depositNetwork.value.id || depositNetwork.value) : "")
-      depositAddress.value = await walletFetch("/wallet/deposit-address" + query)
+      const data = await walletFetch("/crypto/deposit/address?currency=" + encodeURIComponent(cur.code))
+      if (requestId !== depositAddressRequestId) return
+      depositAddress.value = data
     } catch (error) {
+      if (requestId !== depositAddressRequestId) return
       depositAddress.value = null
-      walletError.value = error.message || "Yatirma adresi alinamadi."
+      // Hata yatirma bolumunde gosterilir; genel cuzdan hatasini ezmez.
+      depositAddressError.value =
+        error.message || requestedCode + " yatirma adresi alinamadi."
     } finally {
-      addressLoading.value = false
+      if (requestId === depositAddressRequestId) addressLoading.value = false
     }
   }
 
@@ -411,7 +455,10 @@ window.createWalletModal = function createWalletModal(ctx) {
     depositNetwork,
     networkOptions,
     depositAddress,
+    depositCurrencies,
     addressLoading,
+    depositAddressError,
+    loadDepositAddress,
     cashCurrency,
     cashAmount,
     buyFiat,
