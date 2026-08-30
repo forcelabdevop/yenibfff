@@ -59,14 +59,78 @@ const normalizeCurrency = (currency = {}) => ({
 	coins: toFiniteNumber(currency?.coins, 0),
 });
 
-const normalizeWalletState = ({ wallets = [], currency = {} } = {}) => ({
-	wallets: [createRivoWallet(pickRivoBalance({ wallets, currency }))],
-	currency: normalizeCurrency(currency),
-});
+/**
+ * On-chain yatirma icin kalici tutulmasi gereken kripto cuzdanlari.
+ * "coinType|chain|type" anahtariyla tanimlanir.
+ *
+ * Bu liste disindaki cuzdanlar eskisi gibi elenir; boylece degisiklik yalnizca
+ * bilerek destekledigimiz para birimlerini kapsar.
+ */
+const CRYPTO_DEPOSIT_WALLET_KEYS = Object.freeze([
+	"USDT|TRON|trc-20",
+	"TRX|TRON|native",
+]);
 
+const walletKey = (wallet = {}) =>
+	`${wallet.coinType}|${wallet.chain}|${wallet.type}`;
+
+const isCryptoDepositWallet = (wallet = {}) =>
+	CRYPTO_DEPOSIT_WALLET_KEYS.includes(walletKey(wallet));
+
+/**
+ * Cuzdan durumunu normalize eder.
+ *
+ * ONCEDEN: tum cuzdanlari tek Rivo cuzdanina indirgiyordu; bu yuzden kripto
+ * bakiyeleri her kaydetmede siliniyor ve multi-currency imkansiz hale
+ * geliyordu.
+ *
+ * SIMDI: Rivo cuzdani DEGISMEDEN ilk sirada kalir (wallets[0] varsayan mevcut
+ * kodlar ve `currency` Rivo'yu isaret ettigi icin oyun/bonus mantigi aynen
+ * calisir), ek olarak desteklenen kripto yatirma cuzdanlari korunur.
+ */
+const normalizeWalletState = ({ wallets = [], currency = {} } = {}) => {
+	const source = Array.isArray(wallets) ? wallets : [];
+
+	// Desteklenen kripto cuzdanlarini koru; ayni anahtardan yalniz bir tane kalsin.
+	const seen = new Set();
+	const cryptoWallets = [];
+	for (const wallet of source) {
+		if (!isCryptoDepositWallet(wallet)) continue;
+		const key = walletKey(wallet);
+		if (seen.has(key)) continue;
+		seen.add(key);
+		cryptoWallets.push({
+			coinType: wallet.coinType,
+			chain: wallet.chain,
+			type: wallet.type,
+			balance: toFiniteNumber(wallet.balance, 0),
+		});
+	}
+
+	return {
+		// Rivo daima ilk sirada — mevcut wallets[0] varsayimlarini bozmamak icin.
+		wallets: [
+			createRivoWallet(pickRivoBalance({ wallets: source, currency })),
+			...cryptoWallets,
+		],
+		currency: normalizeCurrency(currency),
+	};
+};
+
+/**
+ * Cuzdan durumu zaten normalize mi?
+ *
+ * Kosul: ilk cuzdan Rivo, kalanlarin tamami desteklenen kripto yatirma
+ * cuzdani ve `currency` Rivo'yu isaret ediyor.
+ *
+ * NOT: Eskiden "tam olarak tek cuzdan" araniyordu. Kripto cuzdanlari artik
+ * kalici oldugu icin bu kosul, normalize kullanicilari da "migrate edilmemis"
+ * sayip her aciliste gereksiz yeniden yazma yapilmasina yol acardi.
+ */
 const hasOnlyRivoWallet = ({ wallets = [], currency = {} } = {}) => {
-	if (!Array.isArray(wallets) || wallets.length !== 1) return false;
+	if (!Array.isArray(wallets) || wallets.length === 0) return false;
 	if (!isRivoWallet(wallets[0])) return false;
+	if (!wallets.slice(1).every(isCryptoDepositWallet)) return false;
 
 	return (
 		currency?.coinType === RIVO_WALLET.coinType &&
@@ -77,9 +141,11 @@ const hasOnlyRivoWallet = ({ wallets = [], currency = {} } = {}) => {
 
 module.exports = {
 	RIVO_WALLET,
+	CRYPTO_DEPOSIT_WALLET_KEYS,
 	createRivoWallet,
 	findActiveWallet,
 	hasOnlyRivoWallet,
+	isCryptoDepositWallet,
 	isRivoWallet,
 	normalizeCurrency,
 	normalizeWalletState,
