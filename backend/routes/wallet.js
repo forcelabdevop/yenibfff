@@ -35,9 +35,37 @@ router.get('/currencies', authorizeUser(true), async (req, res, next) => {
       listDepositCurrencies().map((currency) => normalizeCode(currency.walletCode))
     );
 
+    // Kullaniciya gosterilecek ag adi. Arayuz `label` okur; `name` geriye
+    // donuk uyumluluk icin korunur.
+    //
+    // ONEMLI: Yanlis agda gonderilen kripto GERI ALINAMAZ. Bu yuzden etiket
+    // yalnizca zinciri ("TRON") degil token standardini da ("TRC-20")
+    // icermelidir; kullanici cuzdanindan bu ikisini birlikte secer.
+    const networkLabel = (chain, type) => {
+      const chainName = String(chain || '').toUpperCase();
+      const standard = String(type || '').toUpperCase();
+      if (!standard || standard === 'NATIVE') return chainName;
+      return `${chainName} (${standard})`;
+    };
+
     const buildEntry = ({ code, chain, type, balance }) => {
       const market = prices.get(code) || { price: 0, fee: 0 };
-      return { code, name: code, chain, type, network: chain, networks: [{ id: type, name: chain }], balance, usd: market.price, fee: market.fee, precision: 8, fiat: false, depositable: depositable.has(code), icon: `/casino-ui/assets/coin-${code.toLowerCase()}.png` };
+      const icon = `/casino-ui/assets/coin-${code.toLowerCase()}.png`;
+      return {
+        code,
+        name: code,
+        chain,
+        type,
+        network: chain,
+        networks: [{ id: type, name: chain, label: networkLabel(chain, type), icon }],
+        balance,
+        usd: market.price,
+        fee: market.fee,
+        precision: 8,
+        fiat: false,
+        depositable: depositable.has(code),
+        icon,
+      };
     };
 
     const data = (user.wallets || []).map((wallet) =>

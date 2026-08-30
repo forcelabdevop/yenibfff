@@ -1645,6 +1645,10 @@
     .wm-min strong { color:#fff; }
     .wm-note { height:36px; border:1px solid #2c3b4e; border-radius:9px; display:flex; align-items:center; justify-content:center; gap:6px; color:#687e9d; font-size:12px; white-space:nowrap; }
     .wm-note strong { color:#8ea3c0; }
+    /* Cuzdan yuklenemedi uyarisi — sessiz basarisizligi gorunur kilar. */
+    .wm-alert { margin:12px 0 0; padding:9px 12px; border-radius:9px; font-size:13px; line-height:1.45;
+      border:1px solid rgba(255,72,116,.45); background:rgba(255,28,85,.10); color:#ffb3c6; }
+    .wm-alert--muted { border-color:#2c3b4e; background:transparent; color:#687e9d; }
     /* Uyari notu: yanlis aga gonderim geri alinamaz, bu yuzden gorsel olarak
        one cikar. Metin uzun oldugu icin sabit yukseklik/nowrap gevsetilir. */
     .wm-notes { display:flex; flex-direction:column; gap:8px; margin-top:12px; }
@@ -4321,6 +4325,14 @@
         <button :class="{active:depositTab==='cash'}" @click="depositTab='cash'" class="wm-tab" type="button">Cash</button>
         <button :class="{active:depositTab==='buy'}" @click="depositTab='buy'" class="wm-tab" type="button">Buy Crypto</button>
       </nav>
+      <!--
+        Cuzdan yuklenemediginde kullaniciyi bos acilir kutularla bas basa
+        birakmayin. walletError uzun sure set ediliyor ama HICBIR YERDE
+        gosterilmiyordu; bu yuzden 401/500 gibi hatalar tamamen sessizdi ve
+        ekran "hicbir sey gelmedi" gibi gorunuyordu.
+      -->
+      <p class="wm-alert" role="alert" v-if="walletError">{{walletError}}</p>
+      <p class="wm-alert wm-alert--muted" v-else-if="walletLoading">Yukleniyor...</p>
 
       <!-- Crypto -->
       <template v-if="depositTab==='crypto'">
@@ -4334,11 +4346,11 @@
             </div>
           </div>
           <div @click.stop="toggleWalletDropdown('depNetwork')" class="wm-selector" role="button" tabindex="0">
-            <img :src="(depositNetwork && depositNetwork.icon) || 'assets/coin-bnb.png'" alt="" class="wm-coin"/>
-            <span class="wm-selector__text"><small>Network</small><strong>{{depositNetwork && depositNetwork.label}}</strong></span>
+            <img :src="(depositNetwork && depositNetwork.icon) || coinIcon(depositCurrency)" alt="" class="wm-coin"/>
+            <span class="wm-selector__text"><small>Network</small><strong>{{networkLabel(depositNetwork)}}</strong></span>
             <i class="fas fa-chevron-down wm-chev"></i>
             <div @click.stop class="wm-pop" v-if="walletDropdown==='depNetwork'">
-              <button :key="'dn-'+n.id" @click="selectDepositNetwork(n)" class="wm-pop__option" type="button" v-for="n in networkOptions">{{n.label}}</button>
+              <button :key="'dn-'+n.id" @click="selectDepositNetwork(n)" class="wm-pop__option" type="button" v-for="n in networkOptions">{{networkLabel(n)}}</button>
             </div>
           </div>
         </div>

@@ -129,6 +129,19 @@ window.createWalletModal = function createWalletModal(ctx) {
     return currency.icon || "assets/coin-" + String(currency.code).toLowerCase() + ".png"
   }
 
+  /**
+   * Ag secicisinde gosterilecek metin.
+   *
+   * Backend uzun sure `{ id, name }` gonderdi, sablon ise `label` okuyordu;
+   * sonucta ag kutusu veri gelse bile HEP BOS gorunuyordu. Artik backend
+   * `label` de gonderiyor, ancak eski surumlerle uyum icin `name`e ve son
+   * care olarak `id`ye duseriz — kullanici bos bir ag kutusu gormemeli.
+   */
+  function networkLabel(network) {
+    if (!network) return ""
+    return network.label || network.name || network.id || ""
+  }
+
   function findCurrency(code) {
     return currencies.value.find((c) => c.code === code) || null
   }
@@ -297,6 +310,14 @@ window.createWalletModal = function createWalletModal(ctx) {
   }
 
   function openDeposit(tab) {
+    // Tum /wallet/* uclari oturum ister. Giris yapmamis kullaniciya modali
+    // acmak, her istegin 401 donmesine ve kullanicinin bos acilir kutulara
+    // bakip neden calismadigini anlamamasina yol aciyordu. openWallet'ta bu
+    // koruma bastan beri vardi; openDeposit'te unutulmustu.
+    if (!authUser.value) {
+      requestAuth("login")
+      return
+    }
     depositTab.value = tab || "crypto"
     walletView.value = "deposit"
     walletDropdown.value = null
@@ -454,6 +475,7 @@ window.createWalletModal = function createWalletModal(ctx) {
     depositCurrency,
     depositNetwork,
     networkOptions,
+    networkLabel,
     depositAddress,
     depositCurrencies,
     addressLoading,

@@ -1,5 +1,16 @@
 node_modules
-config
+# DIKKAT: Butun `config` klasorunu yok saymak, calisma zamaninda GEREKEN
+# kodu da disarida birakiyordu. `config/crypto.js` routes/wallet.js ve
+# routes/crypto/deposit.js tarafindan ACILIS aninda require ediliyor;
+# depoda olmadigi icin temiz bir kurulumda backend hic ayaga kalkmiyor,
+# yatirma/cuzdan uclari calismiyordu.
+#
+# Dosya SIR ICERMEZ: yalnizca env degiskenlerini okur ve herkese acik
+# mainnet sozlesme adresini tasir. Gizli anahtarlar .env'de kalir.
+# Yeni bir config dosyasi eklerken: sir iceriyorsa yok sayin, KOD ise
+# asagidaki gibi istisna ekleyin.
+config/*
+!config/crypto.js
 
 creator.js
 uploads/
