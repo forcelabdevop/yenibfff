@@ -27,6 +27,7 @@ declare module '@vue/runtime-core' {
     AppStepper: typeof import('./src/@core/components/AppStepper.vue')['default']
     AppTextarea: typeof import('./src/@core/components/app-form-elements/AppTextarea.vue')['default']
     AppTextField: typeof import('./src/@core/components/app-form-elements/AppTextField.vue')['default']
+    BetinoviReportPage: typeof import('./src/components/betinovi/BetinoviReportPage.vue')['default']
     BuyNow: typeof import('./src/@core/components/BuyNow.vue')['default']
     CampaignTermsBuilder: typeof import('./src/components/campaigns/CampaignTermsBuilder.vue')['default']
     CardAddEditDialog: typeof import('./src/components/dialogs/CardAddEditDialog.vue')['default']

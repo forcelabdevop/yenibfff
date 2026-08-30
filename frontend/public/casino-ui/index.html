@@ -5381,7 +5381,7 @@
         const isAccountPage = accountPages.isAccountPage;
 
         // Missions sayfasi mantigi ayri dosyada: casino-ui/missions-page.js
-  const missionsPage = window.createMissionsPage({ ref, computed, currentPage, toastMessage });
+  const missionsPage = window.createMissionsPage({ ref, computed, onMounted, currentPage, toastMessage, apiUrl, readAuthToken });
   const isMissionsPage = missionsPage.isMissionsPage;
 
   // Bonus Cabinet mantigi ayri dosyada: casino-ui/bonuses-page.js

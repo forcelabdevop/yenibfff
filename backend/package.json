@@ -8,6 +8,7 @@
 		"start": "node index",
 		"dev": "nodemon index",
 		"seed:permissions": "node scripts/seedPermissions.js",
+		"migrate:casino-content": "node scripts/migrateCasinoContent.js",
 		"test": "node --test tests/*.test.js"
 	},
 	"author": "",

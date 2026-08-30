@@ -86,6 +86,15 @@ export default [
     subject: "finance.balanceAnalysis",
   },
 
+  { heading: "İçerik Yönetimi" },
+  {
+    title: "Casino İçerikleri",
+    icon: { icon: "tabler-layout-dashboard" },
+    to: "apps-casino-content",
+    action: "read",
+    subject: "casinoContent",
+  },
+
   { heading: "Promosyon Yönetimi" },
   {
     title: "Kampanyalar",

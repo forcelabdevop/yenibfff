@@ -50,6 +50,8 @@ const sportsTournamentApiRoute = require("./sportsTournamentApi");
 const sportsTournamentUserApiRoute = require("./sportsTournamentUserApi");
 const promoCodesRoutes = require("./promoCodes");
 const userRoutes = require("./user");
+const casinoContentRoutes = require("./casinoContent");
+const adminCasinoContentRoutes = require("./adminCasinoContent");
 router.use("/poker_api", pockersGamesRoute);
 router.use("/promo-codes", promoCodesRoutes);
 router.use("/api/race", raceApiRoute);
@@ -78,6 +80,8 @@ router.use("/battlepass", battlepassRoutes);
 router.use("/wallet", Wallet);
 router.use("/wingo", wingoRoutes);
 router.use("/user", userRoutes);
+router.use("/content", casinoContentRoutes);
+router.use("/admin/content", adminCasinoContentRoutes);
 router.use("/account", require("./account"));
 
 router.use("/chat", require("./chatConfig"));

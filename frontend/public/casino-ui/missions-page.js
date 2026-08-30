@@ -1,6 +1,8 @@
 window.createMissionsPage = function createMissionsPage(ctx) {
-  const { ref, computed, currentPage, toastMessage } = ctx
+  const { ref, computed, onMounted, currentPage, toastMessage, apiUrl, readAuthToken } = ctx
   const isMissionsPage = currentPage === "missions"
+  const missionLoading = ref(false)
+  const missionError = ref("")
 
   const missionAssets = {
     virtual: "assets/mission-virtual.png",
@@ -14,20 +16,48 @@ window.createMissionsPage = function createMissionsPage(ctx) {
     fs: "assets/mission-fs.png",
   }
 
-  const missions = [
-    { id: 1, title: "Stack Odds x10 on Virtuals", deadline: "39:46:21", reward: "$5 Bet Refund", rewardIcon: "freebet", image: missionAssets.virtual, category: "virtual", status: "active" },
-    { id: 2, title: "Score 3 in a Row on Top 5", deadline: "3 DAYS", reward: "$5 Bet Refund", rewardIcon: "freebet", image: missionAssets.top5, category: "sports", status: "active" },
-    { id: 3, title: "Win 6 Singles on Soccer", deadline: "6 DAYS", reward: "$5 Bet Refund", rewardIcon: "freebet", image: missionAssets.soccer, category: "sports", status: "active" },
-    { id: 4, title: "Win 6 Combos on Soccer", deadline: "6 DAYS", reward: "$5 Bet Refund", rewardIcon: "freebet", image: missionAssets.soccer, category: "sports", status: "active" },
-    { id: 5, title: "Stack Odds x12 on Tennis", deadline: "9 DAYS", reward: "$5 Bet Refund", rewardIcon: "freebet", image: missionAssets.tennis, category: "sports", status: "active" },
-    { id: 6, title: "Hit x40 multiplier in selected Forcelab Originals", deadline: "13 DAYS", reward: "10 Bonus Bets x $0.4", rewardIcon: "dice", image: missionAssets.originals, category: "casino", status: "active" },
-    { id: 7, title: "Hit x50 multiplier in selected Slots", deadline: "29 DAYS", reward: "20 FS x $0.2", rewardIcon: "fs", image: missionAssets.slotsDog, category: "casino", status: "active" },
-    { id: 8, title: "Hit x1000 multiplier in selected Slots", deadline: "29 DAYS", reward: "50 FS x $10", rewardIcon: "fs", image: missionAssets.slotsZeus, category: "casino", status: "active" },
-    { id: 9, title: "Hit x2000 multiplier in selected Slots", deadline: "29 DAYS", reward: "100 FS x $10", rewardIcon: "fs", image: missionAssets.slotsZeus, category: "casino", status: "active" },
-    { id: 10, title: "Win 8 Singles on Soccer", deadline: "30 DAYS", reward: "$10 Bet Refund", rewardIcon: "freebet", image: missionAssets.soccer, category: "sports", status: "active" },
-    { id: 11, title: "Hit x100 multiplier in selected Slots", deadline: "30 DAYS", reward: "25 FS x $1", rewardIcon: "fs", image: missionAssets.slotsDog, category: "casino", status: "active" },
-    { id: 12, title: "Complete a Virtual Sports Combo", deadline: "30 DAYS", reward: "$5 Bet Refund", rewardIcon: "freebet", image: missionAssets.virtual, category: "virtual", status: "active" },
-  ]
+  const missions = ref([])
+
+  const authHeaders = () => {
+    const token = typeof readAuthToken === "function" ? readAuthToken() : ""
+    return token ? { Authorization: `Bearer ${token}` } : {}
+  }
+  const deadlineLabel = (endsAt) => {
+    if (!endsAt) return "ONGOING"
+    const remaining = new Date(endsAt).getTime() - Date.now()
+    if (remaining <= 0) return "EXPIRED"
+    const days = Math.ceil(remaining / 86400000)
+    return days === 1 ? "1 DAY" : `${days} DAYS`
+  }
+  const normalizeMission = (item) => ({
+    id: item._id,
+    title: item.title,
+    deadline: deadlineLabel(item.endsAt),
+    reward: `${item.reward?.amount || 0} ${item.reward?.currency || "USD"}`,
+    rewardIcon: item.reward?.type === "free-spins" ? "fs" : "freebet",
+    image: item.image || missionAssets.originals,
+    category: item.category || "casino",
+    status: item.userState?.status === "claimed" || item.userState?.status === "completed" ? "completed" : "active",
+    description: item.description || "",
+    rules: item.rules || {},
+    userState: item.userState || null,
+  })
+  async function loadMissions() {
+    if (!isMissionsPage) return
+    missionLoading.value = true
+    missionError.value = ""
+    try {
+      const response = await fetch(apiUrl("/content/mission"), { headers: authHeaders() })
+      const payload = await response.json()
+      if (!response.ok || payload.success === false) throw new Error(payload.error?.message || "Missions could not be loaded")
+      missions.value = (payload.data || []).map(normalizeMission)
+    } catch (error) {
+      missionError.value = error.message || "Missions could not be loaded"
+      missions.value = []
+    } finally {
+      missionLoading.value = false
+    }
+  }
 
   const missionCategories = [
     { label: "Category", value: "all" },
@@ -56,7 +86,7 @@ window.createMissionsPage = function createMissionsPage(ctx) {
   const selectedMission = ref(null)
   const missionCategoryLabel = computed(() => missionCategories.find((item) => item.value === missionCategory.value)?.label || "Category")
   const missionStatusLabel = computed(() => missionStatuses.find((item) => item.value === missionStatus.value)?.label || "Active")
-  const filteredMissions = computed(() => missions.filter((mission) =>
+  const filteredMissions = computed(() => missions.value.filter((mission) =>
     (missionCategory.value === "all" || mission.category === missionCategory.value) &&
     (missionStatus.value === "all" || mission.status === missionStatus.value)
   ))
@@ -82,15 +112,27 @@ window.createMissionsPage = function createMissionsPage(ctx) {
     missionCategoryOpen.value = false
     missionStatusOpen.value = false
   }
-  function joinMission() {
-    selectedMission.value = null
-    toastMessage("Mission joined successfully")
+  async function joinMission() {
+    const mission = selectedMission.value
+    if (!mission) return
+    try {
+      const response = await fetch(apiUrl(`/content/missions/${mission.id}/join`), { method: "POST", headers: { ...authHeaders(), "Content-Type": "application/json" } })
+      const payload = await response.json()
+      if (!response.ok || payload.success === false) throw new Error(payload.error?.message || "Mission could not be joined")
+      selectedMission.value = null
+      toastMessage("Mission joined successfully")
+      await loadMissions()
+    } catch (error) {
+      toastMessage(error.message || "Mission could not be joined")
+    }
   }
+
+  if (typeof onMounted === "function") onMounted(loadMissions)
 
   return {
     isMissionsPage, missionAssets, missionCategories, missionStatuses, missionFaqs,
     missionCategoryOpen, missionStatusOpen, missionExpanded, missionOpenFaq, selectedMission,
-    missionCategoryLabel, missionStatusLabel, filteredMissions, visibleMissions,
-    selectMissionCategory, selectMissionStatus, openMission, closeMissionMenus, joinMission,
+    missionCategoryLabel, missionStatusLabel, filteredMissions, visibleMissions, missionLoading, missionError,
+    selectMissionCategory, selectMissionStatus, openMission, closeMissionMenus, joinMission, loadMissions,
   }
 }

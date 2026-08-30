@@ -825,14 +825,21 @@ const defaultPermissions = [
 		action: "read",
 		group: "Güvenlik",
 	},
-	{
-		code: "security.manage",
-		name: "Güvenlik Ve Risk Yönetimi Tam Yetki",
-		resource: "security",
-		action: "manage",
-		group: "Güvenlik",
-	},
-];
+  {
+  code: "security.manage",
+  name: "Güvenlik Ve Risk Yönetimi Tam Yetki",
+  resource: "security",
+  action: "manage",
+  group: "Güvenlik",
+  },
+  ...["read", "create", "update", "publish", "delete", "manage"].map((action) => ({
+    code: `casinoContent.${action}`,
+    name: `Casino İçerikleri ${action}`,
+    resource: "casinoContent",
+    action,
+    group: "Casino İçerikleri",
+  })),
+ ];
 
 // Varsayılan roller
 const defaultRoles = [

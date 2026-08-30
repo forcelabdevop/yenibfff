@@ -51,7 +51,7 @@
   "use strict"
 
   // >>> BACKEND'E BAGLANIRKEN BUNU false YAP <<<
-  const MOCK_ENABLED_BY_DEFAULT = true
+  const MOCK_ENABLED_BY_DEFAULT = false
 
   const script = document.currentScript
   const params = new URLSearchParams(window.location.search)
