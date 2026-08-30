@@ -25,6 +25,8 @@ window.createReferralPage = function createReferralPage(ctx) {
   const rfCampaignCount = computed(() => rfCampaigns.value.length)
   const rfCanClaim = computed(() => rfOverview.value.available >= rfOverview.value.minimumClaim)
   const rfMoney = (value) => `$${Number(value || 0).toFixed(2)}`
+  const rfCampaignWebLink = (campaign) => `${window.location.origin}/?r=${encodeURIComponent(campaign?.code || "")}`
+  const rfCampaignTelegramLink = (campaign) => `https://t.me/misterFury_bot?start=${encodeURIComponent(campaign?.code || "")}`
 
   function authHeaders(json) {
     const token = typeof readAuthToken === "function" ? readAuthToken() : ""
@@ -46,7 +48,7 @@ window.createReferralPage = function createReferralPage(ctx) {
         rfFetch("/affiliate/overview"), rfFetch("/affiliate/campaigns"), rfFetch("/affiliate/referrals?limit=100"),
       ])
       rfOverview.value = overview
-      rfCampaigns.value = campaigns
+      rfCampaigns.value = campaigns.map((campaign) => ({ ...campaign, created: new Date(campaign.createdAt).toLocaleDateString() }))
       rfReferrals.value = referrals
       rfLiveRewards.value = (overview.recentRewards || []).map((item) => ({ user: item.user, amount: rfMoney(item.amount), createdAt: item.createdAt }))
     } catch (error) { rfError.value = error.message || "Referral data could not be loaded" }
@@ -67,7 +69,7 @@ window.createReferralPage = function createReferralPage(ctx) {
     rfActionLoading.value = true
     try {
       const campaign = await rfFetch("/affiliate/campaigns", { method: "POST", body: JSON.stringify({ name }) })
-      rfCampaigns.value.unshift(campaign)
+      rfCampaigns.value.unshift({ ...campaign, created: new Date(campaign.createdAt).toLocaleDateString() })
       rfNewCampaignName.value = ""
       rfModal.value = false
       rfSelectTab("Campaigns")
@@ -105,5 +107,5 @@ window.createReferralPage = function createReferralPage(ctx) {
   }
 
   if (typeof onMounted === "function") onMounted(rfLoad)
-  return { isReferralPage, rfTabs, rfTab, rfUsername, rfCode, rfWebLink, rfTelegramLink, rfRanges, rfReferralsRange, rfProfitRange, rfModal, rfNewCampaignName, rfCampaigns, rfCampaignCount, rfReferrals, rfLiveRewards, rfOverview, rfDefaultCampaign, rfLoading, rfActionLoading, rfError, rfCanClaim, rfMoney, rfSelectTab, rfNotify, rfCopy, rfSetReferralsRange, rfSetProfitRange, rfCreateCampaign, rfRemoveCampaign, rfClaimCommission, rfDownloadCsv, rfLoad }
+  return { isReferralPage, rfTabs, rfTab, rfUsername, rfCode, rfWebLink, rfTelegramLink, rfRanges, rfReferralsRange, rfProfitRange, rfModal, rfNewCampaignName, rfCampaigns, rfCampaignCount, rfReferrals, rfLiveRewards, rfOverview, rfDefaultCampaign, rfLoading, rfActionLoading, rfError, rfCanClaim, rfMoney, rfCampaignWebLink, rfCampaignTelegramLink, rfSelectTab, rfNotify, rfCopy, rfSetReferralsRange, rfSetProfitRange, rfCreateCampaign, rfRemoveCampaign, rfClaimCommission, rfDownloadCsv, rfLoad }
 }

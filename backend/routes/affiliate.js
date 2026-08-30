@@ -310,7 +310,10 @@ router.post("/claim", authorizeUser(true), async (req, res) => {
 			await User.updateOne({ _id: user._id }, { $inc: { "affiliates.available": amount } });
 			throw error;
 		}
-	} catch (error) { res.status(500).json({ success: false, message: error.message }); }
+	} catch (error) {
+		const status = error.message?.startsWith("Minimum claim") ? 409 : 500;
+		res.status(status).json({ success: false, message: error.message });
+	}
 });
 
 module.exports = router;

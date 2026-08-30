@@ -4,6 +4,8 @@ const User = require("../database/models/User");
 const Vip = require("../database/models/Vip");
 const BonusHistory = require("../database/models/BonusHistory");
 const Setting = require("../database/models/Setting");
+const CasinoContent = require("../database/models/CasinoContent");
+const CasinoUserState = require("../database/models/CasinoUserState");
 const { getUserVIPLevel } = require("../utils/vipUtils");
 const { authorizeUser } = require("../middleware/auth");
 const { updateUserBalance, emitUserBalance } = require("../utils/wallet");
@@ -21,6 +23,72 @@ async function convertAmount(amount, fromCurrency, toCurrency) {
 	const amountInUSD = amount / fromRate; // normalize to USD
 	return amountInUSD * toRate;
 }
+
+const publishedVipContentQuery = (locale) => {
+	const now = new Date();
+	return {
+		type: { $in: ["vip-benefit", "vip-manager", "vip-faq"] },
+		locale,
+		status: "published",
+		$and: [
+			{ $or: [{ startsAt: null }, { startsAt: { $lte: now } }] },
+			{ $or: [{ endsAt: null }, { endsAt: { $gte: now } }] },
+		],
+	};
+};
+
+// Public VIP configuration plus optional authenticated player progress.
+router.get("/page", authorizeUser(false), async (req, res) => {
+	try {
+		const locale = String(req.query.locale || "en").trim().toLowerCase();
+		const [levels, entries, user] = await Promise.all([
+			Vip.find({ active: { $ne: false } }).sort({ level: 1 }).lean(),
+			CasinoContent.find(publishedVipContentQuery(locale)).sort({ order: 1 }).lean(),
+			req.user ? User.findById(req.user._id).select("xp stats currency").lean() : null,
+		]);
+		const grouped = { benefits: [], managers: [], faq: [] };
+		for (const entry of entries) {
+			if (entry.type === "vip-benefit") grouped.benefits.push(entry);
+			if (entry.type === "vip-manager") grouped.managers.push(entry);
+			if (entry.type === "vip-faq") grouped.faq.push(entry);
+		}
+		let progress = null;
+		if (user && levels.length) {
+			const xp = Number(user.xp || 0);
+			const currentIndex = Math.max(0, levels.findLastIndex((level) => xp >= Number(level.requiredXp || 0)));
+			const currentLevel = levels[currentIndex];
+			const nextLevel = levels[currentIndex + 1] || null;
+			const start = Number(currentLevel.requiredXp || 0);
+			const target = Number(nextLevel?.requiredXp || start);
+			progress = {
+				xp,
+				currentLevel,
+				nextLevel,
+				percent: nextLevel ? Math.min(100, Math.max(0, ((xp - start) / Math.max(1, target - start)) * 100)) : 100,
+				wagered: Number(user.stats?.bet || 0),
+				deposited: Number(user.stats?.deposit || 0),
+			};
+		}
+		res.json({ success: true, data: { levels, content: grouped, progress }, meta: { locale } });
+	} catch (error) {
+		res.status(500).json({ success: false, error: { message: error.message } });
+	}
+});
+
+router.post("/transfer/apply", authorizeUser(true), async (req, res) => {
+	try {
+		const transfer = await CasinoContent.findOne({ type: "vip-benefit", slug: "transfer-program", status: "published" }).select("_id").lean();
+		if (!transfer) return res.status(409).json({ success: false, message: "VIP transfer applications are not open." });
+		const state = await CasinoUserState.findOneAndUpdate(
+			{ user: req.user._id, content: transfer._id, periodKey: "lifetime" },
+			{ $setOnInsert: { kind: "vip-transfer", status: "joined", joinedAt: new Date(), metadata: { source: "vip-page" } } },
+			{ upsert: true, new: true },
+		);
+		res.status(201).json({ success: true, data: state });
+	} catch (error) {
+		res.status(error.code === 11000 ? 409 : 500).json({ success: false, message: error.code === 11000 ? "Application already received." : error.message });
+	}
+});
 
 // Kullanıcının mevcut VIP seviyesini getir
 router.get("/current-level", authorizeUser(true), async (req, res) => {
@@ -149,9 +217,10 @@ router.post("/claim-reward", authorizeUser(true), async (req, res) => {
 });
 
 // VIP seviyesi detaylarını getir
-router.get("/user-level/:userId", async (req, res) => {
+router.get("/user-level/:userId", authorizeUser(true), async (req, res) => {
 	try {
 		const userId = req.params.userId;
+		if (req.user._id.toString() !== userId) return res.status(403).json({ success: false, error: { message: "Forbidden" } });
 		const [user, levels] = await Promise.all([
 			User.findById(userId),
 			Vip.find({}).sort({ level: 1 }),
@@ -231,9 +300,10 @@ const vipDayMap = {
 };
 
 // VIP ödül durumlarını getir
-router.get("/rewards/:id", async (req, res) => {
+router.get("/rewards/:id", authorizeUser(true), async (req, res) => {
 	try {
 		const userId = req.params.id;
+		if (req.user._id.toString() !== userId) return res.status(403).json({ success: false, error: { message: "Forbidden" } });
 		const user = await User.findById(userId);
 		if (!user)
 			return res.status(404).json({
