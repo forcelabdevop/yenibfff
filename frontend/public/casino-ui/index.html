@@ -5112,7 +5112,42 @@
           chatTipMenuOpen.value = false;
           replyTarget.value = null;
         };
-        const currentPage = new URLSearchParams(window.location.search).get('page') || 'home';
+        // SAYFA COZUMLEME — parent'in adres YOLU kanonik kaynaktir, ?page= degil.
+        //
+        // Neden: yayin ortami (Cloudflare) her istege kok index.html'i donen bir
+        // SPA fallback'i kullaniyor; Next export'un urettigi /bonuses.html gibi
+        // rota dosyalari sunulmuyor (/bonuses.html -> 404, /olmayan-yol -> 200).
+        // Boylece iframe'e HER ZAMAN page=home gomulu geliyor ve /bonuses, /vip,
+        // /wallet dahil TUM rotalar anasayfayi gosteriyordu. Parametre yerine
+        // parent'in gercek yolunu okuyunca sayfa, sunucu yapilandirmasindan
+        // BAGIMSIZ olarak dogru cozulur.
+        //
+        // Yan fayda: account sekmeleri replace-path ile adres cubugunu yenilemeden
+        // degistiriyor; artik o adres yenilendiginde de dogru sekme aciliyor.
+        const KNOWN_PAGES = [
+          'home','casino','slots','originals','live-casino','sports','game',
+          'missions','bonuses','vip','buy-crypto','crypto-and-earn','promotions',
+          'refer-and-earn',
+          'wallet','profile','account','transactions','game-history','sessions',
+          'vault','verification',
+        ];
+        const currentPage = (() => {
+          const param = new URLSearchParams(window.location.search).get('page');
+          const fromParam = KNOWN_PAGES.includes(param) ? param : 'home';
+          let slug = '';
+          try {
+            // Ayni origin oldugu icin parent'in yolu okunabilir. iframe'siz
+            // dogrudan acilista (window.parent === window) kendi yolumuz okunur;
+            // o durumda slug 'casino-ui' olur, bilinmez sayilir ve parametreye
+            // duseriz — mock/test sayfalari bu sayede calismaya devam eder.
+            const loc = window.parent !== window ? window.parent.location : window.location;
+            slug = loc.pathname.replace(/^\/+|\/+$/g, '').split('/')[0].toLowerCase();
+          } catch (_) {
+            slug = ''; // farkli origin: parametreye geri don
+          }
+          if (!slug) return fromParam;            // kok yol '/' -> parametre/home
+          return KNOWN_PAGES.includes(slug) ? slug : fromParam;
+        })();
         const activeCategory = ref('all');
         const gameCategories = ref([]);
         const routeGames = ref([]);
