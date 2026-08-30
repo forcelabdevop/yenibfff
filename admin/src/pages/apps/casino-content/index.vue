@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import axios from "@/plugins/axios"
 import { computed, onMounted, ref, watch } from "vue"
+import { useRoute, useRouter } from "vue-router"
 import { VDataTable } from "vuetify/labs/VDataTable"
 
 const types = [
@@ -15,11 +16,15 @@ const types = [
 ]
 const statuses = ["draft", "scheduled", "published", "archived"]
 const rewardTypes = ["none", "balance", "bonus", "free-spins", "xp"]
+const route = useRoute()
+const router = useRouter()
+const validTypes = new Set(types.map(item => item.value))
+const routeType = typeof route.query.type === "string" && validTypes.has(route.query.type) ? route.query.type : ""
 const items = ref<any[]>([])
 const loading = ref(false)
 const dialog = ref(false)
 const deleting = ref<any>(null)
-const selectedType = ref("")
+const selectedType = ref(routeType)
 const selectedStatus = ref("")
 const search = ref("")
 const page = ref(1)
@@ -72,6 +77,16 @@ async function removeItem() {
   if (!deleting.value) return
   await axios.delete(`/admin/content/${deleting.value._id}`, { data: { reason: "Removed from content administration" } }); deleting.value = null; await load()
 }
+watch(() => route.query.type, type => {
+  const nextType = typeof type === "string" && validTypes.has(type) ? type : ""
+  if (selectedType.value !== nextType) selectedType.value = nextType
+})
+watch(selectedType, type => {
+  const query = { ...route.query }
+  if (type) query.type = type
+  else delete query.type
+  if (route.query.type !== type) router.replace({ query })
+})
 watch([selectedType, selectedStatus], () => { page.value = 1; load() })
 onMounted(load)
 </script>

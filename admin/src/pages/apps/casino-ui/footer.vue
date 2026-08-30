@@ -97,7 +97,7 @@ onMounted(load)
           </h5>
           <p class="text-body-2 text-medium-emphasis mb-0">
             Footer sitenin <strong>her sayfasında</strong> görünür. Metin alanlarında
-            <code>{{ '{{websiteName}}' }}</code> yazarsanız site adıyla değiştirilir.
+            <code v-pre>{{websiteName}}</code> yazarsanız site adıyla değiştirilir.
           </p>
         </div>
 

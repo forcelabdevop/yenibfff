@@ -90,9 +90,18 @@ export default [
   {
     title: "Casino İçerikleri",
     icon: { icon: "tabler-layout-dashboard" },
-    to: "apps-casino-content",
     action: "read",
     subject: "casinoContent",
+    children: [
+      { title: "Tüm İçerikler", to: "apps-casino-content", action: "read", subject: "casinoContent" },
+      { title: "Görevler", to: { name: "apps-casino-content", query: { type: "mission" } }, action: "read", subject: "casinoContent" },
+      { title: "Bonuslar", to: { name: "apps-casino-content", query: { type: "bonus" } }, action: "read", subject: "casinoContent" },
+      { title: "Promosyonlar", to: { name: "apps-casino-content", query: { type: "promotion" } }, action: "read", subject: "casinoContent" },
+      { title: "Refer & Earn", to: { name: "apps-casino-content", query: { type: "referral-tier" } }, action: "read", subject: "casinoContent" },
+      { title: "VIP Avantajları", to: { name: "apps-casino-content", query: { type: "vip-benefit" } }, action: "read", subject: "casinoContent" },
+      { title: "VIP Yöneticileri", to: { name: "apps-casino-content", query: { type: "vip-manager" } }, action: "read", subject: "casinoContent" },
+      { title: "VIP SSS", to: { name: "apps-casino-content", query: { type: "vip-faq" } }, action: "read", subject: "casinoContent" },
+    ],
   },
 
   { heading: "Promosyon Yönetimi" },
