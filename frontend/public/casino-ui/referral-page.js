@@ -54,7 +54,9 @@ window.createReferralPage = function createReferralPage(ctx) {
 
   function rfSelectTab(tab) {
     rfTab.value = tab
-    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" })
+    if (typeof window !== "undefined" && typeof window.scrollTo === "function") {
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    }
   }
   function rfNotify(message) {
     toastMessage(message)
