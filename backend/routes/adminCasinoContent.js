@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const CasinoContent = require("../database/models/CasinoContent");
 const CasinoUserState = require("../database/models/CasinoUserState");
 const ContentAuditLog = require("../database/models/ContentAuditLog");
+const Game = require("../database/models/Game");
 const { checkPermission } = require("../middleware/permission");
 const { PUBLIC_TYPES, pickContent, validateContent } = require("../services/casinoContentService");
 const casinoRewardEngine = require("../services/casinoRewardEngine");
@@ -66,6 +67,48 @@ router.post("/", typePermission("create"), async (req, res) => {
 });
 
 router.get("/types/meta", typePermission("read"), (req, res) => res.json({ success: true, data: [...PUBLIC_TYPES] }));
+
+// Form seçenekleri: admin JSON/serbest metin yazmasın diye gerçek sağlayıcı,
+// oyun ve kategori listesi buradan beslenir. ("/:id" üstünde olmalı.)
+router.get("/lookups/options", typePermission("read"), async (req, res) => {
+  try {
+    const { MISSION_EVENT_TYPES, MISSION_METRICS, PERIODS, REWARD_TYPES, BONUS_ACTIVATIONS } = require("../services/casinoRewardSchema");
+    const [providers, categories] = await Promise.all([
+      Game.distinct("provider_code", { status: 1, provider_code: { $nin: [null, ""] } }),
+      Game.distinct("categories", { status: 1 }),
+    ]);
+    res.json({
+      success: true,
+      data: {
+        eventTypes: MISSION_EVENT_TYPES,
+        metrics: MISSION_METRICS,
+        periods: PERIODS,
+        rewardTypes: REWARD_TYPES,
+        activations: BONUS_ACTIVATIONS,
+        providers: providers.filter(Boolean).sort(),
+        categories: categories.filter(Boolean).sort(),
+      },
+    });
+  } catch (error) { sendError(res, error); }
+});
+
+// Oyun arama: free-spin ödülü ve görev filtreleri için gerçek game_code seçtirir.
+router.get("/lookups/games", typePermission("read"), async (req, res) => {
+  try {
+    const search = String(req.query.search || "").trim().slice(0, 80);
+    const query = { status: 1 };
+    if (req.query.providerCode) query.provider_code = String(req.query.providerCode);
+    if (search) {
+      const safe = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      query.$or = [{ game_name: { $regex: safe, $options: "i" } }, { game_code: { $regex: safe, $options: "i" } }];
+    }
+    const data = await Game.find(query, { game_code: 1, game_name: 1, provider_code: 1 })
+      .sort({ featured: -1, views: -1 })
+      .limit(50)
+      .lean();
+    res.json({ success: true, data });
+  } catch (error) { sendError(res, error); }
+});
 
 // ⚠️ Teslim kuyruğu rotaları "/:id" ÜSTÜNDE tanımlanmalıdır; aksi halde
 // "deliveries" bir içerik id'si sanılır ve 400 döner.

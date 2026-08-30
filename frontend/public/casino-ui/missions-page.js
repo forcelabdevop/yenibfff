@@ -34,7 +34,10 @@ window.createMissionsPage = function createMissionsPage(ctx) {
     id: item._id,
     title: item.title,
     deadline: deadlineLabel(item.endsAt),
-    reward: `${item.reward?.amount || 0} ${item.reward?.currency || "USD"}`,
+    // Free spin ödülünde tutar 0'dır; "0 USD" göstermemek için spin adedi yazılır.
+    reward: item.reward?.type === "free-spins"
+      ? `${item.reward?.spinCount || 0} FS`
+      : `${item.reward?.amount || 0} ${item.reward?.currency || "USD"}`,
     rewardIcon: item.reward?.type === "free-spins" ? "fs" : "freebet",
     image: item.image ? backendAssetUrl(item.image) : missionAssets.originals,
     category: item.category || "casino",
@@ -105,11 +108,50 @@ window.createMissionsPage = function createMissionsPage(ctx) {
     missionStatus.value = option.value
     missionStatusOpen.value = false
   }
+  // Görev koşulu ve kapsamı admin kaydından türetilir; önceden buradaki
+  // metinler kategoriye göre uyduruluyordu ve gerçek kuralla ilgisi yoktu.
+  const eventPhrases = {
+    deposit: "Deposit",
+    wager: "Wager",
+    win: "Win",
+    "game-round": "Play",
+    login: "Sign in",
+  }
+  function conditionText(mission) {
+    const rules = mission.rules || {}
+    const verb = eventPhrases[rules.eventType] || "Complete"
+    const target = Number(mission.target || 1)
+    const amount = rules.metric === "amount" ? `${target} ${rules.currency || ""}`.trim() : `${target}x`
+    const extra = rules.minimumAmount > 0 ? ` (min. ${rules.minimumAmount} ${rules.currency || ""} per action)` : ""
+    return `${verb} ${amount}${extra}`
+  }
+  const missionStatusLabels = {
+    joined: "IN PROGRESS",
+    active: "IN PROGRESS",
+    completed: "READY TO CLAIM",
+    claimed: "CLAIMED",
+    expired: "EXPIRED",
+  }
+  const periodLabels = { lifetime: "One time", daily: "Daily", weekly: "Weekly", monthly: "Monthly" }
   function openMission(mission) {
+    const rules = mission.rules || {}
+    // Modal satırları gerçek kurallardan üretilir; koşulu olmayan satır gösterilmez.
+    const detailRows = [
+      { label: "Status", value: missionStatusLabels[mission.userState?.status] || "AVAILABLE" },
+      { label: "Condition", value: conditionText(mission) },
+      { label: "Repeats", value: periodLabels[rules.period] || "One time" },
+    ]
+    if (rules.minimumAmount > 0) detailRows.push({ label: "Min. per action", value: `${rules.minimumAmount} ${rules.currency || ""}`.trim() })
+    if (rules.currency && rules.metric === "amount") detailRows.push({ label: "Currency", value: rules.currency })
+    if (mission.userState) detailRows.push({ label: "Progress", value: `${mission.progress} / ${mission.target}` })
+    if (mission.deadline && mission.deadline !== "ONGOING") detailRows.push({ label: "Ends in", value: mission.deadline })
+
     selectedMission.value = {
       ...mission,
-      condition: mission.category === "casino" ? mission.title.replace("Hit ", "") : "Total Multiplier X10",
-      sports: mission.category === "virtual" ? ["eSoccer", "eSoccer: Volta", "eBasketball"] : mission.category === "sports" ? ["Soccer", "Tennis"] : [],
+      condition: conditionText(mission),
+      detailRows,
+      // "sports" listesi artık gerçek kapsam filtresidir: sağlayıcı/oyun/kategori.
+      sports: [...(rules.categories || []), ...(rules.providerCodes || []), ...(rules.gameCodes || [])],
     }
   }
   function closeMissionMenus() {

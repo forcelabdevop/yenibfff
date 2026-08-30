@@ -25,11 +25,18 @@ const form = ref<any>({})
 const editing = computed(() => Boolean(form.value._id))
 const pageCount = computed(() => Math.max(1, Math.ceil(total.value / 25)))
 
+// mission/bonus için varsayılanlar backend normalize katmanının ürettiği
+// değerlerle aynı; böylece yeni kayıt formu boş/geçersiz açılmaz.
+const defaultRules = () => {
+  if (props.config.type === "mission") return { eventType: "wager", metric: "count", target: 1, currency: "USD", minimumAmount: 0, gameCodes: [], providerCodes: [], categories: [], period: "lifetime", autoJoin: false, perUserLimit: 1, globalLimit: 0 }
+  if (props.config.type === "bonus") return { activation: "deposit", minimumDeposit: 0, maximumDeposit: 0, depositSequence: 0, windowHours: 48, activeHours: 72, currencies: [], period: "lifetime", perUserLimit: 1, globalLimit: 0, wagerMultiplier: 0, wagerMinBet: 0, wagerMaxBet: 0, wagerCategories: [], maxBonusAmount: 0, maxClaimMultiplier: 0, excludedCountries: [] }
+  return {}
+}
 const emptyForm = () => ({
   type: props.config.type, slug: "", title: "", subtitle: "", description: "", image: "", mobileImage: "",
   category: "", locale: "tr", status: "draft", order: 0, startsAt: null, endsAt: null,
-  cta: { label: "", href: "" }, reward: { type: "none", amount: 0, currency: "USD", wageringMultiplier: 0 },
-  rules: {}, content: {}, reason: "",
+  cta: { label: "", href: "" }, reward: { type: "none", amount: 0, currency: "USD", wageringMultiplier: 0, spinCount: 0, betAmount: 0, gameCode: "", providerCode: "", expireHours: 72 },
+  rules: defaultRules(), content: {}, reason: "",
 })
 const headers = computed(() => [
   { title: "Sıra", key: "order", width: 72 },
@@ -65,7 +72,9 @@ async function load() {
 function createItem() { form.value = emptyForm(); dialog.value = true }
 function editItem(item: any) {
   const base = emptyForm()
-  form.value = { ...base, ...item, type: props.config.type, cta: { ...base.cta, ...(item.cta || {}) }, reward: { ...base.reward, ...(item.reward || {}) }, rules: { ...(item.rules || {}) }, content: { ...(item.content || {}) }, reason: "" }
+  // Eski kayıtlarda eksik olan alanlar varsayılanlarla tamamlanır; aksi halde
+  // editör tanımsız değerlerle açılır ve kaydetmede alanlar sıfırlanırdı.
+  form.value = { ...base, ...item, type: props.config.type, cta: { ...base.cta, ...(item.cta || {}) }, reward: { ...base.reward, ...(item.reward || {}) }, rules: { ...base.rules, ...(item.rules || {}) }, content: { ...(item.content || {}) }, reason: "" }
   dialog.value = true
 }
 async function save() {
@@ -138,7 +147,16 @@ onMounted(load)
     <VDialog v-model="dialog" max-width="1040" persistent scrollable>
       <VCard>
         <VCardItem class="pa-6 border-b"><template #prepend><VAvatar :color="config.accent" variant="tonal"><VIcon :icon="config.icon" /></VAvatar></template><VCardTitle>{{ editing ? `${config.singular} düzenle` : `Yeni ${config.singular}` }}</VCardTitle><VCardSubtitle>Yalnız {{ config.title }} alanları gösteriliyor.</VCardSubtitle></VCardItem>
-        <VCardText class="pa-6"><VRow>
+        <!-- mission/bonus gibi türler kendi yapılandırılmış editörünü verir;
+             diğer türler jenerik alan döngüsünü kullanmaya devam eder. -->
+        <VCardText v-if="$slots.editor" class="pa-6">
+          <slot name="editor" :form="form" :update="(value: any) => (form = value)" />
+          <VRow class="mt-2">
+            <VCol cols="12" md="6"><VSelect v-model="form.status" :items="statuses" label="Yayın durumu" /></VCol>
+            <VCol cols="12" md="6"><VTextField v-model="form.reason" label="Değişiklik nedeni" required prepend-inner-icon="tabler-history" hint="Audit kaydında görünecek kısa açıklama." persistent-hint /></VCol>
+          </VRow>
+        </VCardText>
+        <VCardText v-else class="pa-6"><VRow>
           <VCol v-for="field in config.fields" :key="`${field.scope}.${field.key}`" cols="12" :md="field.kind === 'textarea' ? 12 : field.kind === 'switch' ? 4 : 6">
             <VTextarea v-if="field.kind === 'textarea'" :model-value="fieldValue(field)" :label="field.label" :hint="field.hint" :persistent-hint="Boolean(field.hint)" :required="field.required" rows="4" @update:model-value="setField(field, $event)" />
             <VSelect v-else-if="field.kind === 'select'" :model-value="fieldValue(field)" :items="field.items" :label="field.label" :required="field.required" clearable @update:model-value="setField(field, $event)" />
@@ -150,6 +168,9 @@ onMounted(load)
           <VCol cols="12" md="6"><VSelect v-model="form.status" :items="statuses" label="Yayın durumu" /></VCol>
           <VCol cols="12"><VTextField v-model="form.reason" label="Değişiklik nedeni" required prepend-inner-icon="tabler-history" hint="Audit kaydında görünecek kısa açıklama." persistent-hint /></VCol>
         </VRow></VCardText>
+        <!-- Kaydetme hataları diyalog içinde gösterilir; liste kartındaki alert
+             modalın arkasında kalıp görünmez oluyordu. -->
+        <VAlert v-if="error && dialog" type="error" variant="tonal" class="mx-6 mb-2" closable @click:close="error = ''">{{ error }}</VAlert>
         <VCardActions class="pa-6 border-t"><VSpacer /><VBtn variant="text" @click="dialog = false">Vazgeç</VBtn><VBtn :color="config.accent" :loading="saving" prepend-icon="tabler-device-floppy" @click="save">Kaydet</VBtn></VCardActions>
       </VCard>
     </VDialog>

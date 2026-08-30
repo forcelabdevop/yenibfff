@@ -90,8 +90,24 @@ async function listPublished({ type, locale, userId }) {
   const items = await CasinoContent.find(visibilityQuery(type, locale)).sort({ order: 1, createdAt: -1 }).lean();
   if (!userId || !items.length) return items.map((item) => ({ ...item, userState: null }));
   const states = await CasinoUserState.find({ user: userId, content: { $in: items.map((item) => item._id) } }).lean();
-  const stateMap = new Map(states.map((state) => [String(state.content), state]));
-  return items.map((item) => ({ ...item, userState: stateMap.get(String(item._id)) || null }));
+  // Günlük/haftalık içeriklerde aynı kayıt için birden çok dönem state'i olur.
+  // Kullanıcıya GEÇERLİ dönemin ilerlemesi gösterilmeli; aksi halde dün
+  // tamamlanmış bir görev bugün de "tamamlandı" görünürdü.
+  const byContent = new Map();
+  for (const state of states) {
+    const key = String(state.content);
+    const group = byContent.get(key) || [];
+    group.push(state);
+    byContent.set(key, group);
+  }
+  return items.map((item) => {
+    const group = byContent.get(String(item._id)) || [];
+    const currentKey = periodKeyFor(item.rules?.period);
+    const match = group.find((state) => state.periodKey === currentKey)
+      || group.sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0))[0]
+      || null;
+    return { ...item, userState: match };
+  });
 }
 
 async function joinContent({ userId, contentId }) {

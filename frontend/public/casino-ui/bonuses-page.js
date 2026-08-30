@@ -37,17 +37,74 @@ window.createBonusesPage = function createBonusesPage(ctx) {
   const faqTab = ref(0), openFaq = ref("")
   const displayedFaq = computed(() => faqs[faqTab.value])
 
-  const normalizeBonus = (item) => ({
-    id: item._id || item.id || item.slug,
-    title: item.title,
-    image: item.image ? backendAssetUrl(item.image) : item.img ? backendAssetUrl(item.img) : bonusAssets.bonusChest,
-    copy: item.description || item.subtitle || "",
-    description: item.description || item.modalDescription || "",
-    category: String(item.category || item.content?.section || item.bonusType || "regular").toLowerCase(),
-    reward: item.reward || { type: item.bonusType || "bonus", amount: Number(item.percentage || 0), currency: "%" },
-    userState: item.userState || null,
-    managedContent: Boolean(item.slug),
-  })
+  // Kullanıcıya gösterilen durum etiketleri, motorun CasinoUserState
+  // durumlarıyla birebir eşleşir; hiçbiri "sessizce" gizlenmez.
+  const stateLabels = {
+    "awaiting-deposit": { label: "DEPOSIT REQUIRED", tone: "pending" },
+    eligible: { label: "ACTIVATING", tone: "pending" },
+    "delivery-pending": { label: "DELIVERING…", tone: "pending" },
+    "delivery-failed": { label: "DELIVERY ISSUE", tone: "error" },
+    wagering: { label: "WAGERING", tone: "active" },
+    claimed: { label: "ACTIVE", tone: "done" },
+    completed: { label: "COMPLETED", tone: "done" },
+    expired: { label: "EXPIRED", tone: "error" },
+    rejected: { label: "CANCELLED", tone: "error" },
+  }
+  const money = (amount, currency) => `${Number(amount || 0).toLocaleString("en-US")} ${currency || ""}`.trim()
+
+  // Kartta gösterilecek satırlar admin kaydından türetilir — sabit metin yok.
+  const bonusDetailRows = (rules, reward) => {
+    const rows = []
+    const currency = (rules.currencies || [])[0] || reward.currency || ""
+    if (reward.type === "free-spins") {
+      if (reward.spinCount) rows.push({ label: "Free spins", value: `${reward.spinCount}` })
+      if (reward.gameCode) rows.push({ label: "Game", value: reward.gameCode })
+      if (reward.betAmount) rows.push({ label: "Bet per spin", value: money(reward.betAmount, currency) })
+    } else if (reward.amount) {
+      rows.push({ label: "Reward", value: money(reward.amount, reward.currency) })
+    }
+    if (rules.activation === "deposit" && rules.minimumDeposit) rows.push({ label: "Min. deposit", value: money(rules.minimumDeposit, currency) })
+    if (rules.maxBonusAmount) rows.push({ label: "Max. bonus", value: money(rules.maxBonusAmount, currency) })
+    if (rules.wagerMultiplier) rows.push({ label: "Wager", value: `x${rules.wagerMultiplier}` })
+    if (rules.maxClaimMultiplier) rows.push({ label: "Max. claim", value: `x${rules.maxClaimMultiplier}` })
+    return rows
+  }
+
+  const normalizeBonus = (item) => {
+    const rules = item.rules || {}
+    const reward = item.reward || { type: item.bonusType || "bonus", amount: Number(item.percentage || 0), currency: "%" }
+    const content = item.content || {}
+    const state = item.userState || null
+    const status = state?.status || ""
+    const badge = stateLabels[status] || { label: "AVAILABLE", tone: "idle" }
+    return {
+      id: item._id || item.id || item.slug,
+      title: item.title,
+      // Admin "vurgu metni" girmişse kartın büyük satırı odur (örn. "50 Free Spins").
+      highlight: content.highlight || item.subtitle || item.title,
+      label: content.label || "Special Bonus",
+      infoText: content.infoText || item.description || "",
+      image: item.image ? backendAssetUrl(item.image) : item.img ? backendAssetUrl(item.img) : bonusAssets.bonusChest,
+      copy: item.description || item.subtitle || "",
+      description: item.description || item.modalDescription || "",
+      category: String(item.category || content.section || item.bonusType || "regular").toLowerCase(),
+      reward,
+      rules,
+      rows: bonusDetailRows(rules, reward),
+      userState: state,
+      status,
+      statusLabel: badge.label,
+      statusTone: badge.tone,
+      // Seçim yapılmamışsa CTA yatırım bonusunda "Select", anında bonusta "Claim".
+      action: state ? "view" : rules.activation === "instant" ? "claim" : "select",
+      expiresAt: state?.expiresAt || null,
+      wagerProgress: Number(state?.progress || 0),
+      wagerTarget: Number(state?.target || 0),
+      wagerPercent: state?.target > 0 ? Math.min(100, Math.round((state.progress / state.target) * 100)) : 0,
+      deliveryError: status === "delivery-failed" ? state?.lastError || "" : "",
+      managedContent: Boolean(item.slug),
+    }
+  }
   async function loadBonuses() {
     if (!isBonusesPage) return
     bonusLoading.value = true
@@ -86,11 +143,61 @@ window.createBonusesPage = function createBonusesPage(ctx) {
     } catch (error) { toastMessage(error.message || "Bonus could not be claimed") }
     finally { bonusActionLoading.value = "" }
   }
+  // Special bonus seçimi. Motor "instant" bonusu anında teslim eder;
+  // "deposit" bonusu yatırım beklemeye alınır.
+  async function selectBonus(item) {
+    if (!authHeaders().Authorization) { toastMessage("Please sign in to select a bonus"); return }
+    if (!item?.id || bonusActionLoading.value) return
+    bonusActionLoading.value = item.id
+    try {
+      const response = await fetch(apiUrl(`/content/bonuses/${item.id}/select`), {
+        method: "POST",
+        headers: { ...authHeaders(), "Content-Type": "application/json" },
+      })
+      const payload = await response.json()
+      if (!response.ok || payload.success === false) throw new Error(payload.error?.message || "Bonus could not be selected")
+      const status = payload.data?.status
+      toastMessage(
+        payload.meta?.duplicate ? "You already selected this bonus"
+          : status === "awaiting-deposit" ? "Bonus selected — make a qualifying deposit to activate it"
+            : "Bonus activated",
+      )
+      await loadBonuses()
+    } catch (error) { toastMessage(error.message || "Bonus could not be selected") }
+    finally { bonusActionLoading.value = "" }
+  }
+
+  // Kart CTA'sı: seçilmemiş bonusu seçtirir, yatırım bekleyeni deposit modalına
+  // götürür, anında bonusu claim eder.
+  function runBonusAction(item) {
+    if (!item) return
+    if (item.status === "awaiting-deposit") { bonusDepositModal.value = true; return }
+    if (item.action === "claim") { claimBonus(item); return }
+    if (item.action === "select") { selectBonus(item); return }
+    openRegularInfo(item)
+  }
+
+  // Yatırım penceresi / bonus süresi geri sayımı. Saniyede bir tetiklenir.
+  const bonusNow = ref(Date.now())
+  if (isBonusesPage && typeof setInterval === "function") setInterval(() => { bonusNow.value = Date.now() }, 1000)
+  const countdownFor = (expiresAt) => {
+    if (!expiresAt) return ""
+    const remaining = new Date(expiresAt).getTime() - bonusNow.value
+    if (remaining <= 0) return "00:00:00"
+    const days = Math.floor(remaining / 86400000)
+    const hours = String(Math.floor(remaining / 3600000) % 24).padStart(2, "0")
+    const minutes = String(Math.floor(remaining / 60000) % 60).padStart(2, "0")
+    const seconds = String(Math.floor(remaining / 1000) % 60).padStart(2, "0")
+    return `${days ? `${days}d ` : ""}${hours}:${minutes}:${seconds}`
+  }
+  // Deposit modalındaki "Active Deposit Bonus" satırı gerçek seçimi gösterir.
+  const activeDepositBonus = computed(() => bonusItems.value.find((item) => item.status === "awaiting-deposit") || null)
+
   function bonusNotify(message) { toastMessage(message) }
   function openRegularInfo(type) { regularBonusModal.value = type }
   function toggleFaq(id) { openFaq.value = openFaq.value === id ? "" : id }
   function closeBonusModals() { bonusDepositModal.value = false; historyModal.value = false; specialHistoryModal.value = false; statisticModal.value = false; shareModal.value = false; calendarDetailsModal.value = false; regularBonusModal.value = null }
 
   if (typeof onMounted === "function") onMounted(loadBonuses)
-  return { isBonusesPage, bonusAssets, vipCards, otherCards, specialBonuses, regularBonuses, bonusItems, bonusLoading, bonusError, bonusActionLoading, historyRows, statisticRows, specialHistoryRows, displayedFaq, faqTab, openFaq, bonusDepositModal, historyModal, specialHistoryModal, statisticModal, shareModal, calendarDetailsModal, regularBonusModal, bonusExpanded, bonusNotify, claimBonus, loadBonuses, openRegularInfo, toggleFaq, closeBonusModals }
+  return { isBonusesPage, bonusAssets, vipCards, otherCards, specialBonuses, regularBonuses, bonusItems, bonusLoading, bonusError, bonusActionLoading, historyRows, statisticRows, specialHistoryRows, displayedFaq, faqTab, openFaq, bonusDepositModal, historyModal, specialHistoryModal, statisticModal, shareModal, calendarDetailsModal, regularBonusModal, bonusExpanded, bonusNotify, claimBonus, loadBonuses, openRegularInfo, toggleFaq, closeBonusModals, selectBonus, runBonusAction, countdownFor, activeDepositBonus }
 }
