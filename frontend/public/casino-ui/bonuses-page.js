@@ -1,5 +1,5 @@
 window.createBonusesPage = function createBonusesPage(ctx) {
-  const { ref, computed, onMounted, currentPage, toastMessage, apiUrl, backendAssetUrl, readAuthToken } = ctx
+  const { ref, computed, onMounted, currentPage, toastMessage, apiUrl, backendAssetUrl, readAuthToken, openDeposit } = ctx
   const isBonusesPage = currentPage === "bonuses"
 
   const bonusAssets = {
@@ -171,7 +171,13 @@ window.createBonusesPage = function createBonusesPage(ctx) {
   // götürür, anında bonusu claim eder.
   function runBonusAction(item) {
     if (!item) return
-    if (item.status === "awaiting-deposit") { bonusDepositModal.value = true; return }
+    // Tek gercek deposit ekrani cuzdan modalindaki (wallet-modal.js) ekrandir —
+    // sahte/statik bir kopya modal yerine onu aciyoruz.
+    if (item.status === "awaiting-deposit") {
+      if (typeof openDeposit === "function") { openDeposit("crypto"); return }
+      bonusDepositModal.value = true
+      return
+    }
     if (item.action === "claim") { claimBonus(item); return }
     if (item.action === "select") { selectBonus(item); return }
     openRegularInfo(item)
