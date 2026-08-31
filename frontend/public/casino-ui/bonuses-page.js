@@ -174,6 +174,7 @@ window.createBonusesPage = function createBonusesPage(ctx) {
     // Tek gercek deposit ekrani cuzdan modalindaki (wallet-modal.js) ekrandir —
     // sahte/statik bir kopya modal yerine onu aciyoruz.
     if (item.status === "awaiting-deposit") {
+      console.log("[v0] DEPLOY-TEST-MARKER-2026-09-01: runBonusAction fired, openDeposit is", typeof openDeposit)
       if (typeof openDeposit === "function") { openDeposit("crypto"); return }
       bonusDepositModal.value = true
       return
