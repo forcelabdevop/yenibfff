@@ -24,6 +24,24 @@ function setContent(key: string, value: any) {
   emit("update:modelValue", { ...form.value, content: { ...content.value, [key]: value } })
 }
 
+// Native <input type="datetime-local"> yalnızca "YYYY-MM-DDTHH:mm" formatını
+// kabul eder; API'den gelen tam ISO string (saniye + "Z" içeren) doğrudan
+// bağlanırsa tarayıcı alanı SESSİZCE boş gösterir. Kaydedilmiş bir başlangıç/
+// bitiş tarihi varken admin ekranda "boş" görüp fark etmeden tekrar
+// kaydediyor, görev/bonus yanlışlıkla ileri bir tarihte planlı kalıyordu.
+function toLocalInput(iso?: string | null) {
+  if (!iso) return ""
+  const date = new Date(iso)
+  if (Number.isNaN(date.getTime())) return ""
+  const pad = (value: number) => String(value).padStart(2, "0")
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
+function fromLocalInput(value: string) {
+  if (!value) return null
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? null : date.toISOString()
+}
+
 const activationLabels: Record<string, string> = {
   deposit: "Yatırım sonrası aktifleşir",
   instant: "Seçer seçmez anında verilir",
@@ -72,10 +90,26 @@ const warnings = computed(() => {
 <template>
   <div class="d-flex flex-column ga-6">
     <section>
-      <div class="section-title">Kart görünümü</div>
+      <!-- MissionEditor'daki eşdeğerinin aksine bu bölüm eksikti: Dil ve Sıra
+           alanları hiç render edilmiyordu, form her zaman emptyForm()
+           varsayılanıyla (locale: "en") sessizce kaydediyordu. Frontend sadece
+           "en" locale içeriği çektiği için manuel "tr" gibi bir dil seçmek
+           isteyen admin bunu değiştiremiyordu ve kayıt "kayboldu" gibi
+           görünüyordu. -->
+      <div class="section-title">Kimlik ve görünüm</div>
       <VRow>
         <VCol cols="12" md="6"><VTextField :model-value="form.title" label="Bonus başlığı" placeholder="Friday Bonus" required @update:model-value="setRoot('title', $event)" /></VCol>
         <VCol cols="12" md="6"><VTextField :model-value="form.slug" label="Slug" required @update:model-value="setRoot('slug', $event)" /></VCol>
+        <VCol cols="12" md="3"><VSelect :model-value="form.locale" :items="['tr', 'en', 'de', 'ru']" label="Dil" @update:model-value="setRoot('locale', $event)" /></VCol>
+        <VCol cols="12" md="3"><VTextField :model-value="form.order" type="number" min="0" label="Sıra" @update:model-value="setRoot('order', $event)" /></VCol>
+      </VRow>
+    </section>
+
+    <VDivider />
+
+    <section>
+      <div class="section-title">Kart görünümü</div>
+      <VRow>
         <VCol cols="12" md="6"><VTextField :model-value="content.highlight" label="Vurgu metni" placeholder="50 Free Spins" hint="Kartta büyük gösterilen ödül metni" persistent-hint @update:model-value="setContent('highlight', $event)" /></VCol>
         <VCol cols="12" md="3"><VTextField :model-value="content.label" label="Rozet / etiket" placeholder="HAFTALIK" @update:model-value="setContent('label', $event)" /></VCol>
         <VCol cols="12" md="3"><VTextField :model-value="content.accent" label="Vurgu rengi" placeholder="#f5a524" @update:model-value="setContent('accent', $event)" /></VCol>
@@ -126,8 +160,8 @@ const warnings = computed(() => {
         <VCol cols="12" md="3"><VTextField :model-value="rules.maxBonusAmount" type="number" min="0" label="Maks. bonus tutarı" @update:model-value="setRule('maxBonusAmount', $event)" /></VCol>
         <VCol cols="12" md="3"><VTextField :model-value="rules.maxClaimMultiplier" type="number" min="0" label="Maks. çekim çarpanı" hint="Örn. 5 = bonusun 5 katı" persistent-hint @update:model-value="setRule('maxClaimMultiplier', $event)" /></VCol>
         <VCol cols="12" md="6"><VCombobox :model-value="rules.excludedCountries || []" label="Hariç tutulan ülkeler" multiple chips closable-chips hint="ISO kodu, örn. TR" persistent-hint @update:model-value="setRule('excludedCountries', $event)" /></VCol>
-        <VCol cols="12" md="3"><VTextField :model-value="form.startsAt" type="datetime-local" label="Başlangıç" @update:model-value="setRoot('startsAt', $event)" /></VCol>
-        <VCol cols="12" md="3"><VTextField :model-value="form.endsAt" type="datetime-local" label="Bitiş" @update:model-value="setRoot('endsAt', $event)" /></VCol>
+ <VCol cols="12" md="3"><VTextField :model-value="toLocalInput(form.startsAt)" type="datetime-local" label="Başlangıç" clearable hint="Boş = hemen başlar" persistent-hint @update:model-value="setRoot('startsAt', fromLocalInput($event))" /></VCol>
+ <VCol cols="12" md="3"><VTextField :model-value="toLocalInput(form.endsAt)" type="datetime-local" label="Bitiş" clearable hint="Boş = süresiz" persistent-hint @update:model-value="setRoot('endsAt', fromLocalInput($event))" /></VCol>
       </VRow>
     </section>
 

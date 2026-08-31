@@ -30,18 +30,30 @@ axiosIns.interceptors.request.use(config => {
   return config
 })
 
+// Ayni anda birden fazla istek 401 donebilir (bildirimler, liste, istatistik...).
+// Her biri ayri ayri router.push('/login') cagirirsa yaris durumu olusur ve
+// router "resolve" hatasi firlatip sayfayi bos/bozuk bir ara durumda birakabilir.
+// Bu bayrak, yonlendirmenin session basina yalnizca BIR KEZ tetiklenmesini saglar.
+let isRedirectingToLogin = false
+
 axiosIns.interceptors.response.use(
   response => response,
   error => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 && !isRedirectingToLogin) {
+      isRedirectingToLogin = true
       localStorage.removeItem('userData')
       localStorage.removeItem('accessToken')
       localStorage.removeItem('userAbilities')
       localStorage.removeItem('userPermissions')
       localStorage.removeItem('adminMfaChallenge')
-      router.push('/login')
+
+      router.push('/login').catch(() => {
+        // Zaten /login'deyse veya navigasyon iptal edilirse burasi calisir; yut.
+      }).finally(() => {
+        isRedirectingToLogin = false
+      })
     }
-    
+
     return Promise.reject(error)
   },
 )

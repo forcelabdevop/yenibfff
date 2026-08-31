@@ -26,22 +26,12 @@ const TRON_NETWORKS = {
 	},
 };
 
-// ⚠️ GEÇİCİ GÜVENLİK KİLİDİ — kaldırmadan önce bu yorumu okuyun.
-//
-// Proje ayarlarındaki TRON_NETWORK değişkeni "Mainnet" olarak kaydedildi ve
-// Vars formu üzerinden "nile"a düzeltilemedi (30.08.2026 — form kaydı env
-// dosyasına yansımadı, kök sebep bilinmiyor). Şu an kullanılan
-// TRON_HD_MNEMONIC salt test amaçlı üretildi ve bu sohbette AÇIKÇA
-// gösterildi — dolayısıyla mainnet'te ASLA güvenli değildir. Biri bu
-// adreslere gerçek USDT/TRX gönderirse o fon kalıcı olarak kaybolabilir.
-//
-// Bu satır env okumasını görmezden gelip ağı HER ZAMAN "nile" (testnet)
-// olarak zorlar. TRON_NETWORK proje ayarlarında gerçekten "nile" olarak
-// düzeltildiğinde VE mnemonic sohbette hiç gösterilmemiş güvenli bir
-// üretim seed'i ile değiştirildiğinde, aşağıdaki satırı geri açıp bu
-// zorlamayı kaldırın.
-const NETWORK = 'nile';
-// const NETWORK = process.env.TRON_NETWORK === 'nile' ? 'nile' : 'mainnet';
+// 31.08.2026 — TRON_HD_MNEMONIC guvenli, sohbette hic gosterilmemis yeni bir
+// seed ile rotate edildi (SystemAction/requestEnvironmentVariables formu
+// uzerinden, degeri hicbir zaman metin olarak gorunmedi). Eski test seed'i
+// artik kullanilmiyor. Mainnet kilidi kaldirildi; TRON_NETWORK proje
+// ayarindan okunuyor (varsayilan mainnet).
+const NETWORK = process.env.TRON_NETWORK === 'nile' ? 'nile' : 'mainnet';
 
 /** BIP44 TRON coin type: m/44'/195'/0'/0/{index} */
 const TRON_DERIVATION_PREFIX = "m/44'/195'/0'/0";
@@ -89,6 +79,31 @@ const CURRENCIES = {
 const CONFIRMATIONS_REQUIRED = Number(process.env.TRON_CONFIRMATIONS || 20);
 
 /**
+ * Sweep (toplama) yapilandirmasi.
+ *
+ * Toplama adresi HD cuzdanin index 0'idir — kullaniciya ASLA atanmaz
+ * (bkz. Counter baslangic degeri: scripts/backfillCryptoAddresses.js,
+ * services/cryptoAddressService.js index 1'den baslar).
+ */
+const SWEEP_DERIVATION_INDEX = 0;
+
+/** Bu esigin altindaki bakiyeler sweep edilmez (gas maliyetine degmez). */
+const SWEEP_MIN_UNITS = {
+	USDT_TRC20: 1_000_000, // 1 USDT
+	TRX: 15_000_000, // 15 TRX (10 TRX min + islem/gas payi)
+};
+
+/**
+ * USDT sweep'i icin kullanici adresine gonderilecek gas (TRX, SUN).
+ * TRC20 transfer enerji gerektirir; adreste enerji yoksa TRX yakilir.
+ * 30 TRX, enerji kiralanmadigi durumda bir TRC20 transferini karsilar.
+ */
+const SWEEP_GAS_TRX_SUN = Number(process.env.TRON_SWEEP_GAS_SUN || 30_000_000);
+
+/** USDT sweep'inde gas gonderdikten sonra ana transferden once beklenecek sure. */
+const SWEEP_GAS_WAIT_MS = Number(process.env.TRON_SWEEP_GAS_WAIT_MS || 15_000);
+
+/**
  * Bir para birimi kullanilabilir mi?
  *
  * Token'lar sozlesme adresi olmadan izlenemez. Adres eksikken para birimini
@@ -126,6 +141,10 @@ module.exports = {
 	TRON_DERIVATION_PREFIX,
 	CURRENCIES,
 	CONFIRMATIONS_REQUIRED,
+	SWEEP_DERIVATION_INDEX,
+	SWEEP_MIN_UNITS,
+	SWEEP_GAS_TRX_SUN,
+	SWEEP_GAS_WAIT_MS,
 	getCurrency,
 	isSupportedCurrency: (code) => getCurrency(code) !== null,
 	/** Yalnizca gercekten kullanilabilir para birimleri. */

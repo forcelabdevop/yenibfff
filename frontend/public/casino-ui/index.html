@@ -2425,18 +2425,8 @@
 <footer class="calendar-details-foot"><button @click="calendarDetailsModal=false" type="button">Close</button></footer>
 </section>
 </div>
-<div @click.self="bonusDepositModal=false" class="deposit-overlay" v-if="bonusDepositModal">
-<section aria-label="Deposit" aria-modal="true" class="deposit-modal" role="dialog">
-<header class="deposit-modal-head"><button @click="bonusDepositModal=false" class="modal-back" type="button"><i class="fas fa-chevron-left"></i></button><h2>Deposit</h2><button @click="bonusDepositModal=false" class="modal-close" type="button"><i class="fas fa-times"></i></button></header>
-<div class="deposit-tabs"><button class="active" type="button">Crypto</button><button @click="bonusNotify('Cash deposits are unavailable')" type="button">Cash</button><button @click="bonusNotify('Buy Crypto opened')" type="button">Buy Crypto</button></div>
-<div class="deposit-selects"><button class="deposit-select" type="button"><img :src="bonusAssets.tether" alt=""/><span><small>Currency</small><b>USDT</b></span><i class="fas fa-chevron-down"></i></button><button class="deposit-select" type="button"><span class="bnb-coin"><i class="fas fa-gem"></i></span><span><small>Network</small><b>BNB Chain(BEP-...</b></span><i class="fas fa-chevron-down"></i></button></div>
-<div class="active-bonus"><img :src="activeDepositBonus?activeDepositBonus.image:bonusAssets.bonusChest" alt=""/><div><span>Active Deposit Bonus:</span><b>{{activeDepositBonus?activeDepositBonus.highlight:'None selected'}}</b></div><button @click="bonusExpanded=!bonusExpanded" type="button"><i :class="bonusExpanded?'fas fa-chevron-up':'fas fa-chevron-down'"></i></button></div>
-<div class="bonus-picker" v-if="bonusExpanded"><div class="picker-title"><span class="radio-on"></span><b>Special bonuses</b><span class="count-badge">{{specialBonuses.length}}</span><a @click.prevent="bonusDepositModal=false" href="#bn-special">More details <i class="fas fa-chevron-right"></i></a></div><div class="selected-bonus" v-if="activeDepositBonus"><span class="check"><i class="fas fa-check"></i></span><div class="bonus-main"><img :src="activeDepositBonus.image" alt=""/><div><small>{{activeDepositBonus.label}}</small><b>{{activeDepositBonus.highlight}}</b></div></div><div class="bonus-line"></div><div class="bonus-min" v-if="activeDepositBonus.rules.minimumDeposit"><span>Min. deposit:</span><b>{{activeDepositBonus.rules.minimumDeposit}} {{(activeDepositBonus.rules.currencies||[])[0]||''}}</b></div><div class="bonus-timer" v-if="activeDepositBonus.expiresAt">{{countdownFor(activeDepositBonus.expiresAt)}}</div></div><div class="selected-bonus" v-else><div class="bonus-main"><div><b>No bonus selected</b><small>Pick a special bonus before depositing.</small></div></div></div></div>
-<button @click="bonusNotify('Deposit without a bonus selected')" class="without-bonus" type="button"><span></span>Without bonus</button>
-<p class="deposit-warning">⚠️ Please don&apos;t change the selected bonus until the deposit is credited to the game balance.</p>
-<div class="address-row"><div><small>Your USDT deposit address</small><b>0xA7F4...D6E9</b></div><button @click="bonusNotify('Address copied')" type="button"><i class="far fa-copy"></i></button><div class="qr"><i class="fas fa-qrcode"></i></div></div>
-</section>
-</div>
+<!-- Bonus Cabinet'in kendi statik/sahte deposit modali kaldirildi: tek gercek
+     deposit ekrani cuzdan modalidir (wallet-modal.js), runBonusAction bunu acar. -->
 <div @click.self="regularBonusModal=null" class="reg-details-overlay" v-if="regularBonusModal">
 <section class="reg-details-modal">
 <header class="reg-details-head">
@@ -5470,8 +5460,16 @@
   const missionsPage = window.createMissionsPage({ ref, computed, onMounted, currentPage, toastMessage, apiUrl, backendAssetUrl, readAuthToken });
   const isMissionsPage = missionsPage.isMissionsPage;
 
+  // Cuzdan modali mantigi ayri dosyada: casino-ui/wallet-modal.js
+  // (Bonus Cabinet'in deposit ekrani ayni modali actigi icin bonusesPage'den ONCE kuruluyor.)
+  const walletModal = window.createWalletModal({
+    ref, computed, watch, apiUrl, authUser, readAuthToken, requestAuth, toastMessage,
+  });
+
   // Bonus Cabinet mantigi ayri dosyada: casino-ui/bonuses-page.js
-  const bonusesPage = window.createBonusesPage({ ref, computed, onMounted, currentPage, toastMessage, apiUrl, backendAssetUrl, readAuthToken });
+  // Tek gercek deposit ekrani cuzdan modalidir; sahte kopya modal yerine
+  // "Deposit" aksiyonu walletModal.openDeposit'i acar.
+  const bonusesPage = window.createBonusesPage({ ref, computed, onMounted, currentPage, toastMessage, apiUrl, backendAssetUrl, readAuthToken, openDeposit: walletModal.openDeposit });
   const isBonusesPage = bonusesPage.isBonusesPage;
 
   // Crypto & Earn sayfasi mantigi ayri dosyada: casino-ui/crypto-earn-page.js
@@ -5490,11 +5488,6 @@
   const vipPage = window.createVipPage({ ref, computed, onMounted, currentPage, toastMessage, openChat: toggleChat, apiUrl, readAuthToken });
   const isVipPage = vipPage.isVipPage;
   
-  // Cuzdan modali mantigi ayri dosyada: casino-ui/wallet-modal.js
-        const walletModal = window.createWalletModal({
-          ref, computed, watch, apiUrl, authUser, readAuthToken, requestAuth, toastMessage,
-        });
-
         // Profil modali mantigi ayri dosyada: casino-ui/profile-modal.js
         const profileModal = window.createProfileModal({
           ref, computed, nextTick, authUser, userRank, accountStats: accountPages.accountStats, toastMessage,

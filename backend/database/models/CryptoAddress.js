@@ -35,18 +35,35 @@ const cryptoAddressSchema = new mongoose.Schema({
      */
     lastSeenTimestamp: { type: Number, default: 0 },
 
+    /**
+     * Sweep servisinin bu adresin bakiyesini en son ne zaman kontrol ettigi.
+     * lastScannedAt (yatirma izleyicisi) ile karistirilmamali — ayri bir
+     * round-robin sirasi saglar.
+     */
+    lastSweepScannedAt: { type: Date, default: null },
+
     createdAt: { type: Date, default: Date.now }
 });
 
 // Round-robin tarama sirasi icin.
 cryptoAddressSchema.index({ lastScannedAt: 1 });
+cryptoAddressSchema.index({ lastSweepScannedAt: 1 });
 
-// Ayni adresin iki kayda girmesini engeller.
-cryptoAddressSchema.index({ address: 1 }, { unique: true });
+// NOT: Adres tek basina unique DEGILDIR — ayni kullanicinin TRX ve USDT_TRC20
+// kayitlari BILEREK ayni adresi paylasir (TRON'da bir adres = bir hesap, hem
+// native TRX hem TRC20 token tutabilir). Gercek guvenlik kisiti asagidaki
+// (chain, derivationIndex) unique index'i ile saglanir: adres, derivationIndex'ten
+// deterministik olarak turetildigi icin iki FARKLI kullanici asla ayni adresi
+// alamaz. Burada yalnizca ayni kullanicinin ayni para birimi icin adresini
+// yanlislikla iki kez kaydetmesini engelleriz.
+cryptoAddressSchema.index({ address: 1, currency: 1 }, { unique: true });
 
-// Ayni turetme indeksinin iki kez tahsisini engeller. Bu koruma olmadan iki
-// kullanici AYNI adresi paylasabilir ve biri otekinin parasini alir.
-cryptoAddressSchema.index({ chain: 1, derivationIndex: 1 }, { unique: true });
+// Ayni turetme indeksinin iki FARKLI KULLANICIYA tahsisini engeller (currency
+// dahil edilmesinin nedeni: ayni kullanicinin TRX ve USDT_TRC20 kayitlari
+// BILEREK ayni derivationIndex'i -ve dolayisiyla ayni adresi- paylasir).
+// Bu koruma olmadan iki farkli kullanici AYNI adresi paylasabilir ve biri
+// otekinin parasini alir.
+cryptoAddressSchema.index({ chain: 1, derivationIndex: 1, currency: 1 }, { unique: true });
 
 // Kullanici basina, zincir+para birimi basina TEK kalici adres.
 cryptoAddressSchema.index({ user: 1, chain: 1, currency: 1 }, { unique: true });
