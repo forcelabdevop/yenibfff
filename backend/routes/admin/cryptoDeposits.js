@@ -1,9 +1,10 @@
 const express = require("express");
+const mongoose = require("mongoose");
 
 const { checkPermission } = require("../../middleware/permission");
 const CryptoDeposit = require("../../database/models/CryptoDeposit");
 const CryptoAddress = require("../../database/models/CryptoAddress");
-const { CURRENCIES } = require("../../config/crypto");
+const { CURRENCIES, listCurrencies } = require("../../config/crypto");
 
 const router = express.Router();
 
@@ -183,6 +184,84 @@ router.get(
 		} catch (error) {
 			console.error("[admin/crypto-deposits] adres hatasi:", error);
 			res.status(500).json({ success: false, message: "Adresler alinamadi" });
+		}
+	},
+);
+
+/**
+ * GET /admin/crypto-deposits/user/:userId
+ * Tek bir kullanicinin SABIT kripto cuzdan(lar)i + yatirim yapmis mi ozeti.
+ * Kullanici profili (admin panel > Finans) icin kullanilir.
+ *
+ * Desteklenen her para birimi icin ayri satir dondurulur; kullanici henuz
+ * hic yatirma sayfasini acmamissa (ve kayit-oncesi eski bir hesapsa) adres
+ * `null` gelir — bu durumda "atanmadi" olarak gosterilmelidir. Yeni kayitlar
+ * icin adres kayit anindan itibaren zaten atanmis olur (bkz.
+ * routes/auth/credentials/index.js).
+ */
+router.get(
+	"/user/:userId",
+	checkPermission("finance.deposits.read"),
+	async (req, res) => {
+		try {
+			const { userId } = req.params;
+			if (!mongoose.Types.ObjectId.isValid(userId)) {
+				return res
+					.status(400)
+					.json({ success: false, message: "Gecersiz kullanici id" });
+			}
+
+			const [addresses, depositAgg] = await Promise.all([
+				CryptoAddress.find({ user: userId }).lean(),
+				CryptoDeposit.aggregate([
+					{ $match: { user: new mongoose.Types.ObjectId(userId) } },
+					{
+						$group: {
+							_id: "$currency",
+							depositCount: { $sum: 1 },
+							creditedCount: {
+								$sum: { $cond: [{ $eq: ["$status", "credited"] }, 1, 0] },
+							},
+							totalCreditedAmount: { $sum: "$creditedAmount" },
+							lastDepositAt: { $max: "$createdAt" },
+						},
+					},
+				]),
+			]);
+
+			const addressByCurrency = new Map(
+				addresses.map((row) => [row.currency, row]),
+			);
+			const depositByCurrency = new Map(
+				depositAgg.map((row) => [row._id, row]),
+			);
+
+			const wallets = listCurrencies().map((currency) => {
+				const addressRow = addressByCurrency.get(currency.code);
+				const depositRow = depositByCurrency.get(currency.code);
+
+				return {
+					currency: currency.code,
+					displayCode: displayCodeFor(currency.code),
+					chain: currency.chain,
+					network: currency.network,
+					address: addressRow?.address || null,
+					assignedAt: addressRow?.createdAt || null,
+					hasDeposited: Boolean(depositRow?.creditedCount),
+					depositCount: depositRow?.depositCount || 0,
+					// creditedAmount kullanicinin coin bakiyesi biriminde (float, ondalik
+					// hassasiyet zaten kucuk); formatUnits burada gerekmez.
+					totalCreditedAmount: depositRow?.totalCreditedAmount || 0,
+					lastDepositAt: depositRow?.lastDepositAt || null,
+				};
+			});
+
+			res.json({ success: true, data: { wallets } });
+		} catch (error) {
+			console.error("[admin/crypto-deposits] kullanici cuzdan hatasi:", error);
+			res
+				.status(500)
+				.json({ success: false, message: "Kullanici cuzdan bilgisi alinamadi" });
 		}
 	},
 );
