@@ -45,6 +45,33 @@ async function main() {
 		console.log('Yeni bilesik index zaten mevcut, atlaniyor.');
 	}
 
+	// Ayni gerekce derivationIndex icin de gecerli: ayni kullanicinin TRX ve
+	// USDT_TRC20 kayitlari ayni derivationIndex'i paylasir, bu yuzden eski
+	// (chain, derivationIndex) tekil index'i de currency eklenerek gevsetilir.
+	const indexes2 = await collection.indexes();
+	const oldDerivIndex = indexes2.find(
+		(i) => i.name === 'chain_1_derivationIndex_1' ||
+			(i.key && Object.keys(i.key).join(',') === 'chain,derivationIndex' && i.unique)
+	);
+
+	if (oldDerivIndex) {
+		console.log(`Eski unique index kaldiriliyor: ${oldDerivIndex.name}`);
+		await collection.dropIndex(oldDerivIndex.name);
+	} else {
+		console.log('Eski (chain, derivationIndex) unique index bulunamadi, atlaniyor.');
+	}
+
+	const hasNewDerivIndex = (await collection.indexes()).some(
+		(i) => i.key && i.key.chain === 1 && i.key.derivationIndex === 1 && i.key.currency === 1 && i.unique
+	);
+
+	if (!hasNewDerivIndex) {
+		console.log('Yeni bilesik index olusturuluyor: (chain, derivationIndex, currency) unique');
+		await collection.createIndex({ chain: 1, derivationIndex: 1, currency: 1 }, { unique: true });
+	} else {
+		console.log('Yeni bilesik (chain, derivationIndex, currency) index zaten mevcut, atlaniyor.');
+	}
+
 	console.log('Migration tamamlandi. Guncel index\'ler:');
 	console.log((await collection.indexes()).map((i) => ({ name: i.name, key: i.key, unique: !!i.unique })));
 

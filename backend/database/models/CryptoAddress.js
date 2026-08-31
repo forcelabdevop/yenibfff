@@ -58,9 +58,12 @@ cryptoAddressSchema.index({ lastSweepScannedAt: 1 });
 // yanlislikla iki kez kaydetmesini engelleriz.
 cryptoAddressSchema.index({ address: 1, currency: 1 }, { unique: true });
 
-// Ayni turetme indeksinin iki kez tahsisini engeller. Bu koruma olmadan iki
-// kullanici AYNI adresi paylasabilir ve biri otekinin parasini alir.
-cryptoAddressSchema.index({ chain: 1, derivationIndex: 1 }, { unique: true });
+// Ayni turetme indeksinin iki FARKLI KULLANICIYA tahsisini engeller (currency
+// dahil edilmesinin nedeni: ayni kullanicinin TRX ve USDT_TRC20 kayitlari
+// BILEREK ayni derivationIndex'i -ve dolayisiyla ayni adresi- paylasir).
+// Bu koruma olmadan iki farkli kullanici AYNI adresi paylasabilir ve biri
+// otekinin parasini alir.
+cryptoAddressSchema.index({ chain: 1, derivationIndex: 1, currency: 1 }, { unique: true });
 
 // Kullanici basina, zincir+para birimi basina TEK kalici adres.
 cryptoAddressSchema.index({ user: 1, chain: 1, currency: 1 }, { unique: true });
