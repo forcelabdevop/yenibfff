@@ -35,11 +35,19 @@ const cryptoAddressSchema = new mongoose.Schema({
      */
     lastSeenTimestamp: { type: Number, default: 0 },
 
+    /**
+     * Sweep servisinin bu adresin bakiyesini en son ne zaman kontrol ettigi.
+     * lastScannedAt (yatirma izleyicisi) ile karistirilmamali — ayri bir
+     * round-robin sirasi saglar.
+     */
+    lastSweepScannedAt: { type: Date, default: null },
+
     createdAt: { type: Date, default: Date.now }
 });
 
 // Round-robin tarama sirasi icin.
 cryptoAddressSchema.index({ lastScannedAt: 1 });
+cryptoAddressSchema.index({ lastSweepScannedAt: 1 });
 
 // Ayni adresin iki kayda girmesini engeller.
 cryptoAddressSchema.index({ address: 1 }, { unique: true });

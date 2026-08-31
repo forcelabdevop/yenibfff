@@ -79,6 +79,31 @@ const CURRENCIES = {
 const CONFIRMATIONS_REQUIRED = Number(process.env.TRON_CONFIRMATIONS || 20);
 
 /**
+ * Sweep (toplama) yapilandirmasi.
+ *
+ * Toplama adresi HD cuzdanin index 0'idir — kullaniciya ASLA atanmaz
+ * (bkz. Counter baslangic degeri: scripts/backfillCryptoAddresses.js,
+ * services/cryptoAddressService.js index 1'den baslar).
+ */
+const SWEEP_DERIVATION_INDEX = 0;
+
+/** Bu esigin altindaki bakiyeler sweep edilmez (gas maliyetine degmez). */
+const SWEEP_MIN_UNITS = {
+	USDT_TRC20: 1_000_000, // 1 USDT
+	TRX: 15_000_000, // 15 TRX (10 TRX min + islem/gas payi)
+};
+
+/**
+ * USDT sweep'i icin kullanici adresine gonderilecek gas (TRX, SUN).
+ * TRC20 transfer enerji gerektirir; adreste enerji yoksa TRX yakilir.
+ * 30 TRX, enerji kiralanmadigi durumda bir TRC20 transferini karsilar.
+ */
+const SWEEP_GAS_TRX_SUN = Number(process.env.TRON_SWEEP_GAS_SUN || 30_000_000);
+
+/** USDT sweep'inde gas gonderdikten sonra ana transferden once beklenecek sure. */
+const SWEEP_GAS_WAIT_MS = Number(process.env.TRON_SWEEP_GAS_WAIT_MS || 15_000);
+
+/**
  * Bir para birimi kullanilabilir mi?
  *
  * Token'lar sozlesme adresi olmadan izlenemez. Adres eksikken para birimini
@@ -116,6 +141,10 @@ module.exports = {
 	TRON_DERIVATION_PREFIX,
 	CURRENCIES,
 	CONFIRMATIONS_REQUIRED,
+	SWEEP_DERIVATION_INDEX,
+	SWEEP_MIN_UNITS,
+	SWEEP_GAS_TRX_SUN,
+	SWEEP_GAS_WAIT_MS,
 	getCurrency,
 	isSupportedCurrency: (code) => getCurrency(code) !== null,
 	/** Yalnizca gercekten kullanilabilir para birimleri. */
