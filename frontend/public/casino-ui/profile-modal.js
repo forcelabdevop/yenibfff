@@ -48,7 +48,7 @@ window.createProfileModal = function createProfileModal(ctx) {
 
   // ---- Kimlik (canli veriden) ----
   const pmUsername = computed(() => (authUser.value && authUser.value.username) || "Player")
-  const pmRankLabel = computed(() => `${userRank.value} Rank`)
+  const pmRankLabel = computed(() => `${userRank.value} Ranks`)
 
   const pmMemberAge = computed(() => {
     const raw = authUser.value && (authUser.value.createdAt || authUser.value.registeredAt)
