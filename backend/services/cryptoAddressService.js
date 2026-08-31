@@ -10,7 +10,17 @@ const INDEX_COUNTER_KEY = 'tron:derivationIndex';
  * Kullaniciya, verilen para birimi icin kalici yatirma adresi dondurur.
  * Adres yoksa atomik olarak yeni bir turetme indeksi alip olusturur.
  *
- * Stake davranisi: kullanici basina, para birimi basina TEK ve DEGISMEYEN adres.
+ * Stake davranisi: kullanici basina, ZINCIR basina TEK ve DEGISMEYEN adres —
+ * o zincirdeki TUM para birimleri (TRX, USDT_TRC20, ...) AYNI adresi paylasir.
+ * TRON'da bir adres = bir hesap; o hesap ayni anda hem native TRX hem de
+ * herhangi bir TRC20 token bakiyesi tutabilir, dolayisiyla para birimi basina
+ * ayri adres turetmenin teknik bir gerekce yoktur ve cryptoDepositWatcher
+ * zaten her adresi TUM para birimleri icin tarar (bkz. o dosyadaki not).
+ *
+ * Her para birimi icin hala ayri bir CryptoAddress KAYDI olusturulur (admin
+ * panelinde para birimi bazinda yatirim/bakiye takibi icin), ama `address`
+ * ve `derivationIndex` alanlari ayni kullanicinin tum kayitlarinda birebir
+ * aynidir.
  *
  * Yaris durumu: ayni kullanici iki sekmeden ayni anda istek atarsa iki istek de
  * yeni indeks alabilir. Bu durumda unique index ikinciyi reddeder; hata
@@ -37,10 +47,16 @@ async function getOrCreateAddress(userId, currencyCode) {
 
 	if (existing) return format(existing, currency);
 
-	// Atomik indeks tahsisi. "oku sonra yaz" kalibi KULLANILMAZ; iki kullanici
-	// ayni indeksi alirsa ayni adresi paylasir ve biri otekinin parasini alir.
-	const index = await Counter.next(INDEX_COUNTER_KEY);
-	const address = hdWallet.deriveAddress(index);
+	// Kullanicinin bu zincirde BASKA bir para birimi icin adresi varsa
+	// (or. TRX icin), yeni indeks almadan AYNI adresi/indeksi paylas.
+	const sibling = await CryptoAddress.findOne({
+		user: userId,
+		chain: CHAIN,
+	}).lean();
+
+	const { address, index } = sibling
+		? { address: sibling.address, index: sibling.derivationIndex }
+		: await allocateNewAddress();
 
 	try {
 		const created = await CryptoAddress.create({
@@ -63,6 +79,16 @@ async function getOrCreateAddress(userId, currencyCode) {
 		}
 		throw err;
 	}
+}
+
+/**
+ * Atomik indeks tahsisi. "oku sonra yaz" kalibi KULLANILMAZ; iki kullanici
+ * ayni indeksi alirsa ayni adresi paylasir ve biri otekinin parasini alir.
+ */
+async function allocateNewAddress() {
+	const index = await Counter.next(INDEX_COUNTER_KEY);
+	const address = hdWallet.deriveAddress(index);
+	return { address, index };
 }
 
 function format(doc, currency) {
