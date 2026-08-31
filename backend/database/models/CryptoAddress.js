@@ -49,8 +49,14 @@ const cryptoAddressSchema = new mongoose.Schema({
 cryptoAddressSchema.index({ lastScannedAt: 1 });
 cryptoAddressSchema.index({ lastSweepScannedAt: 1 });
 
-// Ayni adresin iki kayda girmesini engeller.
-cryptoAddressSchema.index({ address: 1 }, { unique: true });
+// NOT: Adres tek basina unique DEGILDIR — ayni kullanicinin TRX ve USDT_TRC20
+// kayitlari BILEREK ayni adresi paylasir (TRON'da bir adres = bir hesap, hem
+// native TRX hem TRC20 token tutabilir). Gercek guvenlik kisiti asagidaki
+// (chain, derivationIndex) unique index'i ile saglanir: adres, derivationIndex'ten
+// deterministik olarak turetildigi icin iki FARKLI kullanici asla ayni adresi
+// alamaz. Burada yalnizca ayni kullanicinin ayni para birimi icin adresini
+// yanlislikla iki kez kaydetmesini engelleriz.
+cryptoAddressSchema.index({ address: 1, currency: 1 }, { unique: true });
 
 // Ayni turetme indeksinin iki kez tahsisini engeller. Bu koruma olmadan iki
 // kullanici AYNI adresi paylasabilir ve biri otekinin parasini alir.
