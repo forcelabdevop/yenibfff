@@ -249,16 +249,33 @@ cron.schedule("* * * * *", () => {
 // (services/cryptoDepositWatcher.js). Buraya ek bir instance kontrolü
 // EKLEMEYİN — kilit zaten tek çalıştırıcıyı garanti eder ve kilidi tutan
 // instance çökerse süre dolunca bir diğeri devralır.
-const cryptoDepositWatcher = require("./services/cryptoDepositWatcher");
-cron.schedule("* * * * *", () => {
-	cryptoDepositWatcher
-		.runOnce()
-		.catch((err) =>
-			console.error("❌ Kripto yatırma tarama hatası:", err.message),
-		);
-});
+	const cryptoDepositWatcher = require("./services/cryptoDepositWatcher");
+	cron.schedule("* * * * *", () => {
+		cryptoDepositWatcher
+			.runOnce()
+			.catch((err) =>
+				console.error("❌ Kripto yatırma tarama hatası:", err.message),
+			);
+	});
 
-// Set app port
+	// 🧹 TRON sweep (toplama) servisi: kullanıcı adreslerinde biriken TRX/USDT
+	// bakiyesini periyodik olarak ana adrese (HD index 0) taşır.
+	//
+	// GÜVENLİK: cryptoDepositWatcher ile aynı desen — 4 PM2 instance'ının
+	// hepsinde kurulur, mükerrer işlem koruması servisin kendi JobLock
+	// leader-election'ı ile sağlanır (services/cryptoSweepService.js).
+	// Yatırma taramasından daha seyrek çalışır (her 5 dakikada bir) çünkü
+	// sweep zincire yazan (ücretli) işlemler içerir, salt okuma değildir.
+	const cryptoSweepService = require("./services/cryptoSweepService");
+	cron.schedule("*/5 * * * *", () => {
+		cryptoSweepService
+			.runOnce()
+			.catch((err) =>
+				console.error("❌ Kripto sweep hatası:", err.message),
+			);
+	});
+
+	// Set app port
 const PORT = process.env.SERVER_PORT || 5000;
 
 server.listen(PORT, () =>
