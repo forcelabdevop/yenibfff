@@ -18,6 +18,7 @@ const deposits = ref([])
 const withdrawals = ref([])
 const manualBonuses = ref([])
 const shopPurchases = ref([])
+const cryptoWallets = ref([])
 const activeTab = ref("deposits")
 const route = useRoute()
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
@@ -205,6 +206,17 @@ const fetchUserDepositWithdrawals = async userId => {
     manualBonuses.value = []
     shopPurchases.value = []
   }
+
+  // Kripto cüzdanı ayrı bir uçtan geliyor (crypto-deposits admin router'ı);
+  // diğer verileri bloklamasın diye kendi try/catch'inde tutuluyor.
+  try {
+    const walletRes = await axios.get(`/admin/crypto-deposits/user/${userId}`)
+
+    cryptoWallets.value = walletRes.data?.data?.wallets || []
+  } catch (err) {
+    console.error("Crypto wallet API error:", err)
+    cryptoWallets.value = []
+  }
 }
 
 const resolveAssetUrl = value => {
@@ -312,10 +324,19 @@ watch(
         >
           <span class="text-primary">{{ t("platform.shop") }}</span>
         </VTab>
+        <VTab
+          value="crypto-wallet"
+          color="info"
+        >
+          <span class="text-info">{{ t("cryptoWallet") }}</span>
+        </VTab>
       </VTabs>
 
-      <!-- 🗓️ Tarih Aralığı Filtresi -->
-      <VRow class="mt-2 align-center">
+      <!-- 🗓️ Tarih Aralığı Filtresi (Kripto Cüzdanı sekmesinde uygulanmaz) -->
+      <VRow
+        v-if="activeTab !== 'crypto-wallet'"
+        class="mt-2 align-center"
+      >
         <VCol
           cols="12"
           sm="4"
@@ -686,6 +707,133 @@ watch(
               </tr>
             </tbody>
           </VTable>
+        </VWindowItem>
+
+        <VWindowItem value="crypto-wallet">
+          <VRow class="mt-2">
+            <VCol
+              v-for="wallet in cryptoWallets"
+              :key="wallet.currency"
+              cols="12"
+              md="6"
+            >
+              <VCard
+                variant="outlined"
+                class="h-100"
+              >
+                <VCardText>
+                  <div class="d-flex align-center justify-space-between mb-3">
+                    <div class="d-flex align-center gap-2">
+                      <VAvatar
+                        size="36"
+                        rounded="lg"
+                        variant="tonal"
+                        color="info"
+                      >
+                        <VIcon icon="tabler-wallet" />
+                      </VAvatar>
+                      <div>
+                        <div class="font-weight-medium">
+                          {{ wallet.displayCode }}
+                        </div>
+                        <div class="text-caption text-disabled">
+                          {{ [wallet.chain, wallet.network].filter(Boolean).join(" / ") }}
+                        </div>
+                      </div>
+                    </div>
+                    <VChip
+                      size="small"
+                      :color="wallet.hasDeposited ? 'success' : 'secondary'"
+                      variant="tonal"
+                    >
+                      {{ wallet.hasDeposited ? t("cryptoWalletHasDeposited") : t("cryptoWalletNoDeposit") }}
+                    </VChip>
+                  </div>
+
+                  <div class="mb-3">
+                    <div class="text-caption text-disabled mb-1">
+                      {{ t("address") }}
+                    </div>
+                    <div
+                      v-if="wallet.address"
+                      class="d-flex align-center gap-1"
+                    >
+                      <span class="text-body-2 font-mono text-truncate">{{ wallet.address }}</span>
+                      <VTooltip location="top">
+                        <template #activator="{ props: tooltipProps }">
+                          <VBtn
+                            v-bind="tooltipProps"
+                            icon
+                            size="x-small"
+                            variant="text"
+                            @click="copyToClipboard(wallet.address, 'addressCopied')"
+                          >
+                            <VIcon
+                              icon="tabler-copy"
+                              size="16"
+                            />
+                          </VBtn>
+                        </template>
+                        <span>{{ t("copy") }}</span>
+                      </VTooltip>
+                    </div>
+                    <span
+                      v-else
+                      class="text-body-2 text-disabled"
+                    >
+                      {{ t("cryptoWalletNotAssigned") }}
+                    </span>
+                  </div>
+
+                  <VDivider class="mb-3" />
+
+                  <VRow dense>
+                    <VCol cols="6">
+                      <div class="text-caption text-disabled">
+                        {{ t("cryptoWalletDepositCount") }}
+                      </div>
+                      <div class="text-body-2 font-weight-medium">
+                        {{ wallet.depositCount }}
+                      </div>
+                    </VCol>
+                    <VCol cols="6">
+                      <div class="text-caption text-disabled">
+                        {{ t("cryptoWalletTotalCredited") }}
+                      </div>
+                      <div class="text-body-2 font-weight-medium">
+                        {{ formatNumber(wallet.totalCreditedAmount) }}
+                      </div>
+                    </VCol>
+                    <VCol cols="6">
+                      <div class="text-caption text-disabled">
+                        {{ t("cryptoWalletAssigned") }}
+                      </div>
+                      <div class="text-body-2">
+                        {{ wallet.assignedAt ? formatDate(wallet.assignedAt) : "-" }}
+                      </div>
+                    </VCol>
+                    <VCol cols="6">
+                      <div class="text-caption text-disabled">
+                        {{ t("cryptoWalletLastDeposit") }}
+                      </div>
+                      <div class="text-body-2">
+                        {{ wallet.lastDepositAt ? formatDate(wallet.lastDepositAt) : "-" }}
+                      </div>
+                    </VCol>
+                  </VRow>
+                </VCardText>
+              </VCard>
+            </VCol>
+
+            <VCol
+              v-if="!cryptoWallets.length"
+              cols="12"
+            >
+              <div class="text-center text-disabled py-6">
+                {{ t("missing") }}
+              </div>
+            </VCol>
+          </VRow>
         </VWindowItem>
       </VWindow>
     </VCardText>

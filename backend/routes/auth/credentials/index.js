@@ -32,6 +32,8 @@ const {
 	issueOtp,
 } = require("../../../services/mfaService");
 const { finalizeUserLoginSession } = require("../../../services/authSessionService");
+const cryptoAddressService = require("../../../services/cryptoAddressService");
+const { listCurrencies } = require("../../../config/crypto");
 const {
 	ACCOUNT_SUSPENDED_CODE,
 	assertUserNotSuspended,
@@ -380,6 +382,26 @@ module.exports = () => {
 				"/apps/user/list",
 				{ username, userId: newUser._id },
 			);
+
+			// Her kullanıcıya kayıt anında SABİT kripto yatırma adresi ata (ör.
+			// USDT_TRC20, TRX). getOrCreateAddress zaten aynı kullanıcı+para
+			// birimi için hep aynı adresi döndürür/oluşturur; burada erkenden
+			// çağırmak, kullanıcı hiç yatırım sayfasını açmasa da admin
+			// panelinde ("Kullanıcı Adresleri" ve profil) adresin görünmesini
+			// sağlar. HD cüzdan (TRON_HD_MNEMONIC) yapılandırılmamışsa hata
+			// fırlatır — kaydı ASLA bloklamadan sessizce loglayıp geçiyoruz.
+			Promise.all(
+				listCurrencies().map((currency) =>
+					cryptoAddressService
+						.getOrCreateAddress(userId, currency.code)
+						.catch((error) => {
+							console.error(
+								`[auth/register] kripto adresi atanamadi (${currency.code}):`,
+								error.message,
+							);
+						}),
+				),
+			).catch(() => {});
 
 			newUser = newUser.toObject();
 			delete newUser.local.password;
