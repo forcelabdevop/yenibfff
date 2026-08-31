@@ -26,22 +26,12 @@ const TRON_NETWORKS = {
 	},
 };
 
-// ⚠️ GEÇİCİ GÜVENLİK KİLİDİ — kaldırmadan önce bu yorumu okuyun.
-//
-// Proje ayarlarındaki TRON_NETWORK değişkeni "Mainnet" olarak kaydedildi ve
-// Vars formu üzerinden "nile"a düzeltilemedi (30.08.2026 — form kaydı env
-// dosyasına yansımadı, kök sebep bilinmiyor). Şu an kullanılan
-// TRON_HD_MNEMONIC salt test amaçlı üretildi ve bu sohbette AÇIKÇA
-// gösterildi — dolayısıyla mainnet'te ASLA güvenli değildir. Biri bu
-// adreslere gerçek USDT/TRX gönderirse o fon kalıcı olarak kaybolabilir.
-//
-// Bu satır env okumasını görmezden gelip ağı HER ZAMAN "nile" (testnet)
-// olarak zorlar. TRON_NETWORK proje ayarlarında gerçekten "nile" olarak
-// düzeltildiğinde VE mnemonic sohbette hiç gösterilmemiş güvenli bir
-// üretim seed'i ile değiştirildiğinde, aşağıdaki satırı geri açıp bu
-// zorlamayı kaldırın.
-const NETWORK = 'nile';
-// const NETWORK = process.env.TRON_NETWORK === 'nile' ? 'nile' : 'mainnet';
+// 31.08.2026 — TRON_HD_MNEMONIC guvenli, sohbette hic gosterilmemis yeni bir
+// seed ile rotate edildi (SystemAction/requestEnvironmentVariables formu
+// uzerinden, degeri hicbir zaman metin olarak gorunmedi). Eski test seed'i
+// artik kullanilmiyor. Mainnet kilidi kaldirildi; TRON_NETWORK proje
+// ayarindan okunuyor (varsayilan mainnet).
+const NETWORK = process.env.TRON_NETWORK === 'nile' ? 'nile' : 'mainnet';
 
 /** BIP44 TRON coin type: m/44'/195'/0'/0/{index} */
 const TRON_DERIVATION_PREFIX = "m/44'/195'/0'/0";
