@@ -43,7 +43,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
  * dondurebilir. Bu gecici hatalarda kisa bir bekleme ile tekrar denenir;
  * kalici hatalarda (gecersiz adres vb.) hemen firlatilir.
  */
-async function withRetry(fn, { retries = 2, delayMs = 800 } = {}) {
+async function withRetry(fn, { retries = 3, delayMs = 1500 } = {}) {
 	let lastError;
 	for (let attempt = 0; attempt <= retries; attempt += 1) {
 		try {
@@ -60,6 +60,18 @@ async function withRetry(fn, { retries = 2, delayMs = 800 } = {}) {
 	throw lastError;
 }
 
+// Ayni TRC20 sozlesmesi icin contract().at() cagrisini tekrarlamamak icin
+// cache'lenir — her cagrida yeniden metadata/ABI cekmek TronGrid'e gereksiz
+// yuk bindirip anahtarsiz kotada rate limit'i tetikliyordu.
+const contractCache = new Map();
+async function getContractInstance(contract) {
+	if (!contractCache.has(contract)) {
+		const client = getReadOnlyClient();
+		contractCache.set(contract, await client.contract().at(contract));
+	}
+	return contractCache.get(contract);
+}
+
 /** Adresin native TRX bakiyesi (SUN, tam sayi). */
 async function getTrxBalance(address) {
 	const balance = await withRetry(() => getReadOnlyClient().trx.getBalance(address));
@@ -68,9 +80,8 @@ async function getTrxBalance(address) {
 
 /** Adresin belirli bir TRC20 sozlesmesindeki bakiyesi (en kucuk birim, tam sayi). */
 async function getTrc20Balance(address, contract) {
-	const client = getReadOnlyClient();
 	const raw = await withRetry(async () => {
-		const contractInstance = await client.contract().at(contract);
+		const contractInstance = await getContractInstance(contract);
 		return contractInstance.balanceOf(address).call({ from: address });
 	});
 	return BigInt(raw?.toString?.() ?? raw ?? 0);
