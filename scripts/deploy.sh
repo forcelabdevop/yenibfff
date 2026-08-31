@@ -123,6 +123,17 @@ log "pm2  : ${PM2}"
 # ---------------------------------------------------------------------------
 git rev-parse --is-inside-work-tree >/dev/null 2>&1 || die "${REPO_DIR} bir git deposu degil."
 
+# admin build'i her calistiginda bu dosyayi yeniden uretir (icon bundling
+# script'i). Elle yapilmis bir degisiklik degil, guvenle atilabilir.
+GENERATED_FILES=(
+	"admin/src/@iconify/icons-bundle.js"
+)
+for f in "${GENERATED_FILES[@]}"; do
+	if [[ -f "${REPO_DIR}/${f}" ]]; then
+		run git checkout --quiet -- "${f}" || true
+	fi
+done
+
 # Yerelde elle yapilmis degisiklik varsa DURDUR. Sessizce ezmek, sunucuda
 # yapilmis acil bir duzeltmeyi yok etmek demektir.
 if [[ -n "$(git status --porcelain --untracked-files=no)" ]]; then
