@@ -24,6 +24,24 @@ function setContent(key: string, value: any) {
   emit("update:modelValue", { ...form.value, content: { ...content.value, [key]: value } })
 }
 
+// Native <input type="datetime-local"> yalnızca "YYYY-MM-DDTHH:mm" formatını
+// kabul eder; API'den gelen tam ISO string (saniye + "Z" içeren) doğrudan
+// bağlanırsa tarayıcı alanı SESSİZCE boş gösterir. Kaydedilmiş bir başlangıç/
+// bitiş tarihi varken admin ekranda "boş" görüp fark etmeden tekrar
+// kaydediyor, görev/bonus yanlışlıkla ileri bir tarihte planlı kalıyordu.
+function toLocalInput(iso?: string | null) {
+  if (!iso) return ""
+  const date = new Date(iso)
+  if (Number.isNaN(date.getTime())) return ""
+  const pad = (value: number) => String(value).padStart(2, "0")
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
+function fromLocalInput(value: string) {
+  if (!value) return null
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? null : date.toISOString()
+}
+
 const activationLabels: Record<string, string> = {
   deposit: "Yatırım sonrası aktifleşir",
   instant: "Seçer seçmez anında verilir",
@@ -126,8 +144,8 @@ const warnings = computed(() => {
         <VCol cols="12" md="3"><VTextField :model-value="rules.maxBonusAmount" type="number" min="0" label="Maks. bonus tutarı" @update:model-value="setRule('maxBonusAmount', $event)" /></VCol>
         <VCol cols="12" md="3"><VTextField :model-value="rules.maxClaimMultiplier" type="number" min="0" label="Maks. çekim çarpanı" hint="Örn. 5 = bonusun 5 katı" persistent-hint @update:model-value="setRule('maxClaimMultiplier', $event)" /></VCol>
         <VCol cols="12" md="6"><VCombobox :model-value="rules.excludedCountries || []" label="Hariç tutulan ülkeler" multiple chips closable-chips hint="ISO kodu, örn. TR" persistent-hint @update:model-value="setRule('excludedCountries', $event)" /></VCol>
-        <VCol cols="12" md="3"><VTextField :model-value="form.startsAt" type="datetime-local" label="Başlangıç" @update:model-value="setRoot('startsAt', $event)" /></VCol>
-        <VCol cols="12" md="3"><VTextField :model-value="form.endsAt" type="datetime-local" label="Bitiş" @update:model-value="setRoot('endsAt', $event)" /></VCol>
+ <VCol cols="12" md="3"><VTextField :model-value="toLocalInput(form.startsAt)" type="datetime-local" label="Başlangıç" clearable hint="Boş = hemen başlar" persistent-hint @update:model-value="setRoot('startsAt', fromLocalInput($event))" /></VCol>
+ <VCol cols="12" md="3"><VTextField :model-value="toLocalInput(form.endsAt)" type="datetime-local" label="Bitiş" clearable hint="Boş = süresiz" persistent-hint @update:model-value="setRoot('endsAt', fromLocalInput($event))" /></VCol>
       </VRow>
     </section>
 
