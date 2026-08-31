@@ -11,6 +11,8 @@
 		"migrate:casino-content": "node scripts/migrateCasinoContent.js",
 		"seed:dynamic-platform": "node scripts/seedDynamicPlatform.js",
 		"seed:dynamic-platform:dry": "node scripts/seedDynamicPlatform.js --dry-run",
+		"backfill:crypto-addresses": "node scripts/backfillCryptoAddresses.js",
+		"backfill:crypto-addresses:dry": "node scripts/backfillCryptoAddresses.js --dry-run",
 		"test": "node --test tests/*.test.js"
 	},
 	"author": "",
