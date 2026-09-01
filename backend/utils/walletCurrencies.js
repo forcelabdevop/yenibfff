@@ -11,6 +11,10 @@ const { listCurrencies } = require('../config/crypto');
 
 const normalizeCode = (value) => String(value || '').trim().toUpperCase();
 
+// Yatirma altyapisi henuz hazir olmasa da cüzdan secicisinde görünmesi gereken
+// temel varliklar. Desteklenmeyenler UI'da pasif / "Yakinda" olarak sunulur.
+const DISPLAY_CURRENCY_CATALOG = ['BTC', 'ETH', 'BNB', 'BFG'];
+
 /**
  * Coin ikonunun genel (public) yolu.
  * Dosya `frontend/public/casino-ui/assets/` altinda bulunmalidir; eksikse
@@ -101,6 +105,10 @@ const buildCurrencyList = (wallets, prices) => {
 		group.networksByKey.set(key, buildNetworkEntry(currency.chain, currency.type, currency.code, code));
 	}
 
+	// Kullanici bu varliklarda henuz wallet kaydina sahip olmasa bile liste
+	// eksilmemeli. Ag/adres destegi gelene kadar networks bos ve depositable false.
+	for (const code of DISPLAY_CURRENCY_CATALOG) ensureGroup(code);
+
 	const data = [];
 	for (const [code, group] of groups) {
 		const market = (prices && prices.get(code)) || { price: 0, fee: 0 };
@@ -121,6 +129,7 @@ const buildCurrencyList = (wallets, prices) => {
 			precision: 8,
 			fiat: false,
 			depositable: depositable.has(code),
+			status: depositable.has(code) ? 'available' : 'coming-soon',
 			icon,
 		});
 	}

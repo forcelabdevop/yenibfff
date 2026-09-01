@@ -107,11 +107,12 @@ window.createWalletModal = function createWalletModal(ctx) {
    * Backend `depositable` gondermiyorsa (eski surum) listeyi bosaltmamak icin
    * tum kriptolara geri duseriz.
    */
-  const depositCurrencies = computed(() => {
-    const list = cryptoCurrencies.value
-    const flagged = list.filter((c) => c.depositable)
-    return flagged.length ? flagged : list
-  })
+  const depositCurrencies = computed(() => cryptoCurrencies.value)
+
+  /** Yalnizca gercek yatirma adresi uretebilen varliklar secilebilir. */
+  function canDeposit(currency) {
+    return Boolean(currency && currency.depositable && Array.isArray(currency.networks) && currency.networks.length)
+  }
 
   /** Basit, aksansiz kucuk-harf arama eslesmesi (kod + isim uzerinde). */
   function matchesQuery(currency, query) {
@@ -262,8 +263,8 @@ window.createWalletModal = function createWalletModal(ctx) {
       }
       // Yatirma varsayilani YATIRILABILIR listeden secilmeli; aksi halde
       // varsayilan Rivo'ya duser ve adres alinamaz.
-      if (!depositCurrency.value || !depositCurrencies.value.includes(depositCurrency.value)) {
-        depositCurrency.value = depositCurrencies.value[0] || null
+      if (!canDeposit(depositCurrency.value)) {
+        depositCurrency.value = depositCurrencies.value.find(canDeposit) || null
       }
       if (!depositNetwork.value && depositCurrency.value) {
         depositNetwork.value = (depositCurrency.value.networks || [])[0] || null
@@ -386,6 +387,7 @@ window.createWalletModal = function createWalletModal(ctx) {
   }
 
   function selectDepositCurrency(currency) {
+    if (!canDeposit(currency)) return
     depositCurrency.value = currency
     depositNetwork.value = (currency.networks || [])[0] || null
     walletDropdown.value = null
@@ -528,6 +530,7 @@ window.createWalletModal = function createWalletModal(ctx) {
     depositAddress,
     depositCurrencies,
     filteredDepositCurrencies,
+    canDeposit,
     cryptoSearchQuery,
     hideZeroBalances,
     addressLoading,
