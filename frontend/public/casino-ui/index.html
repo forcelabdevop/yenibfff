@@ -1671,9 +1671,15 @@
     .wm-buy { margin-top:19px; }
     .wm-buy__label { height:24px; color:#fff; font-size:15px; font-weight:600; }
     .wm-buy__label + .wm-field { margin-top:7px; }
+    .wm-field--buy { padding-right:6px; }
+    .wm-field__stack { display:flex; min-width:0; flex:1; flex-direction:column; justify-content:center; gap:1px; padding:0 8px; }
+    .wm-field__stack small { color:#657896; font-size:12px; font-weight:600; line-height:1.15; }
+    .wm-input--stack { height:auto; padding:0; font-size:15px; line-height:1.2; }
+    .wm-field__clear { width:34px; height:34px; flex:0 0 34px; margin-right:4px; border:0; border-radius:7px; background:transparent; color:#7c8ca4; font-size:14px; cursor:pointer; display:grid; place-items:center; }
+    .wm-field__clear:hover { background:rgba(255,255,255,.06); color:#d3dcea; }
     .wm-buy__meta { height:26px; margin-top:12px; display:flex; align-items:center; justify-content:space-between; color:#a8b9d0; font-size:12px; font-weight:600; }
     .wm-provider { display:flex; align-items:center; gap:6px; color:#fff; font-size:14px; font-weight:500; }
-    .wm-provider img { width:18px; height:18px; object-fit:contain; }
+    .wm-provider__dot { width:9px; height:9px; border-radius:50%; background:#8c4dff; box-shadow:0 0 8px rgba(140,77,255,.6); }
     .wm-payment { margin-top:24px; }
     .wm-payment__head { height:24px; display:flex; align-items:center; }
     .wm-payment__head h3 { margin:0; color:#fff; font-size:14px; font-weight:600; }
@@ -3814,7 +3820,7 @@
 <div class="chat-win__body">
 <img :alt="message.win.game" :src="message.win.cover" class="chat-win__cover"/>
 <div class="chat-win__info">
-<div class="chat-win__title"><span class="emoji">😎</span>My win in<br/>“{{message.win.game}}”</div>
+<div class="chat-win__title"><span class="emoji">��</span>My win in<br/>“{{message.win.game}}”</div>
 <div class="chat-win__payout"><span class="chat-win__amount">{{message.win.payout}}</span><i class="fas fa-chevron-right"></i></div>
 <div class="chat-win__footer"><span class="chat-win__multiplier">x {{message.win.multiplier}}</span></div>
 </div>
@@ -4410,29 +4416,37 @@
       <template v-else>
         <div class="wm-buy">
           <div class="wm-buy__label">You send</div>
-          <div class="wm-field">
+          <div class="wm-field wm-field--buy">
             <div @click.stop="toggleWalletDropdown('buyFiat')" class="wm-currency-btn" role="button" tabindex="0">
               <img :src="coinIcon(buyFiat)" alt="" class="wm-coin"/>{{buyFiat && buyFiat.code}}<i class="fas fa-chevron-down wm-chev"></i>
               <div @click.stop class="wm-pop" v-if="walletDropdown==='buyFiat'">
                 <button :key="'bf-'+c.code" @click="selectBuyFiat(c)" class="wm-pop__option" type="button" v-for="c in fiatCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
               </div>
             </div>
-            <input class="wm-input" inputmode="decimal" placeholder="Amount" v-model="buyAmount"/>
+            <div class="wm-field__stack">
+              <small>Amount</small>
+              <input class="wm-input wm-input--stack" inputmode="decimal" v-model="buyAmount"/>
+            </div>
+            <button @click="buyAmount=''" class="wm-field__clear" type="button" v-if="buyAmount"><i class="fas fa-times"></i></button>
           </div>
           <div class="wm-buy__label" style="margin-top:15px">You get</div>
-          <div class="wm-field">
+          <div class="wm-field wm-field--buy">
             <div @click.stop="toggleWalletDropdown('buyCrypto')" class="wm-currency-btn" role="button" tabindex="0">
               <img :src="coinIcon(buyCrypto)" alt="" class="wm-coin"/>{{buyCrypto && buyCrypto.code}}<i class="fas fa-chevron-down wm-chev"></i>
               <div @click.stop class="wm-pop" v-if="walletDropdown==='buyCrypto'">
                 <button :key="'bc-'+c.code" @click="selectBuyCrypto(c)" class="wm-pop__option" type="button" v-for="c in cryptoCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
               </div>
             </div>
-            <input :value="buyReceive" class="wm-input" placeholder="Amount" readonly/>
+            <div class="wm-field__stack">
+              <small>Amount</small>
+              <input :value="buyReceive" class="wm-input wm-input--stack" readonly/>
+            </div>
+            <button @click="buyAmount=''" class="wm-field__clear" type="button" v-if="buyReceive"><i class="fas fa-times"></i></button>
           </div>
           <div class="wm-buy__meta">
             <span v-if="buyQuote">1 {{buyCrypto && buyCrypto.code}} ≈ {{formatAmount(buyQuote.rate ? 1/buyQuote.rate : 0, 2)}} {{buyFiat && buyFiat.code}} <i class="wm-info">?</i></span>
             <span v-else></span>
-            <span class="wm-provider" v-if="buyQuote && buyQuote.provider"><img :src="buyQuote.provider.icon" alt=""/>{{buyQuote.provider.name}} <i class="fas fa-chevron-down wm-chev"></i></span>
+            <span class="wm-provider" v-if="buyQuote && buyQuote.provider"><span class="wm-provider__dot"></span>{{buyQuote.provider.name}} <i class="fas fa-chevron-down wm-chev"></i></span>
           </div>
           <div class="wm-bonus" style="margin-top:10px">
             <img alt="" src="assets/bonus-chest.png"/>
