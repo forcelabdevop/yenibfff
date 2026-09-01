@@ -13,7 +13,7 @@
 <script src="./casino-ui-notifications.js"></script>
 <script src="./game-detail.js"></script>
 <script src="./account-pages.js"></script>
-<script src="./wallet-modal.js"></script>
+  <script src="./wallet-modal.js?v=20260901-2"></script>
 <script src="./profile-modal.js"></script>
 <script src="./account-page.js"></script>
 <script src="./missions-page.js"></script>
@@ -4359,11 +4359,11 @@
               </div>
               <label @click.stop class="wm-pop__toggle">
                 <span>Hide 0 balances</span>
-                <button :class="{on:hideZeroBalances}" @click="hideZeroBalances=!hideZeroBalances" aria-label="Hide 0 balances" class="wm-pop__switch" type="button"></button>
+                <button :class="{on:hideZeroBalances}" @click.stop="hideZeroBalances=!hideZeroBalances" aria-label="Hide 0 balances" class="wm-pop__switch" type="button"></button>
               </label>
               <div class="wm-pop__list">
-                <button :key="'dc-'+c.code" @click="selectDepositCurrency(c)" class="wm-pop__option" type="button" v-for="c in filteredDepositCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}<span class="wm-pop__option-balance">{{formatAmount(c.balance, 4)}}</span></button>
-                <div class="wm-pop__empty" v-if="!filteredDepositCurrencies.length">No currencies found</div>
+                <button :key="'dc-'+c.code" @click.stop="selectDepositCurrency(c)" class="wm-pop__option" type="button" v-for="c in filteredDepositCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}<span class="wm-pop__option-balance">{{formatAmount(c.balance, 4)}}</span></button>
+                <div class="wm-pop__empty" v-if="!filteredDepositCurrencies || !filteredDepositCurrencies.length">No currencies found</div>
               </div>
             </div>
           </div>
@@ -4372,7 +4372,7 @@
             <span class="wm-selector__text"><small>Network</small><strong>{{networkLabel(depositNetwork)}}</strong></span>
             <i class="fas fa-chevron-down wm-chev"></i>
             <div @click.stop class="wm-pop" v-if="walletDropdown==='depNetwork'">
-              <button :key="'dn-'+n.id" @click="selectDepositNetwork(n)" class="wm-pop__option" type="button" v-for="n in networkOptions">{{networkLabel(n)}}</button>
+              <button :key="'dn-'+n.id" @click.stop="selectDepositNetwork(n)" class="wm-pop__option" type="button" v-for="n in networkOptions">{{networkLabel(n)}}</button>
             </div>
           </div>
         </div>
@@ -4419,8 +4419,8 @@
                 <input @click.stop autocomplete="off" placeholder="Search currency" type="text" v-model="cashSearchQuery"/>
               </div>
               <div class="wm-pop__list">
-                <button :key="'cc-'+c.code" @click="selectCashCurrency(c)" class="wm-pop__option" type="button" v-for="c in filteredFiatCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
-                <div class="wm-pop__empty" v-if="!filteredFiatCurrencies.length">No currencies found</div>
+                <button :key="'cc-'+c.code" @click.stop="selectCashCurrency(c)" class="wm-pop__option" type="button" v-for="c in filteredFiatCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
+                <div class="wm-pop__empty" v-if="!filteredFiatCurrencies || !filteredFiatCurrencies.length">No currencies found</div>
               </div>
             </div>
           </div>
@@ -4447,7 +4447,7 @@
             <div @click.stop="toggleWalletDropdown('buyFiat')" class="wm-currency-btn" role="button" tabindex="0">
               <img :src="coinIcon(buyFiat)" alt="" class="wm-coin"/>{{buyFiat && buyFiat.code}}<i class="fas fa-chevron-down wm-chev"></i>
               <div @click.stop class="wm-pop" v-if="walletDropdown==='buyFiat'">
-                <button :key="'bf-'+c.code" @click="selectBuyFiat(c)" class="wm-pop__option" type="button" v-for="c in fiatCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
+                <button :key="'bf-'+c.code" @click.stop="selectBuyFiat(c)" class="wm-pop__option" type="button" v-for="c in fiatCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
               </div>
             </div>
             <div class="wm-field__stack">
@@ -4466,8 +4466,8 @@
                   <input @click.stop autocomplete="off" placeholder="Search currency" type="text" v-model="buyCryptoSearchQuery"/>
                 </div>
                 <div class="wm-pop__list">
-                  <button :key="'bc-'+c.code" @click="selectBuyCrypto(c)" class="wm-pop__option" type="button" v-for="c in filteredBuyCryptoCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
-                  <div class="wm-pop__empty" v-if="!filteredBuyCryptoCurrencies.length">No currencies found</div>
+                  <button :key="'bc-'+c.code" @click.stop="selectBuyCrypto(c)" class="wm-pop__option" type="button" v-for="c in filteredBuyCryptoCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
+                  <div class="wm-pop__empty" v-if="!filteredBuyCryptoCurrencies || !filteredBuyCryptoCurrencies.length">No currencies found</div>
                 </div>
               </div>
             </div>
