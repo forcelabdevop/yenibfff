@@ -1588,9 +1588,9 @@
     .wm-how { height:34px; margin-left:auto; margin-right:15px; border:0; border-radius:8px; padding:0 12px; background:#2a3950; color:#afbed3; font-size:12px; font-weight:600; display:flex; align-items:center; gap:8px; cursor:pointer; }
     .wm-how + .wm-close { margin-left:0; }
 
-    .wm-tabs { height:38px; margin-top:14px; display:grid; grid-template-columns:repeat(3,1fr); border-bottom:1px solid #314052; }
-    .wm-tab { position:relative; border:0; background:transparent; color:#fff; font-size:15px; font-weight:600; cursor:pointer; }
-    .wm-tab.active::after { content:''; position:absolute; height:1px; left:7px; right:7px; bottom:-1px; background:#ef1450; box-shadow:0 -4px 14px 4px rgba(238,20,80,.48); }
+    .wm-tabs { height:42px; margin-top:14px; display:grid; grid-template-columns:repeat(3,1fr); border-bottom:1px solid #324052; }
+    .wm-tab { position:relative; border:0; background:transparent; color:#f6f7fb; font-size:15px; font-weight:800; cursor:pointer; }
+    .wm-tab.active::after { content:''; position:absolute; left:0; right:0; bottom:-1px; height:1px; background:linear-gradient(90deg,transparent 0%,#f1084b 27%,#f1084b 73%,transparent 100%); box-shadow:0 -5px 13px rgba(241,8,75,.72); }
 
     .wm-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:14px; }
     .wm-action { height:114px; border:1px solid #29374a; border-radius:9px; background:#1a2533; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; color:#fff; cursor:pointer; }
@@ -1605,10 +1605,10 @@
     .wm-link__icon { width:14px; color:#667b97; font-size:15px; }
     .wm-chev { margin-left:auto; color:#a9bbd1; font-size:13px; }
 
-    .wm-field { height:58px; border:1px solid #2b3b50; border-radius:10px; background:#0b121a; display:flex; align-items:center; overflow:hidden; }
+    .wm-field { height:58px; border:1px solid #344256; border-radius:10px; background:#0d141e; display:flex; align-items:center; overflow:hidden; }
     /* Para birimi listesi acikken tasmayi serbest birak, aksi halde .wm-pop kirpilir */
     .wm-field:has(.wm-pop) { overflow:visible; }
-    .wm-currency-btn { position:relative; height:42px; min-width:98px; margin-left:7px; border:0; border-radius:7px; background:#1a2635; display:flex; align-items:center; gap:7px; padding:0 10px; color:#fbfbfd; font-size:14px; font-weight:600; cursor:pointer; }
+    .wm-currency-btn { position:relative; height:42px; min-width:98px; margin-left:7px; border:0; border-radius:7px; background:#1d2938; display:flex; align-items:center; gap:7px; padding:0 10px; color:#fbfbfd; font-size:14px; font-weight:800; cursor:pointer; }
     .wm-coin { width:21px; height:21px; object-fit:contain; flex:0 0 21px; }
     .wm-input { min-width:0; flex:1; padding:0 8px; border:0; background:transparent; color:#fff; font-size:15px; font-weight:600; outline:none; }
     .wm-input::placeholder { color:#657896; font-size:14px; }
@@ -1619,7 +1619,7 @@
     .wm-balance strong { color:#a9c1e3; }
 
     .wm-selectors { position:relative; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:15px; }
-    .wm-selector { position:relative; height:58px; padding:0 12px; border:0; border-radius:9px; background:#1c2938; display:flex; align-items:center; text-align:left; min-width:0; cursor:pointer; }
+    .wm-selector { position:relative; height:58px; padding:0 12px; border:0; border-radius:9px; background:#1e2a39; display:flex; align-items:center; text-align:left; min-width:0; cursor:pointer; }
     .wm-selector .wm-coin { width:24px; height:24px; flex-basis:24px; margin-right:9px; }
     .wm-selector__text { min-width:0; flex:1; }
     .wm-selector__text small { display:block; color:#667996; font-size:12px; font-weight:600; line-height:1.2; }
@@ -1636,7 +1636,7 @@
     .wm-info { display:inline-grid; place-items:center; width:15px; height:15px; margin-left:4px; border:1px solid #5e7390; border-radius:50%; color:#7e91aa; font-size:9px; font-style:normal; vertical-align:1px; }
 
     .wm-address-row { display:grid; grid-template-columns:300px 126px; gap:16px; margin-top:20px; align-items:start; }
-    .wm-address-box { height:58px; border:1px solid #2d3d51; border-radius:9px; background:#0d151e; display:flex; align-items:center; padding-left:18px; overflow:hidden; }
+    .wm-address-box { height:58px; border:1px solid #344256; border-radius:9px; background:#0d141e; display:flex; align-items:center; padding-left:18px; overflow:hidden; }
     .wm-address-text { min-width:0; flex:1; }
     .wm-address-text small { display:block; color:#657a98; font-size:12px; font-weight:600; }
     .wm-address-text strong { display:block; overflow:hidden; color:#fff; font-size:14px; font-weight:600; white-space:nowrap; text-overflow:ellipsis; }
@@ -1671,28 +1671,34 @@
     .wm-buy { margin-top:19px; }
     .wm-buy__label { height:24px; color:#fff; font-size:15px; font-weight:600; }
     .wm-buy__label + .wm-field { margin-top:7px; }
+    .wm-field--buy { padding-right:6px; }
+    .wm-field__stack { display:flex; min-width:0; flex:1; flex-direction:column; justify-content:center; gap:1px; padding:0 8px; }
+    .wm-field__stack small { color:#657896; font-size:12px; font-weight:600; line-height:1.15; }
+    .wm-input--stack { height:auto; padding:0; font-size:15px; line-height:1.2; }
+    .wm-field__clear { width:34px; height:34px; flex:0 0 34px; margin-right:4px; border:0; border-radius:7px; background:transparent; color:#7c8ca4; font-size:14px; cursor:pointer; display:grid; place-items:center; }
+    .wm-field__clear:hover { background:rgba(255,255,255,.06); color:#d3dcea; }
     .wm-buy__meta { height:26px; margin-top:12px; display:flex; align-items:center; justify-content:space-between; color:#a8b9d0; font-size:12px; font-weight:600; }
     .wm-provider { display:flex; align-items:center; gap:6px; color:#fff; font-size:14px; font-weight:500; }
-    .wm-provider img { width:18px; height:18px; object-fit:contain; }
+    .wm-provider__dot { width:9px; height:9px; border-radius:50%; background:#8c4dff; box-shadow:0 0 8px rgba(140,77,255,.6); }
     .wm-payment { margin-top:24px; }
     .wm-payment__head { height:24px; display:flex; align-items:center; }
     .wm-payment__head h3 { margin:0; color:#fff; font-size:14px; font-weight:600; }
     .wm-country { margin-left:auto; display:flex; align-items:center; gap:7px; color:#fff; font-size:14px; font-weight:600; }
     .wm-country img { width:18px; height:18px; object-fit:contain; }
     .wm-methods { position:relative; margin-top:15px; display:grid; gap:8px; }
-    .wm-method { position:relative; height:61px; border:1px solid transparent; border-radius:10px; background:#1c2836; padding:0 11px; display:grid; grid-template-columns:100px 1fr 146px; align-items:center; cursor:pointer; }
-    .wm-method.selected { border:2px solid #248cff; padding:0 10px; }
+    .wm-method { position:relative; height:60px; border:2px solid transparent; border-radius:10px; background:#1d2938; padding:0 11px; display:grid; grid-template-columns:100px 1fr 146px; align-items:center; cursor:pointer; }
+    .wm-method.selected { border-color:#2d8cff; }
     .wm-method__brand { width:82px; height:41px; object-fit:contain; }
-    .wm-recommended { position:absolute; left:-2px; top:-10px; height:21px; padding:0 8px; border-radius:9px; background:#0bc14f; color:#fff; display:flex; align-items:center; font-size:10px; font-weight:700; letter-spacing:.2px; box-shadow:0 0 14px rgba(16,193,77,.4); }
-    .wm-best { justify-self:start; height:20px; padding:0 8px; border-radius:12px; background:#183d32; color:#0dc050; display:flex; align-items:center; font-size:10px; font-weight:700; letter-spacing:.5px; }
+    .wm-recommended { position:absolute; left:-2px; top:-10px; height:auto; padding:3px 8px 4px; border-radius:9px 9px 9px 0; background:#10bd4c; color:#fff; display:flex; align-items:center; font-size:10px; line-height:15px; font-weight:900; letter-spacing:.4px; box-shadow:0 3px 16px rgba(16,189,76,.35); }
+    .wm-best { justify-self:start; height:21px; padding:0 9px; border-radius:999px; background:rgba(17,143,75,.25); color:#0dc451; display:flex; align-items:center; font-size:10px; font-weight:900; letter-spacing:.4px; white-space:nowrap; }
     .wm-method__result { text-align:right; }
     .wm-method__result small { display:block; color:#667a98; font-size:11px; font-weight:600; }
     .wm-method__result strong { color:#fff; font-size:13px; font-weight:600; }
     .wm-footer { position:absolute; z-index:5; left:0; right:0; bottom:0; height:113px; padding:16px 24px; border-top:1px solid #2a394b; background:#1a2533; }
     .wm-agree { height:28px; display:flex; align-items:center; color:#fff; font-size:14px; font-weight:600; cursor:pointer; }
-    .wm-check { width:24px; height:24px; flex:0 0 24px; margin-right:8px; border:2px solid #596576; border-radius:6px; background:#19222d; display:grid; place-items:center; color:#fff; font-size:12px; }
-    .wm-check.checked { border-color:#258df4; background:#258df4; }
-    .wm-cta { width:100%; height:45px; margin-top:9px; border:0; border-radius:9px; background:linear-gradient(#ff275a,#e90040); box-shadow:inset 0 2px 0 rgba(255,255,255,.25), 0 7px 17px rgba(237,6,65,.37); color:#fff; font-size:15px; font-weight:600; line-height:1.1; cursor:pointer; }
+    .wm-check { width:24px; height:24px; flex:0 0 24px; margin-right:8px; border:2px solid #5a6676; border-radius:6px; background:#151d28; display:grid; place-items:center; color:#fff; font-size:12px; }
+    .wm-check.checked { border-color:#3194ff; background:#1679e9; }
+    .wm-cta { width:100%; height:44px; margin-top:9px; border:0; border-radius:9px; background:linear-gradient(180deg,#ff245f 0%,#f3074c 48%,#cc003c 100%); box-shadow:inset 0 2px 2px rgba(255,255,255,.32), 0 6px 16px rgba(245,0,67,.48); color:#fff; font-size:15px; font-weight:900; line-height:1.1; cursor:pointer; }
     .wm-cta:disabled { opacity:.6; cursor:not-allowed; }
 
     .wm-swap { margin-top:18px; }
@@ -3814,7 +3820,7 @@
 <div class="chat-win__body">
 <img :alt="message.win.game" :src="message.win.cover" class="chat-win__cover"/>
 <div class="chat-win__info">
-<div class="chat-win__title"><span class="emoji">😎</span>My win in<br/>“{{message.win.game}}”</div>
+<div class="chat-win__title"><span class="emoji">��</span>My win in<br/>“{{message.win.game}}”</div>
 <div class="chat-win__payout"><span class="chat-win__amount">{{message.win.payout}}</span><i class="fas fa-chevron-right"></i></div>
 <div class="chat-win__footer"><span class="chat-win__multiplier">x {{message.win.multiplier}}</span></div>
 </div>
@@ -4410,29 +4416,37 @@
       <template v-else>
         <div class="wm-buy">
           <div class="wm-buy__label">You send</div>
-          <div class="wm-field">
+          <div class="wm-field wm-field--buy">
             <div @click.stop="toggleWalletDropdown('buyFiat')" class="wm-currency-btn" role="button" tabindex="0">
               <img :src="coinIcon(buyFiat)" alt="" class="wm-coin"/>{{buyFiat && buyFiat.code}}<i class="fas fa-chevron-down wm-chev"></i>
               <div @click.stop class="wm-pop" v-if="walletDropdown==='buyFiat'">
                 <button :key="'bf-'+c.code" @click="selectBuyFiat(c)" class="wm-pop__option" type="button" v-for="c in fiatCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
               </div>
             </div>
-            <input class="wm-input" inputmode="decimal" placeholder="Amount" v-model="buyAmount"/>
+            <div class="wm-field__stack">
+              <small>Amount</small>
+              <input class="wm-input wm-input--stack" inputmode="decimal" v-model="buyAmount"/>
+            </div>
+            <button @click="buyAmount=''" class="wm-field__clear" type="button" v-if="buyAmount"><i class="fas fa-times"></i></button>
           </div>
           <div class="wm-buy__label" style="margin-top:15px">You get</div>
-          <div class="wm-field">
+          <div class="wm-field wm-field--buy">
             <div @click.stop="toggleWalletDropdown('buyCrypto')" class="wm-currency-btn" role="button" tabindex="0">
               <img :src="coinIcon(buyCrypto)" alt="" class="wm-coin"/>{{buyCrypto && buyCrypto.code}}<i class="fas fa-chevron-down wm-chev"></i>
               <div @click.stop class="wm-pop" v-if="walletDropdown==='buyCrypto'">
                 <button :key="'bc-'+c.code" @click="selectBuyCrypto(c)" class="wm-pop__option" type="button" v-for="c in cryptoCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
               </div>
             </div>
-            <input :value="buyReceive" class="wm-input" placeholder="Amount" readonly/>
+            <div class="wm-field__stack">
+              <small>Amount</small>
+              <input :value="buyReceive" class="wm-input wm-input--stack" readonly/>
+            </div>
+            <button @click="buyAmount=''" class="wm-field__clear" type="button" v-if="buyReceive"><i class="fas fa-times"></i></button>
           </div>
           <div class="wm-buy__meta">
             <span v-if="buyQuote">1 {{buyCrypto && buyCrypto.code}} ≈ {{formatAmount(buyQuote.rate ? 1/buyQuote.rate : 0, 2)}} {{buyFiat && buyFiat.code}} <i class="wm-info">?</i></span>
             <span v-else></span>
-            <span class="wm-provider" v-if="buyQuote && buyQuote.provider"><img :src="buyQuote.provider.icon" alt=""/>{{buyQuote.provider.name}} <i class="fas fa-chevron-down wm-chev"></i></span>
+            <span class="wm-provider" v-if="buyQuote && buyQuote.provider"><span class="wm-provider__dot"></span>{{buyQuote.provider.name}} <i class="fas fa-chevron-down wm-chev"></i></span>
           </div>
           <div class="wm-bonus" style="margin-top:10px">
             <img alt="" src="assets/bonus-chest.png"/>
