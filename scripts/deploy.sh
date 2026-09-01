@@ -129,10 +129,14 @@ log "pm2  : ${PM2}"
 # ---------------------------------------------------------------------------
 git rev-parse --is-inside-work-tree >/dev/null 2>&1 || die "${REPO_DIR} bir git deposu degil."
 
-# admin build'i her calistiginda bu dosyayi yeniden uretir (icon bundling
-# script'i). Elle yapilmis bir degisiklik degil, guvenle atilabilir.
+# Build her calistiginda bu dosyalari yeniden uretir (admin icon bundling +
+# casino-ui tailwind derlemesi). Elle yapilmis degisiklikler degil, guvenle
+# atilabilir — aksi halde her `pnpm run build` sonrasi repo "dirty" kalir ve
+# BIR SONRAKI deploy.sh calismasi "commit edilmemis degisiklik var" hatasiyla
+# durur (build basarili olsa bile).
 GENERATED_FILES=(
 	"admin/src/@iconify/icons-bundle.js"
+	"frontend/public/casino-ui/tailwind.css"
 )
 for f in "${GENERATED_FILES[@]}"; do
 	if [[ -f "${REPO_DIR}/${f}" ]]; then
