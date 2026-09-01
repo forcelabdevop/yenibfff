@@ -13,7 +13,7 @@ const normalizeCode = (value) => String(value || '').trim().toUpperCase();
 
 // Yatirma altyapisi henuz hazir olmasa da cüzdan secicisinde görünmesi gereken
 // temel varliklar. Desteklenmeyenler UI'da pasif / "Yakinda" olarak sunulur.
-const DISPLAY_CURRENCY_CATALOG = ['BTC', 'ETH', 'BNB', 'BFG'];
+const DISPLAY_CURRENCY_CATALOG = ['BTC', 'ETH', 'BNB', 'POL', 'USDT', 'USDC', 'BFG'];
 
 /**
  * Coin ikonunun genel (public) yolu.

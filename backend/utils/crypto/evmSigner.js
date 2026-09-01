@@ -47,6 +47,22 @@ async function sendNativeGas(network, fromIndex, toAddress, amountWei) {
  * @param {bigint} amountRawUnits Ham zincir birimi (chainDecimals olceginde)
  * @returns {Promise<string>} txHash
  */
+async function sweepNative(network, fromIndex, toAddress) {
+	const provider = getProvider(network);
+	const wallet = new ethers.Wallet(derivePrivateKey(fromIndex), provider);
+	const balance = await provider.getBalance(wallet.address);
+	const feeData = await provider.getFeeData();
+	const gasLimit = 21_000n;
+	const gasPrice = feeData.maxFeePerGas || feeData.gasPrice;
+	if (!gasPrice) throw new Error(`[evmSigner] ${network} gas fiyati alinamadi.`);
+	const fee = gasLimit * gasPrice;
+	if (balance <= fee) return null;
+	const tx = await wallet.sendTransaction({ to: toAddress, value: balance - fee, gasLimit, gasPrice });
+	const receipt = await tx.wait();
+	if (!receipt || receipt.status !== 1) throw new Error(`[evmSigner] Native sweep basarisiz (${tx.hash}).`);
+	return tx.hash;
+}
+
 async function sweepErc20(network, fromIndex, contractAddress, toAddress, amountRawUnits) {
 	const provider = getProvider(network);
 	const wallet = new ethers.Wallet(derivePrivateKey(fromIndex), provider);
@@ -62,5 +78,6 @@ async function sweepErc20(network, fromIndex, contractAddress, toAddress, amount
 
 module.exports = {
 	sendNativeGas,
+	sweepNative,
 	sweepErc20,
 };

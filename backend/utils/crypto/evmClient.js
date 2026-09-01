@@ -125,6 +125,30 @@ async function getIncomingErc20(network, address, contractAddress, fromBlock, to
  * @param {number} fromBlock
  * @param {number} toBlock
  */
+async function getIncomingNativeBatch(network, addresses, fromBlock, toBlock) {
+	if (!addresses || addresses.length === 0) return [];
+	const provider = getProvider(network);
+	const wanted = new Set(addresses.map((address) => ethers.getAddress(address).toLowerCase()));
+	const transfers = [];
+
+	for (let blockNumber = fromBlock; blockNumber <= toBlock; blockNumber += 1) {
+		const block = await provider.getBlock(blockNumber, true);
+		if (!block) continue;
+		for (const tx of block.prefetchedTransactions || []) {
+			if (!tx.to || tx.value <= 0n || !wanted.has(tx.to.toLowerCase())) continue;
+			transfers.push({
+				txHash: tx.hash,
+				from: tx.from,
+				to: tx.to,
+				valueUnitsRaw: tx.value.toString(),
+				blockNumber,
+				logIndex: -1,
+			});
+		}
+	}
+	return transfers;
+}
+
 async function getIncomingErc20Batch(network, addresses, contractAddress, fromBlock, toBlock) {
 	if (!addresses || addresses.length === 0) return [];
 	const provider = getProvider(network);
@@ -210,6 +234,7 @@ module.exports = {
 	getNativeBalance,
 	getErc20Balance,
 	getIncomingErc20,
+	getIncomingNativeBatch,
 	getIncomingErc20Batch,
 	getTransactionReceipt,
 	toCanonicalUnits,

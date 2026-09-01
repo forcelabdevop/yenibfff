@@ -4414,7 +4414,8 @@
              Ag/coin uyumsuzlugu ve onay sayisi tek cumlede birlesti; ayri
              sari uyari kutusu kaldirildi. -->
         <div class="wm-note wm-note--single" v-if="depositAddress && !addressLoading && !depositAddressError">
-          <i class="wm-note__icon">ℹ️</i> Yalnizca <strong>{{depositAddress.network}}</strong> agi uzerinden <strong>{{depositAddress.displayCode || depositAddress.currency}}</strong> gonderin.
+          <i aria-hidden="true" class="fas fa-info-circle wm-note__icon"></i>
+          <span>Yalnızca <strong>{{depositAddress.network}}</strong> ağı üzerinden <strong>{{depositAddress.displayCode || depositAddress.currency}}</strong> gönderin. {{depositAddress.confirmationsRequired}} ağ onayı gerekir.<template v-if="depositAddress.assetType === 'native'"> Akıllı sözleşme/internal transfer kullanmayın.</template></span>
         </div>
       </template>
 
@@ -4880,7 +4881,7 @@
             '❌ Do NOT discuss the religion, politics, race and gender topics.',
             '❌ Searching for sellers and buyers of any cryptocurrency is prohibited.',
             '❌ Communicate in English only.',
-            '❌ Any form of begging is strictly prohibited. This includes tagging a user\'s tip, coindrop or rain with praise, or leaving messages like "missed the drop/missed again, etc." which is considered passive begging and will be subject to appropriate consequences.',
+            '��� Any form of begging is strictly prohibited. This includes tagging a user\'s tip, coindrop or rain with praise, or leaving messages like "missed the drop/missed again, etc." which is considered passive begging and will be subject to appropriate consequences.',
             '❌ Do NOT use any bots, scripts or other software to catch bonuses',
             '❌ Do NOT spam (including bet shares) in the chat.',
             '❌ It is forbidden to share the promo codes obtained via emails, Telegram Bot or found in any other source.',
@@ -5331,7 +5332,7 @@
         }
 
         // Giriş yapılmı�� üst bar: parent uygulama (AuthProvider) token/userId'yi
-        // aynı origin localStorage'ına yazıyor; anahtarlar site adına göre ayrılır.
+        // aynı origin localStorage'ına yazıyor; anahtarlar site adına g��re ayrılır.
         // Bu iframe aynı origin'de olduğu için auth kaydını doğrudan okuyup
         // public backend adresinden profil + bakiyeyi çekiyoruz; login/logout storage event'i
         // tetiklediği için otomatik senkron oluyor.

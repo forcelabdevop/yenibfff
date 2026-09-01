@@ -90,12 +90,18 @@ test("yatirilabilir birimler cuzdan olmasa bile listelenir", () => {
 	);
 });
 
-test("temel coinler wallet kaydi olmasa da pasif katalog olarak listelenir", () => {
+test("desteklenen coinler aktif, BTC ve BFG pasif katalog olarak listelenir", () => {
 	const list = buildCurrencyList([], new Map());
-	for (const code of ["BTC", "ETH", "BNB", "BFG"]) {
+	for (const code of ["ETH", "BNB", "POL", "USDT", "USDC"]) {
 		const entry = list.find((currency) => currency.code === code);
 		assert.ok(entry, `${code} katalogda yok`);
-		assert.equal(entry.balance, 0);
+		assert.equal(entry.depositable, true);
+		assert.equal(entry.status, "available");
+		assert.ok(entry.networks.length > 0);
+	}
+	for (const code of ["BTC", "BFG"]) {
+		const entry = list.find((currency) => currency.code === code);
+		assert.ok(entry, `${code} katalogda yok`);
 		assert.equal(entry.depositable, false);
 		assert.equal(entry.status, "coming-soon");
 		assert.deepEqual(entry.networks, []);

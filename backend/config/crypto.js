@@ -68,6 +68,22 @@ const EVM_DERIVATION_PREFIX = "m/44'/60'/0'/0";
  * dedicated bir saglayiciya (Alchemy, Ankr, QuickNode vb.) isaret etmeli.
  */
 const EVM_NETWORKS = {
+	ETHEREUM: {
+		chainId: 1,
+		rpcUrl: process.env.ETH_RPC_URL || 'https://ethereum-rpc.publicnode.com',
+		nativeSymbol: 'ETH',
+		confirmationsRequired: Number(process.env.ETH_CONFIRMATIONS || 20),
+		tokens: {
+			USDT: {
+				contract: process.env.ETH_USDT_CONTRACT || '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+				chainDecimals: 6,
+			},
+			USDC: {
+				contract: process.env.ETH_USDC_CONTRACT || '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+				chainDecimals: 6,
+			},
+		},
+	},
 	BEP20: {
 		chainId: 56,
 		rpcUrl: process.env.BSC_RPC_URL || 'https://bsc-dataseed.binance.org',
@@ -75,6 +91,18 @@ const EVM_NETWORKS = {
 		usdtContract:
 			process.env.BSC_USDT_CONTRACT || '0x55d398326f99059fF775485246999027B3197955',
 		chainDecimals: 18,
+		nativeSymbol: 'BNB',
+		confirmationsRequired: Number(process.env.BSC_CONFIRMATIONS || 15),
+		tokens: {
+			USDT: {
+				contract: process.env.BSC_USDT_CONTRACT || '0x55d398326f99059fF775485246999027B3197955',
+				chainDecimals: 18,
+			},
+			USDC: {
+				contract: process.env.BSC_USDC_CONTRACT || '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+				chainDecimals: 18,
+			},
+		},
 	},
 	POLYGON: {
 		chainId: 137,
@@ -83,6 +111,18 @@ const EVM_NETWORKS = {
 		usdtContract:
 			process.env.POLYGON_USDT_CONTRACT || '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
 		chainDecimals: 6,
+		nativeSymbol: 'POL',
+		confirmationsRequired: Number(process.env.POLYGON_CONFIRMATIONS || 128),
+		tokens: {
+			USDT: {
+				contract: process.env.POLYGON_USDT_CONTRACT || '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
+				chainDecimals: 6,
+			},
+			USDC: {
+				contract: process.env.POLYGON_USDC_CONTRACT || '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+				chainDecimals: 6,
+			},
+		},
 	},
 };
 
@@ -133,6 +173,52 @@ const CURRENCIES = {
 		contract: null,
 		minDepositUnits: 10_000_000, // 10 TRX
 		confirmationsRequired: Number(process.env.TRON_CONFIRMATIONS || 20),
+	},
+	ETH_ETHEREUM: {
+		code: 'ETH_ETHEREUM', walletCode: 'ETH', label: 'ETH', family: 'EVM',
+		chain: 'ETHEREUM', network: 'ETHEREUM', type: 'native', decimals: 8,
+		chainDecimals: 18, contract: null, minDepositUnits: 100_000,
+		confirmationsRequired: EVM_NETWORKS.ETHEREUM.confirmationsRequired,
+	},
+	USDT_ETHEREUM: {
+		code: 'USDT_ETHEREUM', walletCode: 'USDT', label: 'USDT', family: 'EVM',
+		chain: 'ETHEREUM', network: 'ETHEREUM', type: 'erc-20', decimals: 6,
+		chainDecimals: EVM_NETWORKS.ETHEREUM.tokens.USDT.chainDecimals,
+		contract: EVM_NETWORKS.ETHEREUM.tokens.USDT.contract, minDepositUnits: 1_000_000,
+		confirmationsRequired: EVM_NETWORKS.ETHEREUM.confirmationsRequired,
+	},
+	USDC_ETHEREUM: {
+		code: 'USDC_ETHEREUM', walletCode: 'USDC', label: 'USDC', family: 'EVM',
+		chain: 'ETHEREUM', network: 'ETHEREUM', type: 'erc-20', decimals: 6,
+		chainDecimals: EVM_NETWORKS.ETHEREUM.tokens.USDC.chainDecimals,
+		contract: EVM_NETWORKS.ETHEREUM.tokens.USDC.contract, minDepositUnits: 1_000_000,
+		confirmationsRequired: EVM_NETWORKS.ETHEREUM.confirmationsRequired,
+	},
+	BNB_BEP20: {
+		code: 'BNB_BEP20', walletCode: 'BNB', label: 'BNB', family: 'EVM',
+		chain: 'BNB', network: 'BEP20', type: 'native', decimals: 8,
+		chainDecimals: 18, contract: null, minDepositUnits: 100_000,
+		confirmationsRequired: EVM_NETWORKS.BEP20.confirmationsRequired,
+	},
+	USDC_BEP20: {
+		code: 'USDC_BEP20', walletCode: 'USDC', label: 'USDC', family: 'EVM',
+		chain: 'BNB', network: 'BEP20', type: 'bep-20', decimals: 6,
+		chainDecimals: EVM_NETWORKS.BEP20.tokens.USDC.chainDecimals,
+		contract: EVM_NETWORKS.BEP20.tokens.USDC.contract, minDepositUnits: 1_000_000,
+		confirmationsRequired: EVM_NETWORKS.BEP20.confirmationsRequired,
+	},
+	POL_POLYGON: {
+		code: 'POL_POLYGON', walletCode: 'POL', label: 'POL', family: 'EVM',
+		chain: 'POLYGON', network: 'POLYGON', type: 'native', decimals: 8,
+		chainDecimals: 18, contract: null, minDepositUnits: 100_000,
+		confirmationsRequired: EVM_NETWORKS.POLYGON.confirmationsRequired,
+	},
+	USDC_POLYGON: {
+		code: 'USDC_POLYGON', walletCode: 'USDC', label: 'USDC', family: 'EVM',
+		chain: 'POLYGON', network: 'POLYGON', type: 'polygon', decimals: 6,
+		chainDecimals: EVM_NETWORKS.POLYGON.tokens.USDC.chainDecimals,
+		contract: EVM_NETWORKS.POLYGON.tokens.USDC.contract, minDepositUnits: 1_000_000,
+		confirmationsRequired: EVM_NETWORKS.POLYGON.confirmationsRequired,
 	},
 	USDT_BEP20: {
 		code: 'USDT_BEP20',
@@ -190,8 +276,15 @@ const SWEEP_DERIVATION_INDEX = 0;
 const SWEEP_MIN_UNITS = {
 	USDT_TRC20: 1_000_000, // 1 USDT
 	TRX: 15_000_000, // 15 TRX (10 TRX min + islem/gas payi)
-	USDT_BEP20: 1_000_000, // 1 USDT (kanonik 6 ondalikte)
-	USDT_POLYGON: 1_000_000, // 1 USDT
+	ETH_ETHEREUM: 100_000,
+	USDT_ETHEREUM: 1_000_000,
+	USDC_ETHEREUM: 1_000_000,
+	BNB_BEP20: 100_000,
+	USDT_BEP20: 1_000_000,
+	USDC_BEP20: 1_000_000,
+	POL_POLYGON: 100_000,
+	USDT_POLYGON: 1_000_000,
+	USDC_POLYGON: 1_000_000,
 };
 
 /**
@@ -211,6 +304,7 @@ const SWEEP_GAS_WAIT_MS = Number(process.env.TRON_SWEEP_GAS_WAIT_MS || 15_000);
  * bir pay birakacak sekilde bol tutulmustur (~birkac sent).
  */
 const EVM_SWEEP_GAS_WEI = {
+	ETHEREUM: BigInt(process.env.ETH_SWEEP_GAS_WEI || '3000000000000000'),
 	BEP20: BigInt(process.env.BSC_SWEEP_GAS_WEI || '600000000000000'), // ~0.0006 BNB
 	POLYGON: BigInt(process.env.POLYGON_SWEEP_GAS_WEI || '50000000000000000'), // ~0.05 MATIC/POL
 };
@@ -226,7 +320,7 @@ const EVM_SWEEP_GAS_WAIT_MS = Number(process.env.EVM_SWEEP_GAS_WAIT_MS || 20_000
  * bu yuzden eksikse para birimi hic gosterilmez.
  */
 const isAvailable = (currency) =>
-	Boolean(currency) && (currency.contract !== null || currency.code === 'TRX');
+	Boolean(currency) && (currency.contract !== null || currency.type === 'native');
 
 /**
  * Para birimini koduna gore bulur.

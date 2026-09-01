@@ -87,9 +87,23 @@ test("sozlesme adresi olmayan token para birimi sunulmaz", () => {
 	for (const code of codes) {
 		const currency = getCurrency(code);
 		assert.ok(
-			currency.code === "TRX" || currency.contract,
+				currency.type === "native" || currency.contract,
 			`${code} sozlesme adresi olmadan listelenmemeli`,
 		);
+	}
+});
+
+test("Ethereum, BSC ve Polygon native + USDT/USDC kombinasyonlari tanimlidir", () => {
+	const expected = [
+		"ETH_ETHEREUM", "USDT_ETHEREUM", "USDC_ETHEREUM",
+		"BNB_BEP20", "USDT_BEP20", "USDC_BEP20",
+		"POL_POLYGON", "USDT_POLYGON", "USDC_POLYGON",
+	];
+	for (const code of expected) {
+		const currency = getCurrency(code);
+		assert.ok(currency, `${code} tanimli olmali`);
+		assert.equal(currency.family, "EVM");
+		assert.ok(Number.isInteger(currency.minDepositUnits));
 	}
 });
 

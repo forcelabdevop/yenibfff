@@ -15,18 +15,11 @@ const {
 } = require('../config/crypto');
 
 /**
- * EVM (BSC + Polygon) sweep (toplama) servisi.
+ * Ethereum, BSC ve Polygon sweep (toplama) servisi.
  *
- * cryptoSweepService.js (TRON) ile AYNI JobLock/durum-makinesi desenini
- * izler, ama yalnizca USDT (ERC20) toplar — native BNB/MATIC yatirmalari
- * desteklenmiyor (bkz. config/crypto.js), bu yuzden TRON'daki "native tek
- * adim" dalina burada gerek yoktur; tum akis TRC20/USDT dalinin EVM
- * karsiligidir: pending -> gas_sent -> completed.
- *
- * ONEMLI: BSC ve Polygon ayni EVM adresini paylasir (ayni private key) ama
- * bakiyeleri TAMAMEN BAGIMSIZ zincirlerdir. Bu yuzden her fonksiyon `network`
- * parametresini acikca alir; hicbir yerde "adres ayni oldugu icin bakiye de
- * ayni" varsayimi yapilmaz.
+ * Native coinler tek adimda, ERC-20/BEP-20 tokenlar ise gas sponsor islemi
+ * ardindan toplanir. Aglar ayni EVM adresini paylassa da bakiyeleri tamamen
+ * bagimsizdir; bu nedenle her islem acik bir network ve currency ile yapilir.
  */
 
 const LOCK_KEY = 'evm:sweepScanner';
@@ -53,7 +46,9 @@ function getSweepDestination() {
 async function queueSweepIfNeeded(network, record, currency, destination) {
 	const minUnits = BigInt(SWEEP_MIN_UNITS[currency.code] ?? 0);
 
-	const rawBalance = await evmClient.getErc20Balance(network, currency.contract, record.address);
+	const rawBalance = currency.type === 'native'
+		? await evmClient.getNativeBalance(network, record.address)
+		: await evmClient.getErc20Balance(network, currency.contract, record.address);
 	const canonicalBalance = evmClient.toCanonicalUnits(
 		rawBalance,
 		currency.chainDecimals,
@@ -105,15 +100,19 @@ async function discoverSweepableForNetwork(network, currency) {
 
 async function discoverSweepable() {
 	let queued = 0;
-	queued += await discoverSweepableForNetwork('BEP20', CURRENCIES.USDT_BEP20);
-	queued += await discoverSweepableForNetwork('POLYGON', CURRENCIES.USDT_POLYGON);
+	for (const currency of Object.values(CURRENCIES).filter((item) => item.family === 'EVM')) {
+		queued += await discoverSweepableForNetwork(currency.network, currency);
+	}
 	return queued;
 }
 
 /** Bekleyen sweep kayitlarini isler (gas gonderimi + asil USDT transferi). */
 async function processPendingSweeps() {
+	const evmCurrencyCodes = Object.values(CURRENCIES)
+		.filter((item) => item.family === 'EVM')
+		.map((item) => item.code);
 	const pending = await CryptoSweep.find({
-		currency: { $in: ['USDT_BEP20', 'USDT_POLYGON'] },
+		currency: { $in: evmCurrencyCodes },
 		status: { $in: ['pending', 'gas_sent'] },
 		attempts: { $lt: MAX_ATTEMPTS },
 	})
@@ -154,6 +153,16 @@ async function processOneSweep(sweep) {
 	}
 	const network = networkOf(currency);
 	const gasWei = EVM_SWEEP_GAS_WEI[network];
+
+	if (currency.type === 'native') {
+		const txHash = await evmSigner.sweepNative(network, sweep.derivationIndex, sweep.toAddress);
+		if (!txHash) return false;
+		await CryptoSweep.updateOne(
+			{ _id: sweep._id },
+			{ $set: { status: 'completed', txHash, completedAt: new Date() }, $inc: { attempts: 1 } },
+		);
+		return true;
+	}
 
 	if (sweep.status === 'pending') {
 		const nativeBalance = await evmClient.getNativeBalance(network, sweep.fromAddress);

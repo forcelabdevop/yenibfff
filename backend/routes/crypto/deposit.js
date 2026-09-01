@@ -86,10 +86,11 @@ router.get('/address', authorizeUser(true), async (req, res, next) => {
 		}
 		// Seed eksikse servis firlatir; kullaniciya ic detay sizdirmadan bildir.
 		if (/mnemonic|seed/i.test(error.message || '')) {
-			console.error('[crypto] HD cuzdan yapilandirilmamis:', error.message);
+			console.error('[crypto] HD cuzdan yapilandirilmamis.');
 			return res.status(503).json({
 				success: false,
-				message: 'Kripto yatirma gecici olarak kullanilamiyor.',
+				code: 'CRYPTO_WALLET_NOT_CONFIGURED',
+				message: 'Kripto yatırma yapılandırması tamamlanmamış. Lütfen destek ekibine bildirin.',
 			});
 		}
 		next(error);
