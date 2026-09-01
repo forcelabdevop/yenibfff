@@ -1624,9 +1624,21 @@
     .wm-selector__text { min-width:0; flex:1; }
     .wm-selector__text small { display:block; color:#667996; font-size:12px; font-weight:600; line-height:1.2; }
     .wm-selector__text strong { display:block; overflow:hidden; color:#fff; font-size:14px; font-weight:600; white-space:nowrap; text-overflow:ellipsis; }
-    .wm-pop { position:absolute; z-index:20; top:calc(100% + 6px); left:0; right:0; min-width:150px; padding:5px; border:1px solid #30425a; border-radius:8px; background:#1c2938; box-shadow:0 12px 28px rgba(0,0,0,.35); }
+    .wm-pop { position:absolute; z-index:20; top:calc(100% + 6px); left:0; right:0; min-width:220px; padding:8px; border:1px solid #30425a; border-radius:8px; background:#1c2938; box-shadow:0 12px 28px rgba(0,0,0,.35); }
+    .wm-pop__search { position:relative; margin-bottom:6px; }
+    .wm-pop__search i { position:absolute; top:50%; left:10px; transform:translateY(-50%); color:#657896; font-size:12px; }
+    .wm-pop__search input { width:100%; height:34px; padding:0 10px 0 28px; border:1px solid #30425a; border-radius:6px; background:#0d141e; color:#fff; font-size:12px; font-weight:600; outline:none; }
+    .wm-pop__search input::placeholder { color:#657896; font-weight:500; }
+    .wm-pop__toggle { display:flex; align-items:center; justify-content:space-between; gap:8px; height:32px; padding:0 4px 6px; margin-bottom:2px; border-bottom:1px solid #263548; color:#acbcd2; font-size:12px; font-weight:600; }
+    .wm-pop__switch { position:relative; width:32px; height:18px; flex:0 0 32px; border:0; border-radius:10px; background:#30425a; cursor:pointer; transition:background .15s ease; }
+    .wm-pop__switch::after { content:''; position:absolute; top:2px; left:2px; width:14px; height:14px; border-radius:50%; background:#fff; transition:transform .15s ease; }
+    .wm-pop__switch.on { background:#1679e9; }
+    .wm-pop__switch.on::after { transform:translateX(14px); }
+    .wm-pop__list { max-height:240px; overflow-y:auto; }
     .wm-pop__option { width:100%; height:35px; padding:0 10px; display:flex; align-items:center; gap:8px; border:0; border-radius:6px; background:transparent; color:#dbe5f3; font-size:12px; text-align:left; cursor:pointer; }
     .wm-pop__option:hover { background:#26374a; }
+    .wm-pop__option-balance { margin-left:auto; color:#8298b8; font-size:11px; font-weight:600; }
+    .wm-pop__empty { padding:14px 6px; color:#657896; font-size:12px; text-align:center; }
 
     .wm-bonus { min-height:52px; display:flex; align-items:center; }
     .wm-bonus img { width:29px; height:29px; object-fit:contain; margin:0 11px 0 2px; }
@@ -4341,7 +4353,18 @@
             <span class="wm-selector__text"><small>Currency</small><strong>{{depositCurrency && depositCurrency.code}}</strong></span>
             <i class="fas fa-chevron-down wm-chev"></i>
             <div @click.stop class="wm-pop" v-if="walletDropdown==='depCurrency'">
-              <button :key="'dc-'+c.code" @click="selectDepositCurrency(c)" class="wm-pop__option" type="button" v-for="c in depositCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
+              <div class="wm-pop__search">
+                <i class="fas fa-search"></i>
+                <input @click.stop autocomplete="off" placeholder="Search currency" type="text" v-model="cryptoSearchQuery"/>
+              </div>
+              <label @click.stop class="wm-pop__toggle">
+                <span>Hide 0 balances</span>
+                <button :class="{on:hideZeroBalances}" @click="hideZeroBalances=!hideZeroBalances" aria-label="Hide 0 balances" class="wm-pop__switch" type="button"></button>
+              </label>
+              <div class="wm-pop__list">
+                <button :key="'dc-'+c.code" @click="selectDepositCurrency(c)" class="wm-pop__option" type="button" v-for="c in filteredDepositCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}<span class="wm-pop__option-balance">{{formatAmount(c.balance, 4)}}</span></button>
+                <div class="wm-pop__empty" v-if="!filteredDepositCurrencies.length">No currencies found</div>
+              </div>
             </div>
           </div>
           <div @click.stop="toggleWalletDropdown('depNetwork')" class="wm-selector" role="button" tabindex="0">
@@ -4391,7 +4414,14 @@
           <div @click.stop="toggleWalletDropdown('cashCurrency')" class="wm-currency-btn" role="button" tabindex="0">
             <img :src="coinIcon(cashCurrency)" alt="" class="wm-coin"/>{{cashCurrency && cashCurrency.code}}<i class="fas fa-chevron-down wm-chev"></i>
             <div @click.stop class="wm-pop" v-if="walletDropdown==='cashCurrency'">
-              <button :key="'cc-'+c.code" @click="selectCashCurrency(c)" class="wm-pop__option" type="button" v-for="c in fiatCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
+              <div class="wm-pop__search">
+                <i class="fas fa-search"></i>
+                <input @click.stop autocomplete="off" placeholder="Search currency" type="text" v-model="cashSearchQuery"/>
+              </div>
+              <div class="wm-pop__list">
+                <button :key="'cc-'+c.code" @click="selectCashCurrency(c)" class="wm-pop__option" type="button" v-for="c in filteredFiatCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
+                <div class="wm-pop__empty" v-if="!filteredFiatCurrencies.length">No currencies found</div>
+              </div>
             </div>
           </div>
           <input class="wm-input" inputmode="decimal" placeholder="Amount" v-model="cashAmount"/>
@@ -4431,7 +4461,14 @@
             <div @click.stop="toggleWalletDropdown('buyCrypto')" class="wm-currency-btn" role="button" tabindex="0">
               <img :src="coinIcon(buyCrypto)" alt="" class="wm-coin"/>{{buyCrypto && buyCrypto.code}}<i class="fas fa-chevron-down wm-chev"></i>
               <div @click.stop class="wm-pop" v-if="walletDropdown==='buyCrypto'">
-                <button :key="'bc-'+c.code" @click="selectBuyCrypto(c)" class="wm-pop__option" type="button" v-for="c in cryptoCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
+                <div class="wm-pop__search">
+                  <i class="fas fa-search"></i>
+                  <input @click.stop autocomplete="off" placeholder="Search currency" type="text" v-model="buyCryptoSearchQuery"/>
+                </div>
+                <div class="wm-pop__list">
+                  <button :key="'bc-'+c.code" @click="selectBuyCrypto(c)" class="wm-pop__option" type="button" v-for="c in filteredBuyCryptoCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
+                  <div class="wm-pop__empty" v-if="!filteredBuyCryptoCurrencies.length">No currencies found</div>
+                </div>
               </div>
             </div>
             <div class="wm-field__stack">

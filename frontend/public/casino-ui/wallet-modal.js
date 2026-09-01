@@ -66,6 +66,16 @@ window.createWalletModal = function createWalletModal(ctx) {
   const cashCurrency = ref(null)
   const cashAmount = ref("")
 
+  // Crypto sekmesi: arama + sadece bakiyesi olanlari gosterme.
+  const cryptoSearchQuery = ref("")
+  const hideZeroBalances = ref(false)
+
+  // Cash sekmesi: arama.
+  const cashSearchQuery = ref("")
+
+  // Buy Crypto sekmesi: para birimi secici arama.
+  const buyCryptoSearchQuery = ref("")
+
   // Buy Crypto
   const buyFiat = ref(null)
   const buyCrypto = ref(null)
@@ -101,6 +111,33 @@ window.createWalletModal = function createWalletModal(ctx) {
     const list = cryptoCurrencies.value
     const flagged = list.filter((c) => c.depositable)
     return flagged.length ? flagged : list
+  })
+
+  /** Basit, aksansiz kucuk-harf arama eslesmesi (kod + isim uzerinde). */
+  function matchesQuery(currency, query) {
+    const q = query.trim().toLowerCase()
+    if (!q) return true
+    const code = String(currency.code || "").toLowerCase()
+    const name = String(currency.name || "").toLowerCase()
+    return code.includes(q) || name.includes(q)
+  }
+
+  /** Crypto sekmesi: arama + "Hide 0 balances" filtresi uygulanmis liste. */
+  const filteredDepositCurrencies = computed(() => {
+    return depositCurrencies.value.filter((c) => {
+      if (hideZeroBalances.value && !(Number(c.balance) > 0)) return false
+      return matchesQuery(c, cryptoSearchQuery.value)
+    })
+  })
+
+  /** Cash sekmesi: arama uygulanmis fiat para birimleri listesi. */
+  const filteredFiatCurrencies = computed(() => {
+    return fiatCurrencies.value.filter((c) => matchesQuery(c, cashSearchQuery.value))
+  })
+
+  /** Buy Crypto sekmesi: para birimi secicide arama uygulanmis liste. */
+  const filteredBuyCryptoCurrencies = computed(() => {
+    return cryptoCurrencies.value.filter((c) => matchesQuery(c, buyCryptoSearchQuery.value))
   })
 
   /** Yetkili istek yardimcisi — account-pages.js ile ayni desen. */
@@ -246,32 +283,39 @@ window.createWalletModal = function createWalletModal(ctx) {
   /**
    * Kullanicinin kalici yatirma adresini alir.
    *
-   * Adres kullanici + para birimi basina SABITTIR; her cagrida ayni adres
-   * doner. Bu yuzden ag (network) parametresi gonderilmez: zincir zaten para
-   * biriminin kendi tanimindan gelir.
+   * Adres kullanici + (para birimi × ag) basina SABITTIR; her cagrida ayni
+   * adres doner. USDT gibi birimler ARTIK birden fazla agda (TRC20/BEP20/
+   * POLYGON) var olabildigi icin backend'e TAM para birimi kodu (or.
+   * "USDT_BEP20") gonderilmelidir — kisa kod ("USDT") backend tarafinda
+   * BILEREK belirsiz sayilir ve reddedilir (bkz. config/crypto.js
+   * getCurrency). Bu kod, secili ag'in `network.currencyCode` alanindan
+   * gelir; oradan gelmezse (eski backend surumu) grup koduna (`cur.code`)
+   * geri dusulur.
    */
   async function loadDepositAddress() {
     const cur = depositCurrency.value
     if (!cur) return
+    const network = depositNetwork.value
+    const currencyCode = (network && network.currencyCode) || cur.code
 
-    // Istek sirasi korumasi: kullanici hizlica para birimi degistirirse geç
-    // gelen eski yanit, yeni secimin adresinin uzerine YAZMAMALI. Yanlis
+    // Istek sirasi korumasi: kullanici hizlica para birimi/ag degistirirse
+    // geç gelen eski yanit, yeni secimin adresinin uzerine YAZMAMALI. Yanlis
     // adres gosterimi paranin kaybi demektir.
     const requestId = ++depositAddressRequestId
-    const requestedCode = cur.code
 
     addressLoading.value = true
     depositAddressError.value = ""
     try {
-      const data = await walletFetch("/crypto/deposit/address?currency=" + encodeURIComponent(cur.code))
+      const data = await walletFetch(
+        "/crypto/deposit/address?currency=" + encodeURIComponent(currencyCode),
+      )
       if (requestId !== depositAddressRequestId) return
       depositAddress.value = data
     } catch (error) {
       if (requestId !== depositAddressRequestId) return
       depositAddress.value = null
       // Hata yatirma bolumunde gosterilir; genel cuzdan hatasini ezmez.
-      depositAddressError.value =
-        error.message || requestedCode + " yatirma adresi alinamadi."
+      depositAddressError.value = error.message || currencyCode + " yatirma adresi alinamadi."
     } finally {
       if (requestId === depositAddressRequestId) addressLoading.value = false
     }
@@ -333,7 +377,12 @@ window.createWalletModal = function createWalletModal(ctx) {
   }
 
   function toggleWalletDropdown(name) {
-    walletDropdown.value = walletDropdown.value === name ? null : name
+  walletDropdown.value = walletDropdown.value === name ? null : name
+  // Dropdown her acilista arama kutusu bos baslasin — kullanici onceki
+  // aramayi unutup bos bir liste gorup "hicbir sey yok" sanmasin.
+  cryptoSearchQuery.value = ""
+  cashSearchQuery.value = ""
+  buyCryptoSearchQuery.value = ""
   }
 
   function selectDepositCurrency(currency) {
@@ -478,13 +527,20 @@ window.createWalletModal = function createWalletModal(ctx) {
     networkLabel,
     depositAddress,
     depositCurrencies,
+    filteredDepositCurrencies,
+    cryptoSearchQuery,
+    hideZeroBalances,
     addressLoading,
     depositAddressError,
     loadDepositAddress,
     cashCurrency,
     cashAmount,
+    filteredFiatCurrencies,
+    cashSearchQuery,
     buyFiat,
     buyCrypto,
+    filteredBuyCryptoCurrencies,
+    buyCryptoSearchQuery,
     buyAmount,
     buyQuote,
     buyReceive,
