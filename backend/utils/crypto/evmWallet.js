@@ -66,8 +66,11 @@ function deriveNode(index) {
 	if (!Number.isInteger(index) || index < 0) {
 		throw new Error(`Gecersiz turetme indeksi: ${index}`);
 	}
-	const root = ethers.HDNodeWallet.fromPhrase(getMnemonic());
-	return root.derivePath(`${EVM_DERIVATION_PREFIX}/${index}`);
+	const path = `${EVM_DERIVATION_PREFIX}/${index}`;
+	// fromPhrase varsayilan olarak zaten m/44'/60'/0'/0/0 yoluna iner.
+	// Bu dugumden tekrar mutlak bir m/... yolu turetmek ethers v6'da hata verir;
+	// hedef yolu dogrudan olusturma asamasinda vermek gerekir.
+	return ethers.HDNodeWallet.fromPhrase(getMnemonic(), undefined, path);
 }
 
 /**
