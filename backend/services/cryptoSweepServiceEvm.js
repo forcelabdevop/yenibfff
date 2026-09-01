@@ -15,18 +15,11 @@ const {
 } = require('../config/crypto');
 
 /**
- * EVM (BSC + Polygon) sweep (toplama) servisi.
+ * Ethereum, BSC ve Polygon sweep (toplama) servisi.
  *
- * cryptoSweepService.js (TRON) ile AYNI JobLock/durum-makinesi desenini
- * izler, ama yalnizca USDT (ERC20) toplar — native BNB/MATIC yatirmalari
- * desteklenmiyor (bkz. config/crypto.js), bu yuzden TRON'daki "native tek
- * adim" dalina burada gerek yoktur; tum akis TRC20/USDT dalinin EVM
- * karsiligidir: pending -> gas_sent -> completed.
- *
- * ONEMLI: BSC ve Polygon ayni EVM adresini paylasir (ayni private key) ama
- * bakiyeleri TAMAMEN BAGIMSIZ zincirlerdir. Bu yuzden her fonksiyon `network`
- * parametresini acikca alir; hicbir yerde "adres ayni oldugu icin bakiye de
- * ayni" varsayimi yapilmaz.
+ * Native coinler tek adimda, ERC-20/BEP-20 tokenlar ise gas sponsor islemi
+ * ardindan toplanir. Aglar ayni EVM adresini paylassa da bakiyeleri tamamen
+ * bagimsizdir; bu nedenle her islem acik bir network ve currency ile yapilir.
  */
 
 const LOCK_KEY = 'evm:sweepScanner';
