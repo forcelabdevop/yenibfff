@@ -113,6 +113,44 @@ async function getIncomingErc20(network, address, contractAddress, fromBlock, to
 }
 
 /**
+ * BIRDEN FAZLA adrese GELEN ERC20 transferlerini TEK bir getLogs cagrisinda
+ * tarar. `topics[2]` OR-filtresi olarak bir adres DIZISI kabul eder (JSON-RPC
+ * eth_getLogs standardi) — bu, TronGrid'in adres-basina sorgu gerektiren
+ * yapisindan farkli olarak, EVM'de N kullaniciyi TEK istekte taramamizi
+ * saglar (RPC hiz siniri acisindan cok daha verimli).
+ *
+ * @param {'BEP20'|'POLYGON'} network
+ * @param {string[]} addresses Taranacak kullanici adresleri (checksum'li)
+ * @param {string} contractAddress
+ * @param {number} fromBlock
+ * @param {number} toBlock
+ */
+async function getIncomingErc20Batch(network, addresses, contractAddress, fromBlock, toBlock) {
+	if (!addresses || addresses.length === 0) return [];
+	const provider = getProvider(network);
+	const paddedAddresses = addresses.map((a) => ethers.zeroPadValue(ethers.getAddress(a), 32));
+
+	const logs = await provider.getLogs({
+		address: contractAddress,
+		fromBlock,
+		toBlock,
+		topics: [TRANSFER_EVENT_TOPIC, null, paddedAddresses],
+	});
+
+	return logs.map((log) => {
+		const [value] = ethers.AbiCoder.defaultAbiCoder().decode(['uint256'], log.data);
+		return {
+			txHash: log.transactionHash,
+			from: ethers.getAddress('0x' + log.topics[1].slice(26)),
+			to: ethers.getAddress('0x' + log.topics[2].slice(26)),
+			valueUnitsRaw: value.toString(),
+			blockNumber: log.blockNumber,
+			logIndex: log.index,
+		};
+	});
+}
+
+/**
  * Bir islemin basarili olup olmadigini dogrular.
  * Geri alinmis (reverted) bir islem de log uretebilir gibi gorunse de aslinda
  * uretmez — ETH/BSC/Polygon'da revert eden bir islemin loglari yazilmaz.
@@ -172,6 +210,7 @@ module.exports = {
 	getNativeBalance,
 	getErc20Balance,
 	getIncomingErc20,
+	getIncomingErc20Batch,
 	getTransactionReceipt,
 	toCanonicalUnits,
 	verifyChainDecimals,

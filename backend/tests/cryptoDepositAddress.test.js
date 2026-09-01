@@ -109,25 +109,47 @@ test("desteklenmeyen para birimi null doner", () => {
 	}
 });
 
-test("para birimi kodu buyuk/kucuk harf duyarsizdir", () => {
+test("para birimi kodu buyuk/kucuk harf duyarsizdir (tam anahtar icin)", () => {
 	assert.equal(getCurrency("trx").code, "TRX");
-	assert.equal(getCurrency("usdt").code, "USDT_TRC20");
+	assert.equal(getCurrency("usdt_trc20").code, "USDT_TRC20");
+	assert.equal(getCurrency("usdt_bep20").code, "USDT_BEP20");
+	assert.equal(getCurrency("usdt_polygon").code, "USDT_POLYGON");
 });
 
-test("arayuzun gonderdigi cuzdan kodu ile para birimi bulunur", () => {
-	// Arayuz, bakiye listesinden gelen cuzdan kodunu gonderir ("USDT"); config
-	// anahtari ise "USDT_TRC20". Yalnizca tam anahtar kabul edilseydi kullanici
-	// yatirma adresi ALAMAZDI. Her iki bicim de calismali.
+test("kisa cuzdan kodu ('usdt') artik birden fazla aga karsilik geldigi icin BILEREK belirsizdir", () => {
+	// USDT artik TRC20/BEP20/POLYGON aglarinda var. Kisa kodu tek bir aga
+	// sessizce baglamak, yanlis agda adres uretme riski tasir — bu yuzden
+	// getCurrency() BILEREK null doner (bkz. config/crypto.js getCurrency).
+	// Arayuz/route her zaman TAM kodu (currency.code) gondermelidir.
+	assert.equal(getCurrency("usdt"), null);
+	assert.equal(getCurrency("USDT"), null);
+});
+
+test("arayuzun gonderdigi cuzdan kodu, YALNIZ TEK bir aga karsilik geliyorsa para birimini bulur", () => {
+	// walletCode -> currency eslemesi ARTIK N:1 olabilir (USDT -> 3 ag).
+	// Bu yuzden yalniz TEK eslesmesi olan walletCode'lar (or. TRX) icin kisa
+	// kod fallback'i calismali; birden fazla eslesmesi olanlar (USDT) icin
+	// arayuz/route TAM kodu (currency.code) gondermeye zorlanmalidir.
+	const walletCodeCounts = new Map();
+	for (const currency of listCurrencies()) {
+		const key = currency.walletCode.toUpperCase();
+		walletCodeCounts.set(key, (walletCodeCounts.get(key) || 0) + 1);
+	}
+
 	for (const currency of listCurrencies()) {
 		assert.equal(
 			getCurrency(currency.code)?.code,
 			currency.code,
 			`tam anahtar calismali: ${currency.code}`,
 		);
+
+		const isUnique = walletCodeCounts.get(currency.walletCode.toUpperCase()) === 1;
 		assert.equal(
 			getCurrency(currency.walletCode)?.code,
-			currency.code,
-			`cuzdan kodu calismali: ${currency.walletCode}`,
+			isUnique ? currency.code : undefined,
+			isUnique
+				? `benzersiz cuzdan kodu calismali: ${currency.walletCode}`
+				: `belirsiz cuzdan kodu (${currency.walletCode}) tam kod gerektirmeli, yanlislikla ${currency.code}'a cozulmemeli`,
 		);
 	}
 });

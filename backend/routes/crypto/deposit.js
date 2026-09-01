@@ -4,12 +4,14 @@ const router = express.Router();
 
 const { authorizeUser } = require('../../middleware/auth');
 const CryptoDeposit = require('../../database/models/CryptoDeposit');
-const addressService = require('../../services/cryptoAddressService');
-const {
-	listCurrencies,
-	CONFIRMATIONS_REQUIRED,
-	NETWORK,
-} = require('../../config/crypto');
+const tronAddressService = require('../../services/cryptoAddressService');
+const evmAddressService = require('../../services/cryptoAddressServiceEvm');
+const { listCurrencies, getCurrency, NETWORK } = require('../../config/crypto');
+
+/** Para biriminin ailesine (TRON/EVM) gore dogru adres servisini secer. */
+function addressServiceFor(currency) {
+	return currency.family === 'EVM' ? evmAddressService : tronAddressService;
+}
 
 /** En kucuk birimdeki tam sayiyi goruntulenebilir ondalik metne cevirir. */
 const formatUnits = (units, decimals) => {
@@ -31,7 +33,7 @@ router.get('/currencies', authorizeUser(true), async (req, res, next) => {
 			network: currency.network,
 			decimals: currency.decimals,
 			minDeposit: formatUnits(currency.minDepositUnits, currency.decimals),
-			confirmationsRequired: CONFIRMATIONS_REQUIRED,
+			confirmationsRequired: currency.confirmationsRequired,
 		}));
 		res.json({ success: true, data, network: NETWORK });
 	} catch (error) {
@@ -45,9 +47,20 @@ router.get('/currencies', authorizeUser(true), async (req, res, next) => {
  */
 router.get('/address', authorizeUser(true), async (req, res, next) => {
 	try {
-		const data = await addressService.getOrCreateAddress(
+		// TAM kod (or. "USDT_BEP20") zorunlu kilinir: kisaltilmis "USDT" kodu
+		// artik birden fazla aga (TRC20/BEP20/POLYGON) karsilik geldigi icin
+		// getCurrency() BILEREK belirsiz eslesmede null doner (bkz. config/crypto.js).
+		const currency = getCurrency(req.query.currency);
+		if (!currency) {
+			return res.status(400).json({
+				success: false,
+				message: 'Gecersiz veya belirsiz para birimi kodu. Tam kod gonderin (or. USDT_BEP20).',
+			});
+		}
+
+		const data = await addressServiceFor(currency).getOrCreateAddress(
 			req.user._id,
-			req.query.currency,
+			currency.code,
 		);
 
 		// QR SUNUCUDA uretilir. Ucuncu parti bir QR servisine adres gondermek,
@@ -64,7 +77,7 @@ router.get('/address', authorizeUser(true), async (req, res, next) => {
 				...data,
 				qr,
 				minDeposit: formatUnits(data.minDepositUnits, data.decimals),
-				confirmationsRequired: CONFIRMATIONS_REQUIRED,
+				confirmationsRequired: currency.confirmationsRequired,
 			},
 		});
 	} catch (error) {
@@ -92,17 +105,20 @@ router.get('/history', authorizeUser(true), async (req, res, next) => {
 			.limit(limit)
 			.lean();
 
-		const data = rows.map((row) => ({
-			id: String(row._id),
-			currency: row.currency,
-			amount: formatUnits(row.amountUnits, row.decimals),
-			status: row.status,
-			confirmations: row.confirmations,
-			confirmationsRequired: CONFIRMATIONS_REQUIRED,
-			txHash: row.txHash,
-			createdAt: row.createdAt,
-			creditedAt: row.creditedAt || null,
-		}));
+		const data = rows.map((row) => {
+			const currency = getCurrency(row.currency);
+			return {
+				id: String(row._id),
+				currency: row.currency,
+				amount: formatUnits(row.amountUnits, row.decimals),
+				status: row.status,
+				confirmations: row.confirmations,
+				confirmationsRequired: currency ? currency.confirmationsRequired : row.confirmations,
+				txHash: row.txHash,
+				createdAt: row.createdAt,
+				creditedAt: row.creditedAt || null,
+			};
+		});
 
 		res.json({ success: true, data });
 	} catch (error) {

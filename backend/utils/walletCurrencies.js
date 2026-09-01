@@ -34,35 +34,30 @@ const networkLabel = (chain, type) => {
 };
 
 /**
- * Tek bir para birimi kaydi uretir.
- *
- * Arayuz sozlesmesi: `networks[]` her zaman `label` tasir. `name` ve `id`
- * eski surumlerle uyum icin korunur.
+ * Bir (chain, type) ciftinden ag kimligi ve ikonuyla birlikte bir `networks[]`
+ * girdisi uretir. `id` alani genelde `type` ile ayni tutulur; deposit.js
+ * route'unun kabul ettigi TAM para birimi kodu (or. "USDT_BEP20") burada
+ * `currencyCode` alaninda ayrica tasinir — arayuz Network secildiginde bu
+ * kodu /crypto/deposit/address?currency=... sorgusuna gonderir.
  */
-const buildCurrencyEntry = ({ code, chain, type, balance }, { prices, depositable } = {}) => {
-	const normalized = normalizeCode(code);
-	const market = (prices && prices.get(normalized)) || { price: 0, fee: 0 };
-	const icon = coinIconPath(normalized);
-
-	return {
-		code: normalized,
-		name: normalized,
-		chain,
-		type,
-		network: chain,
-		networks: [{ id: type, name: chain, label: networkLabel(chain, type), icon }],
-		balance: Number(balance) || 0,
-		usd: market.price,
-		fee: market.fee,
-		precision: 8,
-		fiat: false,
-		depositable: depositable ? depositable.has(normalized) : false,
-		icon,
-	};
-};
+const buildNetworkEntry = (chain, type, currencyCode, coinCode) => ({
+	id: type,
+	name: chain,
+	label: networkLabel(chain, type),
+	icon: coinIconPath(coinCode),
+	currencyCode,
+});
 
 /**
  * Kullanicinin cuzdanlarindan + yatirilabilir kripto listesinden tam listeyi kurar.
+ *
+ * ONEMLI (coklu-ag destegi): Ayni kullaniciya gosterilen kod (or. "USDT")
+ * ARTIK birden fazla zincirde (TRC20/BEP20/POLYGON) var olabilir. Bunlar
+ * TEK bir `currencies[]` girdisinde birlestirilir; `balance` TUM aglardaki
+ * bakiyelerin TOPLAMIDIR (aym USDT, farkli zincirlerde tutuluyor — kullanici
+ * gozunde tek bir varlik), `networks[]` ise kullanicinin Network secicisinde
+ * gorecegi TUM secenekleri (yatirilabilir olsun/olmasin, mevcut cuzdani
+ * olsun/olmasin) icerir.
  *
  * Yatirilabilir kripto birimleri, kullanicinin HENUZ cuzdani olmasa bile
  * eklenir: cuzdan ilk yatirim kredi edildiginde olusuyor, aksi halde kullanici
@@ -74,29 +69,60 @@ const buildCurrencyList = (wallets, prices) => {
 		depositCurrencies.map((currency) => normalizeCode(currency.walletCode))
 	);
 
-	const data = (wallets || []).map((wallet) =>
-		buildCurrencyEntry(
-			{
-				code: wallet.coinType,
-				chain: wallet.chain,
-				type: wallet.type,
-				balance: wallet.balance,
-			},
-			{ prices, depositable }
-		)
-	);
+	/** normalizedCode -> { balance, networksByKey: Map<chain+type, entry> } */
+	const groups = new Map();
 
-	const known = new Set(data.map((entry) => entry.code));
+	const ensureGroup = (code) => {
+		if (!groups.has(code)) {
+			groups.set(code, { balance: 0, networksByKey: new Map() });
+		}
+		return groups.get(code);
+	};
+
+	for (const wallet of wallets || []) {
+		const code = normalizeCode(wallet.coinType);
+		const group = ensureGroup(code);
+		group.balance += Number(wallet.balance) || 0;
+		const key = `${wallet.chain}|${wallet.type}`;
+		if (!group.networksByKey.has(key)) {
+			// Var olan bir cuzdanin ag girdisi icin, eslesen deposit para birimi
+			// koduna asagida depositCurrencies dongusunde tekrar bakip
+			// currencyCode alanini tamamlayacagiz (henuz bilinmiyorsa null).
+			group.networksByKey.set(key, buildNetworkEntry(wallet.chain, wallet.type, null, code));
+		}
+	}
+
 	for (const currency of depositCurrencies) {
 		const code = normalizeCode(currency.walletCode);
-		if (known.has(code)) continue;
-		known.add(code);
-		data.push(
-			buildCurrencyEntry(
-				{ code, chain: currency.chain, type: currency.type, balance: 0 },
-				{ prices, depositable }
-			)
-		);
+		const group = ensureGroup(code);
+		const key = `${currency.chain}|${currency.type}`;
+		// Yatirilabilir bir ag her zaman TAM kodu (currencyCode) tasimalidir —
+		// var olan bir cuzdan girdisi bulunsa bile bu deger tamamlanir/uzerine yazilir.
+		group.networksByKey.set(key, buildNetworkEntry(currency.chain, currency.type, currency.code, code));
+	}
+
+	const data = [];
+	for (const [code, group] of groups) {
+		const market = (prices && prices.get(code)) || { price: 0, fee: 0 };
+		const icon = coinIconPath(code);
+		const networks = [...group.networksByKey.values()];
+		const primary = networks[0] || {};
+
+		data.push({
+			code,
+			name: code,
+			chain: primary.name,
+			type: primary.id,
+			network: primary.name,
+			networks,
+			balance: group.balance,
+			usd: market.price,
+			fee: market.fee,
+			precision: 8,
+			fiat: false,
+			depositable: depositable.has(code),
+			icon,
+		});
 	}
 
 	return data;
@@ -106,6 +132,6 @@ module.exports = {
 	normalizeCode,
 	coinIconPath,
 	networkLabel,
-	buildCurrencyEntry,
+	buildNetworkEntry,
 	buildCurrencyList,
 };

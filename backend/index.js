@@ -275,6 +275,36 @@ cron.schedule("* * * * *", () => {
 			);
 	});
 
+	// 🪙 EVM (BSC + Polygon) yatırma izleyicisi: USDT_BEP20/USDT_POLYGON
+	// için gelen transferleri "eth_getLogs" ile tarar. TRON izleyicisinin
+	// aksine, burada tespit edilen bir transfer ZATEN güvenli blok eşiğinin
+	// altındadır (finalized/128-blok), bu yüzden hemen krediye uygulanır
+	// (bkz. services/cryptoDepositWatcherEvm.js).
+	//
+	// GÜVENLİK: TRON izleyicisiyle aynı desen — 4 PM2 instance'ının hepsinde
+	// kurulur, mükerrer kredi koruması servisin kendi JobLock leader-election'ı
+	// ile sağlanır. EVM_HD_MNEMONIC tanımlı değilse runOnce() sessizce çıkar.
+	const cryptoDepositWatcherEvm = require("./services/cryptoDepositWatcherEvm");
+	cron.schedule("* * * * *", () => {
+		cryptoDepositWatcherEvm
+			.runOnce()
+			.catch((err) =>
+				console.error("❌ EVM kripto yatırma tarama hatası:", err.message),
+			);
+	});
+
+	// 🧹 EVM sweep (toplama) servisi: BSC/Polygon adreslerinde biriken USDT
+	// bakiyesini periyodik olarak ana EVM adresine (HD index 0) taşır.
+	// Aynı desen — her 5 dakikada bir, JobLock ile leader-election.
+	const cryptoSweepServiceEvm = require("./services/cryptoSweepServiceEvm");
+	cron.schedule("*/5 * * * *", () => {
+		cryptoSweepServiceEvm
+			.runOnce()
+			.catch((err) =>
+				console.error("❌ EVM kripto sweep hatası:", err.message),
+			);
+	});
+
 	// Set app port
 const PORT = process.env.SERVER_PORT || 5000;
 

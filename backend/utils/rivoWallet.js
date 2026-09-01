@@ -69,6 +69,12 @@ const normalizeCurrency = (currency = {}) => ({
 const CRYPTO_DEPOSIT_WALLET_KEYS = Object.freeze([
 	"USDT|TRON|trc-20",
 	"TRX|TRON|native",
+	// DIKKAT: Bu degerler config/crypto.js CURRENCIES.USDT_BEP20/USDT_POLYGON
+	// icindeki walletCode/chain/type alanlariyla BIREBIR ayni olmali. Uyusmazsa
+	// olusturulan cuzdan bir sonraki normalizeWalletState cagrisinda silinir ve
+	// kredi edilen bakiye kaybolur (bkz. cryptoDepositWatcher.creditDeposit).
+	"USDT|BNB|bep-20",
+	"USDT|POLYGON|polygon",
 ]);
 
 const walletKey = (wallet = {}) =>
