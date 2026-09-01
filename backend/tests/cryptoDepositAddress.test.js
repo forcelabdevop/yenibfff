@@ -36,6 +36,20 @@ test("HD turetme bilinen BIP39 vektorunu uretir", () => {
 	assert.equal(address, "TUEZSdKsoDHQMeZwihtdoBiN46zxhGWYdH");
 });
 
+test("EVM HD turetme bilinen BIP39 vektorunu uretir", () => {
+	const { execFileSync } = require("node:child_process");
+	const script = `
+		process.env.EVM_HD_MNEMONIC =
+			"abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+		const wallet = require("${require.resolve("../utils/crypto/evmWallet")}");
+		console.log(wallet.deriveAddress(0));
+	`;
+	const env = { ...process.env };
+	delete env.EVM_HD_MNEMONIC;
+	const address = execFileSync(process.execPath, ["-e", script], { env }).toString().trim();
+	assert.equal(address, "0x9858EfFD232B4033E47d90003D41EC34EcaEda94");
+});
+
 test("HD turetme deterministtir ve indeksler carpismaz", () => {
 	assert.equal(hdWallet.deriveAddress(7), hdWallet.deriveAddress(7));
 
