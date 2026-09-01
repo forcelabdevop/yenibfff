@@ -1,0 +1,14 @@
+{
+  "success": true,
+  "data": {
+    "address": "TXYZ1234567890abcdefghijklmno",
+    "qr": "",
+    "currency": "USDT_TRC20",
+    "displayCode": "USDT",
+    "chain": "TRON",
+    "network": "TRC20",
+    "decimals": 6,
+    "minDeposit": 1,
+    "confirmationsRequired": 20
+  }
+}

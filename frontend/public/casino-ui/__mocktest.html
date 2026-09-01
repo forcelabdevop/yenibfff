@@ -4522,6 +4522,109 @@
 
 <transition name="fade"><div class="toast" v-if="toast">{{toast}}</div></transition>
 </div>
+
+<script>
+  window.__DEPOSIT_MOCK__ = true;
+  try {
+    window.localStorage.setItem('website.token', 'mock-token');
+    window.localStorage.setItem('website.userId', 'u1');
+  } catch (e) {}
+
+  const MOCK_USER = {
+    _id: 'u1',
+    username: 'mockuser',
+    email: 'mock@example.com',
+    wallets: [
+      { coinType: 'BTC', balance: 0.015 },
+      { coinType: 'ETH', balance: 1.2 },
+      { coinType: 'USDT', balance: 250.5 },
+      { coinType: 'TRX', balance: 12 },
+    ],
+  };
+
+  const MOCK_CURRENCIES = [
+    {
+      code: 'USDT', name: 'USDT', chain: 'TRON', type: 'trc-20', network: 'TRON',
+      balance: 250.5, usd: 1, fee: 0, precision: 8, fiat: false, depositable: true,
+      icon: 'assets/coin-usdt.png',
+      networks: [
+        { id: 'trc-20', name: 'TRON', label: 'TRON (TRC-20)', icon: 'assets/coin-usdt.png', currencyCode: 'USDT_TRC20' },
+        { id: 'bep-20', name: 'BNB', label: 'BNB Smart Chain (BEP-20)', icon: 'assets/coin-usdt.png', currencyCode: 'USDT_BEP20' },
+        { id: 'polygon', name: 'POLYGON', label: 'Polygon (USDT)', icon: 'assets/coin-usdt.png', currencyCode: 'USDT_POLYGON' },
+      ],
+    },
+    {
+      code: 'TRX', name: 'TRX', chain: 'TRON', type: 'native', network: 'TRON',
+      balance: 12, usd: 0.1, fee: 0, precision: 8, fiat: false, depositable: true,
+      icon: 'assets/coin-trx.png',
+      networks: [{ id: 'native', name: 'TRON', label: 'TRON (Native)', icon: 'assets/coin-trx.png', currencyCode: 'TRX' }],
+    },
+    {
+      code: 'BTC', name: 'BTC', chain: 'BTC', type: 'native', network: 'BTC',
+      balance: 0.015, usd: 60000, fee: 0, precision: 8, fiat: false, depositable: false,
+      icon: 'assets/coin-btc.png',
+      networks: [{ id: 'native', name: 'BTC', label: 'Bitcoin', icon: 'assets/coin-btc.png', currencyCode: null }],
+    },
+    {
+      code: 'ETH', name: 'ETH', chain: 'ETH', type: 'native', network: 'ETH',
+      balance: 1.2, usd: 3000, fee: 0, precision: 8, fiat: false, depositable: false,
+      icon: 'assets/coin-eth.png',
+      networks: [{ id: 'native', name: 'ETH', label: 'Ethereum', icon: 'assets/coin-eth.png', currencyCode: null }],
+    },
+    {
+      code: 'USD', name: 'USD', chain: null, type: null, network: null,
+      balance: 500, usd: 1, fee: 0, precision: 2, fiat: true, depositable: false,
+      icon: 'assets/coin-usd.png', networks: [],
+    },
+    {
+      code: 'EUR', name: 'EUR', chain: null, type: null, network: null,
+      balance: 0, usd: 1.08, fee: 0, precision: 2, fiat: true, depositable: false,
+      icon: 'assets/coin-eur.png', networks: [],
+    },
+  ];
+
+  // currency kodu -> adres yuku. HER ag KENDI adresini/onay sayisini donmeli.
+  const MOCK_ADDRESSES = {
+    USDT_TRC20: { address: 'TXMockTronAddress1111111111111', chain: 'TRON', network: 'TRC20', decimals: 6, minDeposit: '1', confirmationsRequired: 20, displayCode: 'USDT' },
+    USDT_BEP20: { address: '0xMockBscAddress2222222222222222222222222', chain: 'BNB', network: 'BEP20', decimals: 6, minDeposit: '1', confirmationsRequired: 5, displayCode: 'USDT' },
+    USDT_POLYGON: { address: '0xMockPolygonAddress33333333333333333333', chain: 'POLYGON', network: 'POLYGON', decimals: 6, minDeposit: '1', confirmationsRequired: 128, displayCode: 'USDT' },
+    TRX: { address: 'TXMockTronAddress1111111111111', chain: 'TRON', network: 'TRC20', decimals: 6, minDeposit: '10', confirmationsRequired: 20, displayCode: 'TRX' },
+  };
+  const TRANSPARENT_QR =
+    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
+
+  const origFetch = window.fetch.bind(window);
+  window.fetch = async (input, init) => {
+    const url = typeof input === 'string' ? input : (input && input.url) || '';
+    const jsonResponse = (data, ok = true) =>
+      new Response(JSON.stringify(ok ? { success: true, data } : { success: false, message: data }), {
+        status: ok ? 200 : 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+    if (/\/user\/u1(\?|$)/.test(url)) return jsonResponse({ user: MOCK_USER });
+    if (url.includes('/wallet/currencies')) return jsonResponse(MOCK_CURRENCIES);
+    if (url.includes('/crypto/deposit/address')) {
+      const currency = new URL(url, window.location.origin).searchParams.get('currency');
+      const found = MOCK_ADDRESSES[currency];
+      if (!found) return jsonResponse('Gecersiz veya belirsiz para birimi kodu.', false);
+      return jsonResponse({ ...found, currency, qr: TRANSPARENT_QR });
+    }
+    if (url.includes('/wallet/quote')) {
+      return jsonResponse({
+        rate: 60000,
+        receive: '0.00166667',
+        provider: 'MockPay',
+        methods: [
+          { id: 'card', kind: 'debit', label: 'Debit Card', receive: '0.00166', best: true, recommended: true },
+          { id: 'bank', kind: 'credit', label: 'Bank Transfer', receive: '0.00165', best: false, recommended: false },
+        ],
+      });
+    }
+    return origFetch(input, init);
+  };
+</script>
+
 <script>
     const { createApp, ref, computed, watch, onMounted, onBeforeUnmount, nextTick } = Vue;
     const runtimeParams = new URLSearchParams(window.location.search);

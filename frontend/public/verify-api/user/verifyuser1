@@ -1,0 +1,9 @@
+{
+  "user": {
+    "_id": "verifyuser1",
+    "username": "verifyuser",
+    "email": "verify@example.com",
+    "currency": { "coinType": "USDT", "chain": "TRX", "type": "crypto" },
+    "wallets": [{ "coinType": "USDT", "chain": "TRX", "type": "crypto", "balance": 250.5 }]
+  }
+}

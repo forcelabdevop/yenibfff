@@ -1,0 +1,109 @@
+{
+  "success": true,
+  "data": [
+    {
+      "code": "BTC",
+      "name": "Bitcoin",
+      "networks": [{ "label": "", "icon": "/casino-ui/assets/coin-btc.png", "currencyCode": null }],
+      "balance": 0.015,
+      "usd": 60000,
+      "fee": 0,
+      "precision": 8,
+      "fiat": false,
+      "depositable": false,
+      "icon": "/casino-ui/assets/coin-btc.png"
+    },
+    {
+      "code": "ETH",
+      "name": "Ethereum",
+      "networks": [{ "label": "", "icon": "/casino-ui/assets/coin-eth.png", "currencyCode": null }],
+      "balance": 0,
+      "usd": 3000,
+      "fee": 0,
+      "precision": 8,
+      "fiat": false,
+      "depositable": false,
+      "icon": "/casino-ui/assets/coin-eth.png"
+    },
+    {
+      "code": "USDT",
+      "name": "Tether",
+      "networks": [
+        { "label": "", "icon": "/casino-ui/assets/coin-usdt.png", "currencyCode": null },
+        { "id": "trc-20", "name": "TRON", "label": "TRON (TRC-20)", "icon": "/casino-ui/assets/coin-usdt.png", "currencyCode": "USDT_TRC20" },
+        { "id": "bep-20", "name": "BNB", "label": "BNB (BEP-20)", "icon": "/casino-ui/assets/coin-usdt.png", "currencyCode": "USDT_BEP20" },
+        { "id": "polygon", "name": "POLYGON", "label": "POLYGON (POLYGON)", "icon": "/casino-ui/assets/coin-usdt.png", "currencyCode": "USDT_POLYGON" }
+      ],
+      "balance": 250.5,
+      "usd": 1,
+      "fee": 0,
+      "precision": 8,
+      "fiat": false,
+      "depositable": true,
+      "icon": "/casino-ui/assets/coin-usdt.png"
+    },
+    {
+      "code": "TRX",
+      "name": "Tron",
+      "networks": [
+        { "label": "", "icon": "/casino-ui/assets/coin-trx.png", "currencyCode": null },
+        { "id": "native", "name": "TRON", "label": "TRON", "icon": "/casino-ui/assets/coin-trx.png", "currencyCode": "TRX" }
+      ],
+      "balance": 0,
+      "usd": 0.1,
+      "fee": 0,
+      "precision": 8,
+      "fiat": false,
+      "depositable": true,
+      "icon": "/casino-ui/assets/coin-trx.png"
+    },
+    {
+      "code": "BNB",
+      "name": "BNB",
+      "networks": [{ "label": "", "icon": "/casino-ui/assets/coin-bnb.png", "currencyCode": null }],
+      "balance": 3.4,
+      "usd": 500,
+      "fee": 0,
+      "precision": 8,
+      "fiat": false,
+      "depositable": false,
+      "icon": "/casino-ui/assets/coin-bnb.png"
+    },
+    {
+      "code": "USD",
+      "name": "US Dollar",
+      "networks": [],
+      "balance": 120,
+      "usd": 1,
+      "fee": 0,
+      "precision": 2,
+      "fiat": true,
+      "depositable": false,
+      "icon": "assets/coin-usd.png"
+    },
+    {
+      "code": "EUR",
+      "name": "Euro",
+      "networks": [],
+      "balance": 0,
+      "usd": 1.08,
+      "fee": 0,
+      "precision": 2,
+      "fiat": true,
+      "depositable": false,
+      "icon": "assets/coin-eur.png"
+    },
+    {
+      "code": "TRY",
+      "name": "Turkish Lira",
+      "networks": [],
+      "balance": 0,
+      "usd": 0.03,
+      "fee": 0,
+      "precision": 2,
+      "fiat": true,
+      "depositable": false,
+      "icon": "assets/coin-try.png"
+    }
+  ]
+}
