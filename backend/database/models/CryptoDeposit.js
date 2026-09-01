@@ -32,6 +32,9 @@ const cryptoDepositSchema = new mongoose.Schema({
 	/** Zincirdeki ondalik hane sayisi — gosterim icin. */
 	decimals: { type: Number, required: true, default: 6 },
 
+	/** ERC-20 event sirasi; native transferlerde -1. */
+	logIndex: { type: Number, required: true, default: -1 },
+
 	blockNumber: { type: Number, required: true },
 
 	confirmations: { type: Number, default: 0 },
@@ -63,7 +66,7 @@ const cryptoDepositSchema = new mongoose.Schema({
  * mukerrer kredi engellenir hem de bu senaryo dogru calisir.
  */
 cryptoDepositSchema.index(
-	{ txHash: 1, address: 1, currency: 1 },
+	{ txHash: 1, address: 1, currency: 1, logIndex: 1 },
 	{ unique: true },
 );
 

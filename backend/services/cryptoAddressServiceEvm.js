@@ -95,6 +95,9 @@ function format(doc, currency) {
 		network: currency.network,
 		decimals: currency.decimals,
 		minDepositUnits: currency.minDepositUnits,
+		confirmationsRequired: currency.confirmationsRequired,
+		assetType: currency.type,
+		contract: currency.contract,
 	};
 }
 

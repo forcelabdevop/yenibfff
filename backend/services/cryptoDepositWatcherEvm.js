@@ -42,7 +42,7 @@ const MAX_BLOCK_RANGE = Number(process.env.EVM_SCAN_MAX_BLOCK_RANGE || 3000);
 /** Tek getLogs cagrisinda OR-filtrelenecek maksimum adres sayisi. */
 const ADDRESS_CHUNK = Number(process.env.EVM_SCAN_ADDRESS_CHUNK || 200);
 
-const CURSOR_KEY = (network) => `evm:lastScannedBlock:${network}`;
+const CURSOR_KEY = (network, currencyCode) => `evm:lastScannedBlock:${network}:${currencyCode}`;
 
 function chunk(array, size) {
 	const out = [];
@@ -54,16 +54,13 @@ function chunk(array, size) {
  * Belirli bir agin GUVENLE taranabilecegi en son blok numarasi.
  * @returns {Promise<number|null>} null ise bu ag icin bu tur atlanir.
  */
-async function getSafeBlock(network) {
+async function getSafeBlock(network, currency) {
 	if (network === 'BEP20') {
-		// BSC Fast Finality: 'finalized' etiketi geri alinamaz son bloktur.
-		return evmClient.getFinalizedBlockNumber('BEP20');
+		const finalized = await evmClient.getFinalizedBlockNumber(network);
+		if (finalized !== null) return finalized;
 	}
-	// Polygon: sabit bir onay sayisi kadar geride kal (bkz. config/crypto.js
-	// confirmationsRequired = 128 — L1 checkpoint'e kadar guvenli pay).
-	const current = await evmClient.getCurrentBlock('POLYGON');
-	const threshold = CURRENCIES.USDT_POLYGON.confirmationsRequired;
-	return Math.max(current - threshold, 0);
+	const current = await evmClient.getCurrentBlock(network);
+	return Math.max(current - currency.confirmationsRequired, 0);
 }
 
 /** Bu agdaki (chain degeri) TUM kullanici adreslerini dondurur. */
@@ -78,13 +75,13 @@ async function loadAddresses(chainValue) {
  * @param {object} currency config/crypto.js CURRENCIES[...] (USDT_BEP20 | USDT_POLYGON)
  */
 async function scanNetwork(network, currency) {
-	const safeBlock = await getSafeBlock(network);
+	const safeBlock = await getSafeBlock(network, currency);
 	if (safeBlock === null) {
 		console.error(`[crypto-evm] ${network}: guvenli blok alinamadi, bu tur atlaniyor.`);
 		return 0;
 	}
 
-	const cursorKey = CURSOR_KEY(network);
+	const cursorKey = CURSOR_KEY(network, currency.code);
 	let fromBlock = await Counter.getValue(cursorKey, safeBlock - 1);
 	fromBlock += 1;
 
@@ -103,13 +100,15 @@ async function scanNetwork(network, currency) {
 
 	try {
 		for (const group of chunk(addressDocs.map((d) => d.address), ADDRESS_CHUNK)) {
-			const transfers = await evmClient.getIncomingErc20Batch(
-				network,
-				group,
-				currency.contract,
-				fromBlock,
-				toBlock,
-			);
+			const transfers = currency.type === 'native'
+				? await evmClient.getIncomingNativeBatch(network, group, fromBlock, toBlock)
+				: await evmClient.getIncomingErc20Batch(
+					network,
+					group,
+					currency.contract,
+					fromBlock,
+					toBlock,
+				);
 
 			for (const transfer of transfers) {
 				const record = byAddress.get(transfer.to.toLowerCase());
@@ -156,6 +155,7 @@ async function recordAndCredit(record, currency, transfer, network) {
 		txHash: transfer.txHash,
 		address: record.address,
 		currency: currency.code,
+		logIndex: transfer.logIndex ?? -1,
 	});
 	if (exists) return false;
 
@@ -177,6 +177,7 @@ async function recordAndCredit(record, currency, transfer, network) {
 			amountUnits: Number(canonicalUnits),
 			decimals: currency.decimals,
 			blockNumber: receipt.blockNumber,
+			logIndex: transfer.logIndex ?? -1,
 			confirmations: currency.confirmationsRequired,
 			status: 'pending',
 		});
@@ -197,8 +198,9 @@ async function runOnce() {
 	if (!locked) return;
 
 	try {
-		await scanNetwork('BEP20', CURRENCIES.USDT_BEP20);
-		await scanNetwork('POLYGON', CURRENCIES.USDT_POLYGON);
+		for (const currency of Object.values(CURRENCIES).filter((item) => item.family === 'EVM')) {
+			await scanNetwork(currency.network, currency);
+		}
 	} catch (error) {
 		console.error('[crypto-evm] tarama turu basarisiz:', error.message);
 	} finally {

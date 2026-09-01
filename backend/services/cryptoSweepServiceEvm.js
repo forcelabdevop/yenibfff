@@ -53,7 +53,9 @@ function getSweepDestination() {
 async function queueSweepIfNeeded(network, record, currency, destination) {
 	const minUnits = BigInt(SWEEP_MIN_UNITS[currency.code] ?? 0);
 
-	const rawBalance = await evmClient.getErc20Balance(network, currency.contract, record.address);
+	const rawBalance = currency.type === 'native'
+		? await evmClient.getNativeBalance(network, record.address)
+		: await evmClient.getErc20Balance(network, currency.contract, record.address);
 	const canonicalBalance = evmClient.toCanonicalUnits(
 		rawBalance,
 		currency.chainDecimals,
@@ -105,15 +107,19 @@ async function discoverSweepableForNetwork(network, currency) {
 
 async function discoverSweepable() {
 	let queued = 0;
-	queued += await discoverSweepableForNetwork('BEP20', CURRENCIES.USDT_BEP20);
-	queued += await discoverSweepableForNetwork('POLYGON', CURRENCIES.USDT_POLYGON);
+	for (const currency of Object.values(CURRENCIES).filter((item) => item.family === 'EVM')) {
+		queued += await discoverSweepableForNetwork(currency.network, currency);
+	}
 	return queued;
 }
 
 /** Bekleyen sweep kayitlarini isler (gas gonderimi + asil USDT transferi). */
 async function processPendingSweeps() {
+	const evmCurrencyCodes = Object.values(CURRENCIES)
+		.filter((item) => item.family === 'EVM')
+		.map((item) => item.code);
 	const pending = await CryptoSweep.find({
-		currency: { $in: ['USDT_BEP20', 'USDT_POLYGON'] },
+		currency: { $in: evmCurrencyCodes },
 		status: { $in: ['pending', 'gas_sent'] },
 		attempts: { $lt: MAX_ATTEMPTS },
 	})
@@ -154,6 +160,16 @@ async function processOneSweep(sweep) {
 	}
 	const network = networkOf(currency);
 	const gasWei = EVM_SWEEP_GAS_WEI[network];
+
+	if (currency.type === 'native') {
+		const txHash = await evmSigner.sweepNative(network, sweep.derivationIndex, sweep.toAddress);
+		if (!txHash) return false;
+		await CryptoSweep.updateOne(
+			{ _id: sweep._id },
+			{ $set: { status: 'completed', txHash, completedAt: new Date() }, $inc: { attempts: 1 } },
+		);
+		return true;
+	}
 
 	if (sweep.status === 'pending') {
 		const nativeBalance = await evmClient.getNativeBalance(network, sweep.fromAddress);
