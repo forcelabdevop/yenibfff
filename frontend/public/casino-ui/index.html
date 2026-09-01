@@ -1659,6 +1659,9 @@
     .wm-notes .wm-note { height:auto; min-height:36px; display:block; padding:9px 12px; white-space:normal; text-align:center; line-height:1.5; }
     .wm-note--warn { border-color:#7a4a1e; background:rgba(214,124,40,.09); color:#e0a468; }
     .wm-note--warn strong { color:#ffc078; }
+    /* Referans (BetFury) tasarimdaki sade tek satirlik bilgi kutusu. */
+    .wm-note--single { margin-top:12px; height:36px; padding:0 12px; white-space:normal; text-align:center; }
+    .wm-note__icon { font-style:normal; }
     .wm-state--error { flex-direction:column; gap:12px; color:#e08a8a; text-align:center; padding:0 16px; }
     .wm-retry { padding:7px 18px; border:1px solid #2c3b4e; border-radius:8px; background:#1b2735; color:#cfe0f5; font-size:12px; font-weight:600; cursor:pointer; }
     .wm-retry:hover { background:#22323f; }
@@ -4350,18 +4353,12 @@
             </div>
           </div>
         </div>
-        <div class="wm-bonus" style="margin-top:15px">
-          <img alt="" src="assets/bonus-chest.png"/>
-          <div class="wm-bonus__copy">Active Deposit Bonus:<strong>Choose your bonus</strong></div>
-          <button @click="toastMessage('Bonus secimi yakinda')" class="wm-bonus__drop" type="button"><i class="fas fa-chevron-down"></i></button>
-        </div>
-        <div class="wm-divider" style="margin-top:13px"></div>
-        <div class="wm-state" v-if="addressLoading"><i class="fas fa-circle-notch fa-spin"></i> Adres aliniyor…</div>
-        <div class="wm-state wm-state--error" v-else-if="depositAddressError">
+        <div class="wm-state" style="margin-top:19px" v-if="addressLoading"><i class="fas fa-circle-notch fa-spin"></i> Adres aliniyor…</div>
+        <div class="wm-state wm-state--error" style="margin-top:19px" v-else-if="depositAddressError">
           <i class="fas fa-exclamation-triangle"></i> {{depositAddressError}}
           <button @click="loadDepositAddress" class="wm-retry" type="button">Tekrar dene</button>
         </div>
-        <div class="wm-address-row" v-else-if="depositAddress">
+        <div class="wm-address-row" style="margin-top:19px" v-else-if="depositAddress">
           <div>
             <!-- Basliktaki, tutardaki ve uyaridaki para birimi TEK kaynaktan
                  (depositAddress) okunur. depositCurrency secimle ANINDA
@@ -4380,11 +4377,11 @@
           <!-- QR sunucuda uretilir; gelmezse kirik gorsel yerine hic gosterme. -->
           <img :src="depositAddress.qr" v-if="depositAddress.qr" alt="Yatirma adresi QR kodu" class="wm-qr"/>
         </div>
-        <!-- Notlar grid satirinin DISINDA: sol sutun 300px sabit oldugu icin
-             uzun uyari metni iceride kirpiliyordu. Tam genislikte akiyor. -->
-        <div class="wm-notes" v-if="depositAddress && !addressLoading && !depositAddressError">
-          <div class="wm-note wm-note--warn">Yalnizca <strong>{{depositAddress.network}}</strong> agi uzerinden <strong>{{depositAddress.displayCode || depositAddress.currency}}</strong> gonderin. Farkli ag veya farkli coin gonderirseniz varliklariniz kaybolur.</div>
-          <div class="wm-note">Yatiriminiz <strong>{{depositAddress.confirmationsRequired}}</strong> ag onayindan sonra bakiyenize eklenir.</div>
+        <!-- Referans tasarimla (BetFury) birebir: tek satir, sade bilgi kutusu.
+             Ag/coin uyumsuzlugu ve onay sayisi tek cumlede birlesti; ayri
+             sari uyari kutusu kaldirildi. -->
+        <div class="wm-note wm-note--single" v-if="depositAddress && !addressLoading && !depositAddressError">
+          <i class="wm-note__icon">ℹ️</i> Yalnizca <strong>{{depositAddress.network}}</strong> agi uzerinden <strong>{{depositAddress.displayCode || depositAddress.currency}}</strong> gonderin.
         </div>
       </template>
 
@@ -4896,7 +4893,7 @@
         const chatField = ref(null);
         const chatEmojiOpen = ref(false);
         const chatTipMenuOpen = ref(false);
-        const chatEmojis = ['😀','😂','🥹','😍','😎','🤑','🤔','🙃','😴','🤯','😭','😡','👍','👎','🙏','👏','💪','🔥','💎','🍀','🎉','🏆','💰','🚀','☕','🍺','❤��','💔','⚡','🌧'];
+        const chatEmojis = ['😀','😂','🥹','😍','����','🤑','🤔','🙃','😴','🤯','😭','😡','👍','👎','🙏','👏','💪','🔥','💎','🍀','🎉','🏆','💰','🚀','☕','🍺','❤��','💔','⚡','🌧'];
         const canSendChat = computed(() => chatInput.value.trim().length > 0);
         const focusChatField = () => nextTick(() => { if (chatField.value) chatField.value.focus(); });
         const toggleChatEmoji = () => {
