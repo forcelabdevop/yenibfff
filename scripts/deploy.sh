@@ -45,6 +45,12 @@ fi
 BRANCH="${BRANCH:-main}"
 WEB_ROOT="${WEB_ROOT:-}"
 SERVER_PORT="${SERVER_PORT:-5000}"
+# GERCEK, calisan pm2 process adi (ornek: bizzocazino2-back). Bos birakilirsa
+# ecosystem.config.js'nin hesapladigi ada (PROJECT_ID/WEBSITE_NAME env'lerine
+# bagli) reload atilir — bu ad gercek process ile ESLESMEZSE pm2 mevcut
+# process'i reload etmek yerine YENI, YEDEK bir process kumesi baslatir
+# (ayni SERVER_PORT'u dinlemeye calisan cift process = canliyi bozma riski).
+PM2_APP_NAME="${PM2_APP_NAME:-}"
 HEALTH_URL="${HEALTH_URL:-http://127.0.0.1:${SERVER_PORT}/health}"
 HEALTH_RETRIES="${HEALTH_RETRIES:-15}"
 HEALTH_DELAY="${HEALTH_DELAY:-2}"
@@ -179,7 +185,11 @@ rollback() {
 		mv "${WEB_ROOT}.bak" "${WEB_ROOT}" 2>/dev/null || log "frontend geri alinamadi!"
 	fi
 	( cd "${REPO_DIR}/backend" && "${PNPM}" install --prod --frozen-lockfile ) || true
-	( cd "${REPO_DIR}/backend" && "${PM2}" reload ecosystem.config.js --update-env ) || true
+	if [[ -n "${PM2_APP_NAME}" ]]; then
+		( cd "${REPO_DIR}/backend" && "${PM2}" reload "${PM2_APP_NAME}" --update-env ) || true
+	else
+		( cd "${REPO_DIR}/backend" && "${PM2}" reload ecosystem.config.js --update-env ) || true
+	fi
 	log "↩  Geri alma tamamlandi. Loglari inceleyin: ${LOG_FILE}"
 }
 
@@ -239,7 +249,18 @@ fi
 # ---------------------------------------------------------------------------
 log "→ Backend yeniden yukleniyor (pm2 reload)"
 export GIT_COMMIT="${NEW_COMMIT:0:8}"
-run bash -c "cd '${REPO_DIR}/backend' && GIT_COMMIT='${NEW_COMMIT:0:8}' '${PM2}' reload ecosystem.config.js --update-env"
+if [[ -n "${PM2_APP_NAME}" ]]; then
+	if ! "${PM2}" describe "${PM2_APP_NAME}" >/dev/null 2>&1; then
+		die "PM2_APP_NAME='${PM2_APP_NAME}' pm2'de bulunamadi (pm2 list ile kontrol edin). Yeni bir process baslatmamak icin durduruldu."
+	fi
+	log "   hedef process: ${PM2_APP_NAME}"
+	run bash -c "cd '${REPO_DIR}/backend' && GIT_COMMIT='${NEW_COMMIT:0:8}' '${PM2}' reload '${PM2_APP_NAME}' --update-env"
+else
+	log "⚠  PM2_APP_NAME tanimsiz — ecosystem.config.js'nin hesapladigi ada gore reload denenecek."
+	log "⚠  Bu ad gercek process ile eslesmezse pm2 YENI bir process baslatir (port cakismasi riski)."
+	log "⚠  deploy.env icine PM2_APP_NAME=<pm2 list'teki gercek ad> ekleyin."
+	run bash -c "cd '${REPO_DIR}/backend' && GIT_COMMIT='${NEW_COMMIT:0:8}' '${PM2}' reload ecosystem.config.js --update-env"
+fi
 
 # ---------------------------------------------------------------------------
 # Saglik kontrolu — gecmezse otomatik geri alinir
@@ -262,5 +283,5 @@ fi
 
 trap - ERR
 ROLLBACK_ARMED=0   # basarili: bundan sonraki hicbir sey geri almayi tetiklemesin
-log "✓ Dagitim tamamlandi → ${NEW_COMMIT:0:8}"
+log "��� Dagitim tamamlandi → ${NEW_COMMIT:0:8}"
 log "═══════════════════════════════════════"
