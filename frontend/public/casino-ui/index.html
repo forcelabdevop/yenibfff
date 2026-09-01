@@ -2173,11 +2173,11 @@
 <div class="user-dropdown" v-if="userMenuOpen">
 <div class="user-dropdown__avatar">
 <div class="user-dropdown__avatar-clip"><img alt="" src="assets/user-avatar-raccoon.png"/></div><svg class="user-dropdown__ring" viewBox="0 0 64 64"><circle class="track" cx="32" cy="32" r="30"></circle><circle :stroke-dasharray="dropdownRingLength" :stroke-dashoffset="dropdownRingOffset" class="value" cx="32" cy="32" r="30"></circle></svg>
-<span class="user-dropdown__rank">{{userRank}} Rank</span>
+<span class="user-dropdown__rank">{{userRank}} Ranks</span>
 </div>
 <div class="user-dropdown__name">{{authUser?.username}}</div>
 <div class="rank-progress">
-<div class="rank-progress__labels"><span>{{userRank}} Rank</span><span>{{userRank + 1}} Rank</span></div>
+<div class="rank-progress__labels"><span>{{userRank}} Ranks</span><span>{{userRank + 1}} Ranks</span></div>
 <div :style="{'--p': Math.max(rankProgress, 4) + '%'}" class="rank-progress__track">
 <div :style="{width: Math.max(rankProgress, 4) + '%'}" class="rank-progress__fill"></div>
 </div>
