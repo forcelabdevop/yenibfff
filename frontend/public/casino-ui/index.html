@@ -4421,32 +4421,69 @@
 
       <!-- Cash -->
       <template v-else-if="depositTab==='cash'">
-        <div class="wm-dropdown-host" style="margin-top:15px">
-          <div class="wm-field">
-            <div @click.stop="toggleWalletDropdown('cashCurrency')" class="wm-currency-btn" role="button" tabindex="0">
-              <img :src="coinIcon(cashCurrency)" alt="" class="wm-coin"/>{{cashCurrency && cashCurrency.code}}<i :class="walletDropdown==='cashCurrency' ? 'fa-chevron-up' : 'fa-chevron-down'" class="fas wm-chev"></i>
+        <div class="wm-state wm-state--error" v-if="fiatMethodsError">
+          <i class="fas fa-exclamation-triangle"></i> {{fiatMethodsError}}
+          <button @click="loadFiatMethods" class="wm-retry" type="button">Tekrar dene</button>
+        </div>
+        <div class="wm-state" v-else-if="fiatMethodsLoading"><i class="fas fa-circle-notch fa-spin"></i> Yükleniyor…</div>
+        <div class="wm-unavailable" v-else-if="!fiatCurrencies || !fiatCurrencies.length">
+          <strong>Fiat yatırma şu anda yapılandırılmamış.</strong>
+          <span>Lütfen destek ekibiyle iletişime geçin.</span>
+        </div>
+        <template v-else>
+          <div class="wm-dropdown-host" style="margin-top:15px">
+            <div class="wm-field">
+              <div @click.stop="toggleWalletDropdown('cashCurrency')" class="wm-currency-btn" role="button" tabindex="0">
+                <img :src="coinIcon(cashCurrency)" alt="" class="wm-coin"/>{{cashCurrency && cashCurrency.code}}<i :class="walletDropdown==='cashCurrency' ? 'fa-chevron-up' : 'fa-chevron-down'" class="fas wm-chev"></i>
+              </div>
+              <input class="wm-input" inputmode="decimal" placeholder="Amount" v-model="cashAmount"/>
+              <button @click="cashMax" class="wm-max" type="button">Max</button>
             </div>
-            <input class="wm-input" inputmode="decimal" placeholder="Amount" v-model="cashAmount"/>
-            <button @click="cashMax" class="wm-max" type="button">Max</button>
-          </div>
-          <div @click.stop class="wm-pop" v-if="walletDropdown==='cashCurrency'">
-            <div class="wm-pop__search"><i class="fas fa-search"></i><input @click.stop autocomplete="off" placeholder="Search currency" type="text" v-model="cashSearchQuery"/></div>
-            <div class="wm-pop__list">
-              <button :class="{selected:cashCurrency && cashCurrency.code===c.code}" :key="'cc-'+c.code" @click.stop="selectCashCurrency(c)" class="wm-pop__option" type="button" v-for="c in filteredFiatCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
-              <div class="wm-pop__empty" v-if="!filteredFiatCurrencies || !filteredFiatCurrencies.length">No currencies found</div>
+            <div @click.stop class="wm-pop" v-if="walletDropdown==='cashCurrency'">
+              <div class="wm-pop__search"><i class="fas fa-search"></i><input @click.stop autocomplete="off" placeholder="Search currency" type="text" v-model="cashSearchQuery"/></div>
+              <div class="wm-pop__list">
+                <button :class="{selected:cashCurrency && cashCurrency.code===c.code}" :key="'cc-'+c.code" @click.stop="selectCashCurrency(c)" class="wm-pop__option" type="button" v-for="c in filteredFiatCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
+                <div class="wm-pop__empty" v-if="!filteredFiatCurrencies || !filteredFiatCurrencies.length">No currencies found</div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="wm-bonus" style="margin-top:14px">
-          <img alt="" src="assets/bonus-chest.png"/>
-          <div class="wm-bonus__copy">Active Deposit Bonus:<strong>Choose your bonus</strong></div>
-          <button @click="toastMessage('Bonus secimi yakinda')" class="wm-bonus__drop" type="button"><i class="fas fa-chevron-down"></i></button>
-        </div>
-        <div class="wm-divider" style="margin-top:14px"></div>
-        <div class="wm-unavailable">
-          <strong>The deposit methods are not available for the selected currency in your region.</strong>
-          <span>If you use VPN, please, turn it off</span>
-        </div>
+
+          <!-- Secili para birimi icin aktif saglayici yoksa (baska bir
+               saglayici baska currency'de aktif olabilir) yatirim yapilamaz. -->
+          <div class="wm-unavailable" style="margin-top:14px" v-if="!cashProviders || !cashProviders.length">
+            <strong>The deposit methods are not available for the selected currency.</strong>
+            <span>Lütfen başka bir para birimi seçin.</span>
+          </div>
+
+          <template v-else>
+            <div class="wm-min" style="margin-top:10px" v-if="cashProviders[0]">
+              Min <strong>{{cashProviders[0].minAmount}} {{cashProviders[0].currency}}</strong> · Max <strong>{{cashProviders[0].maxAmount}} {{cashProviders[0].currency}}</strong>
+            </div>
+
+            <div class="wm-state wm-state--error" style="margin-top:14px" v-if="cashResultError">
+              <i class="fas fa-exclamation-triangle"></i> {{cashResultError}}
+            </div>
+
+            <!-- Manuel yatirim sonucu: IBAN / kripto cuzdan bilgisi. -->
+            <div class="wm-address-row" style="margin-top:14px" v-if="cashResult && cashResult.mode==='manual'">
+              <div class="wm-address-box" style="flex-direction:column;align-items:stretch;gap:8px" v-for="f in cashResult.fields" :key="f.label">
+                <div class="wm-address-text">
+                  <small>{{f.label}}</small>
+                  <strong>{{f.value}}</strong>
+                </div>
+                <button @click="copyCashField(f.value)" aria-label="Kopyala" class="wm-copy" type="button"><i class="far fa-copy"></i></button>
+              </div>
+              <div class="wm-note wm-note--single" v-if="cashResult.note">
+                <i aria-hidden="true" class="fas fa-info-circle wm-note__icon"></i>
+                <span>{{cashResult.note}}</span>
+              </div>
+            </div>
+
+            <button @click="submitCash" :disabled="cashSubmitting" class="wm-action" style="margin-top:14px" type="button">
+              <i class="fas fa-circle-notch fa-spin" v-if="cashSubmitting"></i>{{cashSubmitting ? 'İşleniyor…' : 'Yatır'}}
+            </button>
+          </template>
+        </template>
       </template>
 
       <!-- Buy Crypto -->

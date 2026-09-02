@@ -41,6 +41,7 @@ const meelDevRoutes = require("./payment/meelDev");
 const galaxyPayRoutes = require("./payment/galaxyPay");
 const fluxKriptoRoutes = require("./payment/fluxKripto");
 const xPaymentsRoutes = require("./payment/xPayments");
+const fiatMethodsRoutes = require("./payment/fiatMethods");
 const {
 	DEFAULT_METHOD_FLAGS: GALAXY_PAY_DEFAULT_METHOD_FLAGS,
 } = require("../utils/galaxyPay");
@@ -66,6 +67,11 @@ router.use("/payment/meeldev", meelDevRoutes);
 router.use("/payment/galaxypay", galaxyPayRoutes);
 router.use("/payment/fluxkripto", fluxKriptoRoutes);
 router.use("/payment/xpayments", xPaymentsRoutes);
+// Cash sekmesi icin aggregator: aktif fiat saglayicilarin currency/limit
+// bilgisini tek istekte doner. Diger /payment/* uclarinden ONCE
+// tanimlanmasi onemli degil (path'ler farkli), ama okunabilirlik icin
+// buraya eklendi.
+router.use("/payment", fiatMethodsRoutes);
 router.use("/exchange", exchangeRates);
 router.use("/affiliate", affiliateRoutes);
 router.use("/banner", bannerRoutes);

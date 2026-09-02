@@ -66,6 +66,17 @@ window.createWalletModal = function createWalletModal(ctx) {
   const cashCurrency = ref(null)
   const cashAmount = ref("")
 
+  // Cash (fiat) sekmesi: para birimi + saglayici listesi backend'deki
+  // SiteSettings.isActive bayraklarindan gelir (bkz. /payment/fiat-methods).
+  // GalaxyPay bilerek bu listeye dahil edilmez.
+  const fiatMethodsLoading = ref(false)
+  const fiatMethodsError = ref("")
+  const fiatProviders = ref([]) // [{ slug, name, currency, minAmount, maxAmount }]
+  const cashSubmitting = ref(false)
+  const cashResultError = ref("")
+  // { mode:'redirect', url } | { mode:'manual', title, note, fields:[{label,value}], expiresAt }
+  const cashResult = ref(null)
+
   // Crypto sekmesi: arama + sadece bakiyesi olanlari gosterme.
   const cryptoSearchQuery = ref("")
   const hideZeroBalances = ref(false)
@@ -95,7 +106,41 @@ window.createWalletModal = function createWalletModal(ctx) {
   const walletIsOpen = computed(() => walletView.value !== null)
 
   const cryptoCurrencies = computed(() => currencies.value.filter((c) => !c.fiat))
-  const fiatCurrencies = computed(() => currencies.value.filter((c) => c.fiat))
+
+  /**
+   * Cash / Buy Crypto sekmelerinde secilebilecek fiat para birimleri.
+   *
+   * DIKKAT: /wallet/currencies UCU FIAT PARA BIRIMI HIC DONMUYOR (bkz.
+   * backend/utils/walletCurrencies.js -> her girdi `fiat:false`). Gercek
+   * fiat listesi admin panelinde aktif edilen odeme saglayicilarindan
+   * (/payment/fiat-methods) gelir; asagida bu saglayicilarin benzersiz
+   * `currency` degerlerinden turetilir. Hicbir saglayici aktif degilse
+   * liste bostur ve Cash sekmesi "yapilandirilmamis" uyarisi gosterir.
+   */
+  const fiatCurrencies = computed(() => {
+    const seen = new Set()
+    const result = []
+    for (const provider of fiatProviders.value) {
+      if (seen.has(provider.currency)) continue
+      seen.add(provider.currency)
+      result.push({
+        code: provider.currency,
+        name: provider.currency,
+        fiat: true,
+        balance: 0,
+        precision: 2,
+        icon: "assets/coin-" + provider.currency.toLowerCase() + ".png",
+      })
+    }
+    return result
+  })
+
+  /** Secili fiat para birimine uyan, aktif odeme saglayicilari. */
+  const cashProviders = computed(() => {
+    const code = cashCurrency.value && cashCurrency.value.code
+    if (!code) return []
+    return fiatProviders.value.filter((p) => p.currency === code)
+  })
 
   /**
    * Yatirma ekraninda sunulabilecek para birimleri.
@@ -246,15 +291,16 @@ window.createWalletModal = function createWalletModal(ctx) {
       const data = await walletFetch("/wallet/currencies")
       currencies.value = Array.isArray(data) ? data : []
       const crypto = cryptoCurrencies.value
-      const fiat = fiatCurrencies.value
       // Liste yenilendiginde secili ref'ler eski nesnelere bakiyor; kodla yeniden
       // bagla, aksi halde takas sonrasi bakiyeler ekranda guncellenmez.
+      // NOT: cashCurrency/buyFiat burada YOK — bunlar /wallet/currencies'te hic
+      // gelmeyen fiat girdileri, resync'i loadFiatMethods() ayrica yapar.
       const resync = (target) => {
         if (!target.value) return
         const fresh = currencies.value.find((c) => c.code === target.value.code)
         if (fresh) target.value = fresh
       }
-      ;[depositCurrency, cashCurrency, buyFiat, buyCrypto, swapFrom, swapTo].forEach(resync)
+      ;[depositCurrency, buyCrypto, swapFrom, swapTo].forEach(resync)
       if (depositNetwork.value && depositCurrency.value) {
         const freshNetwork = (depositCurrency.value.networks || []).find(
           (n) => n.id === depositNetwork.value.id,
@@ -269,8 +315,6 @@ window.createWalletModal = function createWalletModal(ctx) {
       if (!depositNetwork.value && depositCurrency.value) {
         depositNetwork.value = (depositCurrency.value.networks || [])[0] || null
       }
-      if (!cashCurrency.value) cashCurrency.value = fiat[0] || null
-      if (!buyFiat.value) buyFiat.value = fiat[0] || null
       if (!buyCrypto.value) buyCrypto.value = crypto.find((c) => c.code === "BTC") || crypto[0] || null
       if (!swapFrom.value) swapFrom.value = crypto[0] || null
       if (!swapTo.value) swapTo.value = crypto[1] || crypto[0] || null
@@ -278,6 +322,35 @@ window.createWalletModal = function createWalletModal(ctx) {
       walletError.value = error.message || "Cuzdan bilgileri yuklenemedi."
     } finally {
       walletLoading.value = false
+    }
+  }
+
+  /**
+   * Cash sekmesindeki para birimi + odeme saglayicisi listesini yukler.
+   *
+   * /wallet/currencies'ten farkli olarak fiat girdiler BURADAN gelir (bkz.
+   * fiatCurrencies computed). Saglayicilarin hicbiri admin panelinden aktif
+   * edilmemisse `providers` bos doner; arayuz bu durumda "yapilandirilmamis"
+   * uyarisini gosterir, sessizce eski/sabit bir liste GOSTERMEZ.
+   */
+  async function loadFiatMethods() {
+    fiatMethodsLoading.value = true
+    fiatMethodsError.value = ""
+    try {
+      const data = await walletFetch("/payment/fiat-methods")
+      fiatProviders.value = (data && Array.isArray(data.providers)) ? data.providers : []
+      const fiat = fiatCurrencies.value
+      if (!cashCurrency.value || !fiat.some((c) => c.code === cashCurrency.value.code)) {
+        cashCurrency.value = fiat[0] || null
+      }
+      if (!buyFiat.value || !fiat.some((c) => c.code === buyFiat.value.code)) {
+        buyFiat.value = fiat[0] || null
+      }
+    } catch (error) {
+      fiatProviders.value = []
+      fiatMethodsError.value = error.message || "Odeme yontemleri yuklenemedi."
+    } finally {
+      fiatMethodsLoading.value = false
     }
   }
 
@@ -370,6 +443,7 @@ window.createWalletModal = function createWalletModal(ctx) {
       if (depositTab.value === "crypto") loadDepositAddress()
       if (depositTab.value === "buy") loadBuyQuote()
     })
+    if (depositTab.value === "cash") loadFiatMethods()
   }
 
   function closeWallet() {
@@ -403,6 +477,9 @@ window.createWalletModal = function createWalletModal(ctx) {
   function selectCashCurrency(currency) {
     cashCurrency.value = currency
     walletDropdown.value = null
+    // Para birimi degisince onceki saglayicinin sonucu/hatasi artik gecersiz.
+    cashResult.value = null
+    cashResultError.value = ""
   }
 
   function selectBuyFiat(currency) {
@@ -438,7 +515,10 @@ window.createWalletModal = function createWalletModal(ctx) {
   }
 
   function cashMax() {
-    if (cashCurrency.value) cashAmount.value = String(cashCurrency.value.balance || 0)
+    // Fiat yatirimin "bakiyesi" yoktur (kripto sekmesindeki gibi); Max
+    // burada saglayicinin izin verdigi en yuksek tutari doldurur.
+    const provider = cashProviders.value[0]
+    if (provider) cashAmount.value = String(provider.maxAmount || 0)
   }
 
   async function copyDepositAddress() {
@@ -504,11 +584,169 @@ window.createWalletModal = function createWalletModal(ctx) {
     }
   }
 
+  /**
+   * Her fiat saglayicinin backend'i FARKLI bir response sekli donduruyor
+   * (bkz. backend/routes/payment/*.js). Bu fonksiyonlar hepsini ortak iki
+   * sonuca normalize eder:
+   *   { mode:'redirect', url }                          -> odeme sayfasina git
+   *   { mode:'manual', title, note, fields, expiresAt }  -> hesap/adres bilgisi goster
+   * Taninmayan bir yanit gelirse HATA firlatilir; asla sessizce "basarili"
+   * gibi davranilmaz (kullanici parasini nereye gonderecegini bilmeli).
+   */
+
+  /** Forcelab Finance: /methods'ten ilk aktif alt-yontemi secip /prepare cagirir. */
+  async function runForcelabFinanceDeposit(amount) {
+    const methods = await walletFetch("/payment/forcelab-finance/methods")
+    const active = (methods && Array.isArray(methods.methods) ? methods.methods : []).find(
+      (m) => m.isActive,
+    )
+    if (!active) throw new Error("Forcelab Finance için uygun bir ödeme yöntemi bulunamadı.")
+    const prepared = await walletFetch("/payment/forcelab-finance/prepare", {
+      method: "POST",
+      body: JSON.stringify({ amount, providerSlug: active.slug }),
+    })
+    const account = prepared && Array.isArray(prepared.accounts) ? prepared.accounts[0] : null
+    if (!account) throw new Error("Forcelab Finance hesap bilgisi alınamadı.")
+    const fields = []
+    if (account.accountName) fields.push({ label: "Hesap Sahibi", value: account.accountName })
+    if (account.bankName) fields.push({ label: "Banka", value: account.bankName })
+    if (account.iban) fields.push({ label: "IBAN", value: account.iban })
+    if (account.walletName) fields.push({ label: "Cüzdan", value: account.walletName })
+    if (account.address) fields.push({ label: "Adres", value: account.address })
+    if (account.network) fields.push({ label: "Ağ", value: account.network })
+    if (!fields.length) throw new Error("Forcelab Finance geçerli bir hesap bilgisi döndürmedi.")
+    return { mode: "manual", title: "Yatırım Bilgileri", note: account.note || "", fields }
+  }
+
+  /** MeelDev: link donerse redirect, iban donerse manual. */
+  async function runMeelDevDeposit(amount) {
+    const data = await walletFetch("/payment/meeldev/deposit", {
+      method: "POST",
+      body: JSON.stringify({ amount }),
+    })
+    if (data && data.paymentUrl) return { mode: "redirect", url: data.paymentUrl }
+    if (data && data.account) {
+      const account = data.account
+      const fields = []
+      if (account.accountHolder) fields.push({ label: "Hesap Sahibi", value: account.accountHolder })
+      if (account.bankName) fields.push({ label: "Banka", value: account.bankName })
+      if (account.iban) fields.push({ label: "IBAN", value: account.iban })
+      if (fields.length) return { mode: "manual", title: "Yatırım Bilgileri", fields }
+    }
+    throw new Error("MeelDev'den geçerli bir ödeme yanıtı alınamadı.")
+  }
+
+  /** FluxKripto: kripto cuzdan adresine TRY karsiligi kripto gonderimi. */
+  async function runFluxKriptoDeposit(amount) {
+    const methods = await walletFetch("/payment/fluxkripto/methods")
+    const currencies = (methods && methods.currencies) || {}
+    const currency = currencies.trx ? "TRX" : currencies.usdt ? "USDT" : null
+    if (!currency) throw new Error("FluxKripto için aktif bir kripto para birimi yok.")
+    const data = await walletFetch("/payment/fluxkripto/deposit", {
+      method: "POST",
+      body: JSON.stringify({ amount, currency }),
+    })
+    if (!data || !data.walletAddress) throw new Error("FluxKripto geçerli bir cüzdan adresi döndürmedi.")
+    const fields = [
+      { label: "Cüzdan Adresi", value: data.walletAddress },
+      { label: "Gönderilecek Tutar", value: data.cryptoAmount + " " + data.currency },
+    ]
+    return {
+      mode: "manual",
+      title: "Kripto Yatırım Bilgileri",
+      note: "Yalnızca belirtilen ağ ve tutarda gönderim yapın.",
+      fields,
+      expiresAt: data.expiresAt || null,
+    }
+  }
+
+  /** XPayment: banka hesabi (IBAN) ile manuel yatirim. */
+  async function runXPaymentsDeposit(amount) {
+    const data = await walletFetch("/payment/xpayments/deposit", {
+      method: "POST",
+      body: JSON.stringify({ amount }),
+    })
+    const account = data && data.account
+    if (!account) throw new Error("XPayment geçerli bir hesap bilgisi döndürmedi.")
+    const fields = []
+    if (account.accountHolderName) fields.push({ label: "Hesap Sahibi", value: account.accountHolderName })
+    if (account.bankName) fields.push({ label: "Banka", value: account.bankName })
+    if (account.iban) fields.push({ label: "IBAN", value: account.iban })
+    if (!fields.length) throw new Error("XPayment geçerli bir hesap bilgisi döndürmedi.")
+    return { mode: "manual", title: "Yatırım Bilgileri", fields }
+  }
+
+  const CASH_ADAPTERS = {
+    "forcelab-finance": runForcelabFinanceDeposit,
+    meeldev: runMeelDevDeposit,
+    fluxkripto: runFluxKriptoDeposit,
+    xpayments: runXPaymentsDeposit,
+  }
+
+  /** Kullanici Cash sekmesinde tutar girip "Yatir" dedigi anda cagrilir. */
+  async function submitCash() {
+    const amount = Number(cashAmount.value)
+    if (!Number.isFinite(amount) || amount <= 0) {
+      toastMessage("Geçerli bir tutar girin")
+      return
+    }
+    const provider = cashProviders.value[0]
+    if (!provider) {
+      toastMessage("Bu para birimi için aktif bir ödeme yöntemi yok")
+      return
+    }
+    if (amount < provider.minAmount || amount > provider.maxAmount) {
+      toastMessage(`Tutar ${provider.minAmount} - ${provider.maxAmount} ${provider.currency} arasında olmalı`)
+      return
+    }
+    const adapter = CASH_ADAPTERS[provider.slug]
+    if (!adapter) {
+      toastMessage("Bu ödeme yöntemi henüz desteklenmiyor")
+      return
+    }
+    cashSubmitting.value = true
+    cashResult.value = null
+    cashResultError.value = ""
+    try {
+      const result = await adapter(amount)
+      if (result.mode === "redirect" && result.url) {
+        cashResult.value = result
+        // Odeme sayfasi harici bir siteye gidiyor; modal iframe icindeyse
+        // yeni sekmede acilmali, aksi halde mevcut sekmede yonlendirilir.
+        if (window.self !== window.top) {
+          window.open(result.url, "_blank", "noopener")
+        } else {
+          window.location.href = result.url
+        }
+      } else if (result.mode === "manual" && Array.isArray(result.fields) && result.fields.length) {
+        cashResult.value = result
+        toastMessage("Yatırım bilgileri hazır")
+      } else {
+        throw new Error("Ödeme sağlayıcısından geçerli bir yanıt alınamadı, lütfen destek ile iletişime geçin.")
+      }
+    } catch (error) {
+      cashResultError.value = error.message || "Yatırım başlatılamadı."
+    } finally {
+      cashSubmitting.value = false
+    }
+  }
+
+  async function copyCashField(value) {
+    if (!value) return
+    try {
+      await navigator.clipboard.writeText(String(value))
+    } catch (error) {
+      /* clipboard izni yoksa sessizce gec */
+    }
+    toastMessage("Kopyalandı")
+  }
+
   // Sekme degisince acik dropdown'i kapat ve o sekmenin verisini yukle.
   watch(depositTab, (tab) => {
     walletDropdown.value = null
     if (tab === "crypto") loadDepositAddress()
     if (tab === "buy") loadBuyQuote()
+    if (tab === "cash") loadFiatMethods()
   })
 
   watch(buyAmount, () => loadBuyQuote())
@@ -540,6 +778,15 @@ window.createWalletModal = function createWalletModal(ctx) {
     cashAmount,
     filteredFiatCurrencies,
     cashSearchQuery,
+    fiatMethodsLoading,
+    fiatMethodsError,
+    cashProviders,
+    cashSubmitting,
+    cashResult,
+    cashResultError,
+    loadFiatMethods,
+    submitCash,
+    copyCashField,
     buyFiat,
     buyCrypto,
     filteredBuyCryptoCurrencies,
