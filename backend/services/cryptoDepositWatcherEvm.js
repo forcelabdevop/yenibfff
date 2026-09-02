@@ -199,7 +199,16 @@ async function runOnce() {
 
 	try {
 		for (const currency of Object.values(CURRENCIES).filter((item) => item.family === 'EVM')) {
-			await scanNetwork(currency.network, currency);
+			// Her varlik/ag KENDI try/catch'ine sahiptir: getSafeBlock (finalized/
+			// current blok RPC cagrisi) scanNetwork'un ic try/catch'inden ONCE
+			// calisir ve hata firlatabilir. Bir agin RPC'si (orn. Polygon) arizali
+			// olsa da bu, ayni turda diger aglarin (ETH, BSC) taranmasini VE
+			// kredilenmesini ENGELLEMEMELIDIR.
+			try {
+				await scanNetwork(currency.network, currency);
+			} catch (error) {
+				console.error(`[crypto-evm] ${currency.network}/${currency.code} taranamadi:`, error.message);
+			}
 		}
 	} catch (error) {
 		console.error('[crypto-evm] tarama turu basarisiz:', error.message);
