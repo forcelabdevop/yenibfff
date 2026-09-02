@@ -8330,6 +8330,12 @@ router.use("/xpayments", xPaymentsAdminRoutes);
 const cryptoDepositsAdminRoutes = require("./cryptoDeposits");
 router.use("/crypto-deposits", cryptoDepositsAdminRoutes);
 
+// Toplama (sweep) cuzdani yonetimi: canli zincir bakiyesi + platform disina
+// (borsa/kisisel cuzdan) manuel cekim. cryptoDeposits'ten farkli olarak bu
+// GERCEK ZINCIR ISLEMI yapabilen bir uc noktadir (bkz. routes/admin/cryptoWallet.js).
+const cryptoWalletAdminRoutes = require("./cryptoWallet");
+router.use("/crypto-wallet", cryptoWalletAdminRoutes);
+
 // ==================== BETINOVI ADMIN API ROUTES ====================
 const betinoviAdminRoutes = require("./betinoviAdminRoutes");
 router.use("/betinovi-admin", betinoviAdminRoutes);
@@ -9654,7 +9660,7 @@ router.post(
 			await settings.save();
 			res.status(200).json({
 				success: true,
-				message: "Lisans başarıyla eklendi.",
+				message: "Lisans ba��arıyla eklendi.",
 				licenses: settings.licenses,
 			});
 		} catch (error) {
@@ -11164,7 +11170,7 @@ router.put(
 
 // ═════════════════════════════════���═════════════════════════════════════════
 // Forcelab Finance Admin Endpoints
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════���═══════════════════════════════════════════════════════════════════
 
 const ForcelabFinanceTransaction = require("../../database/models/ForcelabFinanceTransaction");
 const {
