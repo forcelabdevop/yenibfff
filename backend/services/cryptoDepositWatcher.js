@@ -29,8 +29,21 @@ const LOCK_KEY = 'tron:depositScanner';
 const LOCK_TTL_MS = 120000;
 const OWNER = `${process.pid}-${crypto.randomBytes(4).toString('hex')}`;
 
-/** Her turda taranacak adres sayisi — TronGrid hiz sinirini asmamak icin. */
-const ADDRESS_BATCH = Number(process.env.TRON_SCAN_BATCH || 25);
+/**
+ * Her turda taranacak adres sayisi — TronGrid hiz sinirini asmamak icin.
+ *
+ * DIKKAT: Eski varsayilan (25) artik kullanici sayisiyla (6842 kullanici x
+ * 2 TRON adresi = 13684 adres) olceklenmiyordu. "En eski taranan once"
+ * kuyruguyla 25'lik turlarda TAM bir tur 13684/25 ≈ 548 dakika (~9 saat)
+ * suruyordu — yani yeni bir yatirim, kotu sanslıysa taranmadan once
+ * SAATLERCE beklemek zorunda kaliyordu (bkz. 02.09.2026 vakasi, 5 USDT
+ * yatirimi gunlerce/saatlerce gorunmedi). TRON_API_KEY artik tanimli
+ * oldugundan (TronGrid hiz siniri cok daha yuksek) batch boyutu guvenle
+ * artirildi; 150 adres x 2 para birimi (TRX+USDT) x 120ms araliksa ~36
+ * saniye/tur surer (1 dakikalik cron periyoduna sigar) ve tam kuyruk
+ * turu ~91 dakikaya duser.
+ */
+const ADDRESS_BATCH = Number(process.env.TRON_SCAN_BATCH || 150);
 
 /** Zincir sorgulari arasi bekleme (ms). */
 const REQUEST_SPACING_MS = Number(process.env.TRON_SCAN_SPACING_MS || 120);
@@ -44,14 +57,28 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 async function discoverDeposits() {
 	// En uzun suredir taranmayan adresler once. Kullanici sayisi artsa da
 	// hicbir adres ac kalmaz.
-	const addresses = await CryptoAddress.find({})
+	//
+	// DIKKAT: chain: 'TRON' filtresi KRITIK. Bu filtre olmadan CryptoAddress
+	// koleksiyonundaki TUM zincirlerin (ETHEREUM/BNB/POLYGON dahil, toplam
+	// binlerce kayit) adresleri bu TRON taramasina giriyor ve global
+	// lastScannedAt siralamasinda TRON adresleriyle ayni kuyrukta yariisiyordu
+	// — sonuc: gercek TRON/USDT-TRC20 yatirimlari gunlerce taranamiyordu
+	// (bkz. 02.09.2026 vakasi). EVM adresleri zaten ayri bir izleyicide
+	// taraniyor (services/cryptoDepositWatcherEvm.js), burada TEKRAR
+	// taranmalarina gerek yok — hem gereksiz hem de tronClient'a EVM (0x...)
+	// adresi gonderildigi icin her seferinde hata/bos sonuc uretiyordu.
+	const addresses = await CryptoAddress.find({ chain: 'TRON' })
 		.sort({ lastScannedAt: 1 })
 		.limit(ADDRESS_BATCH)
 		.lean();
 
 	if (addresses.length === 0) return 0;
 
-	const currencies = listCurrencies();
+	// Ayni sekilde yalniz TRON para birimleri (TRX, USDT_TRC20) taranir —
+	// listCurrencies() TUM zincirleri dondurur, burada gereksiz.
+	const currencies = listCurrencies().filter(
+		(currency) => currency.family === 'TRON',
+	);
 	let discovered = 0;
 
 	for (const record of addresses) {
