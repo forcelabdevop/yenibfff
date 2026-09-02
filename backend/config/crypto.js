@@ -21,20 +21,24 @@
 const TRON_NETWORKS = {
 	mainnet: {
 		fullHost: 'https://api.trongrid.io',
-		// USDT-TRC20 resmi sozlesme adresi (mainnet).
-		usdtContract:
-			process.env.TRON_USDT_CONTRACT || 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+		// USDT-TRC20 resmi sozlesme adresi (mainnet) — SABIT KODLANDI.
+		//
+		// DIKKAT: Proje ayarlarindaki TRON_USDT_CONTRACT degeri GECERSIZ
+		// (TMK1GZT73ADWoYxwCuLUFPtKrRWeqcSPkk — zincirde deploy edilmis bir
+		// sozlesme degil, bir cuzdan adresine benziyor). Bu deger kullanilirsa
+		// TronGrid "Invalid contract address" / HTTP 400 hatasi verir ve HICBIR
+		// USDT-TRC20 yatirimi taranamaz/kredi edilemez (bkz. 02.09.2026 vaka:
+		// ahmetmehmet kullanicisinin 5 USDT'si gunlerce taranamadi). Bu yuzden
+		// process.env.TRON_USDT_CONTRACT BILEREK OKUNMUYOR; resmi Tether
+		// sozlesmesi sabit kullaniliyor. Proje ayarindaki TRON_USDT_CONTRACT
+		// duzeltilip dogrulanana kadar bu satiri DEGISTIRMEYIN.
+		usdtContract: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
 	},
 	nile: {
 		// Testnet — uctan uca deneme icin.
 		fullHost: 'https://nile.trongrid.io',
-		// DIKKAT: TRON_USDT_CONTRACT proje ayarlarinda mainnet sozlesmesine
-		// (TMK1GZT73ADWoYxwCuLUFPtKrRWeqcSPkk) ayarlandi ve Nile agi zorla
-		// acildigi icin (yukarida NETWORK='nile') bu deger burada KULLANILAMAZ
-		// — mainnet'teki bir sozlesme adresi Nile'da gecersizdir. Bilinen
-		// guncel Nile testnet USDT sozlesmesi sabit kodlandi. TRON_USDT_CONTRACT
-		// gercekten Nile icin dogru bir adresle guncellenirse bu sabiti kaldirip
-		// env okumasini geri acin.
+		// Bilinen guncel Nile testnet USDT sozlesmesi (mainnet sozlesmesi
+		// Nile'da gecersiz oldugu icin ayni sekilde sabit kodlandi).
 		usdtContract: 'TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf',
 	},
 };
