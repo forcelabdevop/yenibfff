@@ -23,7 +23,11 @@
 #     WEB_ROOT=/www/wwwroot/velobet285.com
 #     BRANCH=main
 #     SERVER_PORT=5000
+#     PM2_APP_NAME=velobet-backend
+#     EVM_HD_MNEMONIC="... 12/15/18/21/24 kelime ..."
+#     TRON_HD_MNEMONIC="... 12/15/18/21/24 kelime ..."
 #     PNPM_BIN=/www/server/nodejs/v20.x.x/bin/pnpm
+#   deploy.env chmod 600 olmali ve ASLA git'e eklenmemelidir.
 #
 set -euo pipefail
 
@@ -52,6 +56,10 @@ SERVER_PORT="${SERVER_PORT:-5000}"
 # (ayni SERVER_PORT'u dinlemeye calisan cift process = canliyi bozma riski).
 PM2_APP_NAME="${PM2_APP_NAME:-}"
 HEALTH_URL="${HEALTH_URL:-http://127.0.0.1:${SERVER_PORT}/health}"
+# Para kabul eden production backend eksik bir HD seed ile yayinlanmamali.
+# Degerin kendisini asla loglamadan yalnizca varligini ve BIP39 kelime sayisini
+# deploy oncesinde dogrulariz.
+REQUIRE_CRYPTO_WALLETS="${REQUIRE_CRYPTO_WALLETS:-1}"
 HEALTH_RETRIES="${HEALTH_RETRIES:-15}"
 HEALTH_DELAY="${HEALTH_DELAY:-2}"
 LOG_FILE="${LOG_FILE:-${REPO_DIR}/logs/deploy.log}"
@@ -86,6 +94,21 @@ die() {
 run() {
 	if [[ ${DRY_RUN} -eq 1 ]]; then log "DRY-RUN: $*"; else "$@"; fi
 }
+
+validate_mnemonic_env() {
+	local name="$1" value="${!1:-}" words
+	[[ -n "${value//[[:space:]]/}" ]] || die "${name} deploy.env icinde tanimli degil. Kripto yatirma guvenli sekilde baslatilamaz."
+	words="$(wc -w <<<"${value}" | tr -d ' ')"
+	case "${words}" in
+		12|15|18|21|24) ;;
+		*) die "${name} gecersiz BIP39 kelime sayisina sahip (${words}). Degerin kendisi loglanmadi." ;;
+	esac
+}
+
+if [[ "${REQUIRE_CRYPTO_WALLETS}" == "1" ]]; then
+	validate_mnemonic_env EVM_HD_MNEMONIC
+	validate_mnemonic_env TRON_HD_MNEMONIC
+fi
 
 # ---------------------------------------------------------------------------
 # Tek calisma kilidi
@@ -129,10 +152,14 @@ log "pm2  : ${PM2}"
 # ---------------------------------------------------------------------------
 git rev-parse --is-inside-work-tree >/dev/null 2>&1 || die "${REPO_DIR} bir git deposu degil."
 
-# admin build'i her calistiginda bu dosyayi yeniden uretir (icon bundling
-# script'i). Elle yapilmis bir degisiklik degil, guvenle atilabilir.
+# Build her calistiginda bu dosyalari yeniden uretir (admin icon bundling +
+# casino-ui tailwind derlemesi). Elle yapilmis degisiklikler degil, guvenle
+# atilabilir — aksi halde her `pnpm run build` sonrasi repo "dirty" kalir ve
+# BIR SONRAKI deploy.sh calismasi "commit edilmemis degisiklik var" hatasiyla
+# durur (build basarili olsa bile).
 GENERATED_FILES=(
 	"admin/src/@iconify/icons-bundle.js"
+	"frontend/public/casino-ui/tailwind.css"
 )
 for f in "${GENERATED_FILES[@]}"; do
 	if [[ -f "${REPO_DIR}/${f}" ]]; then

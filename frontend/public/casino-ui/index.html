@@ -13,7 +13,7 @@
 <script src="./casino-ui-notifications.js"></script>
 <script src="./game-detail.js"></script>
 <script src="./account-pages.js"></script>
-<script src="./wallet-modal.js"></script>
+  <script src="./wallet-modal.js?v=20260901-3"></script>
 <script src="./profile-modal.js"></script>
 <script src="./account-page.js"></script>
 <script src="./missions-page.js"></script>
@@ -1588,9 +1588,9 @@
     .wm-how { height:34px; margin-left:auto; margin-right:15px; border:0; border-radius:8px; padding:0 12px; background:#2a3950; color:#afbed3; font-size:12px; font-weight:600; display:flex; align-items:center; gap:8px; cursor:pointer; }
     .wm-how + .wm-close { margin-left:0; }
 
-    .wm-tabs { height:38px; margin-top:14px; display:grid; grid-template-columns:repeat(3,1fr); border-bottom:1px solid #314052; }
-    .wm-tab { position:relative; border:0; background:transparent; color:#fff; font-size:15px; font-weight:600; cursor:pointer; }
-    .wm-tab.active::after { content:''; position:absolute; height:1px; left:7px; right:7px; bottom:-1px; background:#ef1450; box-shadow:0 -4px 14px 4px rgba(238,20,80,.48); }
+    .wm-tabs { height:42px; margin-top:14px; display:grid; grid-template-columns:repeat(3,1fr); border-bottom:1px solid #324052; }
+    .wm-tab { position:relative; border:0; background:transparent; color:#f6f7fb; font-size:15px; font-weight:800; cursor:pointer; }
+    .wm-tab.active::after { content:''; position:absolute; left:0; right:0; bottom:-1px; height:1px; background:linear-gradient(90deg,transparent 0%,#f1084b 27%,#f1084b 73%,transparent 100%); box-shadow:0 -5px 13px rgba(241,8,75,.72); }
 
     .wm-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:14px; }
     .wm-action { height:114px; border:1px solid #29374a; border-radius:9px; background:#1a2533; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; color:#fff; cursor:pointer; }
@@ -1605,10 +1605,10 @@
     .wm-link__icon { width:14px; color:#667b97; font-size:15px; }
     .wm-chev { margin-left:auto; color:#a9bbd1; font-size:13px; }
 
-    .wm-field { height:58px; border:1px solid #2b3b50; border-radius:10px; background:#0b121a; display:flex; align-items:center; overflow:hidden; }
+    .wm-field { height:58px; border:1px solid #344256; border-radius:10px; background:#0d141e; display:flex; align-items:center; overflow:hidden; }
     /* Para birimi listesi acikken tasmayi serbest birak, aksi halde .wm-pop kirpilir */
     .wm-field:has(.wm-pop) { overflow:visible; }
-    .wm-currency-btn { position:relative; height:42px; min-width:98px; margin-left:7px; border:0; border-radius:7px; background:#1a2635; display:flex; align-items:center; gap:7px; padding:0 10px; color:#fbfbfd; font-size:14px; font-weight:600; cursor:pointer; }
+    .wm-currency-btn { position:relative; height:42px; min-width:98px; margin-left:7px; border:0; border-radius:7px; background:#1d2938; display:flex; align-items:center; gap:7px; padding:0 10px; color:#fbfbfd; font-size:14px; font-weight:800; cursor:pointer; }
     .wm-coin { width:21px; height:21px; object-fit:contain; flex:0 0 21px; }
     .wm-input { min-width:0; flex:1; padding:0 8px; border:0; background:transparent; color:#fff; font-size:15px; font-weight:600; outline:none; }
     .wm-input::placeholder { color:#657896; font-size:14px; }
@@ -1619,14 +1619,34 @@
     .wm-balance strong { color:#a9c1e3; }
 
     .wm-selectors { position:relative; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:15px; }
-    .wm-selector { position:relative; height:58px; padding:0 12px; border:0; border-radius:9px; background:#1c2938; display:flex; align-items:center; text-align:left; min-width:0; cursor:pointer; }
+    .wm-selector { position:relative; height:58px; padding:0 12px; border:0; border-radius:9px; background:#1e2a39; display:flex; align-items:center; text-align:left; min-width:0; cursor:pointer; }
     .wm-selector .wm-coin { width:24px; height:24px; flex-basis:24px; margin-right:9px; }
     .wm-selector__text { min-width:0; flex:1; }
     .wm-selector__text small { display:block; color:#667996; font-size:12px; font-weight:600; line-height:1.2; }
     .wm-selector__text strong { display:block; overflow:hidden; color:#fff; font-size:14px; font-weight:600; white-space:nowrap; text-overflow:ellipsis; }
-    .wm-pop { position:absolute; z-index:20; top:calc(100% + 6px); left:0; right:0; min-width:150px; padding:5px; border:1px solid #30425a; border-radius:8px; background:#1c2938; box-shadow:0 12px 28px rgba(0,0,0,.35); }
-    .wm-pop__option { width:100%; height:35px; padding:0 10px; display:flex; align-items:center; gap:8px; border:0; border-radius:6px; background:transparent; color:#dbe5f3; font-size:12px; text-align:left; cursor:pointer; }
-    .wm-pop__option:hover { background:#26374a; }
+    .wm-pop { position:relative; z-index:20; width:100%; margin-top:8px; padding:14px; border:1px solid #30425a; border-radius:10px; background:#1c2938; box-shadow:0 14px 30px rgba(0,0,0,.34); }
+    .wm-pop__search { position:relative; margin-bottom:10px; }
+    .wm-pop__search i { position:absolute; top:50%; left:14px; transform:translateY(-50%); color:#7186a4; font-size:15px; }
+    .wm-pop__search input { width:100%; height:48px; padding:0 14px 0 42px; border:1px solid #3b506a; border-radius:9px; background:#111924; color:#fff; font-size:14px; font-weight:600; outline:none; }
+    .wm-pop__search input:focus { border-color:#287fd9; }
+    .wm-pop__search input::placeholder { color:#7186a4; font-weight:600; }
+    .wm-pop__toggle { display:flex; align-items:center; justify-content:space-between; gap:8px; min-height:52px; padding:10px 0 0; margin-top:8px; border-top:1px solid #2c3d51; color:#f3f6fb; font-size:14px; font-weight:700; }
+    .wm-pop__switch { position:relative; width:42px; height:24px; flex:0 0 42px; border:0; border-radius:12px; background:#3c4c62; cursor:pointer; transition:background .15s ease; }
+    .wm-pop__switch::after { content:''; position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; background:#dce4ee; transition:transform .15s ease; }
+    .wm-pop__switch.on { background:#1679e9; }
+    .wm-pop__switch.on::after { transform:translateX(18px); }
+    .wm-pop__list { max-height:245px; overflow-y:auto; }
+    .wm-pop__option { width:100%; min-height:48px; padding:0 12px; display:flex; align-items:center; gap:10px; border:0; border-radius:8px; background:transparent; color:#f4f7fb; font-size:14px; font-weight:700; text-align:left; cursor:pointer; }
+    .wm-pop__option:hover, .wm-pop__option.selected { background:#2a3a50; }
+    .wm-pop__option:disabled { color:#71839f; cursor:not-allowed; }
+    .wm-pop__option:disabled:hover { background:transparent; }
+    .wm-pop__option-balance { margin-left:auto; color:#f4f7fb; font-size:13px; font-weight:700; }
+    .wm-pop__option:disabled .wm-pop__option-balance { color:#71839f; }
+    .wm-pop__status { margin-left:8px; color:#71839f; font-size:11px; font-weight:700; }
+    .wm-pop__empty { padding:18px 6px; color:#7186a4; font-size:13px; text-align:center; }
+    .wm-dropdown-host { position:relative; }
+    .wm-dropdown-host > .wm-pop { position:absolute; top:100%; left:0; right:0; }
+    .wm-selectors + .wm-pop { margin-top:8px; }
 
     .wm-bonus { min-height:52px; display:flex; align-items:center; }
     .wm-bonus img { width:29px; height:29px; object-fit:contain; margin:0 11px 0 2px; }
@@ -1636,7 +1656,7 @@
     .wm-info { display:inline-grid; place-items:center; width:15px; height:15px; margin-left:4px; border:1px solid #5e7390; border-radius:50%; color:#7e91aa; font-size:9px; font-style:normal; vertical-align:1px; }
 
     .wm-address-row { display:grid; grid-template-columns:300px 126px; gap:16px; margin-top:20px; align-items:start; }
-    .wm-address-box { height:58px; border:1px solid #2d3d51; border-radius:9px; background:#0d151e; display:flex; align-items:center; padding-left:18px; overflow:hidden; }
+    .wm-address-box { height:58px; border:1px solid #344256; border-radius:9px; background:#0d141e; display:flex; align-items:center; padding-left:18px; overflow:hidden; }
     .wm-address-text { min-width:0; flex:1; }
     .wm-address-text small { display:block; color:#657a98; font-size:12px; font-weight:600; }
     .wm-address-text strong { display:block; overflow:hidden; color:#fff; font-size:14px; font-weight:600; white-space:nowrap; text-overflow:ellipsis; }
@@ -1659,6 +1679,9 @@
     .wm-notes .wm-note { height:auto; min-height:36px; display:block; padding:9px 12px; white-space:normal; text-align:center; line-height:1.5; }
     .wm-note--warn { border-color:#7a4a1e; background:rgba(214,124,40,.09); color:#e0a468; }
     .wm-note--warn strong { color:#ffc078; }
+    /* Referans (BetFury) tasarimdaki sade tek satirlik bilgi kutusu. */
+    .wm-note--single { margin-top:12px; height:36px; padding:0 12px; white-space:normal; text-align:center; }
+    .wm-note__icon { font-style:normal; }
     .wm-state--error { flex-direction:column; gap:12px; color:#e08a8a; text-align:center; padding:0 16px; }
     .wm-retry { padding:7px 18px; border:1px solid #2c3b4e; border-radius:8px; background:#1b2735; color:#cfe0f5; font-size:12px; font-weight:600; cursor:pointer; }
     .wm-retry:hover { background:#22323f; }
@@ -1671,28 +1694,34 @@
     .wm-buy { margin-top:19px; }
     .wm-buy__label { height:24px; color:#fff; font-size:15px; font-weight:600; }
     .wm-buy__label + .wm-field { margin-top:7px; }
+    .wm-field--buy { padding-right:6px; }
+    .wm-field__stack { display:flex; min-width:0; flex:1; flex-direction:column; justify-content:center; gap:1px; padding:0 8px; }
+    .wm-field__stack small { color:#657896; font-size:12px; font-weight:600; line-height:1.15; }
+    .wm-input--stack { height:auto; padding:0; font-size:15px; line-height:1.2; }
+    .wm-field__clear { width:34px; height:34px; flex:0 0 34px; margin-right:4px; border:0; border-radius:7px; background:transparent; color:#7c8ca4; font-size:14px; cursor:pointer; display:grid; place-items:center; }
+    .wm-field__clear:hover { background:rgba(255,255,255,.06); color:#d3dcea; }
     .wm-buy__meta { height:26px; margin-top:12px; display:flex; align-items:center; justify-content:space-between; color:#a8b9d0; font-size:12px; font-weight:600; }
     .wm-provider { display:flex; align-items:center; gap:6px; color:#fff; font-size:14px; font-weight:500; }
-    .wm-provider img { width:18px; height:18px; object-fit:contain; }
+    .wm-provider__dot { width:9px; height:9px; border-radius:50%; background:#8c4dff; box-shadow:0 0 8px rgba(140,77,255,.6); }
     .wm-payment { margin-top:24px; }
     .wm-payment__head { height:24px; display:flex; align-items:center; }
     .wm-payment__head h3 { margin:0; color:#fff; font-size:14px; font-weight:600; }
     .wm-country { margin-left:auto; display:flex; align-items:center; gap:7px; color:#fff; font-size:14px; font-weight:600; }
     .wm-country img { width:18px; height:18px; object-fit:contain; }
     .wm-methods { position:relative; margin-top:15px; display:grid; gap:8px; }
-    .wm-method { position:relative; height:61px; border:1px solid transparent; border-radius:10px; background:#1c2836; padding:0 11px; display:grid; grid-template-columns:100px 1fr 146px; align-items:center; cursor:pointer; }
-    .wm-method.selected { border:2px solid #248cff; padding:0 10px; }
+    .wm-method { position:relative; height:60px; border:2px solid transparent; border-radius:10px; background:#1d2938; padding:0 11px; display:grid; grid-template-columns:100px 1fr 146px; align-items:center; cursor:pointer; }
+    .wm-method.selected { border-color:#2d8cff; }
     .wm-method__brand { width:82px; height:41px; object-fit:contain; }
-    .wm-recommended { position:absolute; left:-2px; top:-10px; height:21px; padding:0 8px; border-radius:9px; background:#0bc14f; color:#fff; display:flex; align-items:center; font-size:10px; font-weight:700; letter-spacing:.2px; box-shadow:0 0 14px rgba(16,193,77,.4); }
-    .wm-best { justify-self:start; height:20px; padding:0 8px; border-radius:12px; background:#183d32; color:#0dc050; display:flex; align-items:center; font-size:10px; font-weight:700; letter-spacing:.5px; }
+    .wm-recommended { position:absolute; left:-2px; top:-10px; height:auto; padding:3px 8px 4px; border-radius:9px 9px 9px 0; background:#10bd4c; color:#fff; display:flex; align-items:center; font-size:10px; line-height:15px; font-weight:900; letter-spacing:.4px; box-shadow:0 3px 16px rgba(16,189,76,.35); }
+    .wm-best { justify-self:start; height:21px; padding:0 9px; border-radius:999px; background:rgba(17,143,75,.25); color:#0dc451; display:flex; align-items:center; font-size:10px; font-weight:900; letter-spacing:.4px; white-space:nowrap; }
     .wm-method__result { text-align:right; }
     .wm-method__result small { display:block; color:#667a98; font-size:11px; font-weight:600; }
     .wm-method__result strong { color:#fff; font-size:13px; font-weight:600; }
     .wm-footer { position:absolute; z-index:5; left:0; right:0; bottom:0; height:113px; padding:16px 24px; border-top:1px solid #2a394b; background:#1a2533; }
     .wm-agree { height:28px; display:flex; align-items:center; color:#fff; font-size:14px; font-weight:600; cursor:pointer; }
-    .wm-check { width:24px; height:24px; flex:0 0 24px; margin-right:8px; border:2px solid #596576; border-radius:6px; background:#19222d; display:grid; place-items:center; color:#fff; font-size:12px; }
-    .wm-check.checked { border-color:#258df4; background:#258df4; }
-    .wm-cta { width:100%; height:45px; margin-top:9px; border:0; border-radius:9px; background:linear-gradient(#ff275a,#e90040); box-shadow:inset 0 2px 0 rgba(255,255,255,.25), 0 7px 17px rgba(237,6,65,.37); color:#fff; font-size:15px; font-weight:600; line-height:1.1; cursor:pointer; }
+    .wm-check { width:24px; height:24px; flex:0 0 24px; margin-right:8px; border:2px solid #5a6676; border-radius:6px; background:#151d28; display:grid; place-items:center; color:#fff; font-size:12px; }
+    .wm-check.checked { border-color:#3194ff; background:#1679e9; }
+    .wm-cta { width:100%; height:44px; margin-top:9px; border:0; border-radius:9px; background:linear-gradient(180deg,#ff245f 0%,#f3074c 48%,#cc003c 100%); box-shadow:inset 0 2px 2px rgba(255,255,255,.32), 0 6px 16px rgba(245,0,67,.48); color:#fff; font-size:15px; font-weight:900; line-height:1.1; cursor:pointer; }
     .wm-cta:disabled { opacity:.6; cursor:not-allowed; }
 
     .wm-swap { margin-top:18px; }
@@ -3814,7 +3843,7 @@
 <div class="chat-win__body">
 <img :alt="message.win.game" :src="message.win.cover" class="chat-win__cover"/>
 <div class="chat-win__info">
-<div class="chat-win__title"><span class="emoji">😎</span>My win in<br/>“{{message.win.game}}”</div>
+<div class="chat-win__title"><span class="emoji">��</span>My win in<br/>“{{message.win.game}}”</div>
 <div class="chat-win__payout"><span class="chat-win__amount">{{message.win.payout}}</span><i class="fas fa-chevron-right"></i></div>
 <div class="chat-win__footer"><span class="chat-win__multiplier">x {{message.win.multiplier}}</span></div>
 </div>
@@ -4330,32 +4359,39 @@
           <div @click.stop="toggleWalletDropdown('depCurrency')" class="wm-selector" role="button" tabindex="0">
             <img :src="coinIcon(depositCurrency)" alt="" class="wm-coin"/>
             <span class="wm-selector__text"><small>Currency</small><strong>{{depositCurrency && depositCurrency.code}}</strong></span>
-            <i class="fas fa-chevron-down wm-chev"></i>
-            <div @click.stop class="wm-pop" v-if="walletDropdown==='depCurrency'">
-              <button :key="'dc-'+c.code" @click="selectDepositCurrency(c)" class="wm-pop__option" type="button" v-for="c in depositCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
-            </div>
+            <i :class="walletDropdown==='depCurrency' ? 'fa-chevron-up' : 'fa-chevron-down'" class="fas wm-chev"></i>
           </div>
           <div @click.stop="toggleWalletDropdown('depNetwork')" class="wm-selector" role="button" tabindex="0">
             <img :src="(depositNetwork && depositNetwork.icon) || coinIcon(depositCurrency)" alt="" class="wm-coin"/>
             <span class="wm-selector__text"><small>Network</small><strong>{{networkLabel(depositNetwork)}}</strong></span>
-            <i class="fas fa-chevron-down wm-chev"></i>
-            <div @click.stop class="wm-pop" v-if="walletDropdown==='depNetwork'">
-              <button :key="'dn-'+n.id" @click="selectDepositNetwork(n)" class="wm-pop__option" type="button" v-for="n in networkOptions">{{networkLabel(n)}}</button>
-            </div>
+            <i :class="walletDropdown==='depNetwork' ? 'fa-chevron-up' : 'fa-chevron-down'" class="fas wm-chev"></i>
           </div>
         </div>
-        <div class="wm-bonus" style="margin-top:15px">
-          <img alt="" src="assets/bonus-chest.png"/>
-          <div class="wm-bonus__copy">Active Deposit Bonus:<strong>Choose your bonus</strong></div>
-          <button @click="toastMessage('Bonus secimi yakinda')" class="wm-bonus__drop" type="button"><i class="fas fa-chevron-down"></i></button>
+        <div @click.stop class="wm-pop" v-if="walletDropdown==='depCurrency'">
+          <div class="wm-pop__search">
+            <i class="fas fa-search"></i>
+            <input @click.stop autocomplete="off" placeholder="Search currency" type="text" v-model="cryptoSearchQuery"/>
+          </div>
+          <div class="wm-pop__list">
+            <button :class="{selected:depositCurrency && depositCurrency.code===c.code}" :disabled="!canDeposit(c)" :key="'dc-'+c.code" @click.stop="selectDepositCurrency(c)" class="wm-pop__option" type="button" v-for="c in filteredDepositCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/><span>{{c.code}}</span><span class="wm-pop__status" v-if="!canDeposit(c)">Yakında</span><span class="wm-pop__option-balance">{{formatAmount(c.balance, 4)}}</span></button>
+            <div class="wm-pop__empty" v-if="!filteredDepositCurrencies || !filteredDepositCurrencies.length">No currencies found</div>
+          </div>
+          <label @click.stop class="wm-pop__toggle">
+            <span>Hide 0 balances</span>
+            <button :class="{on:hideZeroBalances}" @click.stop="hideZeroBalances=!hideZeroBalances" aria-label="Hide 0 balances" class="wm-pop__switch" type="button"></button>
+          </label>
         </div>
-        <div class="wm-divider" style="margin-top:13px"></div>
-        <div class="wm-state" v-if="addressLoading"><i class="fas fa-circle-notch fa-spin"></i> Adres aliniyor…</div>
-        <div class="wm-state wm-state--error" v-else-if="depositAddressError">
+        <div @click.stop class="wm-pop" v-if="walletDropdown==='depNetwork'">
+          <div class="wm-pop__list">
+            <button :class="{selected:depositNetwork && depositNetwork.id===n.id}" :key="'dn-'+n.id" @click.stop="selectDepositNetwork(n)" class="wm-pop__option" type="button" v-for="n in networkOptions"><img :src="n.icon || coinIcon(depositCurrency)" alt="" class="wm-coin"/>{{networkLabel(n)}}</button>
+          </div>
+        </div>
+        <div class="wm-state" style="margin-top:19px" v-if="addressLoading"><i class="fas fa-circle-notch fa-spin"></i> Adres aliniyor…</div>
+        <div class="wm-state wm-state--error" style="margin-top:19px" v-else-if="depositAddressError">
           <i class="fas fa-exclamation-triangle"></i> {{depositAddressError}}
           <button @click="loadDepositAddress" class="wm-retry" type="button">Tekrar dene</button>
         </div>
-        <div class="wm-address-row" v-else-if="depositAddress">
+        <div class="wm-address-row" style="margin-top:19px" v-else-if="depositAddress">
           <div>
             <!-- Basliktaki, tutardaki ve uyaridaki para birimi TEK kaynaktan
                  (depositAddress) okunur. depositCurrency secimle ANINDA
@@ -4374,65 +4410,119 @@
           <!-- QR sunucuda uretilir; gelmezse kirik gorsel yerine hic gosterme. -->
           <img :src="depositAddress.qr" v-if="depositAddress.qr" alt="Yatirma adresi QR kodu" class="wm-qr"/>
         </div>
-        <!-- Notlar grid satirinin DISINDA: sol sutun 300px sabit oldugu icin
-             uzun uyari metni iceride kirpiliyordu. Tam genislikte akiyor. -->
-        <div class="wm-notes" v-if="depositAddress && !addressLoading && !depositAddressError">
-          <div class="wm-note wm-note--warn">Yalnizca <strong>{{depositAddress.network}}</strong> agi uzerinden <strong>{{depositAddress.displayCode || depositAddress.currency}}</strong> gonderin. Farkli ag veya farkli coin gonderirseniz varliklariniz kaybolur.</div>
-          <div class="wm-note">Yatiriminiz <strong>{{depositAddress.confirmationsRequired}}</strong> ag onayindan sonra bakiyenize eklenir.</div>
+        <!-- Referans tasarimla (BetFury) birebir: tek satir, sade bilgi kutusu.
+             Ag/coin uyumsuzlugu ve onay sayisi tek cumlede birlesti; ayri
+             sari uyari kutusu kaldirildi. -->
+        <div class="wm-note wm-note--single" v-if="depositAddress && !addressLoading && !depositAddressError">
+          <i aria-hidden="true" class="fas fa-info-circle wm-note__icon"></i>
+          <span>Yalnızca <strong>{{depositAddress.network}}</strong> ağı üzerinden <strong>{{depositAddress.displayCode || depositAddress.currency}}</strong> gönderin. {{depositAddress.confirmationsRequired}} ağ onayı gerekir.<template v-if="depositAddress.assetType === 'native'"> Akıllı sözleşme/internal transfer kullanmayın.</template></span>
         </div>
       </template>
 
       <!-- Cash -->
       <template v-else-if="depositTab==='cash'">
-        <div class="wm-field" style="margin-top:15px">
-          <div @click.stop="toggleWalletDropdown('cashCurrency')" class="wm-currency-btn" role="button" tabindex="0">
-            <img :src="coinIcon(cashCurrency)" alt="" class="wm-coin"/>{{cashCurrency && cashCurrency.code}}<i class="fas fa-chevron-down wm-chev"></i>
+        <div class="wm-state wm-state--error" v-if="fiatMethodsError">
+          <i class="fas fa-exclamation-triangle"></i> {{fiatMethodsError}}
+          <button @click="loadFiatMethods" class="wm-retry" type="button">Tekrar dene</button>
+        </div>
+        <div class="wm-state" v-else-if="fiatMethodsLoading"><i class="fas fa-circle-notch fa-spin"></i> Yükleniyor…</div>
+        <div class="wm-unavailable" v-else-if="!fiatCurrencies || !fiatCurrencies.length">
+          <strong>Fiat yatırma şu anda yapılandırılmamış.</strong>
+          <span>Lütfen destek ekibiyle iletişime geçin.</span>
+        </div>
+        <template v-else>
+          <div class="wm-dropdown-host" style="margin-top:15px">
+            <div class="wm-field">
+              <div @click.stop="toggleWalletDropdown('cashCurrency')" class="wm-currency-btn" role="button" tabindex="0">
+                <img :src="coinIcon(cashCurrency)" alt="" class="wm-coin"/>{{cashCurrency && cashCurrency.code}}<i :class="walletDropdown==='cashCurrency' ? 'fa-chevron-up' : 'fa-chevron-down'" class="fas wm-chev"></i>
+              </div>
+              <input class="wm-input" inputmode="decimal" placeholder="Amount" v-model="cashAmount"/>
+              <button @click="cashMax" class="wm-max" type="button">Max</button>
+            </div>
             <div @click.stop class="wm-pop" v-if="walletDropdown==='cashCurrency'">
-              <button :key="'cc-'+c.code" @click="selectCashCurrency(c)" class="wm-pop__option" type="button" v-for="c in fiatCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
+              <div class="wm-pop__search"><i class="fas fa-search"></i><input @click.stop autocomplete="off" placeholder="Search currency" type="text" v-model="cashSearchQuery"/></div>
+              <div class="wm-pop__list">
+                <button :class="{selected:cashCurrency && cashCurrency.code===c.code}" :key="'cc-'+c.code" @click.stop="selectCashCurrency(c)" class="wm-pop__option" type="button" v-for="c in filteredFiatCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
+                <div class="wm-pop__empty" v-if="!filteredFiatCurrencies || !filteredFiatCurrencies.length">No currencies found</div>
+              </div>
             </div>
           </div>
-          <input class="wm-input" inputmode="decimal" placeholder="Amount" v-model="cashAmount"/>
-          <button @click="cashMax" class="wm-max" type="button">Max</button>
-        </div>
-        <div class="wm-bonus" style="margin-top:14px">
-          <img alt="" src="assets/bonus-chest.png"/>
-          <div class="wm-bonus__copy">Active Deposit Bonus:<strong>Choose your bonus</strong></div>
-          <button @click="toastMessage('Bonus secimi yakinda')" class="wm-bonus__drop" type="button"><i class="fas fa-chevron-down"></i></button>
-        </div>
-        <div class="wm-divider" style="margin-top:14px"></div>
-        <div class="wm-unavailable">
-          <strong>The deposit methods are not available for the selected currency in your region.</strong>
-          <span>If you use VPN, please, turn it off</span>
-        </div>
+
+          <!-- Secili para birimi icin aktif saglayici yoksa (baska bir
+               saglayici baska currency'de aktif olabilir) yatirim yapilamaz. -->
+          <div class="wm-unavailable" style="margin-top:14px" v-if="!cashProviders || !cashProviders.length">
+            <strong>The deposit methods are not available for the selected currency.</strong>
+            <span>Lütfen başka bir para birimi seçin.</span>
+          </div>
+
+          <template v-else>
+            <div class="wm-min" style="margin-top:10px" v-if="cashProviders[0]">
+              Min <strong>{{cashProviders[0].minAmount}} {{cashProviders[0].currency}}</strong> · Max <strong>{{cashProviders[0].maxAmount}} {{cashProviders[0].currency}}</strong>
+            </div>
+
+            <div class="wm-state wm-state--error" style="margin-top:14px" v-if="cashResultError">
+              <i class="fas fa-exclamation-triangle"></i> {{cashResultError}}
+            </div>
+
+            <!-- Manuel yatirim sonucu: IBAN / kripto cuzdan bilgisi. -->
+            <div class="wm-address-row" style="margin-top:14px" v-if="cashResult && cashResult.mode==='manual'">
+              <div class="wm-address-box" style="flex-direction:column;align-items:stretch;gap:8px" v-for="f in cashResult.fields" :key="f.label">
+                <div class="wm-address-text">
+                  <small>{{f.label}}</small>
+                  <strong>{{f.value}}</strong>
+                </div>
+                <button @click="copyCashField(f.value)" aria-label="Kopyala" class="wm-copy" type="button"><i class="far fa-copy"></i></button>
+              </div>
+              <div class="wm-note wm-note--single" v-if="cashResult.note">
+                <i aria-hidden="true" class="fas fa-info-circle wm-note__icon"></i>
+                <span>{{cashResult.note}}</span>
+              </div>
+            </div>
+
+            <button @click="submitCash" :disabled="cashSubmitting" class="wm-action" style="margin-top:14px" type="button">
+              <i class="fas fa-circle-notch fa-spin" v-if="cashSubmitting"></i>{{cashSubmitting ? 'İşleniyor…' : 'Yatır'}}
+            </button>
+          </template>
+        </template>
       </template>
 
       <!-- Buy Crypto -->
       <template v-else>
         <div class="wm-buy">
           <div class="wm-buy__label">You send</div>
-          <div class="wm-field">
-            <div @click.stop="toggleWalletDropdown('buyFiat')" class="wm-currency-btn" role="button" tabindex="0">
-              <img :src="coinIcon(buyFiat)" alt="" class="wm-coin"/>{{buyFiat && buyFiat.code}}<i class="fas fa-chevron-down wm-chev"></i>
-              <div @click.stop class="wm-pop" v-if="walletDropdown==='buyFiat'">
-                <button :key="'bf-'+c.code" @click="selectBuyFiat(c)" class="wm-pop__option" type="button" v-for="c in fiatCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
+          <div class="wm-dropdown-host">
+            <div class="wm-field wm-field--buy">
+              <div @click.stop="toggleWalletDropdown('buyFiat')" class="wm-currency-btn" role="button" tabindex="0">
+                <img :src="coinIcon(buyFiat)" alt="" class="wm-coin"/>{{buyFiat && buyFiat.code}}<i :class="walletDropdown==='buyFiat' ? 'fa-chevron-up' : 'fa-chevron-down'" class="fas wm-chev"></i>
               </div>
+              <div class="wm-field__stack"><small>Amount</small><input class="wm-input wm-input--stack" inputmode="decimal" v-model="buyAmount"/></div>
+              <button @click="buyAmount=''" class="wm-field__clear" type="button" v-if="buyAmount"><i class="fas fa-times"></i></button>
             </div>
-            <input class="wm-input" inputmode="decimal" placeholder="Amount" v-model="buyAmount"/>
+            <div @click.stop class="wm-pop" v-if="walletDropdown==='buyFiat'">
+              <div class="wm-pop__list"><button :class="{selected:buyFiat && buyFiat.code===c.code}" :key="'bf-'+c.code" @click.stop="selectBuyFiat(c)" class="wm-pop__option" type="button" v-for="c in fiatCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button></div>
+            </div>
           </div>
           <div class="wm-buy__label" style="margin-top:15px">You get</div>
-          <div class="wm-field">
-            <div @click.stop="toggleWalletDropdown('buyCrypto')" class="wm-currency-btn" role="button" tabindex="0">
-              <img :src="coinIcon(buyCrypto)" alt="" class="wm-coin"/>{{buyCrypto && buyCrypto.code}}<i class="fas fa-chevron-down wm-chev"></i>
-              <div @click.stop class="wm-pop" v-if="walletDropdown==='buyCrypto'">
-                <button :key="'bc-'+c.code" @click="selectBuyCrypto(c)" class="wm-pop__option" type="button" v-for="c in cryptoCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
+          <div class="wm-dropdown-host">
+            <div class="wm-field wm-field--buy">
+              <div @click.stop="toggleWalletDropdown('buyCrypto')" class="wm-currency-btn" role="button" tabindex="0">
+                <img :src="coinIcon(buyCrypto)" alt="" class="wm-coin"/>{{buyCrypto && buyCrypto.code}}<i :class="walletDropdown==='buyCrypto' ? 'fa-chevron-up' : 'fa-chevron-down'" class="fas wm-chev"></i>
+              </div>
+              <div class="wm-field__stack"><small>Amount</small><input :value="buyReceive" class="wm-input wm-input--stack" readonly/></div>
+              <button @click="buyAmount=''" class="wm-field__clear" type="button" v-if="buyReceive"><i class="fas fa-times"></i></button>
+            </div>
+            <div @click.stop class="wm-pop" v-if="walletDropdown==='buyCrypto'">
+              <div class="wm-pop__search"><i class="fas fa-search"></i><input @click.stop autocomplete="off" placeholder="Search currency" type="text" v-model="buyCryptoSearchQuery"/></div>
+              <div class="wm-pop__list">
+                <button :class="{selected:buyCrypto && buyCrypto.code===c.code}" :key="'bc-'+c.code" @click.stop="selectBuyCrypto(c)" class="wm-pop__option" type="button" v-for="c in filteredBuyCryptoCurrencies"><img :src="coinIcon(c)" alt="" class="wm-coin"/>{{c.code}}</button>
+                <div class="wm-pop__empty" v-if="!filteredBuyCryptoCurrencies || !filteredBuyCryptoCurrencies.length">No currencies found</div>
               </div>
             </div>
-            <input :value="buyReceive" class="wm-input" placeholder="Amount" readonly/>
           </div>
           <div class="wm-buy__meta">
             <span v-if="buyQuote">1 {{buyCrypto && buyCrypto.code}} ≈ {{formatAmount(buyQuote.rate ? 1/buyQuote.rate : 0, 2)}} {{buyFiat && buyFiat.code}} <i class="wm-info">?</i></span>
             <span v-else></span>
-            <span class="wm-provider" v-if="buyQuote && buyQuote.provider"><img :src="buyQuote.provider.icon" alt=""/>{{buyQuote.provider.name}} <i class="fas fa-chevron-down wm-chev"></i></span>
+            <span class="wm-provider" v-if="buyQuote && buyQuote.provider"><span class="wm-provider__dot"></span>{{buyQuote.provider.name}} <i class="fas fa-chevron-down wm-chev"></i></span>
           </div>
           <div class="wm-bonus" style="margin-top:10px">
             <img alt="" src="assets/bonus-chest.png"/>
@@ -4828,7 +4918,7 @@
             '❌ Do NOT discuss the religion, politics, race and gender topics.',
             '❌ Searching for sellers and buyers of any cryptocurrency is prohibited.',
             '❌ Communicate in English only.',
-            '❌ Any form of begging is strictly prohibited. This includes tagging a user\'s tip, coindrop or rain with praise, or leaving messages like "missed the drop/missed again, etc." which is considered passive begging and will be subject to appropriate consequences.',
+            '��� Any form of begging is strictly prohibited. This includes tagging a user\'s tip, coindrop or rain with praise, or leaving messages like "missed the drop/missed again, etc." which is considered passive begging and will be subject to appropriate consequences.',
             '❌ Do NOT use any bots, scripts or other software to catch bonuses',
             '❌ Do NOT spam (including bet shares) in the chat.',
             '❌ It is forbidden to share the promo codes obtained via emails, Telegram Bot or found in any other source.',
@@ -4882,7 +4972,7 @@
         const chatField = ref(null);
         const chatEmojiOpen = ref(false);
         const chatTipMenuOpen = ref(false);
-        const chatEmojis = ['😀','😂','🥹','😍','😎','🤑','🤔','🙃','😴','🤯','😭','😡','👍','👎','🙏','👏','💪','🔥','💎','🍀','🎉','🏆','💰','🚀','☕','🍺','❤��','💔','⚡','🌧'];
+        const chatEmojis = ['😀','😂','🥹','😍','����','🤑','🤔','🙃','😴','🤯','😭','😡','👍','👎','🙏','👏','💪','🔥','💎','🍀','🎉','🏆','💰','🚀','☕','🍺','❤��','💔','⚡','🌧'];
         const canSendChat = computed(() => chatInput.value.trim().length > 0);
         const focusChatField = () => nextTick(() => { if (chatField.value) chatField.value.focus(); });
         const toggleChatEmoji = () => {
@@ -5279,7 +5369,7 @@
         }
 
         // Giriş yapılmı�� üst bar: parent uygulama (AuthProvider) token/userId'yi
-        // aynı origin localStorage'ına yazıyor; anahtarlar site adına göre ayrılır.
+        // aynı origin localStorage'ına yazıyor; anahtarlar site adına g��re ayrılır.
         // Bu iframe aynı origin'de olduğu için auth kaydını doğrudan okuyup
         // public backend adresinden profil + bakiyeyi çekiyoruz; login/logout storage event'i
         // tetiklediği için otomatik senkron oluyor.

@@ -42,7 +42,7 @@ test("backend her ag girdisine kullaniciya gosterilecek bir label koyar", () => 
 	const list = buildCurrencyList([], new Map());
 	assert.ok(list.length > 0, "yatirilabilir para birimi listesi bos");
 
-	for (const entry of list) {
+	for (const entry of list.filter((currency) => currency.depositable)) {
 		assert.ok(
 			Array.isArray(entry.networks) && entry.networks.length > 0,
 			`${entry.code} icin ag listesi yok`,
@@ -81,10 +81,31 @@ test("yatirilabilir birimler cuzdan olmasa bile listelenir", () => {
 	// kullanici USDT'yi hic goremeden para yatiramaz (tavuk-yumurta).
 	const codes = buildCurrencyList([], new Map()).map((entry) => entry.code);
 	assert.ok(codes.includes("USDT"), "cuzdansiz kullanici USDT goremiyor");
+	const depositableEntries = buildCurrencyList([], new Map()).filter((entry) =>
+		["USDT", "TRX"].includes(entry.code),
+	);
 	assert.ok(
-		buildCurrencyList([], new Map()).every((entry) => entry.depositable),
+		depositableEntries.every((entry) => entry.depositable),
 		"yatirilabilir isareti dusmus",
 	);
+});
+
+test("desteklenen coinler aktif, BTC ve BFG pasif katalog olarak listelenir", () => {
+	const list = buildCurrencyList([], new Map());
+	for (const code of ["ETH", "BNB", "POL", "USDT", "USDC"]) {
+		const entry = list.find((currency) => currency.code === code);
+		assert.ok(entry, `${code} katalogda yok`);
+		assert.equal(entry.depositable, true);
+		assert.equal(entry.status, "available");
+		assert.ok(entry.networks.length > 0);
+	}
+	for (const code of ["BTC", "BFG"]) {
+		const entry = list.find((currency) => currency.code === code);
+		assert.ok(entry, `${code} katalogda yok`);
+		assert.equal(entry.depositable, false);
+		assert.equal(entry.status, "coming-soon");
+		assert.deepEqual(entry.networks, []);
+	}
 });
 
 test("sablon ag adini networkLabel uzerinden okur, ham .label ile degil", () => {
@@ -96,7 +117,7 @@ test("sablon ag adini networkLabel uzerinden okur, ham .label ile degil", () => 
 	);
 	assert.match(
 		html,
-		/v-for="n in networkOptions">\{\{networkLabel\(n\)\}\}/,
+		/v-for="n in networkOptions"[\s\S]*?\{\{networkLabel\(n\)\}\}/,
 		"ag listesi yine ham alan okuyor",
 	);
 });

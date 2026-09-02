@@ -28,4 +28,30 @@ counterSchema.statics.next = async function next(key, session) {
 	return doc.seq;
 };
 
+/**
+ * Genel amacli tam sayi kaydetme (or. EVM izleyicisinin "son taranan blok"
+ * cursoru). `next()` ile aynı koleksiyonu paylasir ama farkli bir anahtar
+ * ad-alani (key prefix) kullanilarak cakisma onlenmelidir (or.
+ * 'evm:lastScannedBlock:BEP20').
+ * @param {string} key
+ * @param {number} value
+ */
+counterSchema.statics.setValue = async function setValue(key, value) {
+	await this.findOneAndUpdate(
+		{ _id: key },
+		{ $set: { seq: value } },
+		{ upsert: true },
+	);
+};
+
+/**
+ * @param {string} key
+ * @param {number} defaultValue Kayit yoksa donulecek deger.
+ * @returns {Promise<number>}
+ */
+counterSchema.statics.getValue = async function getValue(key, defaultValue = 0) {
+	const doc = await this.findOne({ _id: key }).lean();
+	return doc ? doc.seq : defaultValue;
+};
+
 module.exports = mongoose.model('Counter', counterSchema);
