@@ -70,6 +70,13 @@ export default [
     subject: "finance.deposits",
   },
   {
+    title: "Kripto Cüzdanı",
+    icon: { icon: "tabler-wallet" },
+    to: "apps-finance-crypto-wallet",
+    action: "read",
+    subject: "finance.cryptoWallet",
+  },
+  {
     title: "Manuel İşlemler",
     icon: { icon: "tabler-adjustments" },
     to: "apps-finance-manual-adjustments",
