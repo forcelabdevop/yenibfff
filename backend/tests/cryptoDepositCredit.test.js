@@ -211,6 +211,97 @@ test("farkli kullanicilar FARKLI adres ve indeks alir", async () => {
 	assert.equal(indexes.size, 2, "turetme indeksleri carpismamali");
 });
 
+// --- EVM (coin bazli kredi) senaryolari -----------------------------------
+// creditDeposit() zincir-bagimsizdir (bkz. cryptoDepositWatcherEvm.js dosya
+// basi notu); EVM yatirmalari da AYNI fonksiyonu kullanir. Burada dogrulanan:
+// her para birimi KENDI coinType cuzdanina gider, ana "Rivo" bakiyesi
+// degismez ve ayni coinType'a sahip farkli agdaki cuzdanlar carpismaz.
+
+const ETH = getCurrency("ETH_ETHEREUM");
+const USDC_BEP20 = getCurrency("USDC_BEP20");
+
+async function makeEvmDeposit(user, currency, overrides = {}) {
+	return CryptoDeposit.create({
+		user: user._id,
+		chain: currency.chain,
+		currency: currency.code,
+		address: `0x${Math.random().toString(16).slice(2, 42).padEnd(40, "0")}`,
+		txHash: `0x${Math.random().toString(16).slice(2, 66).padEnd(64, "0")}`,
+		amountUnits: 2 * 10 ** currency.decimals, // 2 birim (kanonik)
+		decimals: currency.decimals,
+		blockNumber: 1000,
+		logIndex: 0,
+		status: "pending",
+		...overrides,
+	});
+}
+
+test("ETH yatirimi ETH cuzdanina gider, Rivo bakiyesi degismez", async () => {
+	const user = await makeUser();
+	const deposit = await makeEvmDeposit(user, ETH);
+
+	const applied = await watcher.creditDeposit(deposit.toObject(), ETH.confirmationsRequired);
+	assert.equal(applied, true);
+
+	const fresh = await User.findById(user._id).select("wallets").lean();
+	const ethWallet = fresh.wallets.find((w) => w.coinType === "ETH");
+	const rivoWallet = fresh.wallets.find((w) => w.coinType === "Rivo");
+
+	assert.ok(ethWallet, "ETH cuzdani olusturulmali");
+	assert.equal(ethWallet.balance, 2, "ETH bakiyesi yatirilan miktar olmali");
+	assert.equal(rivoWallet.balance, 0, "Rivo bakiyesi ETH yatirimindan etkilenmemeli");
+});
+
+test("USDC_BEP20 yatirimi USDC cuzdanina gider (BNB veya USDT DEGIL)", async () => {
+	const user = await makeUser();
+	const deposit = await makeEvmDeposit(user, USDC_BEP20);
+
+	await watcher.creditDeposit(deposit.toObject(), USDC_BEP20.confirmationsRequired);
+
+	const fresh = await User.findById(user._id).select("wallets").lean();
+	const usdcWallet = fresh.wallets.find((w) => w.coinType === "USDC");
+	const bnbWallet = fresh.wallets.find((w) => w.coinType === "BNB");
+	const usdtWallet = fresh.wallets.find((w) => w.coinType === "USDT");
+
+	assert.ok(usdcWallet, "USDC cuzdani olusturulmali");
+	assert.equal(usdcWallet.balance, 2);
+	assert.equal(bnbWallet, undefined, "USDC yatirimi BNB cuzdani olusturmamali");
+	assert.equal(usdtWallet, undefined, "USDC yatirimi USDT cuzdani olusturmamali");
+});
+
+test("AYNI EVM yatirimi iki kez islenirse bakiye IKI KEZ artmaz", async () => {
+	const user = await makeUser();
+	const deposit = await makeEvmDeposit(user, ETH);
+	const plain = deposit.toObject();
+
+	await watcher.creditDeposit(plain, ETH.confirmationsRequired);
+	const second = await watcher.creditDeposit(plain, ETH.confirmationsRequired);
+
+	assert.equal(second, false, "ikinci islem kredi vermemeli");
+	const fresh = await User.findById(user._id).select("wallets").lean();
+	assert.equal(fresh.wallets.find((w) => w.coinType === "ETH").balance, 2);
+});
+
+test("ayni coinType'a (USDT) sahip farkli zincir yatirimlari AYNI cuzdanda toplanir", async () => {
+	// USDT_ETHEREUM ve USDT_BEP20 farkli aglardir ama wallets semasinda TEK
+	// bir "USDT" coinType'i vardir — kullanicinin toplam USDT bakiyesi budur.
+	const user = await makeUser();
+	const usdtEth = getCurrency("USDT_ETHEREUM");
+	const usdtBep = getCurrency("USDT_BEP20");
+
+	const depositEth = await makeEvmDeposit(user, usdtEth);
+	const depositBep = await makeEvmDeposit(user, usdtBep);
+
+	await watcher.creditDeposit(depositEth.toObject(), usdtEth.confirmationsRequired);
+	await watcher.creditDeposit(depositBep.toObject(), usdtBep.confirmationsRequired);
+
+	const fresh = await User.findById(user._id).select("wallets").lean();
+	const usdtWallets = fresh.wallets.filter((w) => w.coinType === "USDT");
+
+	assert.equal(usdtWallets.length, 1, "USDT icin tek cuzdan olmali (zincire gore ayrilmamali)");
+	assert.equal(usdtWallets[0].balance, 4, "iki zincirden gelen USDT toplanmali");
+});
+
 test("ayni txHash ikinci kez yazilamaz", async () => {
 	// Veritabani seviyesindeki son savunma hatti.
 	const user = await makeUser();
