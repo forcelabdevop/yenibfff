@@ -3212,11 +3212,10 @@
             <div class="gl-launch__currency-wrap">
               <span class="gl-launch__currency-label">Display balance in</span>
               <button :aria-expanded="gameCurrencyOpen" @click.stop="gameCurrencyOpen = !gameCurrencyOpen" class="gl-launch__currency" type="button">
-                <span aria-hidden="true" class="gl-launch__us-flag"></span><strong>USD</strong><i class="fas fa-chevron-down"></i>
+                <img alt="" class="gl-launch__flag" :src="currencyDisplayActiveMeta.flag" v-if="currencyDisplayActiveMeta.flag"/><strong>{{currencyDisplayActiveMeta.code}}</strong><i class="fas fa-chevron-down"></i>
               </button>
               <div @click.stop class="gl-launch__currencies" v-if="gameCurrencyOpen">
-                <button @click="gameCurrencyOpen=false; notifyGame('Balance displayed in USD')" type="button">USD</button>
-                <button @click="gameCurrencyOpen=false; notifyGame('Balance displayed in USDT')" type="button">USDT</button>
+                <button :class="{'is-active': currency.code===currencyDisplayActive}" :key="currency.code" @click="selectGameDisplayCurrency(currency)" type="button" v-for="currency in currencyDisplayList"><img alt="" class="gl-launch__flag" :src="currency.flag" v-if="currency.flag"/>{{currency.code}}</button>
               </div>
             </div>
             <div class="gl-launch__actions">
@@ -5493,31 +5492,37 @@
         const walletFiat = computed(() => (authUser.value && authUser.value.currency && authUser.value.currency.fiatCurrency) || 'EUR');
         // "Display in currency" modali mantigi ayri dosyada: casino-ui/currency-display-modal.js
         const currencyDisplayModalCtx = window.createCurrencyDisplayModal({
-          ref, computed, walletFiat, storageKey: () => STORAGE_NAMESPACE + '.displayCurrency',
+          ref, computed, walletFiat, apiUrl, storageKey: () => STORAGE_NAMESPACE + '.displayCurrency',
         });
+        // Ust bar'daki bakiye pili artik gercek cuzdan para birimini (walletFiat)
+        // degil, kullanicinin "Display in Fiat" ile sectigi goruntu para
+        // birimini kullanir. Bakiyeler backend'de hep walletFiat cinsinden
+        // tutuldugu icin (bkz. exchangeRates.js switch-fiat-currency), gercek
+        // kur tablosuyla walletFiat -> secili fiat cevrimi yapilir. Gercek
+        // bakiye backend'de degismez, sadece burada gosterilen deger degisir.
         const formattedBalance = computed(() => {
           if (!isAuthenticated.value) return '—';
-          const meta = ({ EUR:{locale:'de-DE',symbol:'€'}, USD:{locale:'en-US',symbol:'$'}, GBP:{locale:'en-GB',symbol:'£'}, TRY:{locale:'tr-TR',symbol:'₺'} })[walletFiat.value] || {locale:'de-DE',symbol:'€'};
           const amount = Number(activeWallet.value?.balance) || 0;
-          try { return new Intl.NumberFormat(meta.locale, { style:'currency', currency: walletFiat.value, minimumFractionDigits:2, maximumFractionDigits:2 }).format(amount); }
-          catch { return `${meta.symbol}${amount.toFixed(2)}`; }
+          return currencyDisplayModalCtx.formatDisplayFiat(amount, walletFiat.value);
         });
         const balanceMenuOpen = ref(false);
         const balanceSearch = ref('');
         const balanceHideZero = ref(false);
         const balanceShowVault = ref(false);
         const balanceDisplayFiat = ref(true);
+        // Her satirin "fiat" alani, o cuzdanin gercek bakiyesini (walletFiat
+        // cinsinden) kullanicinin secili goruntu para birimine (currencyDisplayActive)
+        // gercek kurla cevirip gosterir -- bkz. currency-display-modal.js.
         const balanceCurrencies = computed(() => {
           const wallets = Array.isArray(authUser.value?.wallets) ? authUser.value.wallets : [];
           return wallets.map(wallet => {
             const code = String(wallet.coinType || wallet.currency || wallet.code || '').toUpperCase();
             const amount = Number(wallet.balance) || 0;
-            const usdRate = Number(wallet.usd || wallet.usdPrice || wallet.rate) || 0;
             return {
               code,
               icon: wallet.icon || ('assets/coin-' + code.toLowerCase() + '.png'),
               amount,
-              fiat: new Intl.NumberFormat('en-US', { style:'currency', currency:'USD' }).format(amount * usdRate),
+              fiat: currencyDisplayModalCtx.formatDisplayFiat(amount, walletFiat.value),
             };
           }).filter(currency => currency.code);
         });
@@ -5526,7 +5531,7 @@
           const q = balanceSearch.value.trim().toUpperCase();
           let list = balanceCurrencies.value;
           if (q) list = list.filter(c => c.code.includes(q));
-          if (balanceHideZero.value) list = list.filter(c => c.fiat !== '$0.00');
+          if (balanceHideZero.value) list = list.filter(c => c.amount > 0);
           return list;
         });
         const toggleBalanceMenu = () => { balanceMenuOpen.value = !balanceMenuOpen.value; };
@@ -5625,6 +5630,14 @@
           ref, computed, currentPage, runtimeParams, apiUrl, backendAssetUrl,
           websiteName: WEBSITE_NAME, knownRtp: KNOWN_RTP, normalizeGameName,
           authUser, readAuthToken, safePostToParent,
+          // Oyun ekranindaki "Display balance in" secici, ust bardaki
+          // "Display in Fiat" ile AYNI tercihi paylasir (currency-display-modal.js) --
+          // boylece secilen fiat, hem gorunumu hem de saglayiciya gonderilen
+          // gercek settlement para birimini (displayCurrency) tek yerden yonetir.
+          currencyDisplayList: currencyDisplayModalCtx.currencyDisplayList,
+          currencyDisplayActive: currencyDisplayModalCtx.currencyDisplayActive,
+          currencyDisplayActiveMeta: currencyDisplayModalCtx.currencyDisplayActiveMeta,
+          selectDisplayCurrency: currencyDisplayModalCtx.selectDisplayCurrency,
         });
         const isGamePage = gamePage.isGamePage;
 

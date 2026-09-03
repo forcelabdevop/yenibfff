@@ -7,7 +7,16 @@
  *  - POST /betinovi_api (GetGameUrl)  -> gercek saglayici launch URL'i
  */
 window.createGameDetail = function createGameDetail(ctx) {
-  const { ref, computed, currentPage, runtimeParams, apiUrl, backendAssetUrl, websiteName, knownRtp, normalizeGameName, authUser, readAuthToken, safePostToParent } = ctx
+  const {
+    ref, computed, currentPage, runtimeParams, apiUrl, backendAssetUrl, websiteName, knownRtp, normalizeGameName,
+    authUser, readAuthToken, safePostToParent,
+    // Ust bardaki "Display in Fiat" seciciyle paylasilan ortak tercih --
+    // bkz. casino-ui/currency-display-modal.js. Oyun ekranindaki
+    // "Display balance in" secici bunu okuyup/yazar; startGame() da
+    // saglayiciya gonderilen gercek settlement para birimi (displayCurrency)
+    // icin bunu kullanir.
+    currencyDisplayList, currencyDisplayActive, currencyDisplayActiveMeta, selectDisplayCurrency,
+  } = ctx
   // index.html'deki safePostToParent, cuzdan eklentilerinin (TronLink vb.)
   // window.postMessage'i sarmalayip DataCloneError firlatmasina karsi
   // try/catch icerir (bkz. index.html'deki yorum). Eger bu dosya (game-detail.js)
@@ -248,6 +257,11 @@ window.createGameDetail = function createGameDetail(ctx) {
           gameCode: game.game_code,
           language: "tr",
           channel: "desktop",
+          // "Display balance in" secimi (bkz. currencyDisplayActive) burada
+          // gercek settlement para birimine cevrilir -- backend/routes/betinoviApi.js
+          // sadece USD/EUR/TRY/BRL'yi kabul eder, desteklenmeyen bir deger
+          // gelirse guvenli varsayilan TRY'ye duser.
+          displayCurrency: currencyDisplayActive ? currencyDisplayActive.value : undefined,
         }),
       })
       const payload = await response.json().catch(() => ({}))
@@ -281,6 +295,16 @@ window.createGameDetail = function createGameDetail(ctx) {
     toastTimer = window.setTimeout(() => {
       gameToast.value = ""
     }, 2600)
+  }
+
+  // Oyun ekranindaki "Display balance in" dropdown'undan bir fiat secildiginde
+  // paylasilan tercihi (currencyDisplayActive) gunceller ve dropdown'u kapatir.
+  // Bu secim, bir sonraki startGame() cagrisinda gercek settlement para
+  // birimi olarak saglayiciya gonderilir.
+  function selectGameDisplayCurrency(currency) {
+    if (typeof selectDisplayCurrency === "function") selectDisplayCurrency(currency)
+    gameCurrencyOpen.value = false
+    notifyGame("Balance displayed in " + currency.code)
   }
 
   // Demo modu saglayici tarafinda desteklenmedigi icin gercekten acilamiyor;
@@ -365,6 +389,10 @@ window.createGameDetail = function createGameDetail(ctx) {
     launchTheatre,
     gameFavorite,
     gameCurrencyOpen,
+    currencyDisplayList,
+    currencyDisplayActive,
+    currencyDisplayActiveMeta,
+    selectGameDisplayCurrency,
     detailLaunchArtwork,
     loadGameDetail,
     startGame,
