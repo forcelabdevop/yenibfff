@@ -48,6 +48,22 @@ const GameSchema = mongoose.Schema({
 	categories: [{ type: String }],
 	// @deprecated
 	category: { type: String, default: null },
+
+	// Oyun detay sayfasındaki "Game Attributes" bölümü için ek meta veriler
+	// (BetFury tarzı). Sağlayıcı game-list API'leri genelde bunları vermez —
+	// admin panelinden elle girilir veya ayrı bir agregatör/scraping
+	// servisinden içe aktarılır. Tümü opsiyoneldir; boş bırakılan alanlar
+	// detay sayfasında gösterilmez (Canlı Casino/masa oyunlarında Layout,
+	// Bet Range, Max Win gibi alanlar genelde anlamsızdır, sadece Slot'larda
+	// doldurulur).
+	layout: { type: String, default: null }, // örn: "6x5"
+	paylines: { type: String, default: null }, // örn: "Pay Anywhere" veya "20"
+	bet_min: { type: Number, default: null },
+	bet_max: { type: Number, default: null },
+	max_win_multiplier: { type: Number, default: null }, // örn: 25000 -> "25,000x"
+	volatility: { type: String, default: null }, // Low | Medium | High | Very High
+	themes: [{ type: String }], // örn: ["Candy","Easter","Fruit"]
+	features: [{ type: String }], // örn: ["Buy Feature","Free Spins","Cascading"]
 });
 
 GameSchema.index({ game_id: 1 });

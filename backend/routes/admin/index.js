@@ -4046,19 +4046,21 @@ router.put(
 		}
 
 		// FormData ile gönderilen array alanları JSON string olarak gelir, parse et
-		if (typeof updateData.categories === "string") {
-			try {
-				updateData.categories = JSON.parse(updateData.categories);
-			} catch {
-				updateData.categories = [updateData.categories];
+		for (const arrayField of ["categories", "themes", "features"]) {
+			if (typeof updateData[arrayField] === "string") {
+				try {
+					updateData[arrayField] = JSON.parse(updateData[arrayField]);
+				} catch {
+					updateData[arrayField] = [updateData[arrayField]];
+				}
 			}
 		}
 
-		// Number alanlarını string'den Number'a ��evir
+		// Number alanlarını string'den Number'a çevir
 		const numberFields = [
 			"provider_id", "has_lobby", "is_mobile", "has_freespins",
 			"has_tables", "only_demo", "status", "lobby_id", "rtp",
-			"featured", "views",
+			"featured", "views", "bet_min", "bet_max", "max_win_multiplier",
 		];
 		for (const field of numberFields) {
 			if (updateData[field] === "") {
