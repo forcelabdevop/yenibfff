@@ -4039,6 +4039,12 @@ router.put(
 			}
 		}
 
+		// imageLocked: FormData'dan string ("true"/"false") olarak gelir, boolean'a çevir
+		if (updateData.imageLocked !== undefined) {
+			updateData.imageLocked =
+				updateData.imageLocked === true || updateData.imageLocked === "true";
+		}
+
 		// FormData ile gönderilen array alanları JSON string olarak gelir, parse et
 		if (typeof updateData.categories === "string") {
 			try {
@@ -4069,6 +4075,13 @@ router.put(
 
 		if (bannerFile) {
 			updateData.banner = `/uploads/games/${bannerFile.filename}`;
+			// Admin elle banner yüklediğinde, ilerideki sağlayıcı içe
+			// aktarma senkronizasyonlarının bu görseli ezmesini önlemek
+			// için otomatik olarak kilitle (admin isterse formdan açıkça
+			// imageLocked=false göndererek bunu geri alabilir).
+			if (updateData.imageLocked === undefined) {
+				updateData.imageLocked = true;
+			}
 		}
 
 		if (backgroundFile) {
@@ -8319,6 +8332,11 @@ router.delete("/promotion-categories/:id", checkPermission("finance.promo.manage
 // ==================== PROVIDER MANAGEMENT ROUTES ====================
 const providerRoutes = require("./providerRoutes");
 router.use("/providers", providerRoutes);
+
+// Betinovi/Nexus/Drakon oyun içe aktarma: mevcut oyunların görsel/isim
+// alanlarını koruyan güvenli senkronizasyon uçları (bkz. gameImportService.js).
+const gameImportRoutes = require("./gameImportRoutes");
+router.use("/game-import", gameImportRoutes);
 
 const fluxKriptoAdminRoutes = require("./fluxKripto");
 const xPaymentsAdminRoutes = require("./xPayments");

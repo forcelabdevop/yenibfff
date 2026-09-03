@@ -373,20 +373,33 @@ const editGame = async (game) => {
 						class="text-no-wrap"
 					>
 						<template #item.raw.banner="{ item }">
-							<VAvatar
-								size="38"
-								variant="tonal"
-								:rounded="0"
-								style="border-radius: 5px"
-							>
-								<VImg
-									:src="resolveImageUrl(item.raw.banner)"
-									alt="Banner"
-									height="38"
-									width="70"
-									cover
-								/>
-							</VAvatar>
+							<div class="position-relative d-inline-block">
+								<VAvatar
+									size="38"
+									variant="tonal"
+									:rounded="0"
+									style="border-radius: 5px"
+								>
+									<VImg
+										:src="resolveImageUrl(item.raw.banner)"
+										alt="Banner"
+										height="38"
+										width="70"
+										cover
+									/>
+								</VAvatar>
+								<VIcon
+									v-if="item.raw.imageLocked"
+									icon="tabler-lock"
+									size="14"
+									color="warning"
+									class="banner-lock-badge"
+								>
+									<VTooltip activator="parent">
+										Görsel/isim içe aktarımdan korunuyor
+									</VTooltip>
+								</VIcon>
+							</div>
 						</template>
 
 						<template #item.raw.game_name="{ item }">
@@ -653,6 +666,22 @@ const editGame = async (game) => {
 											:false-value="0"
 										/>
 									</VCol>
+									<VCol cols="12">
+										<VDivider class="mb-4" />
+										<VSwitch
+											v-model="gameToEdit.imageLocked"
+											color="warning"
+											label="Görseli/İsmi İçe Aktarımdan Koru"
+											hide-details
+										/>
+										<small class="text-disabled">
+											Açık olduğunda, Betinovi/Drakon/Nexus içe aktarma
+											işlemleri "Görselleri de güncelle" seçili olsa
+											bile bu oyunun banner/isim bilgisini değiştirmez.
+											Banner dosyası elle yüklendiğinde bu otomatik
+											olarak açılır.
+										</small>
+									</VCol>
 								</VRow>
 							</VCardText>
 							<VCardActions>
@@ -685,5 +714,15 @@ const editGame = async (game) => {
 
 .text-capitalize {
 	text-transform: capitalize;
+}
+
+.banner-lock-badge {
+	position: absolute;
+	inset-block-end: -4px;
+	inset-inline-end: -4px;
+	background: rgb(var(--v-theme-surface));
+	border-radius: 50%;
+	padding: 2px;
+	box-shadow: 0 0 0 1px rgba(var(--v-theme-on-surface), 0.12);
 }
 </style>

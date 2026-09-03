@@ -237,6 +237,13 @@ export default [
     subject: "games",
   },
   {
+    title: "Oyun İçe Aktarma",
+    icon: { icon: "tabler-cloud-download" },
+    to: "apps-games-import",
+    action: "read",
+    subject: "games",
+  },
+  {
     title: "Spor Bahisleri",
     icon: { icon: "tabler-ball-football" },
     to: "apps-sports-bets",
