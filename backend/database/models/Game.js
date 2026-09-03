@@ -56,14 +56,30 @@ const GameSchema = mongoose.Schema({
 	// detay sayfasında gösterilmez (Canlı Casino/masa oyunlarında Layout,
 	// Bet Range, Max Win gibi alanlar genelde anlamsızdır, sadece Slot'larda
 	// doldurulur).
-	layout: { type: String, default: null }, // örn: "6x5"
+	layout: { type: String, default: null }, // örn: "6 x 5"
 	paylines: { type: String, default: null }, // örn: "Pay Anywhere" veya "20"
-	bet_min: { type: Number, default: null },
-	bet_max: { type: Number, default: null },
-	max_win_multiplier: { type: Number, default: null }, // örn: 25000 -> "25,000x"
+	bet_min: { type: Number, default: null }, // örn: kaynakta "$0.20 to $240" -> 0.20
+	bet_max: { type: Number, default: null }, // örn: kaynakta "$0.20 to $240" -> 240
+	max_win_multiplier: { type: Number, default: null }, // örn: kaynakta "25,000x" -> 25000
 	volatility: { type: String, default: null }, // Low | Medium | High | Very High
 	themes: [{ type: String }], // örn: ["Candy","Easter","Fruit"]
 	features: [{ type: String }], // örn: ["Buy Feature","Free Spins","Cascading"]
+
+	// Sağlayıcının/agregatörün kendi gösterim etiketi (örn: "Crypto Slots",
+	// "Live Table Games"). BİLEREK `game_type` alanından AYRI tutuluyor:
+	// `game_type` (yukarıda) dahili filtreleme/kategorizasyon için kritik bir
+	// düşük-kardinaliteli değer (slot/live/gameshow/sport/casino vb.) ve
+	// GAME_TYPE_GROUPS gibi yerlerde kullanılıyor — kaynaktaki serbest metin
+	// etiketle ASLA üzerine yazılmamalı. Bu alan sadece detay sayfasında
+	// "Game Type: Crypto Slots" satırını göstermek için kullanılır.
+	game_type_label: { type: String, default: null },
+
+	// Oyunun sağlayıcı/stüdyo tarafındaki gerçek piyasaya çıkış tarihi
+	// (örn: kaynakta "2026-04-30"). `created_at` bu oyunun bizim
+	// veritabanımıza EKLENDİĞİ tarihtir, release tarihi ile karıştırılmamalı
+	// — bu yüzden ayrı bir alan. Detay sayfası Release satırı için bunu
+	// `created_at`'ten önce tercih eder.
+	release_date: { type: Date, default: null },
 });
 
 GameSchema.index({ game_id: 1 });

@@ -12,7 +12,7 @@ const GAME_LIST_FIELDS =
 	"game_name game_code banner background views featured provider_code provider categories category distribution rtp";
 
 // Oyun detay sayfasinin "Game Attributes" bolumu icin ek alanlar
-const GAME_DETAIL_FIELDS = `${GAME_LIST_FIELDS} game_type technology is_mobile has_freespins has_tables has_lobby only_demo description created_at layout paylines bet_min bet_max max_win_multiplier volatility themes features`;
+const GAME_DETAIL_FIELDS = `${GAME_LIST_FIELDS} game_type game_type_label technology is_mobile has_freespins has_tables has_lobby only_demo description created_at release_date layout paylines bet_min bet_max max_win_multiplier volatility themes features`;
 
 // Top wins listesinde gercek kullanici adini sizdirmadan taninabilir bir etiket uretir.
 const maskUsername = (user) => {
