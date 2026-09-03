@@ -4193,6 +4193,67 @@ router.get("/games/meta", checkPermission("games.read"), async (req, res) => {
 	}
 });
 
+// Sağlayıcıya göre toplu kategori atama/kaldırma.
+// Örn: provider_code="slot-fazi" olan TÜM oyunlara tek istekte "fazi"
+// kategorisini ekler (veya kaldırır) — tek tek Edit Game modalı açmaya
+// gerek kalmaz. `categories` dizisine $addToSet/$pull ile dokunur,
+// `imageLocked` korumasından bağımsızdır (o sadece görsel/isim içindir).
+router.post(
+	"/games/bulk-assign-category",
+	checkPermission("games.update"),
+	async (req, res) => {
+		try {
+			const { provider_code, category, action = "add" } = req.body;
+
+			if (!provider_code || typeof provider_code !== "string") {
+				return res.status(400).json({
+					success: false,
+					message: "provider_code zorunludur.",
+				});
+			}
+			if (!category || typeof category !== "string") {
+				return res.status(400).json({
+					success: false,
+					message: "category zorunludur.",
+				});
+			}
+			if (!["add", "remove"].includes(action)) {
+				return res.status(400).json({
+					success: false,
+					message: "action 'add' veya 'remove' olmalıdır.",
+				});
+			}
+
+			const filter = { provider_code };
+			const update =
+				action === "remove"
+					? { $pull: { categories: category }, $set: { updated_at: new Date() } }
+					: { $addToSet: { categories: category }, $set: { updated_at: new Date() } };
+
+			const matched = await Game.countDocuments(filter);
+			const result = await Game.updateMany(filter, update);
+
+			res.status(200).json({
+				success: true,
+				message:
+					action === "remove"
+						? `"${category}" kategorisi ${result.modifiedCount} oyundan kaldırıldı.`
+						: `"${category}" kategorisi ${result.modifiedCount} oyuna eklendi.`,
+				data: {
+					provider_code,
+					category,
+					action,
+					matched,
+					modified: result.modifiedCount,
+				},
+			});
+		} catch (error) {
+			console.error("Bulk assign category error:", error);
+			res.status(500).json({ success: false, message: "Sunucu hatası" });
+		}
+	},
+);
+
 router.get("/providers", checkPermission("providers.read"), async (req, res) => {
 	try {
 		const { page = 1, limit = 20, search = "", type = "" } = req.query;
@@ -10477,7 +10538,7 @@ router.delete(
 );
 
 // ═══���═══════════════════════════════════════════════════════════════════════
-// Kategori İkonları Yönetimi
+// Kategori İkonlar�� Yönetimi
 // ══════════════════════════════════════════════════════════════════��════════
 
 const CATEGORY_ICONS = ["lobby", "originals", "favorites", "hot"];
@@ -10601,7 +10662,7 @@ router.post(
 	},
 );
 
-// ════��════════════════════════════════════��═════════════════════════════════
+// ════��════════════════════════════════════��═══���═════════════════════════════
 // Provider Ayarları (SiteSettings içinde)
 // ═════════════════════════════════════════��══════���══════════════════════════
 

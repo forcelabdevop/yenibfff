@@ -117,6 +117,7 @@ const fetchGameMeta = async () => {
 onMounted(async () => {
 	await loadProviderDisplayNames({ force: true });
 	fetchGameMeta();
+	loadAllCategoryOptions();
 });
 
 const getDistributionColor = (distribution) => {
@@ -202,6 +203,69 @@ const editGame = async (game) => {
 		editCategoryOptions.value = [];
 	}
 };
+
+// -------------------- Sağlayıcı → Kategori Toplu Atama --------------------
+// "slot-fazi" gibi bir provider_code'a sahip yüzlerce oyunu tek tek
+// açmadan tek istekle bir kategoriye atamak/kaldırmak için.
+const bulkProvider = ref();
+const bulkCategory = ref();
+const bulkAction = ref("add");
+const bulkApplying = ref(false);
+const bulkResult = ref(null); // { success, message } | { error }
+const allCategoryOptions = ref([]);
+
+const loadAllCategoryOptions = async () => {
+	try {
+		const res = await axios.get("/admin/categories");
+		allCategoryOptions.value = res.data.data.map((cat) => ({
+			title: cat.name,
+			value: cat.slug,
+		}));
+	} catch (err) {
+		console.error("Kategori listesi alınamadı:", err);
+		allCategoryOptions.value = [];
+	}
+};
+
+const applyBulkCategoryAssign = async () => {
+	if (!bulkProvider.value || !bulkCategory.value) return;
+
+	const providerLabel =
+		providerOptionItems.value.find((p) => p.value === bulkProvider.value)
+			?.title || bulkProvider.value;
+	const categoryLabel =
+		allCategoryOptions.value.find((c) => c.value === bulkCategory.value)
+			?.title || bulkCategory.value;
+	const actionLabel = bulkAction.value === "remove" ? "kaldırılsın" : "eklensin";
+
+	if (
+		!window.confirm(
+			`"${providerLabel}" sağlayıcısındaki TÜM oyunlara "${categoryLabel}" kategorisi ${actionLabel} mı?`,
+		)
+	) {
+		return;
+	}
+
+	bulkApplying.value = true;
+	bulkResult.value = null;
+	try {
+		const { data } = await axios.post("/admin/games/bulk-assign-category", {
+			provider_code: bulkProvider.value,
+			category: bulkCategory.value,
+			action: bulkAction.value,
+		});
+		bulkResult.value = { success: true, message: data.message };
+		fetchGameMeta();
+		fetchGames();
+	} catch (err) {
+		bulkResult.value = {
+			success: false,
+			message: err.response?.data?.message || err.message,
+		};
+	} finally {
+		bulkApplying.value = false;
+	}
+};
 </script>
 
 <template>
@@ -274,6 +338,76 @@ const editGame = async (game) => {
 							:color="meta.color"
 							:icon="meta.icon"
 						/>
+					</VCardText>
+				</VCard>
+			</VCol>
+
+			<VCol cols="12">
+				<VCard title="Sağlayıcı → Kategori Toplu Atama">
+					<VCardText>
+						<p class="text-body-2 text-medium-emphasis mb-4">
+							Bir sağlayıcının (örn. <code>slot-fazi</code>) TÜM oyunlarına
+							tek seferde bir kategori ekleyin veya kaldırın — tek tek
+							oyun açıp kategori seçmenize gerek kalmaz.
+						</p>
+						<VRow align="center">
+							<VCol cols="12" sm="4">
+								<AppSelect
+									v-model="bulkProvider"
+									label="Sağlayıcı Seç"
+									:items="providerOptionItems"
+									item-title="title"
+									item-value="value"
+									clearable
+									clear-icon="tabler-x"
+								/>
+							</VCol>
+							<VCol cols="12" sm="4">
+								<AppSelect
+									v-model="bulkCategory"
+									label="Kategori Seç"
+									:items="allCategoryOptions"
+									item-title="title"
+									item-value="value"
+									clearable
+									clear-icon="tabler-x"
+								/>
+							</VCol>
+							<VCol cols="12" sm="2">
+								<AppSelect
+									v-model="bulkAction"
+									label="İşlem"
+									:items="[
+										{ title: 'Ekle', value: 'add' },
+										{ title: 'Kaldır', value: 'remove' },
+									]"
+									item-title="title"
+									item-value="value"
+								/>
+							</VCol>
+							<VCol cols="12" sm="2">
+								<VBtn
+									block
+									:color="bulkAction === 'remove' ? 'error' : 'primary'"
+									:loading="bulkApplying"
+									:disabled="!bulkProvider || !bulkCategory"
+									@click="applyBulkCategoryAssign"
+								>
+									Uygula
+								</VBtn>
+							</VCol>
+						</VRow>
+
+						<VAlert
+							v-if="bulkResult"
+							:type="bulkResult.success ? 'success' : 'error'"
+							variant="tonal"
+							class="mt-4"
+							closable
+							@click:close="bulkResult = null"
+						>
+							{{ bulkResult.message }}
+						</VAlert>
 					</VCardText>
 				</VCard>
 			</VCol>
