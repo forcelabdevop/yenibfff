@@ -4039,6 +4039,12 @@ router.put(
 			}
 		}
 
+		// imageLocked: FormData'dan string ("true"/"false") olarak gelir, boolean'a çevir
+		if (updateData.imageLocked !== undefined) {
+			updateData.imageLocked =
+				updateData.imageLocked === true || updateData.imageLocked === "true";
+		}
+
 		// FormData ile gönderilen array alanları JSON string olarak gelir, parse et
 		if (typeof updateData.categories === "string") {
 			try {
@@ -4069,6 +4075,13 @@ router.put(
 
 		if (bannerFile) {
 			updateData.banner = `/uploads/games/${bannerFile.filename}`;
+			// Admin elle banner yüklediğinde, ilerideki sağlayıcı içe
+			// aktarma senkronizasyonlarının bu görseli ezmesini önlemek
+			// için otomatik olarak kilitle (admin isterse formdan açıkça
+			// imageLocked=false göndererek bunu geri alabilir).
+			if (updateData.imageLocked === undefined) {
+				updateData.imageLocked = true;
+			}
 		}
 
 		if (backgroundFile) {
@@ -4179,6 +4192,214 @@ router.get("/games/meta", checkPermission("games.read"), async (req, res) => {
 		});
 	}
 });
+
+// Sağlayıcılar arasında game_type değerleri tutarsız yazılmış
+// (Slot/slot/Slots/slots, Baccarat/baccarat, vb.). Toplu atamada admin'e
+// ham değerler yerine anlamlı, iş dilinde gruplar sunuyoruz: Slot,
+// Canlı Casino, Hızlı Oyunlar, Diğer. "Diğer" havuzu, aşağıdaki listelere
+// girmeyen HER şeyi (bilinmeyen/yeni game_type değerleri dahil) kapsar,
+// böylece yeni bir provider yeni bir game_type getirse bile filtre dışı
+// kalıp "provider'ın tüm oyunları" davranışını bozmaz.
+const GAME_TYPE_GROUPS = {
+	slot: { label: "Slot", match: ["slot", "slots"] },
+	live_casino: {
+		label: "Canlı Casino",
+		match: [
+			"baccarat",
+			"blackjack",
+			"roulette",
+			"poker",
+			"sicbo",
+			"dragontiger",
+			"andarbahar",
+			"teenpatti",
+			"hi-lo",
+			"gameshow",
+			"holdem",
+		],
+	},
+	fast_games: {
+		label: "Hızlı Oyunlar",
+		match: [
+			"crashgame",
+			"instantgame",
+			"interactivegame",
+			"plinko",
+			"dice",
+			"keno",
+			"bingo",
+			"scratchcards",
+			"lottery",
+			"lotto",
+			"arcade",
+		],
+	},
+	other: {
+		label: "Diğer",
+		match: [
+			"fish",
+			"virtual",
+			"sports",
+			"cards",
+			"casual",
+			"shooting",
+			"tablegames",
+			"topcard",
+			"other",
+			"lobby",
+			"promo",
+		],
+	},
+};
+
+// game_type_groups (['slot','live_casino',...]) verilirse, seçilen
+// grupların `match` listelerindeki kelimelerle (case-insensitive, tam
+// eşleşme) bir $in filtresi üretir. Boş/undefined verilirse filtre
+// eklenmez (yani provider'ın TÜM oyun tipleri hedeflenir — eski davranış).
+const buildGameTypeFilter = (game_type_groups) => {
+	if (!Array.isArray(game_type_groups) || game_type_groups.length === 0) {
+		return null;
+	}
+	const words = [];
+	for (const key of game_type_groups) {
+		const group = GAME_TYPE_GROUPS[key];
+		if (group) words.push(...group.match);
+	}
+	if (words.length === 0) return null;
+	return {
+		game_type: {
+			$in: words.map((w) => new RegExp(`^${w}$`, "i")),
+		},
+	};
+};
+
+// Sağlayıcı (+ isteğe bağlı oyun tipi grubu) filtresine göre toplu
+// kategori atama/kaldırma için ortak filtre kurucu.
+const buildBulkGameFilter = (provider_code, game_type_groups) => {
+	const filter = { provider_code };
+	const typeFilter = buildGameTypeFilter(game_type_groups);
+	return typeFilter ? { ...filter, ...typeFilter } : filter;
+};
+
+// Önizleme: gerçekten güncellemeden, seçilen sağlayıcı + oyun tipi
+// grubu kombinasyonuna kaç oyunun düştüğünü ve tip dağılımını gösterir.
+// Toplu atama onay diyaloğundan önce admin'in ne kadar oyunu
+// etkileyeceğini görmesi için kullanılır.
+router.get(
+	"/games/bulk-assign-category/preview",
+	checkPermission("games.read"),
+	async (req, res) => {
+		try {
+			const { provider_code } = req.query;
+			const game_type_groups = req.query.game_type_groups
+				? String(req.query.game_type_groups).split(",").filter(Boolean)
+				: [];
+
+			if (!provider_code || typeof provider_code !== "string") {
+				return res.status(400).json({
+					success: false,
+					message: "provider_code zorunludur.",
+				});
+			}
+
+			const filter = buildBulkGameFilter(provider_code, game_type_groups);
+			const matched = await Game.countDocuments(filter);
+			const byType = await Game.aggregate([
+				{ $match: filter },
+				{ $group: { _id: "$game_type", count: { $sum: 1 } } },
+				{ $sort: { count: -1 } },
+			]);
+
+			res.status(200).json({
+				success: true,
+				data: {
+					matched,
+					byType: byType.map((t) => ({ game_type: t._id, count: t.count })),
+				},
+			});
+		} catch (error) {
+			console.error("Bulk assign category preview error:", error);
+			res.status(500).json({ success: false, message: "Sunucu hatası" });
+		}
+	},
+);
+
+// Sağlayıcıya (+ isteğe bağlı oyun tipi grubuna) göre toplu kategori
+// atama/kaldırma. Örn: provider_code="slot-fazi" + game_type_groups=["slot"]
+// olan oyunlara tek istekte "fazi" kategorisini ekler (veya kaldırır) —
+// tek tek Edit Game modalı açmaya gerek kalmaz. `categories` dizisine
+// $addToSet/$pull ile dokunur, `imageLocked` korumasından bağımsızdır
+// (o sadece görsel/isim içindir).
+router.post(
+	"/games/bulk-assign-category",
+	checkPermission("games.update"),
+	async (req, res) => {
+		try {
+			const {
+				provider_code,
+				category,
+				action = "add",
+				game_type_groups = [],
+			} = req.body;
+
+			if (!provider_code || typeof provider_code !== "string") {
+				return res.status(400).json({
+					success: false,
+					message: "provider_code zorunludur.",
+				});
+			}
+			if (!category || typeof category !== "string") {
+				return res.status(400).json({
+					success: false,
+					message: "category zorunludur.",
+				});
+			}
+			if (!["add", "remove"].includes(action)) {
+				return res.status(400).json({
+					success: false,
+					message: "action 'add' veya 'remove' olmalıdır.",
+				});
+			}
+			if (
+				!Array.isArray(game_type_groups) ||
+				game_type_groups.some((k) => !GAME_TYPE_GROUPS[k])
+			) {
+				return res.status(400).json({
+					success: false,
+					message: "game_type_groups geçersiz.",
+				});
+			}
+
+			const filter = buildBulkGameFilter(provider_code, game_type_groups);
+			const update =
+				action === "remove"
+					? { $pull: { categories: category }, $set: { updated_at: new Date() } }
+					: { $addToSet: { categories: category }, $set: { updated_at: new Date() } };
+
+			const matched = await Game.countDocuments(filter);
+			const result = await Game.updateMany(filter, update);
+
+			res.status(200).json({
+				success: true,
+				message:
+					action === "remove"
+						? `"${category}" kategorisi ${result.modifiedCount} oyundan kaldırıldı.`
+						: `"${category}" kategorisi ${result.modifiedCount} oyuna eklendi.`,
+				data: {
+					provider_code,
+					category,
+					action,
+					game_type_groups,
+					matched,
+					modified: result.modifiedCount,
+				},
+			});
+		} catch (error) {
+			console.error("Bulk assign category error:", error);
+			res.status(500).json({ success: false, message: "Sunucu hatası" });
+		}
+	},
+);
 
 router.get("/providers", checkPermission("providers.read"), async (req, res) => {
 	try {
@@ -8320,6 +8541,11 @@ router.delete("/promotion-categories/:id", checkPermission("finance.promo.manage
 const providerRoutes = require("./providerRoutes");
 router.use("/providers", providerRoutes);
 
+// Betinovi/Nexus/Drakon oyun içe aktarma: mevcut oyunların görsel/isim
+// alanlarını koruyan güvenli senkronizasyon uçları (bkz. gameImportService.js).
+const gameImportRoutes = require("./gameImportRoutes");
+router.use("/game-import", gameImportRoutes);
+
 const fluxKriptoAdminRoutes = require("./fluxKripto");
 const xPaymentsAdminRoutes = require("./xPayments");
 router.use("/fluxkripto", fluxKriptoAdminRoutes);
@@ -8329,6 +8555,12 @@ router.use("/xpayments", xPaymentsAdminRoutes);
 // fluxkripto/xpayments saglayici tabanli akislardir; bu ondan ayridir.
 const cryptoDepositsAdminRoutes = require("./cryptoDeposits");
 router.use("/crypto-deposits", cryptoDepositsAdminRoutes);
+
+// Toplama (sweep) cuzdani yonetimi: canli zincir bakiyesi + platform disina
+// (borsa/kisisel cuzdan) manuel cekim. cryptoDeposits'ten farkli olarak bu
+// GERCEK ZINCIR ISLEMI yapabilen bir uc noktadir (bkz. routes/admin/cryptoWallet.js).
+const cryptoWalletAdminRoutes = require("./cryptoWallet");
+router.use("/crypto-wallet", cryptoWalletAdminRoutes);
 
 // ==================== BETINOVI ADMIN API ROUTES ====================
 const betinoviAdminRoutes = require("./betinoviAdminRoutes");
@@ -9654,7 +9886,7 @@ router.post(
 			await settings.save();
 			res.status(200).json({
 				success: true,
-				message: "Lisans başarıyla eklendi.",
+				message: "Lisans ba��arıyla eklendi.",
 				licenses: settings.licenses,
 			});
 		} catch (error) {
@@ -10453,7 +10685,7 @@ router.delete(
 );
 
 // ═══���═══════════════════════════════════════════════════════════════════════
-// Kategori İkonları Yönetimi
+// Kategori İkonlar�� Yönetimi
 // ══════════════════════════════════════════════════════════════════��════════
 
 const CATEGORY_ICONS = ["lobby", "originals", "favorites", "hot"];
@@ -10577,7 +10809,7 @@ router.post(
 	},
 );
 
-// ════��════════════════════════════════════��═════════════════════════════════
+// ════��════════════════════════════════════��═══���═════════════════════════════
 // Provider Ayarları (SiteSettings içinde)
 // ═════════════════════════════════════════��══════���══════════════════════════
 
@@ -11164,7 +11396,7 @@ router.put(
 
 // ═════════════════════════════════���═════════════════════════════════════════
 // Forcelab Finance Admin Endpoints
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════���═══════════════════════════════════════════════════════════════════
 
 const ForcelabFinanceTransaction = require("../../database/models/ForcelabFinanceTransaction");
 const {

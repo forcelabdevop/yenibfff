@@ -41,8 +41,12 @@ const LOCK_KEY = 'tron:sweepScanner';
 const LOCK_TTL_MS = 180000;
 const OWNER = `${process.pid}-${crypto.randomBytes(4).toString('hex')}`;
 
-/** Her turda taranacak adres sayisi. */
-const ADDRESS_BATCH = Number(process.env.TRON_SWEEP_BATCH || 15);
+/**
+ * Her turda taranacak adres sayisi. cryptoDepositWatcher.js'teki ayni
+ * gerekceyle (bkz. 02.09.2026 vakasi) TRON_API_KEY artik tanimli oldugundan
+ * ve chain filtresi duzeltildiginden guvenle artirildi.
+ */
+const ADDRESS_BATCH = Number(process.env.TRON_SWEEP_BATCH || 100);
 
 /**
  * Zincir sorgulari arasi bekleme (ms) — TronGrid hiz sinirini asmamak icin.
@@ -106,14 +110,25 @@ async function queueSweepIfNeeded(record, currency, destination) {
 async function discoverSweepable() {
 	const destination = getSweepDestination();
 
-	const addresses = await CryptoAddress.find({})
+	// DIKKAT: chain: 'TRON' filtresi KRITIK — cryptoDepositWatcher.js'teki
+	// ayni hatanin (bkz. 02.09.2026 vakasi) burada da tekrarlanmasini
+	// onler. Filtresiz find({}) TUM zincirlerin (ETHEREUM/BNB/POLYGON dahil)
+	// adreslerini bu TRON sweep kuyruguna sokar; tronSigner'a EVM (0x...)
+	// adresi gonderilir, her seferinde hata alinir ve gercek TRON adresleri
+	// kuyrukta gecikir. EVM sweep'i zaten ayri bir serviste yapiliyor
+	// (services/cryptoSweepServiceEvm.js).
+	const addresses = await CryptoAddress.find({ chain: 'TRON' })
 		.sort({ lastSweepScannedAt: 1 })
 		.limit(ADDRESS_BATCH)
 		.lean();
 
 	if (addresses.length === 0) return 0;
 
-	const currencies = listCurrencies();
+	// Ayni sekilde yalniz TRON para birimleri (TRX, USDT_TRC20) sweep edilir —
+	// listCurrencies() TUM zincirleri dondurur, burada gereksiz/zararli.
+	const currencies = listCurrencies().filter(
+		(currency) => currency.family === 'TRON',
+	);
 	let queued = 0;
 
 	for (const record of addresses) {

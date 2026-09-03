@@ -154,6 +154,24 @@ const defaultPermissions = [
 		group: "Finans",
 	},
 	{
+		code: "finance.cryptoWallet.read",
+		name: "Finans - Kripto Toplama Cüzdanı Görüntüle",
+		description:
+			"Kendi HD altyapımızdaki toplama (sweep) adresinin canlı zincir bakiyesini ve sweep/çekim geçmişini görüntüleme",
+		resource: "finance.cryptoWallet",
+		action: "read",
+		group: "Finans",
+	},
+	{
+		code: "finance.cryptoWallet.manage",
+		name: "Finans - Kripto Toplama Cüzdanı Yönet",
+		description:
+			"Manuel sweep tetikleme yetkisi. Platform dışına (borsa/kişisel cüzdan) gerçek zincir çekimi bu yetkiye DAHİL DEĞİLDİR — o işlem her zaman süper admin gerektirir.",
+		resource: "finance.cryptoWallet",
+		action: "manage",
+		group: "Finans",
+	},
+	{
 		code: "finance.bankAccounts.read",
 		name: "Finans - Banka Hesapları Görüntüle",
 		resource: "finance.bankAccounts",
