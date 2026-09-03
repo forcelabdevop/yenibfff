@@ -206,13 +206,30 @@ const editGame = async (game) => {
 
 // -------------------- Sağlayıcı → Kategori Toplu Atama --------------------
 // "slot-fazi" gibi bir provider_code'a sahip yüzlerce oyunu tek tek
-// açmadan tek istekle bir kategoriye atamak/kaldırmak için.
+// açmadan tek istekle bir kategoriye atamak/kaldırmak için. Bir sağlayıcı
+// hem Slot hem Canlı Casino hem Hızlı Oyun barındırabildiğinden, "Oyun
+// Tipi" çoklu seçimiyle bu ayrımı da yapabiliyoruz (boş = sağlayıcının
+// TÜM oyun tipleri).
 const bulkProvider = ref();
 const bulkCategory = ref();
 const bulkAction = ref("add");
+const bulkGameTypeGroups = ref([]);
 const bulkApplying = ref(false);
 const bulkResult = ref(null); // { success, message } | { error }
 const allCategoryOptions = ref([]);
+
+// game_type verileri sağlayıcılar arasında tutarsız yazıldığından
+// (Slot/slot/Slots, Baccarat/baccarat vb.) ham değerler yerine backend'in
+// GAME_TYPE_GROUPS ile eşleştirdiği anlamlı gruplar sunuluyor.
+const gameTypeGroupOptions = [
+	{ title: "Slot", value: "slot" },
+	{ title: "Canlı Casino", value: "live_casino" },
+	{ title: "Hızlı Oyunlar", value: "fast_games" },
+	{ title: "Diğer", value: "other" },
+];
+
+const bulkPreview = ref(null); // { matched, byType: [{game_type, count}] }
+const bulkPreviewLoading = ref(false);
 
 const loadAllCategoryOptions = async () => {
 	try {
@@ -227,6 +244,36 @@ const loadAllCategoryOptions = async () => {
 	}
 };
 
+// Seçili sağlayıcı + oyun tipi grubuna kaç oyunun düştüğünü, hiçbir şeyi
+// güncellemeden gösterir — onay diyaloğundan önce admin'in etkiyi görmesi
+// için.
+const fetchBulkPreview = async () => {
+	if (!bulkProvider.value) {
+		bulkPreview.value = null;
+		return;
+	}
+	bulkPreviewLoading.value = true;
+	try {
+		const { data } = await axios.get(
+			"/admin/games/bulk-assign-category/preview",
+			{
+				params: {
+					provider_code: bulkProvider.value,
+					game_type_groups: bulkGameTypeGroups.value.join(",") || undefined,
+				},
+			},
+		);
+		bulkPreview.value = data.data;
+	} catch (err) {
+		console.error("Toplu atama önizlemesi alınamadı:", err);
+		bulkPreview.value = null;
+	} finally {
+		bulkPreviewLoading.value = false;
+	}
+};
+
+watch([bulkProvider, bulkGameTypeGroups], fetchBulkPreview, { deep: true });
+
 const applyBulkCategoryAssign = async () => {
 	if (!bulkProvider.value || !bulkCategory.value) return;
 
@@ -237,10 +284,20 @@ const applyBulkCategoryAssign = async () => {
 		allCategoryOptions.value.find((c) => c.value === bulkCategory.value)
 			?.title || bulkCategory.value;
 	const actionLabel = bulkAction.value === "remove" ? "kaldırılsın" : "eklensin";
+	const typeLabel = bulkGameTypeGroups.value.length
+		? bulkGameTypeGroups.value
+				.map(
+					(v) => gameTypeGroupOptions.find((o) => o.value === v)?.title || v,
+				)
+				.join(", ")
+		: "tüm oyun tipleri";
+	const matchedCount = bulkPreview.value?.matched;
+	const countText =
+		typeof matchedCount === "number" ? `${matchedCount} oyun` : "eşleşen oyunlar";
 
 	if (
 		!window.confirm(
-			`"${providerLabel}" sağlayıcısındaki TÜM oyunlara "${categoryLabel}" kategorisi ${actionLabel} mı?`,
+			`"${providerLabel}" sağlayıcısının [${typeLabel}] kapsamındaki ${countText}na "${categoryLabel}" kategorisi ${actionLabel} mı?`,
 		)
 	) {
 		return;
@@ -253,10 +310,12 @@ const applyBulkCategoryAssign = async () => {
 			provider_code: bulkProvider.value,
 			category: bulkCategory.value,
 			action: bulkAction.value,
+			game_type_groups: bulkGameTypeGroups.value,
 		});
 		bulkResult.value = { success: true, message: data.message };
 		fetchGameMeta();
 		fetchGames();
+		fetchBulkPreview();
 	} catch (err) {
 		bulkResult.value = {
 			success: false,
@@ -346,12 +405,15 @@ const applyBulkCategoryAssign = async () => {
 				<VCard title="Sağlayıcı → Kategori Toplu Atama">
 					<VCardText>
 						<p class="text-body-2 text-medium-emphasis mb-4">
-							Bir sağlayıcının (örn. <code>slot-fazi</code>) TÜM oyunlarına
-							tek seferde bir kategori ekleyin veya kaldırın — tek tek
-							oyun açıp kategori seçmenize gerek kalmaz.
+							Bir sağlayıcının (örn. <code>slot-fazi</code>) oyunlarına tek
+							seferde bir kategori ekleyin veya kaldırın — tek tek oyun açıp
+							kategori seçmenize gerek kalmaz. Sağlayıcının Slot, Canlı Casino
+							ve Hızlı Oyun gibi farklı türleri tek kategoriye karışmasın diye
+							"Oyun Tipi" ile daraltabilirsiniz (boş bırakılırsa sağlayıcının
+							TÜM oyunları hedeflenir).
 						</p>
 						<VRow align="center">
-							<VCol cols="12" sm="4">
+							<VCol cols="12" sm="3">
 								<AppSelect
 									v-model="bulkProvider"
 									label="Sağlayıcı Seç"
@@ -362,7 +424,21 @@ const applyBulkCategoryAssign = async () => {
 									clear-icon="tabler-x"
 								/>
 							</VCol>
-							<VCol cols="12" sm="4">
+							<VCol cols="12" sm="3">
+								<AppSelect
+									v-model="bulkGameTypeGroups"
+									label="Oyun Tipi (boş = tümü)"
+									:items="gameTypeGroupOptions"
+									item-title="title"
+									item-value="value"
+									multiple
+									chips
+									closable-chips
+									clearable
+									clear-icon="tabler-x"
+								/>
+							</VCol>
+							<VCol cols="12" sm="3">
 								<AppSelect
 									v-model="bulkCategory"
 									label="Kategori Seç"
@@ -373,7 +449,7 @@ const applyBulkCategoryAssign = async () => {
 									clear-icon="tabler-x"
 								/>
 							</VCol>
-							<VCol cols="12" sm="2">
+							<VCol cols="12" sm="1">
 								<AppSelect
 									v-model="bulkAction"
 									label="İşlem"
@@ -397,6 +473,32 @@ const applyBulkCategoryAssign = async () => {
 								</VBtn>
 							</VCol>
 						</VRow>
+
+						<div v-if="bulkProvider" class="mt-2">
+							<span
+								v-if="bulkPreviewLoading"
+								class="text-body-2 text-medium-emphasis"
+							>
+								Eşleşen oyun sayısı hesaplanıyor...
+							</span>
+							<template v-else-if="bulkPreview">
+								<span class="text-body-2">
+									Bu seçimle
+									<strong>{{ bulkPreview.matched }}</strong>
+									oyun eşleşiyor.
+								</span>
+								<span
+									v-if="bulkPreview.byType?.length"
+									class="text-body-2 text-medium-emphasis ms-2"
+								>
+									({{
+										bulkPreview.byType
+											.map((t) => `${t.game_type}: ${t.count}`)
+											.join(", ")
+									}})
+								</span>
+							</template>
+						</div>
 
 						<VAlert
 							v-if="bulkResult"
