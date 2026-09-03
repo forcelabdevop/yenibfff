@@ -271,22 +271,18 @@ router.post("/", async (req, res) => {
 					language = "tr",
 					channel = "desktop",
 					customData,
-					displayCurrency,
 				} = req.body;
 
-				// "Display balance in" secimi (frontend: currency-display-modal.js /
-				// game-detail.js), sadece Betinovi'nin de desteklediği fiat'lar icin
-				// gercek settlement para birimine cevrilir. Desteklenmeyen/eksik
-				// bir deger gelirse guvenli varsayilan TRY'ye dusulur -- boylece
-				// oyun baslatma bu yuzden asla bozulmaz.
+				// ONEMLI: "Display balance in" secimi (currency-display-modal.js) SADECE
+				// kozmetik bir gorunum tercihidir -- gercek bakiye her zaman kullanicinin
+				// gercek cuzdan para biriminde (user.currency.fiatCurrency) tutulur. Bu
+				// yuzden Betinovi'ye gonderilen settlement para birimi ASLA istemcinin
+				// gonderdigi bir degerden degil, dogrudan gercek cuzdan biriminden
+				// alinir -- aksi halde saglayici, gercek TRY/EUR bakiyeyi kullanicinin
+				// sirf goruntu icin sectigi baska bir birim (orn. USD) zannederek
+				// ekranda yanlis tutar gosterir (bkz. proje hafizasi: "para birimi
+				// secince bakiye yanlis gonderiliyor").
 				const SETTLEMENT_CURRENCIES = ["USD", "EUR", "TRY", "BRL"];
-				const requestedCurrency = String(
-					displayCurrency || "",
-				).toUpperCase();
-				const settlementCurrencyCode =
-					SETTLEMENT_CURRENCIES.includes(requestedCurrency)
-						? requestedCurrency
-						: "TRY";
 
 				if (!user_id || !vendorCode) {
 					return res.status(200).json({
@@ -311,6 +307,18 @@ router.post("/", async (req, res) => {
 						details: BET_ACCESS_BLOCKED_MESSAGE,
 					});
 				}
+
+				// Gercek cuzdan para birimi -- /exchange/switch-fiat-currency ile
+				// degistirilen tek gercek kaynak (user.currency.fiatCurrency).
+				// Betinovi'nin desteklemedigi bir birim gelirse (orn. CNY/INR/IDR/RUB,
+				// bkz. exchangeRates.js supportedFiats) guvenli varsayilan TRY'ye dusulur.
+				const realWalletCurrency = String(
+					user.currency?.fiatCurrency || "",
+				).toUpperCase();
+				const settlementCurrencyCode =
+					SETTLEMENT_CURRENCIES.includes(realWalletCurrency)
+						? realWalletCurrency
+						: "TRY";
 
 				const activeWallet = getActiveWallet(user);
 				if (!activeWallet) {

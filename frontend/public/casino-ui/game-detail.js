@@ -257,11 +257,12 @@ window.createGameDetail = function createGameDetail(ctx) {
           gameCode: game.game_code,
           language: "tr",
           channel: "desktop",
-          // "Display balance in" secimi (bkz. currencyDisplayActive) burada
-          // gercek settlement para birimine cevrilir -- backend/routes/betinoviApi.js
-          // sadece USD/EUR/TRY/BRL'yi kabul eder, desteklenmeyen bir deger
-          // gelirse guvenli varsayilan TRY'ye duser.
-          displayCurrency: currencyDisplayActive ? currencyDisplayActive.value : undefined,
+          // NOT: "Display balance in" secimi (currencyDisplayActive) burada KASITLI
+          // OLARAK gonderilmiyor -- o sadece kozmetik bir gorunum tercihi (bkz.
+          // currency-display-modal.js), gercek settlement para birimi degil.
+          // Oyun her zaman kullanicinin gercek cuzdan para biriminde
+          // (user.currency.fiatCurrency) acilir -- backend/routes/betinoviApi.js
+          // bunu dogrudan kendisi belirler.
         }),
       })
       const payload = await response.json().catch(() => ({}))
