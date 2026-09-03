@@ -1,5 +1,6 @@
 const { providerRequest } = require("../utils/httpClient");
 const { assertCanLaunchGame } = require("../services/launchGuards");
+const { MOCK_MODE, buildMockLaunchUrl } = require("../utils/mockMode");
 
 /**
  * POKER-tarzi saglayici: Basic-auth ile token degisimi + Bearer launch.
@@ -47,6 +48,10 @@ async function ensureToken() {
 
 async function launchGame(user, { gameCode, language = "tr" }) {
 	assertCanLaunchGame(user);
+
+	if (MOCK_MODE) {
+		return { launchUrl: buildMockLaunchUrl("poker", user, gameCode), provider: "poker" };
+	}
 
 	const token = await ensureToken();
 

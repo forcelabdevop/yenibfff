@@ -1,5 +1,6 @@
 const { providerRequest } = require("../utils/httpClient");
 const { assertCanLaunchGame } = require("../services/launchGuards");
+const { MOCK_MODE, buildMockLaunchUrl } = require("../utils/mockMode");
 
 /**
  * NEXUS-tarzi saglayici: Betinovi'ye benzer "seamless wallet" modeli,
@@ -20,6 +21,10 @@ const AGENT_TOKEN = process.env.NEXUS_AGENT_TOKEN;
 
 async function launchGame(user, { gameCode, vendorCode, language = "tr" }) {
 	assertCanLaunchGame(user);
+
+	if (MOCK_MODE) {
+		return { launchUrl: buildMockLaunchUrl("nexus", user, gameCode), provider: "nexus" };
+	}
 
 	const response = await providerRequest({
 		method: "POST",

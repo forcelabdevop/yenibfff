@@ -1,5 +1,6 @@
 const { providerRequest } = require("../utils/httpClient");
 const { assertCanLaunchGame } = require("../services/launchGuards");
+const { MOCK_MODE, buildMockLaunchUrl } = require("../utils/mockMode");
 
 /**
  * DRAKON-tarzi saglayici: OAuth Bearer token modeli.
@@ -49,6 +50,10 @@ async function ensureDrakonToken() {
 
 async function launchGame(user, { gameCode, language = "tr", currency = "TRY" }) {
 	assertCanLaunchGame(user);
+
+	if (MOCK_MODE) {
+		return { launchUrl: buildMockLaunchUrl("drakon", user, gameCode), provider: "drakon" };
+	}
 
 	const token = await ensureDrakonToken();
 

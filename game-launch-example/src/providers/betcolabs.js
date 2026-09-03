@@ -1,5 +1,6 @@
 const { providerRequest } = require("../utils/httpClient");
 const { assertCanLaunchGame } = require("../services/launchGuards");
+const { MOCK_MODE, buildMockLaunchUrl } = require("../utils/mockMode");
 
 /**
  * BETCOLABS-tarzi saglayici: sportsbook (spor bahisleri) icin
@@ -40,6 +41,10 @@ async function getOrCreateSession(user) {
 
 async function launchGame(user, { channel = "desktop", isLiveEvent = false, language = "tr" }) {
 	assertCanLaunchGame(user);
+
+	if (MOCK_MODE) {
+		return { launchUrl: buildMockLaunchUrl("betcolabs", user, `${channel}-${isLiveEvent ? "live" : "prematch"}`), provider: "betcolabs" };
+	}
 
 	const sessionToken = await getOrCreateSession(user);
 	const isMobile = channel === "mobile" || channel === "m";

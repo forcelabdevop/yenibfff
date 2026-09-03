@@ -1,5 +1,6 @@
 const { providerRequest } = require("../utils/httpClient");
 const { assertCanLaunchGame } = require("../services/launchGuards");
+const { MOCK_MODE, buildMockLaunchUrl } = require("../utils/mockMode");
 
 /**
  * BETINOVI-tarzi saglayici: "seamless wallet" modeli.
@@ -19,6 +20,10 @@ const AGENT_TOKEN = process.env.BETINOVI_AGENT_TOKEN;
 
 async function launchGame(user, { gameCode, vendorCode, language = "tr" }) {
 	assertCanLaunchGame(user);
+
+	if (MOCK_MODE) {
+		return { launchUrl: buildMockLaunchUrl("betinovi", user, gameCode), provider: "betinovi" };
+	}
 
 	const response = await providerRequest({
 		method: "POST",
