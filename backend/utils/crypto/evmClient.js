@@ -20,18 +20,37 @@ const ERC20_ABI = [
 
 const providers = new Map();
 
-/** @param {'BEP20'|'POLYGON'} network */
+/**
+ * @param {'BEP20'|'POLYGON'} network
+ *
+ * Birden fazla RPC uc noktasi varsa (config/crypto.js -> resolveRpcUrls)
+ * bir `ethers.FallbackProvider` kurulur: her cagriyi ONCE listenin basindaki
+ * saglayiciya gonderir, o BASARISIZ olursa (timeout, 401/403, hiz siniri,
+ * agdan dusme) OTOMATIK olarak siradaki saglayiciya gecer. `quorum: 1`
+ * bilerek secildi — amac BIRDEN FAZLA saglayicinin BIRBIRINI dogrulamasi
+ * degil (bu, ayni okumayi N kat tekrar gonderip RPC kullanimini N'e katlar),
+ * sadece TEK bir saglayicinin gecici arizasinin/anti-abuse blogunun butun
+ * yatirma taramasini durdurmasini ONLEMEKTIR. Kredi guvenligi zaten baska
+ * katmanlarla saglanir: getTransactionReceipt basari kontrolu, atomik
+ * $inc bakiye guncellemesi ve confirmationsRequired esigi (bkz. dosya basi
+ * ve cryptoDepositWatcher.js notlari).
+ */
 function getProvider(network) {
 	const config = EVM_NETWORKS[network];
 	if (!config) throw new Error(`Bilinmeyen EVM agi: ${network}`);
 
 	if (!providers.has(network)) {
-		providers.set(
-			network,
-			new ethers.JsonRpcProvider(config.rpcUrl, config.chainId, {
-				staticNetwork: true,
-			}),
+		const ethersNetwork = ethers.Network.from(config.chainId);
+		const jsonRpcProviders = config.rpcUrls.map(
+			(url) => new ethers.JsonRpcProvider(url, ethersNetwork, { staticNetwork: true }),
 		);
+
+		const provider =
+			jsonRpcProviders.length > 1
+				? new ethers.FallbackProvider(jsonRpcProviders, ethersNetwork, { quorum: 1 })
+				: jsonRpcProviders[0];
+
+		providers.set(network, provider);
 	}
 	return providers.get(network);
 }

@@ -22,7 +22,8 @@
 <script src="./promotions-page.js"></script>
 <script src="./referral-page.js"></script>
 <script src="./vip-page.js"></script>
-<script src="./casino-providers-battles.js"></script>
+ <script src="./casino-providers-battles.js"></script>
+ <script src="./currency-display-modal.js"></script>
 <link href="./tailwind.css" rel="stylesheet"/>
 <link href="./missions-page.css" rel="stylesheet"/>
 <link href="./bonuses-page.css" rel="stylesheet"/>
@@ -100,7 +101,8 @@
     .balance-button .balance-amount { white-space: nowrap; }
     .balance-button .fa-chevron-down, .user-button .fa-chevron-down { font-size: 10px; color: var(--dim); margin-left: 1px; }
     /* balance currency dropdown */
-    .balance-wrap { position: relative; display: inline-flex; }
+    .in-game-badge { display:inline-flex; align-items:center; height:36px; padding:0 12px; border-radius:8px; background:rgba(255,255,255,.06); color:#99abc0; font-size:13px; font-weight:600; white-space:nowrap; }
+ .balance-wrap { position: relative; display: inline-flex; }
     .bal-dd { position: absolute; top: calc(100% + 10px); left: 0; width: 300px; display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 20px 50px rgba(0,0,0,.55); overflow: hidden; z-index: 90; }
     .bal-dd__search { padding: 10px 10px 8px; }
     .bal-dd__search label { display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--page); color: var(--dim); }
@@ -118,9 +120,37 @@
     .bal-dd__opt .right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
     .bal-switch { width: 38px; height: 22px; border-radius: 999px; background: #3a4655; border: 0; position: relative; cursor: pointer; flex-shrink: 0; transition: .18s; }
     .bal-switch.on { background: var(--blue); }
-    .bal-switch::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: .18s; }
+    .bal-switch::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #ffffffa3; transition: .18s; }
     .bal-switch.on::after { left: 19px; }
-    .bal-dd__fiat { display: flex; align-items: center; gap: 6px; padding: 5px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel-2); font-size: 12px; font-weight: 800; }
+    .bal-dd__fiat { display: flex; align-items: center; gap: 6px; padding: 5px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel-2); color: #f7f8fb; font-size: 12px; font-weight: 800; cursor: pointer; transition: .15s; }
+ .bal-dd__fiat:hover { border-color: var(--blue); }
+ /* "Display in currency" modali -- ayni gorsel dil "Bonus details" (calendar-details-*) modaliyla,
+    ama .bn-page'e bagimli olmadan her yerden acilabilsin diye kendi class'lari var. */
+ .curr-modal-overlay { position: fixed; z-index: 200; inset: 0; background: rgba(2,10,19,.88); display: flex; align-items: flex-start; justify-content: center; padding-top: 100px; }
+ .curr-modal { width: 420px; max-width: calc(100vw - 28px); max-height: min(640px, calc(100vh - 140px)); border-radius: 15px; overflow: hidden; background: #111d29; box-shadow: 0 30px 80px rgba(0,0,0,.6); display: flex; flex-direction: column; }
+ .curr-modal-head { flex: none; position: relative; padding: 28px 56px 24px 24px; background: linear-gradient(180deg,#0b4385,#111d29 92%); }
+ .curr-modal-head h2 { margin: 0; font-size: 24px; line-height: 30px; color: #fff; }
+ .curr-modal-x { position: absolute; right: 18px; top: 20px; background: transparent; color: #c2cede; font-size: 20px; cursor: pointer; }
+ .curr-modal-main { padding: 18px 24px 0; flex: 1; min-height: 0; display: flex; flex-direction: column; }
+ .curr-modal-notice { display: flex; align-items: flex-start; gap: 8px; border-radius: 11px; background: #202c3c; padding: 12px; color: #a4bee5; font-size: 12px; line-height: 18px; }
+ .curr-modal-notice i { flex-shrink: 0; margin-top: 2px; color: #6f9bd6; }
+ .curr-modal-search { margin: 14px 0 6px; flex: none; }
+ .curr-modal-search label { display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 14px; border: 1px solid #273544; border-radius: 10px; background: #0d1622; color: var(--dim); }
+ .curr-modal-search input { flex: 1; min-width: 0; border: 0; background: transparent; color: #f7f8fb; outline: none; font-size: 14px; }
+ .curr-modal-list { flex: 1; min-height: 0; overflow-y: auto; padding-bottom: 12px; }
+ .curr-modal-row { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 8px; border: 0; border-radius: 9px; background: transparent; color: #f7f8fb; cursor: pointer; text-align: left; }
+ .curr-modal-row:hover { background: #1a2734; }
+ .curr-modal-row.is-active { background: #17283b; }
+ .curr-modal-flag { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+ .curr-modal-name { font-size: 14px; }
+ .curr-modal-name b { font-weight: 800; margin-right: 6px; }
+ .curr-modal-radio { margin-left: auto; width: 20px; height: 20px; border-radius: 50%; border: 2px solid #3a4655; flex-shrink: 0; position: relative; transition: .15s; }
+ .curr-modal-radio.is-active { border-color: var(--blue); }
+ .curr-modal-radio.is-active::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: var(--blue); }
+ .curr-modal-empty { padding: 24px 8px; text-align: center; color: var(--dim); font-size: 13px; }
+ .curr-modal-foot { flex: none; padding: 16px 24px; background: #202d3d; }
+ .curr-modal-foot button { width: 100%; height: 44px; border-radius: 9px; background: #3d4654; color: #fff; font-size: 14px; cursor: pointer; }
+ @media (max-width: 560px) { .curr-modal-overlay { padding-top: 55px; } }
     .bal-dd__fiat .flag { width: 18px; height: 18px; border-radius: 50%; object-fit: cover; }
     .deposit-button { width: 78px; height: 36px; flex: 0 0 78px; padding: 0; margin-left: -26px; position: relative; z-index: 2; font-size: 12px; color: white; background: linear-gradient(1turn, #c4003b .8%, #fb1949); box-shadow: 0 3px 16px #ff234180, inset 0 4px 3px #ffffff4d; }
     .deposit-button:hover { background: linear-gradient(1turn, #d40040 .8%, #ff2f5b); box-shadow: 0 6px 22px #ff2341a6, inset 0 4px 3px #ffffff66; transform: translateY(-2px); }
@@ -688,13 +718,13 @@
     .gl-launch__currency-label { color:#c4ccd7; font:700 15px/1 inherit; }
     .gl-launch__currency { width:154px; height:36px; flex:none; display:grid; grid-template-columns:auto 1fr 14px; align-items:center; gap:8px; padding:0 12px; border:none; border-radius:8px; background:#4458743d; color:#fff; font:700 14px/1 inherit; cursor:pointer; backdrop-filter:blur(8px); }
     .gl-launch__currency strong { display:flex; align-items:center; color:#fff; font-size:14px; }
-    .gl-launch__us-flag { position:relative; width:18px; height:18px; flex:none; overflow:hidden; border:1px solid rgba(255,255,255,.7); border-radius:50%; background:repeating-linear-gradient(to bottom,#d62538 0 2px,#fff 2px 4px); }
-    .gl-launch__us-flag::before { content:""; position:absolute; top:0; left:0; width:9px; height:9px; background:#2856a8; }
+    .gl-launch__flag { width:18px; height:18px; flex:none; object-fit:cover; border-radius:50%; border:1px solid rgba(255,255,255,.7); }
     .gl-launch__currency i { color:#99abc0; font-size:10px; transition:transform .2s ease; }
     .gl-launch__currency[aria-expanded="true"] i { transform:rotate(180deg); }
     .gl-launch__currencies { position:absolute; z-index:3; top:44px; right:0; width:154px; padding:6px; border:1px solid #43556d; border-radius:9px; background:#253345; box-shadow:0 13px 28px rgba(0,0,0,.45); }
-    .gl-launch__currencies button { width:100%; padding:8px; border:0; border-radius:6px; background:transparent; color:#fff; font:700 12px/1 inherit; text-align:left; cursor:pointer; }
+    .gl-launch__currencies button { width:100%; display:flex; align-items:center; gap:8px; padding:8px; border:0; border-radius:6px; background:transparent; color:#fff; font:700 12px/1 inherit; text-align:left; cursor:pointer; }
     .gl-launch__currencies button:hover { background:#34465b; }
+    .gl-launch__currencies button.is-active { background:#34465b; color:#ff2457; }
     .gl-launch__actions { display:flex; gap:12px; }
     .gl-launch__actions > button { width:154px; height:44px; flex:none; border:0; border-radius:10px; color:#fff; font:800 15px/1 inherit; cursor:pointer; }
     .gl-launch__demo { background:rgba(79,99,119,.68); box-shadow:inset 0 1px 0 rgba(255,255,255,.06); }
@@ -816,6 +846,13 @@
     .game-review__body a { color:#4f9fff; font-weight:700; text-decoration:none; }
     .game-review__body a:hover { text-decoration:underline; }
     .game-review__body p:last-child { margin-bottom:0; }
+    .game-review__collapse { position:relative; max-height:220px; overflow:hidden; transition:max-height .35s ease; }
+    .game-review__collapse.is-expanded { max-height:none; }
+    .game-review__fade { position:absolute; left:0; right:0; bottom:0; height:80px; background:linear-gradient(180deg, rgba(0,0,0,0) 0%, var(--page) 88%); pointer-events:none; }
+    .game-review__toggle { display:inline-flex; align-items:center; gap:8px; margin-top:16px; padding:9px 18px; border:1px solid rgba(255,255,255,.12); border-radius:999px; background:rgba(255,255,255,.04); color:#cfd8e6; font-size:13px; font-weight:800; letter-spacing:-.1px; cursor:pointer; transition:background .2s ease,color .2s ease,border-color .2s ease; }
+    .game-review__toggle:hover { background:rgba(255,255,255,.09); border-color:rgba(255,255,255,.2); color:#fbfbfc; }
+    .game-review__toggle i { font-size:11px; transition:transform .25s ease; }
+    .game-review__toggle i.open { transform:rotate(180deg); }
     @media (min-width:900px) { .gl-info-grid { grid-template-columns:1fr 1fr; gap:28px 40px; } }
 
     .casino-rail { margin-top:34px; }
@@ -2190,6 +2227,7 @@
 <button :class="{active:chatOpen}" @click="toggleChat" aria-label="Messages" class="top-button chat-top"><img alt="" class="chat-icon" src="assets/icon-chat.svg"/></button>
 </div>
 <div class="header-right" v-else>
+<span class="in-game-badge" v-if="isGamePage">(In Game)</span>
 <div class="balance-wrap"><button @click.stop="toggleBalanceMenu" class="top-button balance-button"><span class="pill-icon"><img alt="" class="pill-icon__coin" :src="isBonusesPage ? bonusAssets.tether : 'assets/wallet-coin-icon.png'"/></span><span class="balance-amount">{{formattedBalance}}</span><i :class="balanceMenuOpen ? 'fas fa-chevron-up' : 'fas fa-chevron-down'"></i></button>
 <div class="bal-dd" @click.stop v-if="balanceMenuOpen">
 <div class="bal-dd__search"><label><i class="fas fa-search"></i><input placeholder="Search" type="text" v-model="balanceSearch"/></label></div>
@@ -2197,9 +2235,27 @@
 <div class="bal-dd__foot">
 <div class="bal-dd__opt"><span class="lbl">Hide 0 balances</span><span class="right"><button :class="['bal-switch',{on:balanceHideZero}]" @click="balanceHideZero=!balanceHideZero" type="button"></button></span></div>
 <div class="bal-dd__opt"><span class="lbl">Show vault balance</span><span class="right"><button :class="['bal-switch',{on:balanceShowVault}]" @click="balanceShowVault=!balanceShowVault" type="button"></button></span></div>
-<div class="bal-dd__opt"><span class="lbl">Display in Fiat</span><span class="right"><span class="bal-dd__fiat"><img alt="" class="flag" src="assets/flag-usd.png"/>USD</span><button :class="['bal-switch',{on:balanceDisplayFiat}]" @click="balanceDisplayFiat=!balanceDisplayFiat" type="button"></button></span></div>
+ <div class="bal-dd__opt"><span class="lbl">Display in Fiat</span><span class="right"><button @click="openCurrencyDisplayModal" class="bal-dd__fiat" type="button"><img :src="currencyDisplayActiveMeta.flag" alt="" class="flag"/>{{currencyDisplayActiveMeta.code}}</button><button :class="['bal-switch',{on:balanceDisplayFiat}]" @click="balanceDisplayFiat=!balanceDisplayFiat" type="button"></button></span></div>
 </div>
 </div>
+</div>
+<div @click.self="closeCurrencyDisplayModal" class="curr-modal-overlay" v-if="currencyDisplayModal">
+<section aria-label="Display in currency" aria-modal="true" class="curr-modal" role="dialog">
+<header class="curr-modal-head"><h2>Display in currency</h2><button @click="closeCurrencyDisplayModal" class="curr-modal-x" type="button"><i class="fas fa-times"></i></button></header>
+<div class="curr-modal-main">
+<div class="curr-modal-notice"><i class="fas fa-info-circle"></i><span>All bets &amp; transactions are settled in crypto and fiat equivalent. The currency rate is indicative and may change for each transaction. For any questions, contact Live Support.</span></div>
+<div class="curr-modal-search"><label><i class="fas fa-search"></i><input placeholder="Search" type="text" v-model="currencyDisplaySearch"/></label></div>
+<div class="curr-modal-list no-scrollbar">
+<button :class="['curr-modal-row',{'is-active':c.code===currencyDisplayActive}]" :key="c.code" @click="selectDisplayCurrency(c)" type="button" v-for="c in currencyDisplayFiltered">
+<img :src="c.flag" alt="" class="curr-modal-flag"/>
+<span class="curr-modal-name"><b>{{c.code}}</b> {{c.name}}</span>
+<span :class="['curr-modal-radio',{'is-active':c.code===currencyDisplayActive}]"></span>
+</button>
+<p class="curr-modal-empty" v-if="!currencyDisplayFiltered.length">No currencies found.</p>
+</div>
+</div>
+<footer class="curr-modal-foot"><button @click="closeCurrencyDisplayModal" type="button">Close</button></footer>
+</section>
 </div>
 <button @click="openDeposit('crypto')" class="top-button deposit-button">Deposit</button>
 <div @mouseenter="openUserMenu" @mouseleave="closeUserMenu" class="user-menu-wrap">
@@ -3158,11 +3214,10 @@
             <div class="gl-launch__currency-wrap">
               <span class="gl-launch__currency-label">Display balance in</span>
               <button :aria-expanded="gameCurrencyOpen" @click.stop="gameCurrencyOpen = !gameCurrencyOpen" class="gl-launch__currency" type="button">
-                <span aria-hidden="true" class="gl-launch__us-flag"></span><strong>USD</strong><i class="fas fa-chevron-down"></i>
+                <img alt="" class="gl-launch__flag" :src="currencyDisplayActiveMeta.flag" v-if="currencyDisplayActiveMeta.flag"/><strong>{{currencyDisplayActiveMeta.code}}</strong><i class="fas fa-chevron-down"></i>
               </button>
               <div @click.stop class="gl-launch__currencies" v-if="gameCurrencyOpen">
-                <button @click="gameCurrencyOpen=false; notifyGame('Balance displayed in USD')" type="button">USD</button>
-                <button @click="gameCurrencyOpen=false; notifyGame('Balance displayed in USDT')" type="button">USDT</button>
+                <button :class="{'is-active': currency.code===currencyDisplayActive}" :key="currency.code" @click="selectGameDisplayCurrency(currency)" type="button" v-for="currency in currencyDisplayList"><img alt="" class="gl-launch__flag" :src="currency.flag" v-if="currency.flag"/>{{currency.code}}</button>
               </div>
             </div>
             <div class="gl-launch__actions">
@@ -3211,15 +3266,24 @@
       <div class="gl-review" v-if="detailsOpen">
         <section class="game-review">
           <h2 class="game-review__title">{{detailGame.game_name}} review</h2>
-          <!-- description admin panelinde ham HTML olarak girilir (h2/p alt başlıkları
-               dahil, bkz. Edit Game modalindeki "Review / Açıklama (HTML)" alanı),
-               bu yüzden kaçışlı {{ }} yerine v-html ile basılır. -->
-          <div class="game-review__body" v-if="detailGame.description" v-html="detailGame.description"></div>
-          <template v-else>
-            <p>{{detailGame.game_name}} is a {{(detailGame.game_type || 'casino').toLowerCase()}} title from {{detailProviderName || 'its studio'}}, available to play directly at {{websiteName}}. Rounds are processed by the provider, so every spin resolves on the studio&apos;s own certified engine.</p>
-            <p v-if="detailRtp">The published return to player figure for this release is {{detailRtp}}%, measured over a long-term simulation by the provider. Short sessions will always deviate from that number — treat it as a statistical average, never as a guarantee for a single session.</p>
-            <p>Press play above to open the game with your active {{websiteName}} wallet. Balance changes are settled through the provider in real time, and your session history stays available in your account.</p>
-          </template>
+          <div :class="{'is-expanded': reviewExpanded || !reviewNeedsToggle}" class="game-review__collapse">
+            <div :ref="registerReviewBody" class="game-review__measure">
+              <!-- description admin panelinde ham HTML olarak girilir (h2/p alt başlıkları
+                   dahil, bkz. Edit Game modalindeki "Review / Açıklama (HTML)" alanı),
+                   bu yüzden kaçışlı {{ }} yerine v-html ile basılır. -->
+              <div class="game-review__body" v-if="detailGame.description" v-html="detailGame.description"></div>
+              <template v-else>
+                <p>{{detailGame.game_name}} is a {{(detailGame.game_type || 'casino').toLowerCase()}} title from {{detailProviderName || 'its studio'}}, available to play directly at {{websiteName}}. Rounds are processed by the provider, so every spin resolves on the studio&apos;s own certified engine.</p>
+                <p v-if="detailRtp">The published return to player figure for this release is {{detailRtp}}%, measured over a long-term simulation by the provider. Short sessions will always deviate from that number — treat it as a statistical average, never as a guarantee for a single session.</p>
+                <p>Press play above to open the game with your active {{websiteName}} wallet. Balance changes are settled through the provider in real time, and your session history stays available in your account.</p>
+              </template>
+            </div>
+            <span aria-hidden="true" class="game-review__fade" v-if="reviewNeedsToggle && !reviewExpanded"></span>
+          </div>
+          <button :aria-expanded="reviewExpanded" @click="toggleReviewExpanded" class="game-review__toggle" type="button" v-if="reviewNeedsToggle">
+            <span>{{reviewExpanded ? 'Show Less' : 'Show More'}}</span>
+            <i :class="{open: reviewExpanded}" aria-hidden="true" class="fas fa-chevron-down"></i>
+          </button>
         </section>
       </div>
     </div>
@@ -3797,7 +3861,7 @@
 <button @click="chatOpen=false" aria-label="Close chat" class="close" type="button"><img alt="" src="assets/chat/close.png"/></button>
 </div>
 <div class="chat-rooms-menu" v-if="chatRoomsOpen">
-<button :key="room.key" @click="selectChatRoom(room)" type="button" v-for="room in chatRoomsList">{{room.flag || '🌍'}}&nbsp; {{room.name}}</button>
+<button :key="room.key" @click="selectChatRoom(room)" type="button" v-for="room in chatRoomsList">{{room.flag || '����'}}&nbsp; {{room.name}}</button>
 </div>
 <div class="chat-tips-pop" v-if="chatTipsOpen">
 <p>Wager min {{chatWagerGoal}} total from real and bonus balances in the last 7 days to get Coindrops or Rains.</p>
@@ -5372,8 +5436,27 @@
           {game:'Dice',time:'02:45:00 PM',avatar:'🦝',level:'6',user:'User7198918',amount:'₺377.23',multiplier:'x14.146',payout:'₺0.00'}
         ];
 
+        // Bazi tarayici cuzdan eklentileri (TronLink/MetaMask vb.) sayfaya
+        // kendi injected script'lerini enjekte edip window.postMessage'i
+        // kendi mesaj-koprusu icin ELE GECIRIR/SARAR. O sarmalayici bizim
+        // TAMAMEN duz-string payload'umuzu (source/type/mode/path) DEGIL,
+        // kendi ic mesajini clonelamaya calisirken hata atabilir; ama hata
+        // senkron olarak BIZIM cagri yigitimizin icinde firladigi icin Vue
+        // bunu "component event handler" hatasi olarak raporlar (bkz. konsol:
+        // "Uncaught DataCloneError ... postMessage ... could not be cloned"
+        // + GameCard uzerinde "Unhandled error"). Bizim gonderdigimiz veri
+        // her zaman clonelanabilir oldugu icin bu try/catch SADECE ucuncu
+        // parti eklentinin araya girmesini yutar; navigasyon/auth mesaji
+        // eklenti araya girmeden once zaten window.parent'a ulasmis olur.
+        function safePostToParent(payload) {
+          try {
+            window.parent.postMessage(payload, window.location.origin);
+          } catch (err) {
+            console.warn('[v0] parent postMessage basarisiz (muhtemelen bir tarayici eklentisi araya giriyor):', err);
+          }
+        }
         function requestAuth(mode) {
-          window.parent.postMessage({source:'casino-frame',type:'open-auth',mode}, window.location.origin);
+          safePostToParent({source:'casino-frame',type:'open-auth',mode});
         }
 
         // Giriş yapılmı�� üst bar: parent uygulama (AuthProvider) token/userId'yi
@@ -5409,29 +5492,39 @@
           return wallets.find(w => w.coinType === user.currency?.coinType && w.chain === user.currency?.chain && w.type === user.currency?.type) || wallets[0] || null;
         });
         const walletFiat = computed(() => (authUser.value && authUser.value.currency && authUser.value.currency.fiatCurrency) || 'EUR');
+        // "Display in currency" modali mantigi ayri dosyada: casino-ui/currency-display-modal.js
+        const currencyDisplayModalCtx = window.createCurrencyDisplayModal({
+          ref, computed, walletFiat, apiUrl, storageKey: () => STORAGE_NAMESPACE + '.displayCurrency',
+        });
+        // Ust bar'daki bakiye pili artik gercek cuzdan para birimini (walletFiat)
+        // degil, kullanicinin "Display in Fiat" ile sectigi goruntu para
+        // birimini kullanir. Bakiyeler backend'de hep walletFiat cinsinden
+        // tutuldugu icin (bkz. exchangeRates.js switch-fiat-currency), gercek
+        // kur tablosuyla walletFiat -> secili fiat cevrimi yapilir. Gercek
+        // bakiye backend'de degismez, sadece burada gosterilen deger degisir.
         const formattedBalance = computed(() => {
           if (!isAuthenticated.value) return '—';
-          const meta = ({ EUR:{locale:'de-DE',symbol:'€'}, USD:{locale:'en-US',symbol:'$'}, GBP:{locale:'en-GB',symbol:'£'}, TRY:{locale:'tr-TR',symbol:'₺'} })[walletFiat.value] || {locale:'de-DE',symbol:'€'};
           const amount = Number(activeWallet.value?.balance) || 0;
-          try { return new Intl.NumberFormat(meta.locale, { style:'currency', currency: walletFiat.value, minimumFractionDigits:2, maximumFractionDigits:2 }).format(amount); }
-          catch { return `${meta.symbol}${amount.toFixed(2)}`; }
+          return currencyDisplayModalCtx.formatDisplayFiat(amount, walletFiat.value);
         });
         const balanceMenuOpen = ref(false);
         const balanceSearch = ref('');
         const balanceHideZero = ref(false);
         const balanceShowVault = ref(false);
         const balanceDisplayFiat = ref(true);
+        // Her satirin "fiat" alani, o cuzdanin gercek bakiyesini (walletFiat
+        // cinsinden) kullanicinin secili goruntu para birimine (currencyDisplayActive)
+        // gercek kurla cevirip gosterir -- bkz. currency-display-modal.js.
         const balanceCurrencies = computed(() => {
           const wallets = Array.isArray(authUser.value?.wallets) ? authUser.value.wallets : [];
           return wallets.map(wallet => {
             const code = String(wallet.coinType || wallet.currency || wallet.code || '').toUpperCase();
             const amount = Number(wallet.balance) || 0;
-            const usdRate = Number(wallet.usd || wallet.usdPrice || wallet.rate) || 0;
             return {
               code,
               icon: wallet.icon || ('assets/coin-' + code.toLowerCase() + '.png'),
               amount,
-              fiat: new Intl.NumberFormat('en-US', { style:'currency', currency:'USD' }).format(amount * usdRate),
+              fiat: currencyDisplayModalCtx.formatDisplayFiat(amount, walletFiat.value),
             };
           }).filter(currency => currency.code);
         });
@@ -5440,7 +5533,7 @@
           const q = balanceSearch.value.trim().toUpperCase();
           let list = balanceCurrencies.value;
           if (q) list = list.filter(c => c.code.includes(q));
-          if (balanceHideZero.value) list = list.filter(c => c.fiat !== '$0.00');
+          if (balanceHideZero.value) list = list.filter(c => c.amount > 0);
           return list;
         });
         const toggleBalanceMenu = () => { balanceMenuOpen.value = !balanceMenuOpen.value; };
@@ -5532,13 +5625,21 @@
           routeGames.value = slug === 'all' ? allRouteGames.slice(0,48) : (gameCategories.value.find(category => category.slug === slug)?.games || []).slice(0,48);
         }
         function navigate(path) {
-          window.parent.postMessage({source:'casino-frame',type:'navigate',path}, window.location.origin);
+          safePostToParent({source:'casino-frame',type:'navigate',path});
         }
         // Oyun detay sayfasi mantigi ayri dosyada: casino-ui/game-detail.js
         const gamePage = window.createGameDetail({
           ref, computed, currentPage, runtimeParams, apiUrl, backendAssetUrl,
           websiteName: WEBSITE_NAME, knownRtp: KNOWN_RTP, normalizeGameName,
-          authUser, readAuthToken,
+          authUser, readAuthToken, safePostToParent,
+          // Oyun ekranindaki "Display balance in" secici, ust bardaki
+          // "Display in Fiat" ile AYNI tercihi paylasir (currency-display-modal.js) --
+          // boylece secilen fiat, hem gorunumu hem de saglayiciya gonderilen
+          // gercek settlement para birimini (displayCurrency) tek yerden yonetir.
+          currencyDisplayList: currencyDisplayModalCtx.currencyDisplayList,
+          currencyDisplayActive: currencyDisplayModalCtx.currencyDisplayActive,
+          currencyDisplayActiveMeta: currencyDisplayModalCtx.currencyDisplayActiveMeta,
+          selectDisplayCurrency: currencyDisplayModalCtx.selectDisplayCurrency,
         });
         const isGamePage = gamePage.isGamePage;
 
@@ -5550,7 +5651,7 @@
 
         // Hesap sayfalari mantigi ayri dosyada: casino-ui/account-pages.js
         const accountPages = window.createAccountPages({
-          ref, computed, currentPage, apiUrl, authUser, readAuthToken,
+          ref, computed, currentPage, apiUrl, authUser, readAuthToken, safePostToParent,
         });
         const isAccountPage = accountPages.isAccountPage;
 
@@ -5874,7 +5975,7 @@
         watch(authUser, (u) => { if (u) loadNotifications(); }, { immediate: true });
         onBeforeUnmount(()=>{ window.removeEventListener('resize',handleResize); window.removeEventListener('keydown',handleKeydown); window.removeEventListener('storage',handleStorageSync); document.removeEventListener('click',handleDocumentClick); clearTimeout(searchTimer); clearInterval(promoTimer); clearInterval(betsRefreshTimer); });
         return {...casinoPT,...uiSettings,...leaderboardData,betsRowChoices,betsTab,betsRowCount,betsCountOpen,betsTabs,betsVisibleRows,betsLoading,betsError,betGameIcon,selectBetsTab,setBetsCount,heroSpinning,heroSpin,heroBackdropCards,balanceMenuOpen,balanceSearch,balanceHideZero,balanceShowVault,balanceDisplayFiat,balanceCurrencies,balanceActiveCode,balanceFiltered,toggleBalanceMenu,selectBalanceCurrency,websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,...notificationsData,toggleNotif,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,slideCasinoRow,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
-          ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage, ...missionsPage, ...bonusesPage, ...cryptoEarnPage, ...promotionsPage, ...referralPage, ...vipPage};
+          ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage, ...missionsPage, ...bonusesPage, ...cryptoEarnPage, ...promotionsPage, ...referralPage, ...vipPage, ...currencyDisplayModalCtx};
       }
     }).component('game-card', GameCard).mount('#app');
   </script>

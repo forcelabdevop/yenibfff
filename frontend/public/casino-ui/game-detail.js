@@ -7,7 +7,22 @@
  *  - POST /betinovi_api (GetGameUrl)  -> gercek saglayici launch URL'i
  */
 window.createGameDetail = function createGameDetail(ctx) {
-  const { ref, computed, currentPage, runtimeParams, apiUrl, backendAssetUrl, websiteName, knownRtp, normalizeGameName, authUser, readAuthToken } = ctx
+  const {
+    ref, computed, currentPage, runtimeParams, apiUrl, backendAssetUrl, websiteName, knownRtp, normalizeGameName,
+    authUser, readAuthToken, safePostToParent,
+    // Ust bardaki "Display in Fiat" seciciyle paylasilan ortak tercih --
+    // bkz. casino-ui/currency-display-modal.js. Oyun ekranindaki
+    // "Display balance in" secici bunu okuyup/yazar; startGame() da
+    // saglayiciya gonderilen gercek settlement para birimi (displayCurrency)
+    // icin bunu kullanir.
+    currencyDisplayList, currencyDisplayActive, currencyDisplayActiveMeta, selectDisplayCurrency,
+  } = ctx
+  // index.html'deki safePostToParent, cuzdan eklentilerinin (TronLink vb.)
+  // window.postMessage'i sarmalayip DataCloneError firlatmasina karsi
+  // try/catch icerir (bkz. index.html'deki yorum). Eger bu dosya (game-detail.js)
+  // eski bir index.html ile birlikte yuklenirse ve helper hala saglanmamissa,
+  // duz postMessage'a geri don — boylece geriye donuk uyumluluk kaybolmaz.
+  const postToParent = safePostToParent || ((payload) => window.parent.postMessage(payload, window.location.origin))
 
   const isGamePage = currentPage === "game"
   const routeGameCode = String(runtimeParams.get("code") || "").trim()
@@ -31,6 +46,35 @@ window.createGameDetail = function createGameDetail(ctx) {
   const popularOffset = ref(0)
   const gameToast = ref("")
   let toastTimer = null
+
+  // BetFury'deki gibi review metni varsayilan olarak kisaltilir (~220px), sadece
+  // metin bu yuksekligi gercekten astiginda "Show More/Show Less" butonu gosterilir.
+  const REVIEW_COLLAPSE_HEIGHT = 220
+  const reviewExpanded = ref(false)
+  const reviewNeedsToggle = ref(false)
+  let reviewBodyNode = null
+
+  function measureReviewOverflow() {
+    reviewNeedsToggle.value = !!reviewBodyNode && reviewBodyNode.scrollHeight > REVIEW_COLLAPSE_HEIGHT + 4
+  }
+
+  // .gl-review v-if ile acilip kapandigi (detailsOpen) veya oyun degistigi
+  // (iframe yeniden kuruldugu) icin bu element her acilista sifirdan mount olur;
+  // v-html icerigi ayni patch adiminda yazildigindan bir sonraki frame'de olcum
+  // yapmak, layout'un kesinlesmis olmasini garantiler.
+  function registerReviewBody(el) {
+    reviewBodyNode = el || null
+    if (!reviewBodyNode) {
+      reviewNeedsToggle.value = false
+      return
+    }
+    reviewExpanded.value = false
+    window.requestAnimationFrame(measureReviewOverflow)
+  }
+
+  function toggleReviewExpanded() {
+    reviewExpanded.value = !reviewExpanded.value
+  }
 
   const detailGame = computed(() => (gameDetail.value ? gameDetail.value.game : null))
   const detailLaunchArtwork = computed(() => {
@@ -186,10 +230,10 @@ window.createGameDetail = function createGameDetail(ctx) {
   async function startGame() {
     const game = detailGame.value
     if (!game) return
-    if (!authUser.value) {
-      window.parent.postMessage({ source: "casino-frame", type: "open-auth", mode: "login" }, window.location.origin)
-      return
-    }
+  if (!authUser.value) {
+  postToParent({ source: "casino-frame", type: "open-auth", mode: "login" })
+  return
+  }
     if (!game.provider_code) {
       launchState.value = "error"
       launchError.value = "Bu oyun icin saglayici bilgisi eksik, su an baslatilamiyor."
@@ -213,6 +257,11 @@ window.createGameDetail = function createGameDetail(ctx) {
           gameCode: game.game_code,
           language: "tr",
           channel: "desktop",
+          // "Display balance in" secimi (bkz. currencyDisplayActive) burada
+          // gercek settlement para birimine cevrilir -- backend/routes/betinoviApi.js
+          // sadece USD/EUR/TRY/BRL'yi kabul eder, desteklenmeyen bir deger
+          // gelirse guvenli varsayilan TRY'ye duser.
+          displayCurrency: currencyDisplayActive ? currencyDisplayActive.value : undefined,
         }),
       })
       const payload = await response.json().catch(() => ({}))
@@ -246,6 +295,16 @@ window.createGameDetail = function createGameDetail(ctx) {
     toastTimer = window.setTimeout(() => {
       gameToast.value = ""
     }, 2600)
+  }
+
+  // Oyun ekranindaki "Display balance in" dropdown'undan bir fiat secildiginde
+  // paylasilan tercihi (currencyDisplayActive) gunceller ve dropdown'u kapatir.
+  // Bu secim, bir sonraki startGame() cagrisinda gercek settlement para
+  // birimi olarak saglayiciya gonderilir.
+  function selectGameDisplayCurrency(currency) {
+    if (typeof selectDisplayCurrency === "function") selectDisplayCurrency(currency)
+    gameCurrencyOpen.value = false
+    notifyGame("Balance displayed in " + currency.code)
   }
 
   // Demo modu saglayici tarafinda desteklenmedigi icin gercekten acilamiyor;
@@ -305,6 +364,10 @@ window.createGameDetail = function createGameDetail(ctx) {
     bestOffset,
     popularOffset,
     gameToast,
+    reviewExpanded,
+    reviewNeedsToggle,
+    registerReviewBody,
+    toggleReviewExpanded,
     notifyGame,
     setDemoMode,
     slideRail,
@@ -326,6 +389,10 @@ window.createGameDetail = function createGameDetail(ctx) {
     launchTheatre,
     gameFavorite,
     gameCurrencyOpen,
+    currencyDisplayList,
+    currencyDisplayActive,
+    currencyDisplayActiveMeta,
+    selectGameDisplayCurrency,
     detailLaunchArtwork,
     loadGameDetail,
     startGame,

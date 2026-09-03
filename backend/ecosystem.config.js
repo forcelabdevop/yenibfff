@@ -12,7 +12,18 @@ module.exports = {
 			// ile cokuyordu. Giris dosyasini tasirsaniz burayi da guncelleyin.
 			script: "index.js",
 			exec_mode: "cluster",
-			instances: 4,
+			// DIKKAT: Socket.IO (chat, admin panel bildirimleri, admin-panel
+			// namespace'i) HTTP long-polling oturumunu (sid) ilk isteği alan
+			// worker'in BELLEGINDE tutar. PM2 cluster modu gelen HTTP
+			// isteklerini worker'lar arasinda round-robin dagitir ve hicbir
+			// sticky-session/Redis adapter kurulmadigi icin ayni socket'in
+			// sonraki polling isteği FARKLI bir worker'a düşünce o worker
+			// "Session ID unknown" der ve engine.io 400 Bad Request döner —
+			// tam olarak admin panelindeki "xhr poll/post error" / "transport
+			// error" döngüsünün sebebi budur (instances=4 iken). Redis adapter
+			// + sticky routing kurulana kadar instances=1 ile calistirmak,
+			// tüm socket.io trafiğinin ayni process'te kalmasini garanti eder.
+			instances: 1,
 			// Zero-downtime reload: yeni instance "ready" olmadan eskisi
 			// oldurulmez. index.js dinlemeye baslayinca pm2'ye haber verir.
 			wait_ready: false,

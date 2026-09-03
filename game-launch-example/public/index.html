@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <title>Game Launch — Örnek</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0f1115;
+      --panel: #171a21;
+      --border: #262b36;
+      --text: #e7e9ee;
+      --muted: #8a90a2;
+      --accent: #5b8cff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    header {
+      padding: 24px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+    header h1 { margin: 0 0 4px; font-size: 20px; }
+    header p { margin: 0; color: var(--muted); font-size: 14px; }
+    main {
+      padding: 32px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .card:hover { border-color: var(--accent); }
+    .card h3 { margin: 0 0 4px; font-size: 15px; }
+    .card p { margin: 0; color: var(--muted); font-size: 12px; }
+    .card .badge {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #1f2430;
+      color: var(--accent);
+      font-size: 11px;
+    }
+    #status {
+      margin: 0 32px;
+      color: var(--muted);
+      font-size: 13px;
+      min-height: 18px;
+    }
+    #modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+    #modal-overlay.open { display: flex; }
+    #modal-frame-wrap {
+      width: min(960px, 92vw);
+      height: min(600px, 85vh);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    #modal-frame-wrap header {
+      padding: 10px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+    #modal-frame-wrap header button {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #modal-frame-wrap iframe {
+      flex: 1;
+      width: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Game Launch — Çok-Sağlayıcılı Örnek</h1>
+    <p>Bir karta tıklayınca /api/games/launch çağrılır, ilgili sağlayıcı adaptörü çalışır ve dönen launch_url bir iframe modal içinde açılır.</p>
+  </header>
+  <p id="status"></p>
+  <main id="game-grid"></main>
+
+  <div id="modal-overlay">
+    <div id="modal-frame-wrap">
+      <header>
+        <span id="modal-title">Oyun</span>
+        <button id="modal-close" aria-label="Kapat">✕</button>
+      </header>
+      <iframe id="modal-frame" title="Oyun ekranı"></iframe>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

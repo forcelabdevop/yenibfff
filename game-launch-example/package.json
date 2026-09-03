@@ -1,0 +1,17 @@
+{
+  "name": "game-launch-example",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Casino sitelerinde kullanilan cok-saglayicili (multi-provider) oyun baslatma (game launch) mimarisinin sadelestirilmis, bagimsiz ornegi.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}

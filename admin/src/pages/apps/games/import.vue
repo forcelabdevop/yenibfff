@@ -246,6 +246,35 @@ meta:
 				</VCard>
 			</VCol>
 
+			<!-- BetFury Görselleri -->
+			<VCol cols="12" md="4">
+				<VCard>
+					<VCardTitle class="d-flex align-center gap-2">
+						<VIcon icon="tabler-photo" color="primary" />
+						BetFury Görselleri
+					</VCardTitle>
+					<VCardText>
+						<p class="text-body-2 text-medium-emphasis mb-0">
+							BetFury bir sağlayıcı değildir — burada oyun eklenmez. İsim
+							eşleşmesiyle var olan oyunlarınıza görsel önerisi getirir,
+							uygulama tek tek admin onayıyla yapılır.
+						</p>
+					</VCardText>
+					<VCardActions class="px-4 pb-4">
+						<RouterLink
+							v-if="canManageGames"
+							class="w-100"
+							:to="{ name: 'apps-games-betfury-images' }"
+						>
+							<VBtn block color="primary">
+								<VIcon start icon="tabler-arrow-right" />
+								Görsel Eşleştirmeye Git
+							</VBtn>
+						</RouterLink>
+					</VCardActions>
+				</VCard>
+			</VCol>
+
 			<!-- Nexus -->
 			<VCol cols="12" md="4">
 				<VCard>
