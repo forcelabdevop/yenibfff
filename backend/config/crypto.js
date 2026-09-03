@@ -60,6 +60,37 @@ const TRON_DERIVATION_PREFIX = "m/44'/195'/0'/0";
 const EVM_DERIVATION_PREFIX = "m/44'/60'/0'/0";
 
 /**
+ * Bir agin RPC ortam degiskenini coklu-uc noktaya cevirir.
+ *
+ * Virgul ile ayrilmis birden fazla URL desteklenir (orn.
+ * `POLYGON_RPC_URL=https://a.example,https://b.example`) — evmClient.js
+ * bunlari bir `ethers.FallbackProvider` icinde birlestirir ve BIRI
+ * yanit vermezse/401-403/hiz-siniri hatasi verirse OTOMATIK olarak
+ * digerine gecer. Ortam degiskeni HIC tanimli degilse, tek bir noktaya
+ * (dogrudan bir tedarikci gibi) bagimli kalmamak icin BIRDEN FAZLA
+ * herkese-acik yedek uc nokta varsayilan olarak kullanilir.
+ *
+ * DIKKAT (02.09.2026 vakasi): Sadece `https://polygon-rpc.com` kullanan
+ * eski yapilandirma, bu servis anonim/coklu-kiracili trafigi reddetmeye
+ * basladiginda ("API key disabled, reason: tenant disabled" 401/403)
+ * TUM Polygon yatirma taramasini durdurdu — `[crypto-evm] POLYGON/...
+ * taranamadi` hatasi dakikada bir tekrar etti. Coklu-uc-nokta failover,
+ * TEK bir saglayicinin (ucretsiz katman/anti-abuse/gecici kesinti)
+ * tum agi kilitlemesini onler. Uretimde yine de BSC_RPC_URL /
+ * POLYGON_RPC_URL / ETH_RPC_URL'e dedicated bir saglayicinin (Alchemy,
+ * Ankr, QuickNode vb.) API-key'li uc noktasini ONCE koymak (listenin
+ * basina) en guvenilir kurulumdur — asagidaki varsayilanlar SADECE
+ * bir env degiskeni hic tanimlanmamissa devreye giren ek bir guvenlik agidir.
+ */
+function resolveRpcUrls(envValue, defaults) {
+	const fromEnv = String(envValue || '')
+		.split(',')
+		.map((url) => url.trim())
+		.filter(Boolean);
+	return fromEnv.length > 0 ? fromEnv : defaults;
+}
+
+/**
  * Desteklenen EVM aglari.
  *
  * BSC ve Polygon AYNI adresi (ayni private key) paylasir — EVM adres formati
@@ -67,14 +98,17 @@ const EVM_DERIVATION_PREFIX = "m/44'/60'/0'/0";
  * isaretlenir ve cryptoAddressServiceEvm.js kullanicinin HER IKI ag icin de
  * ayni adresi almasini saglar (bkz. o dosyadaki sibling-adres mantigi).
  *
- * `rpcUrl` bos kalirsa herkese acik, hiz siniri dusuk bir RPC'ye duser —
- * yalniz gelistirme/deneme icin. Uretimde BSC_RPC_URL / POLYGON_RPC_URL
- * dedicated bir saglayiciya (Alchemy, Ankr, QuickNode vb.) isaret etmeli.
+ * `rpcUrls` bir DIZI'dir (bkz. resolveRpcUrls) — evmClient.js bunu tek bir
+ * saglayici degil bir FallbackProvider olarak kurar.
  */
 const EVM_NETWORKS = {
 	ETHEREUM: {
 		chainId: 1,
-		rpcUrl: process.env.ETH_RPC_URL || 'https://ethereum-rpc.publicnode.com',
+		rpcUrls: resolveRpcUrls(process.env.ETH_RPC_URL, [
+			'https://ethereum-rpc.publicnode.com',
+			'https://rpc.ankr.com/eth',
+			'https://eth.llamarpc.com',
+		]),
 		nativeSymbol: 'ETH',
 		confirmationsRequired: Number(process.env.ETH_CONFIRMATIONS || 20),
 		tokens: {
@@ -90,7 +124,11 @@ const EVM_NETWORKS = {
 	},
 	BEP20: {
 		chainId: 56,
-		rpcUrl: process.env.BSC_RPC_URL || 'https://bsc-dataseed.binance.org',
+		rpcUrls: resolveRpcUrls(process.env.BSC_RPC_URL, [
+			'https://bsc-dataseed.binance.org',
+			'https://bsc-dataseed1.defibit.io',
+			'https://bsc-rpc.publicnode.com',
+		]),
 		// Binance-Peg USDT (mainnet). 18 ondalik — bkz. dosya basi kanonik birim notu.
 		usdtContract:
 			process.env.BSC_USDT_CONTRACT || '0x55d398326f99059fF775485246999027B3197955',
@@ -110,7 +148,14 @@ const EVM_NETWORKS = {
 	},
 	POLYGON: {
 		chainId: 137,
-		rpcUrl: process.env.POLYGON_RPC_URL || 'https://polygon-rpc.com',
+		// polygon-rpc.com TEK BASINA yeterli DEGIL (bkz. resolveRpcUrls basindaki
+		// 02.09.2026 vaka notu) — listede tutuluyor ama artik tek nokta degil.
+		rpcUrls: resolveRpcUrls(process.env.POLYGON_RPC_URL, [
+			'https://polygon-bor-rpc.publicnode.com',
+			'https://rpc.ankr.com/polygon',
+			'https://polygon.llamarpc.com',
+			'https://polygon-rpc.com',
+		]),
 		// Polygon PoS (bridged) USDT. 6 ondalik — TRC20 ile ayni olcek, rescale gerekmez.
 		usdtContract:
 			process.env.POLYGON_USDT_CONTRACT || '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',

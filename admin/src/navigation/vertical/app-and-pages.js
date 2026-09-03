@@ -244,6 +244,13 @@ export default [
     subject: "games",
   },
   {
+    title: "BetFury Görselleri",
+    icon: { icon: "tabler-photo" },
+    to: "apps-games-betfury-images",
+    action: "read",
+    subject: "games",
+  },
+  {
     title: "Spor Bahisleri",
     icon: { icon: "tabler-ball-football" },
     to: "apps-sports-bets",

@@ -8,6 +8,33 @@ const axios = axiosRaw.create({ baseURL: '', timeout: 5000 });
 
 const supportedFiats = ['USD', 'EUR', 'TRY', 'BRL', 'CNY', 'INR', 'IDR', 'RUB'];
 
+// Sadece gorunum (display) icin kullanilan, gercek para birimi listesiyle
+// kesisen kucuk alt kume. Bkz. currency-display-modal.js.
+const displayFiats = ['USD', 'EUR', 'TRY', 'BRL'];
+
+// 📖 Salt okunur, giris gerektirmez: "Display in Fiat" secicisi ve bakiye
+// dropdown'u, gosterilen tutari (gercek cuzdan bakiyesini DEGISTIRMEDEN)
+// bu USD bazli kurlarla ceviriyor. Backend'de exchangeUpdater.js tarafindan
+// periyodik olarak guncellenen Setting.exchangeRates cache'i okunur -- disari
+// canli bir API cagrisi yapilmaz.
+router.get('/rates', async (req, res) => {
+  try {
+    const Setting = require('../database/models/Setting');
+    const settings = await Setting.findOne().select('exchangeRates').lean();
+    const rates = (settings && settings.exchangeRates) || {};
+
+    const filtered = { USD: 1 };
+    for (const code of displayFiats) {
+      if (code !== 'USD' && rates[code]) filtered[code] = rates[code];
+    }
+
+    res.json({ success: true, base: 'USD', rates: filtered });
+  } catch (err) {
+    console.error('Exchange rates fetch error:', err.message);
+    res.status(500).json({ success: false, message: 'Kur bilgisi alınamadı.', rates: { USD: 1 } });
+  }
+});
+
 // ⚠️ GÜVENLİK: Kullanıcı giriş yapmalı
 router.post('/switch-fiat-currency', authorizeUser(true), async (req, res) => {
   // ⚠️ GÜVENLİK: userId'yi token'dan al (IDOR koruması)

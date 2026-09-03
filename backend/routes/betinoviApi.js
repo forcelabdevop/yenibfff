@@ -271,7 +271,22 @@ router.post("/", async (req, res) => {
 					language = "tr",
 					channel = "desktop",
 					customData,
+					displayCurrency,
 				} = req.body;
+
+				// "Display balance in" secimi (frontend: currency-display-modal.js /
+				// game-detail.js), sadece Betinovi'nin de desteklediği fiat'lar icin
+				// gercek settlement para birimine cevrilir. Desteklenmeyen/eksik
+				// bir deger gelirse guvenli varsayilan TRY'ye dusulur -- boylece
+				// oyun baslatma bu yuzden asla bozulmaz.
+				const SETTLEMENT_CURRENCIES = ["USD", "EUR", "TRY", "BRL"];
+				const requestedCurrency = String(
+					displayCurrency || "",
+				).toUpperCase();
+				const settlementCurrencyCode =
+					SETTLEMENT_CURRENCIES.includes(requestedCurrency)
+						? requestedCurrency
+						: "TRY";
 
 				if (!user_id || !vendorCode) {
 					return res.status(200).json({
@@ -332,8 +347,8 @@ router.post("/", async (req, res) => {
 					gameCode: SINGLE_GAME_VENDORS[vendorCode]
 						? ""
 						: gameCode || null,
-					currencyCode: "TRY",
-					language: language || "tr",
+					currencyCode: settlementCurrencyCode,
+						language: language || "tr",
 					channel: channel || "desktop",
 					...(customData && { customData }),
 				};
@@ -1041,7 +1056,7 @@ router.post("/callback", async (req, res) => {
 							return;
 						}
 
-						// ��� Bet Limitleme: transaction içinde tekrar doğrula (race condition güvenliği).
+						// ���� Bet Limitleme: transaction içinde tekrar doğrula (race condition güvenliği).
 						if (normalizedTxnType === 0) {
 							const betCategory =
 								SINGLE_GAME_VENDORS[normalizedVendorCode]

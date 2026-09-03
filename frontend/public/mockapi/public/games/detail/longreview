@@ -1,0 +1,21 @@
+{
+  "data": {
+    "game": {
+      "_id": "mock1",
+      "game_code": "longreview",
+      "game_name": "Fire Hot 100",
+      "game_type": "slot",
+      "provider_code": "pragmatic",
+      "banner": "/logo.svg",
+      "background": "/logo.svg",
+      "cover": "/logo.svg",
+      "rtp": 96.5,
+      "description": "<h2>Fire Hot 100 Slot Review</h2><p>The online slot Fire Hot 100, powered by Pragmatic Play, has 5 reels and 100 paylines. The game was greatly inspired by classic fruit machine themes and captivates attention with excellent graphics, an RTP (Return to Player) of 96.50%, and some original bonus features.</p><p>Pragmatic Play succeeded not only in the superb graphics and sound but also in the user-friendly gameplay for players with any level of experience. The slot is available on all devices, including desktops, mobiles, and tablets, and is compatible with Android, iOS, Windows, and more.</p><h2>Bonus Features</h2><p>Fire Hot 100 includes a hold-and-win style bonus round where landing enough scatter symbols locks them in place for extra respins, giving players the chance to fill the whole board with high-value symbols before the feature ends.</p><p>This is a long paragraph added purely to push the content past the collapsed height so the Show More / Show Less toggle actually needs to appear during verification. Repeat filler text to guarantee overflow occurs reliably in the test viewport used for the screenshot check.</p>"
+    },
+    "provider": { "code": "pragmatic", "name": "Pragmatic Play" },
+    "categories": [],
+    "topWins": [],
+    "providerGames": [],
+    "popularGames": []
+  }
+}
