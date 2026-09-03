@@ -58,11 +58,40 @@ window.createGameDetail = function createGameDetail(ctx) {
     return fallback ? fallback.toFixed(2) : ""
   })
 
+  // Admin panelinden elle (veya bir sağlayıcı/agregatör içe aktarımından)
+  // doldurulan zenginleştirilmiş alanlar — çoğunlukla Slot'larda dolu olur,
+  // Canlı Casino/masa oyunlarında admin boş bırakabilir; bu durumda satır
+  // hiç gösterilmez (BetFury'deki gibi "—" yerine tamamen gizliyoruz, çünkü
+  // aşağıdaki .filter zaten boş değerleri eliyor).
+  const detailBetRange = computed(() => {
+    const game = detailGame.value
+    if (!game) return ""
+    const min = Number(game.bet_min)
+    const max = Number(game.bet_max)
+    if (!Number.isFinite(min) && !Number.isFinite(max)) return ""
+    const fmt = (n) => "\u20ba" + n.toLocaleString("tr-TR", { maximumFractionDigits: 2 })
+    if (Number.isFinite(min) && Number.isFinite(max)) return fmt(min) + " - " + fmt(max)
+    return fmt(Number.isFinite(min) ? min : max)
+  })
+
+  const detailMaxWin = computed(() => {
+    const game = detailGame.value
+    const value = Number(game && game.max_win_multiplier)
+    return Number.isFinite(value) && value > 0 ? value.toLocaleString("tr-TR") + "x" : ""
+  })
+
   // "Game Attributes" tablosu — yalnizca backend'den gercekten gelen alanlar gosterilir.
   const detailAttributes = computed(() => {
     const game = detailGame.value
     if (!game) return []
     return [
+      { label: "Layout", value: game.layout },
+      { label: "Paylines", value: game.paylines },
+      { label: "Bet Range", value: detailBetRange.value },
+      { label: "Max Win", value: detailMaxWin.value },
+      { label: "Volatility", value: game.volatility },
+      { label: "Themes", value: Array.isArray(game.themes) ? game.themes.join(", ") : "" },
+      { label: "Features", value: Array.isArray(game.features) ? game.features.join(", ") : "" },
       { label: "Provider", value: detailProviderName.value },
       { label: "Game type", value: game.game_type },
       { label: "Technology", value: game.technology },
