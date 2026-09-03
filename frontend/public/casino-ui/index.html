@@ -121,7 +121,35 @@
     .bal-switch.on { background: var(--blue); }
     .bal-switch::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #ffffffa3; transition: .18s; }
     .bal-switch.on::after { left: 19px; }
-    .bal-dd__fiat { display: flex; align-items: center; gap: 6px; padding: 5px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel-2); font-size: 12px; font-weight: 800; }
+    .bal-dd__fiat { display: flex; align-items: center; gap: 6px; padding: 5px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel-2); color: #f7f8fb; font-size: 12px; font-weight: 800; cursor: pointer; transition: .15s; }
+ .bal-dd__fiat:hover { border-color: var(--blue); }
+ /* "Display in currency" modali -- ayni gorsel dil "Bonus details" (calendar-details-*) modaliyla,
+    ama .bn-page'e bagimli olmadan her yerden acilabilsin diye kendi class'lari var. */
+ .curr-modal-overlay { position: fixed; z-index: 200; inset: 0; background: rgba(2,10,19,.88); display: flex; align-items: flex-start; justify-content: center; padding-top: 100px; }
+ .curr-modal { width: 420px; max-width: calc(100vw - 28px); max-height: min(640px, calc(100vh - 140px)); border-radius: 15px; overflow: hidden; background: #111d29; box-shadow: 0 30px 80px rgba(0,0,0,.6); display: flex; flex-direction: column; }
+ .curr-modal-head { flex: none; position: relative; padding: 28px 56px 24px 24px; background: linear-gradient(180deg,#0b4385,#111d29 92%); }
+ .curr-modal-head h2 { margin: 0; font-size: 24px; line-height: 30px; color: #fff; }
+ .curr-modal-x { position: absolute; right: 18px; top: 20px; background: transparent; color: #c2cede; font-size: 20px; cursor: pointer; }
+ .curr-modal-main { padding: 18px 24px 0; flex: 1; min-height: 0; display: flex; flex-direction: column; }
+ .curr-modal-notice { display: flex; align-items: flex-start; gap: 8px; border-radius: 11px; background: #202c3c; padding: 12px; color: #a4bee5; font-size: 12px; line-height: 18px; }
+ .curr-modal-notice i { flex-shrink: 0; margin-top: 2px; color: #6f9bd6; }
+ .curr-modal-search { margin: 14px 0 6px; flex: none; }
+ .curr-modal-search label { display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 14px; border: 1px solid #273544; border-radius: 10px; background: #0d1622; color: var(--dim); }
+ .curr-modal-search input { flex: 1; min-width: 0; border: 0; background: transparent; color: #f7f8fb; outline: none; font-size: 14px; }
+ .curr-modal-list { flex: 1; min-height: 0; overflow-y: auto; padding-bottom: 12px; }
+ .curr-modal-row { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 8px; border: 0; border-radius: 9px; background: transparent; color: #f7f8fb; cursor: pointer; text-align: left; }
+ .curr-modal-row:hover { background: #1a2734; }
+ .curr-modal-row.is-active { background: #17283b; }
+ .curr-modal-flag { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+ .curr-modal-name { font-size: 14px; }
+ .curr-modal-name b { font-weight: 800; margin-right: 6px; }
+ .curr-modal-radio { margin-left: auto; width: 20px; height: 20px; border-radius: 50%; border: 2px solid #3a4655; flex-shrink: 0; position: relative; transition: .15s; }
+ .curr-modal-radio.is-active { border-color: var(--blue); }
+ .curr-modal-radio.is-active::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: var(--blue); }
+ .curr-modal-empty { padding: 24px 8px; text-align: center; color: var(--dim); font-size: 13px; }
+ .curr-modal-foot { flex: none; padding: 16px 24px; background: #202d3d; }
+ .curr-modal-foot button { width: 100%; height: 44px; border-radius: 9px; background: #3d4654; color: #fff; font-size: 14px; cursor: pointer; }
+ @media (max-width: 560px) { .curr-modal-overlay { padding-top: 55px; } }
     .bal-dd__fiat .flag { width: 18px; height: 18px; border-radius: 50%; object-fit: cover; }
     .deposit-button { width: 78px; height: 36px; flex: 0 0 78px; padding: 0; margin-left: -26px; position: relative; z-index: 2; font-size: 12px; color: white; background: linear-gradient(1turn, #c4003b .8%, #fb1949); box-shadow: 0 3px 16px #ff234180, inset 0 4px 3px #ffffff4d; }
     .deposit-button:hover { background: linear-gradient(1turn, #d40040 .8%, #ff2f5b); box-shadow: 0 6px 22px #ff2341a6, inset 0 4px 3px #ffffff66; transform: translateY(-2px); }
@@ -2205,9 +2233,27 @@
 <div class="bal-dd__foot">
 <div class="bal-dd__opt"><span class="lbl">Hide 0 balances</span><span class="right"><button :class="['bal-switch',{on:balanceHideZero}]" @click="balanceHideZero=!balanceHideZero" type="button"></button></span></div>
 <div class="bal-dd__opt"><span class="lbl">Show vault balance</span><span class="right"><button :class="['bal-switch',{on:balanceShowVault}]" @click="balanceShowVault=!balanceShowVault" type="button"></button></span></div>
-<div class="bal-dd__opt"><span class="lbl">Display in Fiat</span><span class="right"><span class="bal-dd__fiat"><img alt="" class="flag" src="assets/flag-usd.png"/>USD</span><button :class="['bal-switch',{on:balanceDisplayFiat}]" @click="balanceDisplayFiat=!balanceDisplayFiat" type="button"></button></span></div>
+ <div class="bal-dd__opt"><span class="lbl">Display in Fiat</span><span class="right"><button @click="openCurrencyDisplayModal" class="bal-dd__fiat" type="button"><img :src="currencyDisplayActiveMeta.flag" alt="" class="flag"/>{{currencyDisplayActiveMeta.code}}</button><button :class="['bal-switch',{on:balanceDisplayFiat}]" @click="balanceDisplayFiat=!balanceDisplayFiat" type="button"></button></span></div>
 </div>
 </div>
+</div>
+<div @click.self="closeCurrencyDisplayModal" class="curr-modal-overlay" v-if="currencyDisplayModal">
+<section aria-label="Display in currency" aria-modal="true" class="curr-modal" role="dialog">
+<header class="curr-modal-head"><h2>Display in currency</h2><button @click="closeCurrencyDisplayModal" class="curr-modal-x" type="button"><i class="fas fa-times"></i></button></header>
+<div class="curr-modal-main">
+<div class="curr-modal-notice"><i class="fas fa-info-circle"></i><span>All bets &amp; transactions are settled in crypto and fiat equivalent. The currency rate is indicative and may change for each transaction. For any questions, contact Live Support.</span></div>
+<div class="curr-modal-search"><label><i class="fas fa-search"></i><input placeholder="Search" type="text" v-model="currencyDisplaySearch"/></label></div>
+<div class="curr-modal-list no-scrollbar">
+<button :class="['curr-modal-row',{'is-active':c.code===currencyDisplayActive}]" :key="c.code" @click="selectDisplayCurrency(c)" type="button" v-for="c in currencyDisplayFiltered">
+<img :src="c.flag" alt="" class="curr-modal-flag"/>
+<span class="curr-modal-name"><b>{{c.code}}</b> {{c.name}}</span>
+<span :class="['curr-modal-radio',{'is-active':c.code===currencyDisplayActive}]"></span>
+</button>
+<p class="curr-modal-empty" v-if="!currencyDisplayFiltered.length">No currencies found.</p>
+</div>
+</div>
+<footer class="curr-modal-foot"><button @click="closeCurrencyDisplayModal" type="button">Close</button></footer>
+</section>
 </div>
 <button @click="openDeposit('crypto')" class="top-button deposit-button">Deposit</button>
 <div @mouseenter="openUserMenu" @mouseleave="closeUserMenu" class="user-menu-wrap">
