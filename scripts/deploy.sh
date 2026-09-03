@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+ipto #!/usr/bin/env bash
 #
 # Forcelab — sunucu tarafi otomatik dagitim
 # ==========================================
