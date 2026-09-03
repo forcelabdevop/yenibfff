@@ -12,7 +12,11 @@
  *  - GET  /game-history/:identifier         -> oyun turlari
  */
 window.createAccountPages = function createAccountPages(ctx) {
-  const { ref, computed, currentPage, apiUrl, authUser, readAuthToken } = ctx
+  const { ref, computed, currentPage, apiUrl, authUser, readAuthToken, safePostToParent } = ctx
+  // bkz. index.html'deki safePostToParent yorumu: cuzdan eklentileri
+  // (TronLink vb.) window.postMessage'i sarmalayip DataCloneError
+  // firlatabilir; helper saglanmamissa duz postMessage'a geri don.
+  const postToParent = safePostToParent || ((payload) => window.parent.postMessage(payload, window.location.origin))
 
   // Bu sayfalar oturum gerektirir; index.html sablonu buna gore giris ekrani gosterir.
   const ACCOUNT_PAGES = [
@@ -301,7 +305,7 @@ window.createAccountPages = function createAccountPages(ctx) {
       /* adres cubugu guncellenemezse gecis yine de calisir */
     }
     if (path && window.parent && window.parent !== window) {
-      window.parent.postMessage({ source: "casino-frame", type: "replace-path", path }, window.location.origin)
+      postToParent({ source: "casino-frame", type: "replace-path", path })
     }
 
     // Yalnizca ilk acilista o sekmenin verisini cek (overview'i tekrar cekmeyiz).

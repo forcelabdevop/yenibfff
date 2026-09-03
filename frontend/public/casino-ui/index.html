@@ -3813,7 +3813,7 @@
 <button @click="chatOpen=false" aria-label="Close chat" class="close" type="button"><img alt="" src="assets/chat/close.png"/></button>
 </div>
 <div class="chat-rooms-menu" v-if="chatRoomsOpen">
-<button :key="room.key" @click="selectChatRoom(room)" type="button" v-for="room in chatRoomsList">{{room.flag || '🌍'}}&nbsp; {{room.name}}</button>
+<button :key="room.key" @click="selectChatRoom(room)" type="button" v-for="room in chatRoomsList">{{room.flag || '����'}}&nbsp; {{room.name}}</button>
 </div>
 <div class="chat-tips-pop" v-if="chatTipsOpen">
 <p>Wager min {{chatWagerGoal}} total from real and bonus balances in the last 7 days to get Coindrops or Rains.</p>
@@ -5388,8 +5388,27 @@
           {game:'Dice',time:'02:45:00 PM',avatar:'🦝',level:'6',user:'User7198918',amount:'₺377.23',multiplier:'x14.146',payout:'₺0.00'}
         ];
 
+        // Bazi tarayici cuzdan eklentileri (TronLink/MetaMask vb.) sayfaya
+        // kendi injected script'lerini enjekte edip window.postMessage'i
+        // kendi mesaj-koprusu icin ELE GECIRIR/SARAR. O sarmalayici bizim
+        // TAMAMEN duz-string payload'umuzu (source/type/mode/path) DEGIL,
+        // kendi ic mesajini clonelamaya calisirken hata atabilir; ama hata
+        // senkron olarak BIZIM cagri yigitimizin icinde firladigi icin Vue
+        // bunu "component event handler" hatasi olarak raporlar (bkz. konsol:
+        // "Uncaught DataCloneError ... postMessage ... could not be cloned"
+        // + GameCard uzerinde "Unhandled error"). Bizim gonderdigimiz veri
+        // her zaman clonelanabilir oldugu icin bu try/catch SADECE ucuncu
+        // parti eklentinin araya girmesini yutar; navigasyon/auth mesaji
+        // eklenti araya girmeden once zaten window.parent'a ulasmis olur.
+        function safePostToParent(payload) {
+          try {
+            window.parent.postMessage(payload, window.location.origin);
+          } catch (err) {
+            console.warn('[v0] parent postMessage basarisiz (muhtemelen bir tarayici eklentisi araya giriyor):', err);
+          }
+        }
         function requestAuth(mode) {
-          window.parent.postMessage({source:'casino-frame',type:'open-auth',mode}, window.location.origin);
+          safePostToParent({source:'casino-frame',type:'open-auth',mode});
         }
 
         // Giriş yapılmı�� üst bar: parent uygulama (AuthProvider) token/userId'yi
@@ -5548,13 +5567,13 @@
           routeGames.value = slug === 'all' ? allRouteGames.slice(0,48) : (gameCategories.value.find(category => category.slug === slug)?.games || []).slice(0,48);
         }
         function navigate(path) {
-          window.parent.postMessage({source:'casino-frame',type:'navigate',path}, window.location.origin);
+          safePostToParent({source:'casino-frame',type:'navigate',path});
         }
         // Oyun detay sayfasi mantigi ayri dosyada: casino-ui/game-detail.js
         const gamePage = window.createGameDetail({
           ref, computed, currentPage, runtimeParams, apiUrl, backendAssetUrl,
           websiteName: WEBSITE_NAME, knownRtp: KNOWN_RTP, normalizeGameName,
-          authUser, readAuthToken,
+          authUser, readAuthToken, safePostToParent,
         });
         const isGamePage = gamePage.isGamePage;
 
@@ -5566,7 +5585,7 @@
 
         // Hesap sayfalari mantigi ayri dosyada: casino-ui/account-pages.js
         const accountPages = window.createAccountPages({
-          ref, computed, currentPage, apiUrl, authUser, readAuthToken,
+          ref, computed, currentPage, apiUrl, authUser, readAuthToken, safePostToParent,
         });
         const isAccountPage = accountPages.isAccountPage;
 

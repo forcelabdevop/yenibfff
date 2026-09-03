@@ -7,7 +7,13 @@
  *  - POST /betinovi_api (GetGameUrl)  -> gercek saglayici launch URL'i
  */
 window.createGameDetail = function createGameDetail(ctx) {
-  const { ref, computed, currentPage, runtimeParams, apiUrl, backendAssetUrl, websiteName, knownRtp, normalizeGameName, authUser, readAuthToken } = ctx
+  const { ref, computed, currentPage, runtimeParams, apiUrl, backendAssetUrl, websiteName, knownRtp, normalizeGameName, authUser, readAuthToken, safePostToParent } = ctx
+  // index.html'deki safePostToParent, cuzdan eklentilerinin (TronLink vb.)
+  // window.postMessage'i sarmalayip DataCloneError firlatmasina karsi
+  // try/catch icerir (bkz. index.html'deki yorum). Eger bu dosya (game-detail.js)
+  // eski bir index.html ile birlikte yuklenirse ve helper hala saglanmamissa,
+  // duz postMessage'a geri don — boylece geriye donuk uyumluluk kaybolmaz.
+  const postToParent = safePostToParent || ((payload) => window.parent.postMessage(payload, window.location.origin))
 
   const isGamePage = currentPage === "game"
   const routeGameCode = String(runtimeParams.get("code") || "").trim()
@@ -215,10 +221,10 @@ window.createGameDetail = function createGameDetail(ctx) {
   async function startGame() {
     const game = detailGame.value
     if (!game) return
-    if (!authUser.value) {
-      window.parent.postMessage({ source: "casino-frame", type: "open-auth", mode: "login" }, window.location.origin)
-      return
-    }
+  if (!authUser.value) {
+  postToParent({ source: "casino-frame", type: "open-auth", mode: "login" })
+  return
+  }
     if (!game.provider_code) {
       launchState.value = "error"
       launchError.value = "Bu oyun icin saglayici bilgisi eksik, su an baslatilamiyor."
