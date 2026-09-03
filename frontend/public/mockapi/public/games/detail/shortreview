@@ -1,0 +1,21 @@
+{
+  "data": {
+    "game": {
+      "_id": "mock2",
+      "game_code": "shortreview",
+      "game_name": "Fire Hot 100",
+      "game_type": "slot",
+      "provider_code": "pragmatic",
+      "banner": "/logo.svg",
+      "background": "/logo.svg",
+      "cover": "/logo.svg",
+      "rtp": 96.5,
+      "description": ""
+    },
+    "provider": { "code": "pragmatic", "name": "Pragmatic Play" },
+    "categories": [],
+    "topWins": [],
+    "providerGames": [],
+    "popularGames": []
+  }
+}

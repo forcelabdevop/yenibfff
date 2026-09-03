@@ -816,6 +816,13 @@
     .game-review__body a { color:#4f9fff; font-weight:700; text-decoration:none; }
     .game-review__body a:hover { text-decoration:underline; }
     .game-review__body p:last-child { margin-bottom:0; }
+    .game-review__collapse { position:relative; max-height:220px; overflow:hidden; transition:max-height .35s ease; }
+    .game-review__collapse.is-expanded { max-height:none; }
+    .game-review__fade { position:absolute; left:0; right:0; bottom:0; height:80px; background:linear-gradient(180deg, rgba(0,0,0,0) 0%, var(--page) 88%); pointer-events:none; }
+    .game-review__toggle { display:inline-flex; align-items:center; gap:8px; margin-top:16px; padding:9px 18px; border:1px solid rgba(255,255,255,.12); border-radius:999px; background:rgba(255,255,255,.04); color:#cfd8e6; font-size:13px; font-weight:800; letter-spacing:-.1px; cursor:pointer; transition:background .2s ease,color .2s ease,border-color .2s ease; }
+    .game-review__toggle:hover { background:rgba(255,255,255,.09); border-color:rgba(255,255,255,.2); color:#fbfbfc; }
+    .game-review__toggle i { font-size:11px; transition:transform .25s ease; }
+    .game-review__toggle i.open { transform:rotate(180deg); }
     @media (min-width:900px) { .gl-info-grid { grid-template-columns:1fr 1fr; gap:28px 40px; } }
 
     .casino-rail { margin-top:34px; }
@@ -3211,15 +3218,24 @@
       <div class="gl-review" v-if="detailsOpen">
         <section class="game-review">
           <h2 class="game-review__title">{{detailGame.game_name}} review</h2>
-          <!-- description admin panelinde ham HTML olarak girilir (h2/p alt başlıkları
-               dahil, bkz. Edit Game modalindeki "Review / Açıklama (HTML)" alanı),
-               bu yüzden kaçışlı {{ }} yerine v-html ile basılır. -->
-          <div class="game-review__body" v-if="detailGame.description" v-html="detailGame.description"></div>
-          <template v-else>
-            <p>{{detailGame.game_name}} is a {{(detailGame.game_type || 'casino').toLowerCase()}} title from {{detailProviderName || 'its studio'}}, available to play directly at {{websiteName}}. Rounds are processed by the provider, so every spin resolves on the studio&apos;s own certified engine.</p>
-            <p v-if="detailRtp">The published return to player figure for this release is {{detailRtp}}%, measured over a long-term simulation by the provider. Short sessions will always deviate from that number — treat it as a statistical average, never as a guarantee for a single session.</p>
-            <p>Press play above to open the game with your active {{websiteName}} wallet. Balance changes are settled through the provider in real time, and your session history stays available in your account.</p>
-          </template>
+          <div :class="{'is-expanded': reviewExpanded || !reviewNeedsToggle}" class="game-review__collapse">
+            <div :ref="registerReviewBody" class="game-review__measure">
+              <!-- description admin panelinde ham HTML olarak girilir (h2/p alt başlıkları
+                   dahil, bkz. Edit Game modalindeki "Review / Açıklama (HTML)" alanı),
+                   bu yüzden kaçışlı {{ }} yerine v-html ile basılır. -->
+              <div class="game-review__body" v-if="detailGame.description" v-html="detailGame.description"></div>
+              <template v-else>
+                <p>{{detailGame.game_name}} is a {{(detailGame.game_type || 'casino').toLowerCase()}} title from {{detailProviderName || 'its studio'}}, available to play directly at {{websiteName}}. Rounds are processed by the provider, so every spin resolves on the studio&apos;s own certified engine.</p>
+                <p v-if="detailRtp">The published return to player figure for this release is {{detailRtp}}%, measured over a long-term simulation by the provider. Short sessions will always deviate from that number — treat it as a statistical average, never as a guarantee for a single session.</p>
+                <p>Press play above to open the game with your active {{websiteName}} wallet. Balance changes are settled through the provider in real time, and your session history stays available in your account.</p>
+              </template>
+            </div>
+            <span aria-hidden="true" class="game-review__fade" v-if="reviewNeedsToggle && !reviewExpanded"></span>
+          </div>
+          <button :aria-expanded="reviewExpanded" @click="toggleReviewExpanded" class="game-review__toggle" type="button" v-if="reviewNeedsToggle">
+            <span>{{reviewExpanded ? 'Show Less' : 'Show More'}}</span>
+            <i :class="{open: reviewExpanded}" aria-hidden="true" class="fas fa-chevron-down"></i>
+          </button>
         </section>
       </div>
     </div>

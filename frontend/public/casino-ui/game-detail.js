@@ -32,6 +32,35 @@ window.createGameDetail = function createGameDetail(ctx) {
   const gameToast = ref("")
   let toastTimer = null
 
+  // BetFury'deki gibi review metni varsayilan olarak kisaltilir (~220px), sadece
+  // metin bu yuksekligi gercekten astiginda "Show More/Show Less" butonu gosterilir.
+  const REVIEW_COLLAPSE_HEIGHT = 220
+  const reviewExpanded = ref(false)
+  const reviewNeedsToggle = ref(false)
+  let reviewBodyNode = null
+
+  function measureReviewOverflow() {
+    reviewNeedsToggle.value = !!reviewBodyNode && reviewBodyNode.scrollHeight > REVIEW_COLLAPSE_HEIGHT + 4
+  }
+
+  // .gl-review v-if ile acilip kapandigi (detailsOpen) veya oyun degistigi
+  // (iframe yeniden kuruldugu) icin bu element her acilista sifirdan mount olur;
+  // v-html icerigi ayni patch adiminda yazildigindan bir sonraki frame'de olcum
+  // yapmak, layout'un kesinlesmis olmasini garantiler.
+  function registerReviewBody(el) {
+    reviewBodyNode = el || null
+    if (!reviewBodyNode) {
+      reviewNeedsToggle.value = false
+      return
+    }
+    reviewExpanded.value = false
+    window.requestAnimationFrame(measureReviewOverflow)
+  }
+
+  function toggleReviewExpanded() {
+    reviewExpanded.value = !reviewExpanded.value
+  }
+
   const detailGame = computed(() => (gameDetail.value ? gameDetail.value.game : null))
   const detailLaunchArtwork = computed(() => {
     const game = detailGame.value
@@ -305,6 +334,10 @@ window.createGameDetail = function createGameDetail(ctx) {
     bestOffset,
     popularOffset,
     gameToast,
+    reviewExpanded,
+    reviewNeedsToggle,
+    registerReviewBody,
+    toggleReviewExpanded,
     notifyGame,
     setDemoMode,
     slideRail,
