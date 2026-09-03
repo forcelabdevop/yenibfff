@@ -22,7 +22,8 @@
 <script src="./promotions-page.js"></script>
 <script src="./referral-page.js"></script>
 <script src="./vip-page.js"></script>
-<script src="./casino-providers-battles.js"></script>
+ <script src="./casino-providers-battles.js"></script>
+ <script src="./currency-display-modal.js"></script>
 <link href="./tailwind.css" rel="stylesheet"/>
 <link href="./missions-page.css" rel="stylesheet"/>
 <link href="./bonuses-page.css" rel="stylesheet"/>
@@ -5444,6 +5445,10 @@
           return wallets.find(w => w.coinType === user.currency?.coinType && w.chain === user.currency?.chain && w.type === user.currency?.type) || wallets[0] || null;
         });
         const walletFiat = computed(() => (authUser.value && authUser.value.currency && authUser.value.currency.fiatCurrency) || 'EUR');
+        // "Display in currency" modali mantigi ayri dosyada: casino-ui/currency-display-modal.js
+        const currencyDisplayModalCtx = window.createCurrencyDisplayModal({
+          ref, computed, walletFiat, storageKey: () => STORAGE_NAMESPACE + '.displayCurrency',
+        });
         const formattedBalance = computed(() => {
           if (!isAuthenticated.value) return '—';
           const meta = ({ EUR:{locale:'de-DE',symbol:'€'}, USD:{locale:'en-US',symbol:'$'}, GBP:{locale:'en-GB',symbol:'£'}, TRY:{locale:'tr-TR',symbol:'₺'} })[walletFiat.value] || {locale:'de-DE',symbol:'€'};
@@ -5909,7 +5914,7 @@
         watch(authUser, (u) => { if (u) loadNotifications(); }, { immediate: true });
         onBeforeUnmount(()=>{ window.removeEventListener('resize',handleResize); window.removeEventListener('keydown',handleKeydown); window.removeEventListener('storage',handleStorageSync); document.removeEventListener('click',handleDocumentClick); clearTimeout(searchTimer); clearInterval(promoTimer); clearInterval(betsRefreshTimer); });
         return {...casinoPT,...uiSettings,...leaderboardData,betsRowChoices,betsTab,betsRowCount,betsCountOpen,betsTabs,betsVisibleRows,betsLoading,betsError,betGameIcon,selectBetsTab,setBetsCount,heroSpinning,heroSpin,heroBackdropCards,balanceMenuOpen,balanceSearch,balanceHideZero,balanceShowVault,balanceDisplayFiat,balanceCurrencies,balanceActiveCode,balanceFiltered,toggleBalanceMenu,selectBalanceCurrency,websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,...notificationsData,toggleNotif,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,slideCasinoRow,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
-          ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage, ...missionsPage, ...bonusesPage, ...cryptoEarnPage, ...promotionsPage, ...referralPage, ...vipPage};
+          ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage, ...missionsPage, ...bonusesPage, ...cryptoEarnPage, ...promotionsPage, ...referralPage, ...vipPage, ...currencyDisplayModalCtx};
       }
     }).component('game-card', GameCard).mount('#app');
   </script>
