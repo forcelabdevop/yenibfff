@@ -187,12 +187,14 @@ const editGame = async (game) => {
 		: [];
 
 	// themes/features her oyunda mevcut olmayabilir (eski kayıtlar) — VCombobox'ın
-	// hata vermemesi için dizi garanti edilir.
+	// hata vermemesi için dizi garanti edilir. release_date de backend'den
+	// ISO datetime string olarak gelir, <input type="date"> "YYYY-MM-DD" bekler.
 	gameToEdit.value = {
 		...game,
 		categories,
 		themes: Array.isArray(game.themes) ? game.themes : [],
 		features: Array.isArray(game.features) ? game.features : [],
+		release_date: game.release_date ? String(game.release_date).slice(0, 10) : "",
 	};
 	bannerFile.value = null;
 	backgroundFile.value = null;
@@ -928,7 +930,7 @@ const applyBulkCategoryAssign = async () => {
 										<AppTextField
 											v-model="gameToEdit.layout"
 											label="Layout"
-											placeholder="örn: 6x5"
+											placeholder="örn: 6 x 5"
 										/>
 									</VCol>
 									<VCol cols="12" sm="3">
@@ -972,6 +974,22 @@ const applyBulkCategoryAssign = async () => {
 										/>
 									</VCol>
 									<VCol cols="12" sm="3">
+										<AppTextField
+											v-model="gameToEdit.game_type_label"
+											label="Game Type (etiket)"
+											placeholder="örn: Crypto Slots"
+											hint="Dahili 'Game type' filtresinden ayrıdır, sadece detay sayfasında gösterilir"
+											persistent-hint
+										/>
+									</VCol>
+									<VCol cols="12" sm="3">
+										<AppTextField
+											v-model="gameToEdit.release_date"
+											label="Release Date"
+											type="date"
+										/>
+									</VCol>
+									<VCol cols="12" sm="6">
 										<VCombobox
 											v-model="gameToEdit.themes"
 											label="Themes"
@@ -982,7 +1000,7 @@ const applyBulkCategoryAssign = async () => {
 											placeholder="Yazıp Enter'a bas"
 										/>
 									</VCol>
-									<VCol cols="12" sm="3">
+									<VCol cols="12" sm="6">
 										<VCombobox
 											v-model="gameToEdit.features"
 											label="Features"

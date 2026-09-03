@@ -4075,6 +4075,14 @@ router.put(
 			}
 		}
 
+		// release_date "YYYY-MM-DD" gibi bir string olarak gelir, Date'e çevir
+		if (updateData.release_date === "") {
+			delete updateData.release_date;
+		} else if (updateData.release_date !== undefined) {
+			const parsedDate = new Date(updateData.release_date);
+			updateData.release_date = isNaN(parsedDate.getTime()) ? null : parsedDate;
+		}
+
 		if (bannerFile) {
 			updateData.banner = `/uploads/games/${bannerFile.filename}`;
 			// Admin elle banner yüklediğinde, ilerideki sağlayıcı içe
@@ -5457,7 +5465,7 @@ const normalizeSportsTournamentPayload = (body = {}) => {
 };
 
 const SPORTS_TOURNAMENT_VALIDATION_MESSAGES = {
-	INVALID_SPORTS_TOURNAMENT: "Turnuva adı zorunludur; minimum oran 1'den büyük/eşit, minimum bet tutarı sıfırdan büyük/eşit olmalıdır.",
+	INVALID_SPORTS_TOURNAMENT: "Turnuva adı zorunludur; minimum oran 1'den büyük/eşit, minimum bet tutarı sıfırdan büyük/eşit olmalıd��r.",
 	INVALID_DATE_RANGE: "Bitiş tarihi başlangıç tarihinden sonra olmalıdır.",
 };
 
