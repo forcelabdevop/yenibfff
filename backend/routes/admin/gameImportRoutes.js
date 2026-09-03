@@ -10,6 +10,10 @@ const {
 	importAllNexusGames,
 	importAllDrakonGames,
 } = require("../../services/gameImportService");
+const {
+	matchGamesWithBetfury,
+	applyBetfuryImages,
+} = require("../../services/betfuryImageService");
 
 /**
  * Oyun İçe Aktarma Route'ları
@@ -105,5 +109,48 @@ router.post("/drakon", checkPermission("games.manage"), async (req, res) => {
 		res.status(500).json({ success: false, message: error.message });
 	}
 });
+
+// -------------------- BETFURY GÖRSELLERİ --------------------
+//
+// BetFury bir oyun sağlayıcısı DEĞİL, sadece bir görsel kaynağıdır: burada
+// yeni oyun oluşturulmaz, sadece var olan oyunlarımız için isim eşleşmesiyle
+// bulunan görsel adayları döner. DB yazımı yalnızca /betfury/apply ile ve
+// admin'in tek tek/toplu onayladığı seçimler için yapılır.
+
+router.get(
+	"/betfury/matches",
+	checkPermission("games.read"),
+	async (req, res) => {
+		try {
+			const onlyMissingBanner = req.query.onlyMissingBanner !== "false";
+			const force = req.query.force === "true";
+			const result = await matchGamesWithBetfury({ onlyMissingBanner, force });
+			res.json({ success: true, data: result });
+		} catch (error) {
+			console.error("BetFury eşleşme hatası:", error);
+			res.status(500).json({ success: false, message: error.message });
+		}
+	},
+);
+
+router.post(
+	"/betfury/apply",
+	checkPermission("games.manage"),
+	async (req, res) => {
+		try {
+			const { selections, lockAfterApply = true } = req.body;
+			if (!Array.isArray(selections) || !selections.length) {
+				return res
+					.status(400)
+					.json({ success: false, message: "selections boş olamaz" });
+			}
+			const result = await applyBetfuryImages(selections, { lockAfterApply });
+			res.json({ success: true, data: result });
+		} catch (error) {
+			console.error("BetFury görsel uygulama hatası:", error);
+			res.status(500).json({ success: false, message: error.message });
+		}
+	},
+);
 
 module.exports = router;
