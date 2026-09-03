@@ -1012,6 +1012,17 @@ const applyBulkCategoryAssign = async () => {
 										/>
 									</VCol>
 									<VCol cols="12">
+										<VTextarea
+											v-model="gameToEdit.description"
+											label="Review / Açıklama (HTML)"
+											rows="8"
+											auto-grow
+											hint="Ham HTML kabul edilir: <h2>Alt Başlık</h2><p>Paragraf...</p>. Boş bırakılırsa oyun sayfasında otomatik oluşturulan genel bir metin gösterilir."
+											persistent-hint
+											placeholder="<h2>Oyun Adı Review</h2>&#10;<p>...</p>&#10;<h2>Theme &amp; Design</h2>&#10;<p>...</p>"
+										/>
+									</VCol>
+									<VCol cols="12">
 										<VDivider class="mb-4" />
 										<VSwitch
 											v-model="gameToEdit.imageLocked"

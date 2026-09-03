@@ -811,6 +811,11 @@
     .game-review .game-panel__title { padding-bottom:0; border-bottom:0; margin-bottom:12px; font-size:21px; line-height:1.28; }
     .game-review p { margin:0 0 16px; color:#adbad0; font-size:15px; line-height:1.55; font-weight:600; }
     .game-review p:last-child { margin-bottom:0; }
+    .game-review__body h2 { margin:24px 0 12px; color:#fbfbfc; font-size:18px; line-height:1.28; font-weight:900; letter-spacing:-.25px; }
+    .game-review__body h2:first-child { margin-top:0; }
+    .game-review__body a { color:#4f9fff; font-weight:700; text-decoration:none; }
+    .game-review__body a:hover { text-decoration:underline; }
+    .game-review__body p:last-child { margin-bottom:0; }
     @media (min-width:900px) { .gl-info-grid { grid-template-columns:1fr 1fr; gap:28px 40px; } }
 
     .casino-rail { margin-top:34px; }
@@ -3206,7 +3211,10 @@
       <div class="gl-review" v-if="detailsOpen">
         <section class="game-review">
           <h2 class="game-review__title">{{detailGame.game_name}} review</h2>
-          <p v-if="detailGame.description">{{detailGame.description}}</p>
+          <!-- description admin panelinde ham HTML olarak girilir (h2/p alt başlıkları
+               dahil, bkz. Edit Game modalindeki "Review / Açıklama (HTML)" alanı),
+               bu yüzden kaçışlı {{ }} yerine v-html ile basılır. -->
+          <div class="game-review__body" v-if="detailGame.description" v-html="detailGame.description"></div>
           <template v-else>
             <p>{{detailGame.game_name}} is a {{(detailGame.game_type || 'casino').toLowerCase()}} title from {{detailProviderName || 'its studio'}}, available to play directly at {{websiteName}}. Rounds are processed by the provider, so every spin resolves on the studio&apos;s own certified engine.</p>
             <p v-if="detailRtp">The published return to player figure for this release is {{detailRtp}}%, measured over a long-term simulation by the provider. Short sessions will always deviate from that number — treat it as a statistical average, never as a guarantee for a single session.</p>
