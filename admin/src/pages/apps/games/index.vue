@@ -186,7 +186,16 @@ const editGame = async (game) => {
 		? [game.category]
 		: [];
 
-	gameToEdit.value = { ...game, categories };
+	// themes/features her oyunda mevcut olmayabilir (eski kayıtlar) — VCombobox'ın
+	// hata vermemesi için dizi garanti edilir. release_date de backend'den
+	// ISO datetime string olarak gelir, <input type="date"> "YYYY-MM-DD" bekler.
+	gameToEdit.value = {
+		...game,
+		categories,
+		themes: Array.isArray(game.themes) ? game.themes : [],
+		features: Array.isArray(game.features) ? game.features : [],
+		release_date: game.release_date ? String(game.release_date).slice(0, 10) : "",
+	};
 	bannerFile.value = null;
 	backgroundFile.value = null;
 	backgroundImageUrl.value = "";
@@ -900,6 +909,106 @@ const applyBulkCategoryAssign = async () => {
 											label="Mobile"
 											:true-value="1"
 											:false-value="0"
+										/>
+									</VCol>
+									<VCol cols="12">
+										<VDivider class="mb-4" />
+										<p class="text-body-2 font-weight-medium mb-1">
+											Game Attributes (detay sayfası)
+										</p>
+										<p class="text-caption text-medium-emphasis mb-4">
+											Sitedeki oyun detay sayfasının "Game Attributes"
+											bölümünde gösterilir. Sağlayıcı listesinden
+											otomatik gelmez, elle girilir ya da ayrı bir
+											içe aktarma ile doldurulur. Canlı Casino/masa
+											oyunlarında Layout, Bet Range, Max Win gibi
+											alanlar boş bırakılabilir — boş alan detay
+											sayfasında hiç gösterilmez.
+										</p>
+									</VCol>
+									<VCol cols="12" sm="3">
+										<AppTextField
+											v-model="gameToEdit.layout"
+											label="Layout"
+											placeholder="örn: 6 x 5"
+										/>
+									</VCol>
+									<VCol cols="12" sm="3">
+										<AppTextField
+											v-model="gameToEdit.paylines"
+											label="Paylines"
+											placeholder="örn: Pay Anywhere"
+										/>
+									</VCol>
+									<VCol cols="12" sm="3">
+										<AppSelect
+											v-model="gameToEdit.volatility"
+											label="Volatility"
+											:items="['Low', 'Medium', 'High', 'Very High']"
+											clearable
+											clear-icon="tabler-x"
+										/>
+									</VCol>
+									<VCol cols="12" sm="3">
+										<AppTextField
+											v-model.number="gameToEdit.max_win_multiplier"
+											label="Max Win (x)"
+											type="number"
+											placeholder="örn: 25000"
+										/>
+									</VCol>
+									<VCol cols="12" sm="3">
+										<AppTextField
+											v-model.number="gameToEdit.bet_min"
+											label="Min Bahis"
+											type="number"
+											placeholder="örn: 0.2"
+										/>
+									</VCol>
+									<VCol cols="12" sm="3">
+										<AppTextField
+											v-model.number="gameToEdit.bet_max"
+											label="Maks. Bahis"
+											type="number"
+											placeholder="örn: 240"
+										/>
+									</VCol>
+									<VCol cols="12" sm="3">
+										<AppTextField
+											v-model="gameToEdit.game_type_label"
+											label="Game Type (etiket)"
+											placeholder="örn: Crypto Slots"
+											hint="Dahili 'Game type' filtresinden ayrıdır, sadece detay sayfasında gösterilir"
+											persistent-hint
+										/>
+									</VCol>
+									<VCol cols="12" sm="3">
+										<AppTextField
+											v-model="gameToEdit.release_date"
+											label="Release Date"
+											type="date"
+										/>
+									</VCol>
+									<VCol cols="12" sm="6">
+										<VCombobox
+											v-model="gameToEdit.themes"
+											label="Themes"
+											multiple
+											chips
+											closable-chips
+											hide-no-data
+											placeholder="Yazıp Enter'a bas"
+										/>
+									</VCol>
+									<VCol cols="12" sm="6">
+										<VCombobox
+											v-model="gameToEdit.features"
+											label="Features"
+											multiple
+											chips
+											closable-chips
+											hide-no-data
+											placeholder="Yazıp Enter'a bas"
 										/>
 									</VCol>
 									<VCol cols="12">

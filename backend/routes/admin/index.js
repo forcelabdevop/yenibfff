@@ -4046,19 +4046,21 @@ router.put(
 		}
 
 		// FormData ile gönderilen array alanları JSON string olarak gelir, parse et
-		if (typeof updateData.categories === "string") {
-			try {
-				updateData.categories = JSON.parse(updateData.categories);
-			} catch {
-				updateData.categories = [updateData.categories];
+		for (const arrayField of ["categories", "themes", "features"]) {
+			if (typeof updateData[arrayField] === "string") {
+				try {
+					updateData[arrayField] = JSON.parse(updateData[arrayField]);
+				} catch {
+					updateData[arrayField] = [updateData[arrayField]];
+				}
 			}
 		}
 
-		// Number alanlarını string'den Number'a ��evir
+		// Number alanlarını string'den Number'a çevir
 		const numberFields = [
 			"provider_id", "has_lobby", "is_mobile", "has_freespins",
 			"has_tables", "only_demo", "status", "lobby_id", "rtp",
-			"featured", "views",
+			"featured", "views", "bet_min", "bet_max", "max_win_multiplier",
 		];
 		for (const field of numberFields) {
 			if (updateData[field] === "") {
@@ -4071,6 +4073,14 @@ router.put(
 					delete updateData[field];
 				}
 			}
+		}
+
+		// release_date "YYYY-MM-DD" gibi bir string olarak gelir, Date'e çevir
+		if (updateData.release_date === "") {
+			delete updateData.release_date;
+		} else if (updateData.release_date !== undefined) {
+			const parsedDate = new Date(updateData.release_date);
+			updateData.release_date = isNaN(parsedDate.getTime()) ? null : parsedDate;
 		}
 
 		if (bannerFile) {
@@ -5455,7 +5465,7 @@ const normalizeSportsTournamentPayload = (body = {}) => {
 };
 
 const SPORTS_TOURNAMENT_VALIDATION_MESSAGES = {
-	INVALID_SPORTS_TOURNAMENT: "Turnuva adı zorunludur; minimum oran 1'den büyük/eşit, minimum bet tutarı sıfırdan büyük/eşit olmalıdır.",
+	INVALID_SPORTS_TOURNAMENT: "Turnuva adı zorunludur; minimum oran 1'den büyük/eşit, minimum bet tutarı sıfırdan büyük/eşit olmalıd��r.",
 	INVALID_DATE_RANGE: "Bitiş tarihi başlangıç tarihinden sonra olmalıdır.",
 };
 
