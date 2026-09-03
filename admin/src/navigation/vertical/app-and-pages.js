@@ -70,6 +70,13 @@ export default [
     subject: "finance.deposits",
   },
   {
+    title: "Kripto Cüzdanı",
+    icon: { icon: "tabler-wallet" },
+    to: "apps-finance-crypto-wallet",
+    action: "read",
+    subject: "finance.cryptoWallet",
+  },
+  {
     title: "Manuel İşlemler",
     icon: { icon: "tabler-adjustments" },
     to: "apps-finance-manual-adjustments",
@@ -226,6 +233,13 @@ export default [
     title: "Casino Oyunları (Tümü)",
     icon: { icon: "tabler-device-gamepad" },
     to: "apps-games",
+    action: "read",
+    subject: "games",
+  },
+  {
+    title: "Oyun İçe Aktarma",
+    icon: { icon: "tabler-cloud-download" },
+    to: "apps-games-import",
     action: "read",
     subject: "games",
   },

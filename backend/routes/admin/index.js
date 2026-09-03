@@ -4039,6 +4039,12 @@ router.put(
 			}
 		}
 
+		// imageLocked: FormData'dan string ("true"/"false") olarak gelir, boolean'a çevir
+		if (updateData.imageLocked !== undefined) {
+			updateData.imageLocked =
+				updateData.imageLocked === true || updateData.imageLocked === "true";
+		}
+
 		// FormData ile gönderilen array alanları JSON string olarak gelir, parse et
 		if (typeof updateData.categories === "string") {
 			try {
@@ -4069,6 +4075,13 @@ router.put(
 
 		if (bannerFile) {
 			updateData.banner = `/uploads/games/${bannerFile.filename}`;
+			// Admin elle banner yüklediğinde, ilerideki sağlayıcı içe
+			// aktarma senkronizasyonlarının bu görseli ezmesini önlemek
+			// için otomatik olarak kilitle (admin isterse formdan açıkça
+			// imageLocked=false göndererek bunu geri alabilir).
+			if (updateData.imageLocked === undefined) {
+				updateData.imageLocked = true;
+			}
 		}
 
 		if (backgroundFile) {
@@ -8320,6 +8333,11 @@ router.delete("/promotion-categories/:id", checkPermission("finance.promo.manage
 const providerRoutes = require("./providerRoutes");
 router.use("/providers", providerRoutes);
 
+// Betinovi/Nexus/Drakon oyun içe aktarma: mevcut oyunların görsel/isim
+// alanlarını koruyan güvenli senkronizasyon uçları (bkz. gameImportService.js).
+const gameImportRoutes = require("./gameImportRoutes");
+router.use("/game-import", gameImportRoutes);
+
 const fluxKriptoAdminRoutes = require("./fluxKripto");
 const xPaymentsAdminRoutes = require("./xPayments");
 router.use("/fluxkripto", fluxKriptoAdminRoutes);
@@ -8329,6 +8347,12 @@ router.use("/xpayments", xPaymentsAdminRoutes);
 // fluxkripto/xpayments saglayici tabanli akislardir; bu ondan ayridir.
 const cryptoDepositsAdminRoutes = require("./cryptoDeposits");
 router.use("/crypto-deposits", cryptoDepositsAdminRoutes);
+
+// Toplama (sweep) cuzdani yonetimi: canli zincir bakiyesi + platform disina
+// (borsa/kisisel cuzdan) manuel cekim. cryptoDeposits'ten farkli olarak bu
+// GERCEK ZINCIR ISLEMI yapabilen bir uc noktadir (bkz. routes/admin/cryptoWallet.js).
+const cryptoWalletAdminRoutes = require("./cryptoWallet");
+router.use("/crypto-wallet", cryptoWalletAdminRoutes);
 
 // ==================== BETINOVI ADMIN API ROUTES ====================
 const betinoviAdminRoutes = require("./betinoviAdminRoutes");
@@ -9654,7 +9678,7 @@ router.post(
 			await settings.save();
 			res.status(200).json({
 				success: true,
-				message: "Lisans başarıyla eklendi.",
+				message: "Lisans ba��arıyla eklendi.",
 				licenses: settings.licenses,
 			});
 		} catch (error) {
@@ -11164,7 +11188,7 @@ router.put(
 
 // ═════════════════════════════════���═════════════════════════════════════════
 // Forcelab Finance Admin Endpoints
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════���═══════════════════════════════════════════════════════════════════
 
 const ForcelabFinanceTransaction = require("../../database/models/ForcelabFinanceTransaction");
 const {

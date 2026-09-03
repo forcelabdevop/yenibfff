@@ -38,6 +38,12 @@ const GameSchema = mongoose.Schema({
 	featured: { type: Number, default: 0 }, // Varsayılan olarak 0
 	views: { type: Number, default: 0 }, // Varsayılan olarak 0
 
+	// Görsel/isim koruma kilidi: true olduğunda Betinovi/Drakon/Nexus içe
+	// aktarma işlemleri bu oyunun game_name / banner / cover alanlarına
+	// ASLA dokunmaz. Admin panelinden banner elle yüklendiğinde otomatik
+	// olarak true'ya çekilir, ayrıca manuel olarak da aç/kapa yapılabilir.
+	imageLocked: { type: Boolean, default: false },
+
 	// Birden fazla kategori desteği (array)
 	categories: [{ type: String }],
 	// @deprecated
