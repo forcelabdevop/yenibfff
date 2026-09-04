@@ -21,6 +21,39 @@ const http = axios.create({
 		: {},
 });
 
+/**
+ * 429 (hiz siniri) icin otomatik yeniden deneme.
+ *
+ * ONCEKI DAVRANIS: 429 alan tek bir istek, cagiran kodda (discoverDeposits)
+ * yakalanip loglanip o adres o tur icin TAMAMEN ATLANIYORDU — bir sonraki
+ * deneme ancak 150 adresli kuyruk tekrar o adrese gelince (~91 dakika sonra)
+ * olabiliyordu (bkz. 05.09.2026 vakasi: ayni adres icin ust uste 429 loglari,
+ * TRON_API_KEY tanimli olsa da TronGrid'in anlik/kisa sureli hiz siniri asimi
+ * — anahtarli planlarda bile saniyelik burst siniri vardir). Bunun yerine
+ * burada TEK bir istek icin, artan bekleme ile (Retry-After varsa o kullanilir)
+ * kisa vadeli otomatik yeniden deneme yapilir; boylece geçici bir burst,
+ * adresi saatlerce taramasiz birakmiyor.
+ */
+const MAX_RETRIES = 3;
+const BASE_RETRY_DELAY_MS = 500;
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+http.interceptors.response.use(undefined, async (error) => {
+	const { config, response } = error;
+	if (!config || response?.status !== 429) throw error;
+
+	config.__retryCount = (config.__retryCount || 0) + 1;
+	if (config.__retryCount > MAX_RETRIES) throw error;
+
+	const retryAfterHeader = Number(response.headers?.['retry-after']);
+	const delayMs = Number.isFinite(retryAfterHeader) && retryAfterHeader > 0
+		? retryAfterHeader * 1000
+		: BASE_RETRY_DELAY_MS * 2 ** (config.__retryCount - 1);
+
+	await sleep(delayMs);
+	return http(config);
+});
+
 /** Zincirdeki guncel blok numarasi. */
 async function getNowBlock() {
 	const { data } = await http.post('/wallet/getnowblock', {});
