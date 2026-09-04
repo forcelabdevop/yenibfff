@@ -9,7 +9,20 @@ const chatMessageSchema = new mongoose.Schema({
 	room: { type: String, index: true },
 	type: {
 		type: String,
-		enum: ["user", "system", "tip", "rain"],
+		// "rainCreate"/"rainTip"/"rainPayout"/"rainCompleted" controllers/general/
+		// rain/index.js tarafindan kullanilir — bunlar eksikse Mongoose
+		// validation hatasi firlatir ve HER rain olayinda log kirletir (kalici
+		// kayit basarisiz olur, ancak kullaniciya kredi/canli sohbet etkilenmez).
+		enum: [
+			"user",
+			"system",
+			"tip",
+			"rain",
+			"rainCreate",
+			"rainTip",
+			"rainPayout",
+			"rainCompleted",
+		],
 		default: "user",
 	},
 	message: { type: String, default: "" },

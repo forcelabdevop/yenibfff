@@ -19,6 +19,8 @@ const ERC20_ABI = [
 ];
 
 const providers = new Map();
+/** Ag basina HAM (fallback-sarmalanmamis) JsonRpcProvider listesi. */
+const rawProviderLists = new Map();
 
 /**
  * @param {'BEP20'|'POLYGON'} network
@@ -51,8 +53,58 @@ function getProvider(network) {
 				: jsonRpcProviders[0];
 
 		providers.set(network, provider);
+		rawProviderLists.set(network, jsonRpcProviders);
 	}
 	return providers.get(network);
+}
+
+/** Ag basina HAM JsonRpcProvider listesi (bkz. getBlockWithTransactionsRaw). */
+function getRawProviders(network) {
+	getProvider(network); // Liste bos ise doldurur (lazy init).
+	return rawProviderLists.get(network) || [];
+}
+
+/**
+ * Bir bloku TAM islem objeleriyle birlikte HAM JSON-RPC cagrisiyla getirir.
+ *
+ * NEDEN FallbackProvider.getBlock(num, true) KULLANILMAZ: ethers v6'da
+ * FallbackProvider, coklu saglayicidan gelen sonuclari normallestirirken
+ * "prefetched transactions" iceren agir Block objelerini guvenilir bir
+ * sekilde tasiyamiyor — bazi durumlarda basarili bir yanit alinsa da
+ * `block.prefetchedTransactions` erisiminde "transactions were not
+ * prefetched with block request" hatasi firlatiliyor (bkz. 05.09.2026
+ * vakasi: ETHEREUM taramasi AYNI blok araligini turlerce basarisiz
+ * tekrarladi, cunku scanNetwork hata sonrasi cursor'u ilerletmiyor).
+ * Bu yuzden burada HER saglayiciyi TEK TEK, dogrudan `send()` ile deneriz
+ * ve ethers'in Block sarmalayicisini hic kullanmadan ham JSON-RPC sonucunu
+ * kendimiz ayristiririz.
+ *
+ * @returns {Promise<{hash: string, from: string, to: string|null, value: bigint}[]>}
+ */
+async function getBlockWithTransactionsRaw(network, blockNumber) {
+	const rawProviders = getRawProviders(network);
+	const hexBlock = ethers.toQuantity(blockNumber);
+
+	let lastError = null;
+	for (const rawProvider of rawProviders) {
+		try {
+			const block = await rawProvider.send('eth_getBlockByNumber', [hexBlock, true]);
+			if (!block) return [];
+			const txs = Array.isArray(block.transactions) ? block.transactions : [];
+			return txs
+				.filter((tx) => tx && typeof tx === 'object' && tx.to)
+				.map((tx) => ({
+					hash: tx.hash,
+					from: ethers.getAddress(tx.from),
+					to: ethers.getAddress(tx.to),
+					value: BigInt(tx.value || '0x0'),
+				}));
+		} catch (error) {
+			lastError = error;
+			// Bu saglayici basarisiz oldu (403/429/timeout) — siradakini dene.
+		}
+	}
+	throw lastError || new Error(`[evmClient] ${network} blok ${blockNumber} icin tum saglayicilar basarisiz.`);
 }
 
 const contractCache = new Map();
@@ -146,14 +198,23 @@ async function getIncomingErc20(network, address, contractAddress, fromBlock, to
  */
 async function getIncomingNativeBatch(network, addresses, fromBlock, toBlock) {
 	if (!addresses || addresses.length === 0) return [];
-	const provider = getProvider(network);
 	const wanted = new Set(addresses.map((address) => ethers.getAddress(address).toLowerCase()));
 	const transfers = [];
+	let failedBlocks = 0;
 
 	for (let blockNumber = fromBlock; blockNumber <= toBlock; blockNumber += 1) {
-		const block = await provider.getBlock(blockNumber, true);
-		if (!block) continue;
-		for (const tx of block.prefetchedTransactions || []) {
+		let txs;
+		try {
+			txs = await getBlockWithTransactionsRaw(network, blockNumber);
+		} catch (error) {
+			// TEK bir blok icin TUM saglayicilar basarisiz olabilir (gecici
+			// ariza/hiz siniri). Bu bloku ATLAYIP devam ederiz — aksi halde
+			// scanNetwork() cursor'u HICBIR ZAMAN ilerletemez ve ayni araligi
+			// sonsuza kadar tekrar dener (bkz. 05.09.2026 vakasi).
+			failedBlocks += 1;
+			continue;
+		}
+		for (const tx of txs) {
 			if (!tx.to || tx.value <= 0n || !wanted.has(tx.to.toLowerCase())) continue;
 			transfers.push({
 				txHash: tx.hash,
@@ -165,6 +226,13 @@ async function getIncomingNativeBatch(network, addresses, fromBlock, toBlock) {
 			});
 		}
 	}
+
+	if (failedBlocks > 0) {
+		console.error(
+			`[crypto-evm] ${network}: ${failedBlocks} blok atlandi (tum RPC saglayicilari basarisiz oldu, bir sonraki turda tekrar denenecek).`,
+		);
+	}
+
 	return transfers;
 }
 
