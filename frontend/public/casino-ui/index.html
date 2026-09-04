@@ -957,8 +957,8 @@
     .casino-rail-head .rail-arrows button:hover { color:#fff; background:#1c2a3a; }
     /* dikey padding, hover'da buyuyen kartin ustten/alttan kirpilmasini onler */
     .casino-game-row { display:flex; gap:14px; overflow-x:auto; overflow-y:visible; padding:34px 20px; margin:-34px -20px; }
-    .casino-rail--grid .casino-game-row { display:grid; grid-template-columns:repeat(auto-fill, minmax(188px, 1fr)); gap:16px; overflow:visible; padding:6px 0; margin:0; }
-    .casino-rail--grid .casino-game-card { flex:initial; width:100%; height:auto; aspect-ratio:188/248; }
+    .casino-rail--grid .casino-game-row { display:grid; grid-template-columns:repeat(auto-fill, 188px); gap:16px; overflow:visible; padding:6px 0; margin:0; }
+    .casino-rail--grid .casino-game-card { flex:initial; width:188px; height:248px; aspect-ratio:188/248; }
     .casino-hero-wrap { position:relative; z-index:1; width:min(1180px,100%); margin:96px auto 24px; }
     .casino-hero-backdrop { position:absolute; z-index:0; top:-70px; bottom:-70px; left:50%; width:100vw; margin-left:-50vw; overflow:hidden; background:radial-gradient(ellipse 42% 80% at 50% 55%, rgba(35,34,129,.5), transparent 70%); pointer-events:none; }
     .casino-hero-backdrop img { position:absolute; width:230px; aspect-ratio:188/248; object-fit:cover; border-radius:20px; opacity:.16; filter:saturate(.75) blur(.4px); box-shadow:0 24px 55px rgba(0,0,0,.32); user-select:none; }
@@ -1022,11 +1022,10 @@
  .casino-bets-empty { display:flex; min-height:112px; align-items:center; justify-content:center; border-radius:9px; background:rgba(20,31,45,.72); color:#8191a8; font-size:14px; font-weight:800; text-align:center; }
  .casino-bets-empty.error { color:#f07f8f; }
  @media (max-width:720px){ .casino-bets { margin-top:30px; } }
-    .casino-game-card { position:relative; flex:0 0 203.2px; width:203.2px; height:267.95px; overflow:hidden; border-radius:13px; background:#152230; }
+    .casino-game-card { position:relative; flex:0 0 188px; width:188px; height:248px; overflow:hidden; border-radius:13px; background:#152230; }
     .casino-game-card img { width:100%; height:100%; object-fit:cover; }
-    .casino-game-card::after { content:""; position:absolute; inset:auto 0 0; height:74px; background:linear-gradient(transparent,rgba(6,11,18,.96)); }
+    .casino-game-card::after { content:""; position:absolute; inset:auto 0 0; height:96px; background:linear-gradient(transparent,rgba(6,11,18,.55) 40%,rgba(6,11,18,.98) 68%,#060b12 100%); }
     .casino-game-card>b { position:absolute; z-index:2; left:8px; top:8px; padding:5px 12px; border-radius:16px; color:#fff; background:#ff174f; font-size:11px; }
-    .casino-game-card small { position:absolute; z-index:2; left:10px; right:10px; bottom:10px; overflow:hidden; color:#b8c2d1; font-size:10px; text-overflow:ellipsis; white-space:nowrap; }
     .casino-game-card { cursor:pointer; text-align:left; transition:box-shadow .28s ease, transform .2s ease; will-change:transform; }
     .casino-game-card.is-hovered { z-index:2; transform:scale(1.045); box-shadow:0 6px 14px rgba(0,0,0,.22), 0 14px 34px rgba(0,0,0,.28), 0 24px 56px rgba(0,0,0,.24); }
     .game-card-hover { position:absolute; z-index:3; inset:0; display:flex; flex-direction:column; padding:12px; opacity:0; visibility:hidden; border-radius:14px; background:rgba(16,12,42,.78); backdrop-filter:blur(2px); cursor:pointer; transition:opacity .12s ease-in-out, visibility .12s ease-in-out; }
@@ -1471,7 +1470,6 @@
     .section-heading h2 { font-size:20px; font-weight:700; letter-spacing:-.4px; }
     .section-link { font-size:14px; font-weight:600; letter-spacing:-.28px; }
     .casino-game-card>b { font-size:11px; font-weight:700; letter-spacing:-.1px; }
-    .casino-game-card small { font-size:10px; font-weight:600; letter-spacing:.4px; color:#a7b5ca; }
     .tournament-head h2 { font-size:16px; font-weight:600; letter-spacing:-.32px; }
     .tournament-filter { font-size:14px; font-weight:600; letter-spacing:-.28px; }
     .tournament-timer { font-size:13px; font-weight:700; letter-spacing:.06em; }
@@ -3043,11 +3041,11 @@
 </div>
 <section class="casino-rail" :class="{'casino-rail--grid': activeCategory!=='all'}">
 <div class="casino-rail-head" v-if="activeCategory==='all'"><h2><img :src="categoryIconImage(activeRailCategory, pageContent.badge)" alt="" class="rail-head-icon" v-if="categoryIconImage(activeRailCategory, pageContent.badge)"/><i :class="activeRailCategory ? categoryIcon(activeRailCategory) : 'fas fa-gamepad'" v-else></i> {{activeRailCategory?.name || pageContent.badge}} </h2><span class="rail-arrows"><mark>{{routeGames.length}} games loaded</mark><button type="button" aria-label="Previous games" @click="slideCasinoRow($event,-1)"><i class="fas fa-chevron-left"></i></button><button type="button" aria-label="Next games" @click="slideCasinoRow($event,1)"><i class="fas fa-chevron-right"></i></button></span></div>
-<div class="casino-game-row no-scrollbar"><game-card :badge="index<6 ? (index===3?'HOT':'TOP') : ''" :game="game" :key="'catalog-'+(game._id || game.game_code || game.name)" @demo="selectGame(game, true)" @select="selectGame(game)" v-for="(game,index) in (activeCategory==='all' ? slotDisplayGames : routeGames)"></game-card></div>
+<div class="casino-game-row no-scrollbar"><game-card :game="game" :key="'catalog-'+(game._id || game.game_code || game.name)" @demo="selectGame(game, true)" @select="selectGame(game)" v-for="(game,index) in (activeCategory==='all' ? slotDisplayGames : routeGames)"></game-card></div>
 </section>
 <section :key="'railA-'+(category._id || category.slug)" class="casino-rail" v-for="category in visibleCategoryRails.slice(0,1)">
 <div class="casino-rail-head"><h2><img :src="categoryIconImage(category)" alt="" class="rail-head-icon" v-if="categoryIconImage(category)"/><i :class="categoryIcon(category)" v-else></i> {{category.name}} </h2><span class="rail-arrows"><mark>{{category.total_games || category.games.length}} games</mark><button type="button" aria-label="Previous games" @click="slideCasinoRow($event,-1)"><i class="fas fa-chevron-left"></i></button><button type="button" aria-label="Next games" @click="slideCasinoRow($event,1)"><i class="fas fa-chevron-right"></i></button></span></div>
-<div class="casino-game-row no-scrollbar"><game-card :badge="index<4 ? (index===3?'HOT':'TOP') : ''" :game="game" :key="category.slug+'-'+(game._id || game.game_code)" @demo="selectGame(game, true)" @select="selectGame(game)" v-for="(game,index) in category.games.slice(0,12)"></game-card></div>
+<div class="casino-game-row no-scrollbar"><game-card :game="game" :key="category.slug+'-'+(game._id || game.game_code)" @demo="selectGame(game, true)" @select="selectGame(game)" v-for="(game,index) in category.games.slice(0,12)"></game-card></div>
 </section>
 <!-- ===== Recent Top Wins (casino-providers-battles.js) ===== -->
 <section class="pt-section pt-wins" v-if="activeCategory==='all'">
@@ -3134,7 +3132,7 @@
 </section>
 <section :key="'railB-'+(category._id || category.slug)" class="casino-rail" v-for="category in visibleCategoryRails.slice(1)">
 <div class="casino-rail-head"><h2><img :src="categoryIconImage(category)" alt="" class="rail-head-icon" v-if="categoryIconImage(category)"/><i :class="categoryIcon(category)" v-else></i> {{category.name}} </h2><span class="rail-arrows"><mark>{{category.total_games || category.games.length}} games</mark><button type="button" aria-label="Previous games" @click="slideCasinoRow($event,-1)"><i class="fas fa-chevron-left"></i></button><button type="button" aria-label="Next games" @click="slideCasinoRow($event,1)"><i class="fas fa-chevron-right"></i></button></span></div>
-<div class="casino-game-row no-scrollbar"><game-card :badge="index<4 ? (index===3?'HOT':'TOP') : ''" :game="game" :key="category.slug+'-'+(game._id || game.game_code)" @demo="selectGame(game, true)" @select="selectGame(game)" v-for="(game,index) in category.games.slice(0,12)"></game-card></div>
+<div class="casino-game-row no-scrollbar"><game-card :game="game" :key="category.slug+'-'+(game._id || game.game_code)" @demo="selectGame(game, true)" @select="selectGame(game)" v-for="(game,index) in category.games.slice(0,12)"></game-card></div>
 </section>
 <div class="casino-hero-wrap" v-if="activeCategory==='all' &amp;&amp; heroEnabled">
 <div class="casino-hero-backdrop" aria-hidden="true" v-if="heroBackdropEnabled"><img v-for="(c,i) in heroBackdropCards" :key="'hbd'+i" :src="c.image" :style="c.style" alt="" loading="lazy"/><div class="casino-hero-shade"></div></div>
@@ -4682,11 +4680,15 @@
           // populate edilmis ad -> provider_code -> 'Casino'.
           const populated = props.game.provider && props.game.provider.name;
           const raw = populated || props.game.provider_code || 'Casino';
-          return String(raw)
+          const formatted = String(raw)
             .replace(/^(slot|live|casino|table)[-_]/i, '')
             .replace(/[-_]+/g, ' ')
             .replace(/\b\w/g, ch => ch.toUpperCase())
             .trim();
+          // Pragmatic Play'in canli casino alt-markalari (PP Live, PP Live Pro vb.)
+          // referans sitede tek marka olarak "Pragmatic Play" gosteriliyor.
+          if (/^pp live( pro)?$/i.test(formatted)) return 'Pragmatic Play';
+          return formatted;
         });
         const thumb = computed(() => props.game.banner || props.game.background || props.game.image);
         const rtp = computed(() => {
@@ -4709,7 +4711,6 @@
         <div class="casino-game-card" :class="{'is-hovered':hovered}" role="button" tabindex="0" @mouseenter="hovered=true" @mouseleave="hovered=false" @focusin="hovered=true" @focusout="hovered=false" @click="$emit('select')" @keydown.enter.prevent="$emit('select')" @keydown.space.prevent="$emit('select')">
           <img :alt="name" :src="thumb" loading="lazy"/>
           <b v-if="badge">{{badge}}</b>
-          <small>{{provider}}</small>
           <div class="game-card-hover">
             <div class="game-card-hover__top">
               <span class="game-card-hover__rtp" v-if="rtp"><span class="game-card-hover__bolt">⚡</span>{{rtp}}% RTP</span>
