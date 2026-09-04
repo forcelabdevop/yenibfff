@@ -6,7 +6,26 @@ const { authorizeUser } = require('../../middleware/auth');
 const CryptoDeposit = require('../../database/models/CryptoDeposit');
 const tronAddressService = require('../../services/cryptoAddressService');
 const evmAddressService = require('../../services/cryptoAddressServiceEvm');
+const tronDepositWatcher = require('../../services/cryptoDepositWatcher');
+const evmDepositWatcher = require('../../services/cryptoDepositWatcherEvm');
 const { listCurrencies, getCurrency, NETWORK } = require('../../config/crypto');
+
+/**
+ * Kullanici basina "hemen tara" throttle'i — bellek ici, tek surec yeterli
+ * (JobLock zaten cok-instance korumasi sagliyor, burada amac sadece TEK
+ * kullanicinin ayni butona hizlica art art basarak TronGrid/RPC hiz sinirini
+ * zorlamasini onlemek).
+ */
+const lastScanAt = new Map();
+const SCAN_THROTTLE_MS = 8000;
+
+/** Bellek buyumesini sinirlar: 10 dakikadan eski girdileri periyodik temizler. */
+setInterval(() => {
+	const cutoff = Date.now() - 10 * 60 * 1000;
+	for (const [userId, ts] of lastScanAt) {
+		if (ts < cutoff) lastScanAt.delete(userId);
+	}
+}, 5 * 60 * 1000);
 
 /** Para biriminin ailesine (TRON/EVM) gore dogru adres servisini secer. */
 function addressServiceFor(currency) {
@@ -93,6 +112,48 @@ router.get('/address', authorizeUser(true), async (req, res, next) => {
 				message: 'Kripto yatırma yapılandırması tamamlanmamış. Lütfen destek ekibine bildirin.',
 			});
 		}
+		next(error);
+	}
+});
+
+/**
+ * Kullanici yatirma bekleme sayfasindayken cagirir: kuyruk/cron dakikasini
+ * beklemeden o para biriminin agini/adresini HEMEN tarar. Bkz.
+ * services/cryptoDepositWatcher.js scanAddressNow() ve
+ * services/cryptoDepositWatcherEvm.js scanNetworkNow() ust dokumantasyonu.
+ *
+ * NOT: Bu HALA anlik kredi VERMEZ — tespit edilen transfer normal onay
+ * esigini bekler (TRON icin reorg korumasi). Sadece "hic tespit edilmeme"
+ * bekleme suresini kaldirir.
+ */
+router.post('/scan', authorizeUser(true), async (req, res, next) => {
+	try {
+		const currency = getCurrency(req.query.currency || req.body.currency);
+		if (!currency) {
+			return res.status(400).json({
+				success: false,
+				message: 'Gecersiz veya belirsiz para birimi kodu. Tam kod gonderin (or. USDT_BEP20).',
+			});
+		}
+
+		const userId = String(req.user._id);
+		const now = Date.now();
+		const last = lastScanAt.get(userId) || 0;
+		if (now - last < SCAN_THROTTLE_MS) {
+			return res.status(429).json({
+				success: false,
+				message: 'Cok sik tarama istegi. Lutfen birkac saniye bekleyin.',
+				retryAfterMs: SCAN_THROTTLE_MS - (now - last),
+			});
+		}
+		lastScanAt.set(userId, now);
+
+		const result = currency.family === 'EVM'
+			? await evmDepositWatcher.scanNetworkNow(currency)
+			: await tronDepositWatcher.scanAddressNow(req.user._id);
+
+		res.json({ success: true, data: result });
+	} catch (error) {
 		next(error);
 	}
 });

@@ -59,6 +59,9 @@ window.createWalletModal = function createWalletModal(ctx) {
   const depositAddressError = ref("")
   // Gec gelen adres yanitlarinin yeni secimi ezmesini onleyen istek sayaci.
   let depositAddressRequestId = 0
+  // Kullanici yatirma sayfasindayken periyodik "hemen tara" tetikleyicisi
+  // (bkz. startDepositScanPolling / stopDepositScanPolling).
+  let depositScanIntervalId = null
 
   // Secimler
   const depositCurrency = ref(null)
@@ -395,6 +398,42 @@ window.createWalletModal = function createWalletModal(ctx) {
     }
   }
 
+  /**
+   * Yatirim sayfasindaki kullanicinin adresini/agini kuyruk/cron dakikasini
+   * beklemeden HEMEN taratir (bkz. backend routes/crypto/deposit.js POST /scan).
+   * Sessizce basarisiz olur — bu sadece bir "hizlandirma" tetigidir, kredi
+   * mantigi (onay esigi) her zaman backend'de calisan cron'lar uzerinden
+   * yurur; bu istek atlanirsa bile normal tarama devam eder.
+   */
+  async function triggerDepositScan() {
+    const cur = depositCurrency.value
+    if (!cur) return
+    const network = depositNetwork.value
+    const currencyCode = (network && network.currencyCode) || cur.code
+    try {
+      await walletFetch(
+        "/crypto/deposit/scan?currency=" + encodeURIComponent(currencyCode),
+        { method: "POST" },
+      )
+    } catch (error) {
+      /* throttle (429) veya gecici hata — normal cron taramasi devam eder */
+    }
+  }
+
+  /** Kullanici crypto yatirma sekmesinde oldugu surece periyodik hizli tarama. */
+  function startDepositScanPolling() {
+    stopDepositScanPolling()
+    triggerDepositScan()
+    depositScanIntervalId = window.setInterval(triggerDepositScan, 10000)
+  }
+
+  function stopDepositScanPolling() {
+    if (depositScanIntervalId !== null) {
+      window.clearInterval(depositScanIntervalId)
+      depositScanIntervalId = null
+    }
+  }
+
   async function loadBuyQuote() {
     const fiat = buyFiat.value
     const crypto = buyCrypto.value
@@ -440,7 +479,10 @@ window.createWalletModal = function createWalletModal(ctx) {
     walletView.value = "deposit"
     walletDropdown.value = null
     loadCurrencies().then(() => {
-      if (depositTab.value === "crypto") loadDepositAddress()
+      if (depositTab.value === "crypto") {
+        loadDepositAddress()
+        startDepositScanPolling()
+      }
       if (depositTab.value === "buy") loadBuyQuote()
     })
     if (depositTab.value === "cash") loadFiatMethods()
@@ -449,6 +491,7 @@ window.createWalletModal = function createWalletModal(ctx) {
   function closeWallet() {
     walletView.value = null
     walletDropdown.value = null
+    stopDepositScanPolling()
   }
 
   function toggleWalletDropdown(name) {
@@ -744,7 +787,12 @@ window.createWalletModal = function createWalletModal(ctx) {
   // Sekme degisince acik dropdown'i kapat ve o sekmenin verisini yukle.
   watch(depositTab, (tab) => {
     walletDropdown.value = null
-    if (tab === "crypto") loadDepositAddress()
+    if (tab === "crypto") {
+      loadDepositAddress()
+      startDepositScanPolling()
+    } else {
+      stopDepositScanPolling()
+    }
     if (tab === "buy") loadBuyQuote()
     if (tab === "cash") loadFiatMethods()
   })
