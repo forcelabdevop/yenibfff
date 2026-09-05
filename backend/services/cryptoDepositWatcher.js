@@ -82,61 +82,109 @@ async function discoverDeposits() {
 	let discovered = 0;
 
 	for (const record of addresses) {
-		let newestTimestamp = record.lastSeenTimestamp || 0;
-
-		try {
-			// Her adres, DESTEKLENEN TUM para birimleri icin taranir.
-			// Kullanici USDT'yi TRX adresine gonderse bile para kredi edilir.
-			for (const currency of currencies) {
-				const transfers = currency.contract
-					? await tronClient.getIncomingTrc20(
-							record.address,
-							currency.contract,
-							record.lastSeenTimestamp,
-						)
-					: await tronClient.getIncomingTrx(
-							record.address,
-							record.lastSeenTimestamp,
-						);
-
-				for (const transfer of transfers) {
-					if (transfer.timestamp > newestTimestamp) {
-						newestTimestamp = transfer.timestamp;
-					}
-					const created = await recordTransfer(record, currency, transfer);
-					if (created) discovered += 1;
-				}
-
-				await sleep(REQUEST_SPACING_MS);
-			}
-
-			await CryptoAddress.updateOne(
-				{ _id: record._id },
-				{
-					$set: {
-						lastScannedAt: new Date(),
-						// 1ms ileri alinir; ayni transferin her turda yeniden
-						// cekilmesini onler (min_timestamp dahil sinirdir).
-						lastSeenTimestamp: newestTimestamp
-							? newestTimestamp + 1
-							: record.lastSeenTimestamp || 0,
-					},
-				},
-			);
-		} catch (error) {
-			// Tek bir adresin hatasi tum turu durdurmamali.
-			console.error(
-				`[crypto] adres taranamadi ${record.address}:`,
-				error.message,
-			);
-			await CryptoAddress.updateOne(
-				{ _id: record._id },
-				{ $set: { lastScannedAt: new Date() } },
-			);
-		}
+		discovered += await scanAddress(record, currencies);
+		// Turdaki bir sonraki adrese gecmeden once hiz siniri araligi.
+		// scanAddress kendi ic dongusunde de para birimi basina bekler; bu ek
+		// bekleme adresler ARASI icindir (scanAddressNow bunu ATLAR, bkz. asagi).
+		await sleep(REQUEST_SPACING_MS);
 	}
 
 	return discovered;
+}
+
+/**
+ * Tek bir adresi, verilen para birimleri icin tarar. `discoverDeposits`
+ * (toplu tur) ve `scanAddressNow` (kullanici bekleme sayfasindan anlik
+ * tetikleme) TARAFINDAN PAYLASILIR — mantik iki yerde AYRI YAZILMAZ.
+ * @returns {Promise<number>} Yeni kesfedilen transfer sayisi.
+ */
+async function scanAddress(record, currencies) {
+	let newestTimestamp = record.lastSeenTimestamp || 0;
+	let discovered = 0;
+
+	try {
+		// Her adres, DESTEKLENEN TUM para birimleri icin taranir.
+		// Kullanici USDT'yi TRX adresine gonderse bile para kredi edilir.
+		for (const currency of currencies) {
+			const transfers = currency.contract
+				? await tronClient.getIncomingTrc20(
+						record.address,
+						currency.contract,
+						record.lastSeenTimestamp,
+					)
+				: await tronClient.getIncomingTrx(
+						record.address,
+						record.lastSeenTimestamp,
+					);
+
+			for (const transfer of transfers) {
+				if (transfer.timestamp > newestTimestamp) {
+					newestTimestamp = transfer.timestamp;
+				}
+				const created = await recordTransfer(record, currency, transfer);
+				if (created) discovered += 1;
+			}
+
+			await sleep(REQUEST_SPACING_MS);
+		}
+
+		await CryptoAddress.updateOne(
+			{ _id: record._id },
+			{
+				$set: {
+					lastScannedAt: new Date(),
+					// 1ms ileri alinir; ayni transferin her turda yeniden
+					// cekilmesini onler (min_timestamp dahil sinirdir).
+					lastSeenTimestamp: newestTimestamp
+						? newestTimestamp + 1
+						: record.lastSeenTimestamp || 0,
+				},
+			},
+		);
+	} catch (error) {
+		// Tek bir adresin hatasi tum turu durdurmamali.
+		console.error(
+			`[crypto] adres taranamadi ${record.address}:`,
+			error.message,
+		);
+		await CryptoAddress.updateOne(
+			{ _id: record._id },
+			{ $set: { lastScannedAt: new Date() } },
+		);
+	}
+
+	return discovered;
+}
+
+/**
+ * Kullanicinin YATIRMA BEKLEME sayfasindaysa cagirilir: 150'lik toplu tur
+ * kuyruguna girmeden, SADECE bu kullanicinin TRON adresini hemen tarar.
+ *
+ * NEDEN GEREKLI: discoverDeposits() "en eski taranan once" round-robin
+ * kuyrugu kullanir; kotu sansla bir adres tam tur (~91 dakika) bekleyebilir
+ * (bkz. dosya basi ADDRESS_BATCH notu). Kullanici yatirma sayfasinda
+ * beklerken bu, "para gonderdim ama gorunmuyor" sikayetine yol acar.
+ * Bu fonksiyon kuyruktan BAGIMSIZ, dogrudan o kullanicinin adresini tarar —
+ * tespit edilen transfer yine de normal onay esigini bekler (reorg
+ * korumasi ATLANMAZ), sadece "hic tespit edilmeme" bekleme suresi kalkar.
+ *
+ * Hiz siniri korumasi icin cagiran taraf (route) kullanici basina
+ * kucuk bir throttle uygulamalidir (bkz. routes/crypto/deposit.js).
+ *
+ * @returns {Promise<{scanned: boolean, discovered: number}>}
+ */
+async function scanAddressNow(userId) {
+	if (!hdWallet.isConfigured()) return { scanned: false, discovered: 0 };
+
+	// Adres, para biriminden BAGIMSIZ olarak ayni TRON hesabini paylasir
+	// (bkz. CryptoAddress.js). Tek bir kayit yeterli; TUM TRON para
+	// birimleri (TRX + USDT_TRC20) o tek adres uzerinde taranir.
+	const record = await CryptoAddress.findOne({ user: userId, chain: 'TRON' }).lean();
+	if (!record) return { scanned: false, discovered: 0 };
+
+	const currencies = listCurrencies().filter((currency) => currency.family === 'TRON');
+	const discovered = await scanAddress(record, currencies);
+	return { scanned: true, discovered };
 }
 
 /**
@@ -318,6 +366,7 @@ module.exports = {
 	LOCK_KEY,
 	runOnce,
 	discoverDeposits,
+	scanAddressNow,
 	creditConfirmed,
 	creditDeposit,
 };

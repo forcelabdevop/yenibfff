@@ -217,8 +217,38 @@ async function runOnce() {
 	}
 }
 
+/**
+ * Kullanicinin yatirma bekleme sayfasindaysa cagirilir: bir sonraki dakikalik
+ * cron tikini beklemeden, o para biriminin agini HEMEN tarar.
+ *
+ * NEDEN GUVENLI: scanNetwork() bir Counter cursor'unu okuyup-yazarak
+ * ilerletir; bu islem ATOMIK DEGILDIR. Cron'un runOnce() TAM DA AYNI aginin
+ * cursor'unu ayni anda ilerletmeye calisiyorsa, iki paralel scanNetwork
+ * cagrisi blok atlamasina/duplike cursor yazimina yol acabilir. Bu yuzden
+ * burada AYNI JobLock anahtari (LOCK_KEY) kisa sureligine alinir; cron zaten
+ * tariyorsa kilit alinamaz ve bu fonksiyon SESSIZCE hicbir sey yapmadan
+ * cikar (cron zaten o taramayi yapiyor, tekrarina gerek yok).
+ *
+ * @returns {Promise<{scanned: boolean, discovered: number}>}
+ */
+async function scanNetworkNow(currency) {
+	if (!evmWallet.isConfigured()) return { scanned: false, discovered: 0 };
+
+	const owner = `ondemand-${OWNER}`;
+	const locked = await JobLock.acquire(LOCK_KEY, owner, 30000);
+	if (!locked) return { scanned: false, discovered: 0 };
+
+	try {
+		const discovered = await scanNetwork(currency.network, currency);
+		return { scanned: true, discovered };
+	} finally {
+		await JobLock.release(LOCK_KEY, owner).catch(() => {});
+	}
+}
+
 module.exports = {
 	LOCK_KEY,
 	runOnce,
 	scanNetwork,
+	scanNetworkNow,
 };
