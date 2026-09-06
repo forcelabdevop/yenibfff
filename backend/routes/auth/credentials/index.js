@@ -28,8 +28,12 @@ const { getClientIp } = require("../../../utils/ip");
 const { authGenerateJwtToken } = require("../../../utils/auth");
 const {
 	buildChallengePayload,
+	createMfaError,
+	getOtpChallenge,
 	getUserMfaSummary,
 	issueOtp,
+	resendOtp,
+	validateOtp,
 } = require("../../../services/mfaService");
 const { finalizeUserLoginSession } = require("../../../services/authSessionService");
 const cryptoAddressService = require("../../../services/cryptoAddressService");
@@ -157,7 +161,41 @@ module.exports = () => {
 		}
 	});
 
-	// @desc    Register user
+	// Verilen e-postadan benzersiz bir kullanıcı adı üretir. Aşamalı kayıtta
+	// kullanıcı adını artık formda sormuyoruz (bkz. authCheckPostCredentialsRegisterData).
+	const generateUniqueUsername = async (email) => {
+		const base =
+			String(email.split("@")[0] || "")
+				.toLowerCase()
+				.replace(/[^a-z0-9]/g, "")
+				.slice(0, 20) || "player";
+
+		for (let attempt = 0; attempt < 6; attempt += 1) {
+			const suffix =
+				attempt === 0 ? "" : String(crypto.randomInt(1000, 9999));
+			const candidate = `${base}${suffix}`.slice(0, 24);
+			const exists = await User.findOne({ username: candidate })
+				.select("_id")
+				.lean();
+			if (!exists) return candidate;
+		}
+
+		return `player${crypto.randomBytes(4).toString("hex")}`;
+	};
+
+	const assertSignupChallengeScope = (challenge) => {
+		if (challenge.scope !== "signup-verify") {
+			throw createMfaError(
+				"OTP challenge scope is not valid for registration",
+				"OTP_INVALID_SCOPE",
+				400,
+			);
+		}
+	};
+
+	// @desc    Register user — Aşama 1: e-posta + şifre, e-posta doğrulama
+	//          kodu gönderilir. Hesap oluşturulur ama emailVerified=false
+	//          kalır; oturum tokenı /register/verify başarılı olunca verilir.
 	// @route   POST /auth/credentials/register
 	// @access  Public
 	router.post("/register", rateLimiterStrictMiddleware, async (req, res) => {
@@ -166,263 +204,309 @@ module.exports = () => {
 			authCheckPostCredentialsRegisterData(req.body);
 
 			// Kullanıcıdan gelen veriler
-			const email = req.body.email?.trim();
-			const username = req.body.username?.trim();
-			const phone = req.body.phone?.trim();
-			const name = req.body.name?.trim();
-			const birthday = req.body.birthday;
-			let password = req.body.password?.trim();
-  const fiatCurrency = req.body.fiatCurrency || "EUR";
+			const email = req.body.email.trim().toLowerCase();
+			const phone = req.body.phone ? String(req.body.phone).trim() : "";
+			const password = req.body.password.trim();
+			const fiatCurrency = req.body.fiatCurrency || "EUR";
 			const affiliateCode = req.body.affiliate?.trim(); // ✅ affiliate kodu
 
-			// Kullanıcı tekrar kontrolü
-			const emailExists = await User.findOne({ "local.email": email });
-			const usernameExists = await User.findOne({ username });
-			const phoneExists = await User.findOne({ phone });
+			const existingUser = await User.findOne({ "local.email": email });
 
-			if (emailExists)
+			if (existingUser && existingUser.local?.emailVerified) {
 				return res.status(400).json({
 					success: false,
 					message: "E-mail already in use.",
 				});
-			if (usernameExists)
-				return res.status(400).json({
-					success: false,
-					message: "Username already in use.",
-				});
-			if (phoneExists)
-				return res.status(400).json({
-					success: false,
-					message: "Phone number already in use.",
-				});
-
-			// 🎂 Doğum günü kontrolü
-			const birthDate = new Date(birthday);
-			if (isNaN(birthDate.getTime())) {
-				return res
-					.status(400)
-					.json({ success: false, message: "Invalid birthday." });
-			}
-			const today = new Date();
-			let age = today.getFullYear() - birthDate.getFullYear();
-			const m = today.getMonth() - birthDate.getMonth();
-			if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate()))
-				age--;
-			if (age < 18) {
-				return res.status(400).json({
-					success: false,
-					message: "You must be at least 18 years old to register.",
-				});
 			}
 
-			// 🔑 Şifre validasyonu
-			const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
-			if (!passwordRegex.test(password)) {
-				return res.status(400).json({
-					success: false,
-					message:
-						"Password must be at least 8 characters long, contain 1 uppercase letter and 1 number.",
-				});
+			if (phone) {
+				const phoneOwner = await User.findOne({ phone })
+					.select("_id")
+					.lean();
+				if (
+					phoneOwner &&
+					(!existingUser ||
+						String(phoneOwner._id) !== String(existingUser._id))
+				) {
+					return res.status(400).json({
+						success: false,
+						message: "Phone number already in use.",
+					});
+				}
 			}
 
 			// Şifreyi hashle
 			const salt = await bcrypt.genSalt(10);
-			password = await bcrypt.hash(password, salt);
+			const hashedPassword = await bcrypt.hash(password, salt);
 
-			// Rastgele seed ve hash
-			const seedsClient = [
-				crypto.randomBytes(8).toString("hex"),
-				crypto.randomBytes(8).toString("hex"),
-			];
-			const seedsServer = [
-				crypto.randomBytes(24).toString("hex"),
-				crypto.randomBytes(24).toString("hex"),
-			];
-			const hashes = [
-				crypto
-					.createHash("sha256")
-					.update(seedsServer[0])
-					.digest("hex"),
-				crypto
-					.createHash("sha256")
-					.update(seedsServer[1])
-					.digest("hex"),
-			];
+			let userId;
+			let username;
 
-			// IP adresi
-			const userIp = getClientIp(req);
-
-			// Yeni ObjectId
-			const userId = new mongoose.Types.ObjectId();
-
-			// 📂 Avatar klasöründen rastgele avatar seç (yeni sistem: /uploads/avatars)
-			const avatarDir = path.join(__dirname, "../../../uploads/avatars");
-
-			// Klasör yoksa oluştur
-			if (!fs.existsSync(avatarDir)) {
-				fs.mkdirSync(avatarDir, { recursive: true });
-			}
-
-			const avatarFiles = fs.existsSync(avatarDir)
-				? fs
-						.readdirSync(avatarDir)
-						.filter((file) => /\.(jpe?g|png|gif)$/i.test(file))
-				: [];
-
-			let randomAvatar = null;
-			if (avatarFiles.length > 0) {
-				randomAvatar = `/uploads/avatars/${
-					avatarFiles[Math.floor(Math.random() * avatarFiles.length)]
-				}`;
+			if (existingUser && !existingUser.local?.emailVerified) {
+				// Kullanıcı e-posta doğrulamasını tamamlamadan kaydı yarım
+				// bırakmış — hesabı silip yeniden oluşturmak yerine devam
+				// ettiriyoruz (şifre/telefon güncellenir, yeni kod gönderilir).
+				userId = existingUser._id;
+				username = existingUser.username;
+				existingUser.local.password = hashedPassword;
+				existingUser.local.emailVerified = false;
+				if (phone) existingUser.phone = phone;
+				if (affiliateCode && !existingUser.affiliates?.redeemedCode) {
+					const referrerUser = await User.findOne({
+						"affiliates.code": affiliateCode,
+					})
+						.select("_id")
+						.lean();
+					existingUser.affiliates = {
+						...(existingUser.affiliates?.toObject
+							? existingUser.affiliates.toObject()
+							: existingUser.affiliates || {}),
+						referrer: referrerUser
+							? referrerUser._id
+							: existingUser.affiliates?.referrer,
+						redeemedCode: affiliateCode,
+					};
+				}
+				await existingUser.save();
 			} else {
-				// Fallback avatar'ı SiteSettings'den al
-				const settings = await SiteSettings.findOne().lean();
-				randomAvatar =
-					settings?.avatars?.fallbackAvatar ||
-					"/uploads/avatars/default.png";
-			}
+				username = await generateUniqueUsername(email);
+				const userIp = getClientIp(req);
+				userId = new mongoose.Types.ObjectId();
 
-			// ✅ Referrer bul
-			let referrerUser = null;
-			if (affiliateCode) {
-				referrerUser = await User.findOne({
-					"affiliates.code": affiliateCode,
-				})
-					.select("_id")
-					.lean();
-			}
+				// 📂 Avatar klasöründen rastgele avatar seç (yeni sistem: /uploads/avatars)
+				const avatarDir = path.join(
+					__dirname,
+					"../../../uploads/avatars",
+				);
+				if (!fs.existsSync(avatarDir)) {
+					fs.mkdirSync(avatarDir, { recursive: true });
+				}
+				const avatarFiles = fs.existsSync(avatarDir)
+					? fs
+							.readdirSync(avatarDir)
+							.filter((file) => /\.(jpe?g|png|gif)$/i.test(file))
+					: [];
+				let randomAvatar = null;
+				if (avatarFiles.length > 0) {
+					randomAvatar = `/uploads/avatars/${
+						avatarFiles[
+							Math.floor(Math.random() * avatarFiles.length)
+						]
+					}`;
+				} else {
+					const settings = await SiteSettings.findOne().lean();
+					randomAvatar =
+						settings?.avatars?.fallbackAvatar ||
+						"/uploads/avatars/default.png";
+				}
 
-			// Identity / ID number (optional)
-			const rawIdNumber = req.body.idNumber
-				? String(req.body.idNumber).trim()
-				: null;
-			const sanitizedIdNumber = rawIdNumber
-				? rawIdNumber.replace(/\D/g, "")
-				: null;
-			const documentType = req.body.documentType
-				? String(req.body.documentType).trim()
-				: null;
+				// ✅ Referrer bul
+				let referrerUser = null;
+				if (affiliateCode) {
+					referrerUser = await User.findOne({
+						"affiliates.code": affiliateCode,
+					})
+						.select("_id")
+						.lean();
+				}
 
-			// Basic validation: if provided, idNumber should be 11 digits (common for CPF/TC)
-			if (sanitizedIdNumber && sanitizedIdNumber.length !== 11) {
-				return res.status(400).json({
-					success: false,
-					message: "Invalid idNumber. Must be 11 digits.",
+				// Rastgele seed ve hash
+				const seedsClient = [
+					crypto.randomBytes(8).toString("hex"),
+					crypto.randomBytes(8).toString("hex"),
+				];
+				const seedsServer = [
+					crypto.randomBytes(24).toString("hex"),
+					crypto.randomBytes(24).toString("hex"),
+				];
+				const hashes = [
+					crypto
+						.createHash("sha256")
+						.update(seedsServer[0])
+						.digest("hex"),
+					crypto
+						.createHash("sha256")
+						.update(seedsServer[1])
+						.digest("hex"),
+				];
+
+				const newUser = await User.create({
+					_id: userId,
+					username,
+					local: {
+						email,
+						password: hashedPassword,
+						emailVerified: false,
+					},
+					phone: phone || undefined,
+					ips: [{ address: userIp }],
+					avatar: randomAvatar,
+					currency: {
+						fiatCurrency,
+					},
+					affiliates: {
+						referred: 0,
+						referredLevel2: 0,
+						referredLevel3: 0,
+						bet: 0,
+						deposit: 0,
+						earned: 0,
+						available: 0,
+						generated: 0,
+						referredAddress: userIp,
+						referredAt: new Date(),
+						referrer: referrerUser ? referrerUser._id : null,
+						redeemedCode: affiliateCode || null,
+					},
 				});
+
+				// Günlük rapor ve seeds ekle
+				await Promise.all([
+					Report.findOneAndUpdate(
+						{ createdAt: new Date().toISOString().slice(0, 10) },
+						{ $inc: { "stats.total.user": 1 } },
+						{ upsert: true },
+					),
+					UserSeed.create({
+						seedClient: seedsClient[0],
+						seedServer: seedsServer[0],
+						hash: hashes[0],
+						nonce: 1,
+						user: userId,
+						state: "active",
+					}),
+					UserSeed.create({
+						seedClient: seedsClient[1],
+						seedServer: seedsServer[1],
+						hash: hashes[1],
+						nonce: 1,
+						user: userId,
+						state: "created",
+					}),
+				]);
+
+				createAdminNotification(
+					"new_user",
+					"Yeni Üye Kaydı",
+					`${username} kullanıcı adıyla yeni bir üye kayıt oldu (e-posta doğrulaması bekleniyor).`,
+					"/apps/user/list",
+					{ username, userId: newUser._id },
+				);
+
+				// Her kullanıcıya kayıt anında SABİT kripto yatırma adresi ata
+				// (ör. USDT_TRC20, TRX). getOrCreateAddress zaten aynı
+				// kullanıcı+para birimi için hep aynı adresi döndürür/oluşturur;
+				// burada erkenden çağırmak, kullanıcı hiç yatırım sayfasını
+				// açmasa da admin panelinde adresin görünmesini sağlar. HD
+				// cüzdan yapılandırılmamışsa hata fırlatır — kaydı ASLA
+				// bloklamadan sessizce loglayıp geçiyoruz.
+				Promise.all(
+					listCurrencies().map((currency) =>
+						cryptoAddressService
+							.getOrCreateAddress(userId, currency.code)
+							.catch((error) => {
+								console.error(
+									`[auth/register] kripto adresi atanamadi (${currency.code}):`,
+									error.message,
+								);
+							}),
+					),
+				).catch(() => {});
 			}
 
-			// Veritabanına kullanıcıyı ekle
-			let newUser = await User.create({
-				_id: userId,
-				username: username,
-				local: {
-					email: email,
-					password: password,
-				},
-				phone: phone,
-				name: name,
-				identity: sanitizedIdNumber
-					? {
-							idNumber: sanitizedIdNumber,
-							documentType: documentType || "CPF",
-							verified: false,
-					  }
-					: undefined,
-				birthday: birthDate,
-				ips: [{ address: userIp }],
-				avatar: randomAvatar,
-				currency: {
-					fiatCurrency: fiatCurrency,
-				},
-				affiliates: {
-					referred: 0,
-					referredLevel2: 0,
-					referredLevel3: 0,
-					bet: 0,
-					deposit: 0,
-					earned: 0,
-					available: 0,
-					generated: 0,
-					referredAddress: userIp,
-					referredAt: new Date(),
-					referrer: referrerUser ? referrerUser._id : null, // ✅ bağlanan kişi
-					redeemedCode: affiliateCode || null, // ✅ hangi kodla geldiği
-				},
+			// E-posta doğrulama kodu gönder — hesap tam olarak bu kod
+			// doğrulanana kadar aktif değildir (bkz. /register/verify).
+			const challenge = await issueOtp({
+				user: { _id: userId, username, local: { email } },
+				scope: "signup-verify",
+				methodType: "email",
+				email,
+				metadata: { source: "register" },
 			});
-
-			// Günlük rapor ve seeds ekle
-			let dataDatabase = await Promise.all([
-				Report.findOneAndUpdate(
-					{ createdAt: new Date().toISOString().slice(0, 10) },
-					{ $inc: { "stats.total.user": 1 } },
-					{ upsert: true }
-				),
-				UserSeed.create({
-					seedClient: seedsClient[0],
-					seedServer: seedsServer[0],
-					hash: hashes[0],
-					nonce: 1,
-					user: userId,
-					state: "active",
-				}),
-				UserSeed.create({
-					seedClient: seedsClient[1],
-					seedServer: seedsServer[1],
-					hash: hashes[1],
-					nonce: 1,
-					user: userId,
-					state: "created",
-				}),
-			]);
-
-			createAdminNotification(
-				"new_user",
-				"Yeni Üye Kaydı",
-				`${username} kullanıcı adıyla yeni bir üye kayıt oldu.`,
-				"/apps/user/list",
-				{ username, userId: newUser._id },
-			);
-
-			// Her kullanıcıya kayıt anında SABİT kripto yatırma adresi ata (ör.
-			// USDT_TRC20, TRX). getOrCreateAddress zaten aynı kullanıcı+para
-			// birimi için hep aynı adresi döndürür/oluşturur; burada erkenden
-			// çağırmak, kullanıcı hiç yatırım sayfasını açmasa da admin
-			// panelinde ("Kullanıcı Adresleri" ve profil) adresin görünmesini
-			// sağlar. HD cüzdan (TRON_HD_MNEMONIC) yapılandırılmamışsa hata
-			// fırlatır — kaydı ASLA bloklamadan sessizce loglayıp geçiyoruz.
-			Promise.all(
-				listCurrencies().map((currency) =>
-					cryptoAddressService
-						.getOrCreateAddress(userId, currency.code)
-						.catch((error) => {
-							console.error(
-								`[auth/register] kripto adresi atanamadi (${currency.code}):`,
-								error.message,
-							);
-						}),
-				),
-			).catch(() => {});
-
-			newUser = newUser.toObject();
-			delete newUser.local.password;
-
-			// Process avatar - ensure valid avatar with fallback
-			const userWithAvatar = await processUserAvatar(newUser);
-
-			const accessToken = authGenerateJwtToken(newUser._id);
 
 			res.status(200).json({
 				success: true,
-				token: accessToken,
-				user: userWithAvatar,
+				pendingVerification: true,
+				...buildChallengePayload(challenge),
 			});
 		} catch (err) {
-			res.status(500).json({
+			res.status(err.status || 500).json({
 				success: false,
 				error: { type: "error", message: err.message },
+				message: err.message,
+				code: err.code,
 			});
 		}
 	});
+
+	// @desc    Register — Aşama 2: e-posta doğrulama kodunu yeniden gönder
+	// @route   POST /auth/credentials/register/resend
+	// @access  Public
+	router.post(
+		"/register/resend",
+		rateLimiterStrictMiddleware,
+		async (req, res) => {
+			try {
+				const { challengeId } = req.body || {};
+				const challenge = await getOtpChallenge({ challengeId });
+				assertSignupChallengeScope(challenge);
+
+				const nextChallenge = await resendOtp({ challengeId });
+
+				res.status(200).json({
+					success: true,
+					...buildChallengePayload(nextChallenge),
+				});
+			} catch (err) {
+				res.status(err.status || 500).json({
+					success: false,
+					message: err.message,
+					code: err.code,
+					...(err.metadata ? { metadata: err.metadata } : {}),
+				});
+			}
+		},
+	);
+
+	// @desc    Register — Aşama 2: e-posta doğrulama kodunu onayla, hesabı
+	//          etkinleştir ve oturum tokenı ver.
+	// @route   POST /auth/credentials/register/verify
+	// @access  Public
+	router.post(
+		"/register/verify",
+		rateLimiterStrictMiddleware,
+		async (req, res) => {
+			try {
+				const { challengeId, code, marketingConsent } = req.body || {};
+				const challenge = await validateOtp({ challengeId, code });
+				assertSignupChallengeScope(challenge);
+
+				await User.findByIdAndUpdate(challenge.user, {
+					"local.emailVerified": true,
+					...(typeof marketingConsent === "boolean"
+						? { marketingConsent }
+						: {}),
+				});
+
+				res.status(200).json(
+					await finalizeUserLoginSession({
+						userId: challenge.user,
+						req,
+					}),
+				);
+			} catch (err) {
+				if (err.code === ACCOUNT_SUSPENDED_CODE) {
+					return sendUserSuspensionResponse(res);
+				}
+				res.status(err.status || 500).json({
+					success: false,
+					message: err.message,
+					code: err.code,
+					...(err.metadata ? { metadata: err.metadata } : {}),
+				});
+			}
+		},
+	);
 
 	// @desc    Link user
 	// @route   POST /auth/credentials/link

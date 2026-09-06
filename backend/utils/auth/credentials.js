@@ -46,6 +46,11 @@ const supportedFiatCurrencies = [
 ];
 
 const authCheckPostCredentialsRegisterData = (data) => {
+  // 🚀 Aşamalı kayıt — 1. aşamada sadece e-posta + şifre zorunlu (BetFury
+  // Sign Up modaline paralel). Kullanıcı adı otomatik üretilir; ad, doğum
+  // tarihi gibi bilgiler hesap oluşturulduktan sonra ayrı bir "Profili
+  // Tamamla" adımında istenecek. 18+ onayı kayıt formundaki checkbox ile
+  // alınır (bkz. frontend ageConfirm).
   if (data === undefined || data === null) {
     throw new Error('Something went wrong. Please try again in a few seconds.');
   }
@@ -58,32 +63,10 @@ const authCheckPostCredentialsRegisterData = (data) => {
     throw new Error('Your provided email is invalid.');
   }
 
-  if (!data.username || typeof data.username !== 'string' || data.username.trim() === '') {
-    throw new Error('Your provided username is invalid.');
-  }
-
-  if (!data.phone || typeof data.phone !== 'string' || !/^\+?[0-9]{10,15}$/.test(data.phone)) {
-    throw new Error('Your provided phone number is invalid.');
-  }
-
-  if (!data.name || typeof data.name !== 'string' || data.name.trim() === '') {
-    throw new Error('Your provided name is invalid.');
-  }
-
-  // 🎂 Doğum günü kontrolü
-  if (!data.birthday) {
-    throw new Error('Your provided birthday is invalid.');
-  }
-  const birthDate = new Date(data.birthday);
-  if (isNaN(birthDate.getTime())) {
-    throw new Error('Your provided birthday is invalid.');
-  }
-  const today = new Date();
-  let age = today.getFullYear() - birthDate.getFullYear();
-  const m = today.getMonth() - birthDate.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
-  if (age < 18) {
-    throw new Error('You must be at least 18 years old to register.');
+  if (data.phone !== undefined && data.phone !== null && String(data.phone).trim() !== '') {
+    if (typeof data.phone !== 'string' || !/^\+?[0-9]{10,15}$/.test(data.phone)) {
+      throw new Error('Your provided phone number is invalid.');
+    }
   }
 
   // 🔑 Şifre kontrolü
