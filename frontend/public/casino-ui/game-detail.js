@@ -257,12 +257,14 @@ window.createGameDetail = function createGameDetail(ctx) {
           gameCode: game.game_code,
           language: "tr",
           channel: "desktop",
-          // NOT: "Display balance in" secimi (currencyDisplayActive) burada KASITLI
-          // OLARAK gonderilmiyor -- o sadece kozmetik bir gorunum tercihi (bkz.
-          // currency-display-modal.js), gercek settlement para birimi degil.
-          // Oyun her zaman kullanicinin gercek cuzdan para biriminde
-          // (user.currency.fiatCurrency) acilir -- backend/routes/betinoviApi.js
-          // bunu dogrudan kendisi belirler.
+          // NOT: currencyDisplayActive burada dogrudan gonderilmiyor cunku
+          // saglayiciya gonderilen gercek settlement para birimini backend
+          // kendisi belirler (user.currency.fiatCurrency -- bkz.
+          // backend/routes/betinoviApi.js). Ancak "Display balance in"
+          // secicisinden bir fiat secildiginde selectDisplayCurrency artik
+          // /exchange/switch-fiat-currency ile GERCEK cuzdan fiat'ini da
+          // degistirir (bkz. currency-display-modal.js), yani bir sonraki
+          // startGame() cagrisi otomatik olarak yeni secilen fiat ile acilir.
         }),
       })
       const payload = await response.json().catch(() => ({}))
