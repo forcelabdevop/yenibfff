@@ -9,7 +9,7 @@
 window.createGameDetail = function createGameDetail(ctx) {
   const {
     ref, computed, currentPage, runtimeParams, apiUrl, backendAssetUrl, websiteName, knownRtp, normalizeGameName,
-    authUser, readAuthToken, safePostToParent,
+    authUser, readAuthToken, safePostToParent, walletFiat,
     // Ust bardaki "Display in Fiat" seciciyle paylasilan ortak tercih --
     // bkz. casino-ui/currency-display-modal.js. Oyun ekranindaki
     // "Display balance in" secici bunu okuyup/yazar; startGame() da
@@ -17,6 +17,16 @@ window.createGameDetail = function createGameDetail(ctx) {
     // icin bunu kullanir.
     currencyDisplayList, currencyDisplayActive, currencyDisplayActiveMeta, selectDisplayCurrency,
   } = ctx
+
+  // Saglayiciya gonderilen oyun ici dil (GetGameUrl'in "language" alani),
+  // gercek cuzdan para birimine gore belirlenir: TRY -> "tr", diger tum
+  // desteklenen fiat'lar (EUR/USD/BRL) -> "en". Boylece kullanici EUR/USD
+  // secince oyun arayuzu (KREDI/BAHIS gibi) da Turkce kalmaz, Ingilizce
+  // acilir -- bkz. proje hafizasi: "EUR seçince oyun hâlâ Türkçe açılıyor".
+  function launchLanguageForWallet() {
+    const fiat = String((walletFiat && walletFiat.value) || "").toUpperCase()
+    return fiat === "TRY" ? "tr" : "en"
+  }
   // index.html'deki safePostToParent, cuzdan eklentilerinin (TronLink vb.)
   // window.postMessage'i sarmalayip DataCloneError firlatmasina karsi
   // try/catch icerir (bkz. index.html'deki yorum). Eger bu dosya (game-detail.js)
@@ -255,7 +265,7 @@ window.createGameDetail = function createGameDetail(ctx) {
           user_id: authUser.value._id,
           vendorCode: game.provider_code,
           gameCode: game.game_code,
-          language: "tr",
+          language: launchLanguageForWallet(),
           channel: "desktop",
           // NOT: currencyDisplayActive burada dogrudan gonderilmiyor cunku
           // saglayiciya gonderilen gercek settlement para birimini backend
