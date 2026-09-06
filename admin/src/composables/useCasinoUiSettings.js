@@ -26,6 +26,7 @@ const withShape = casinoUi => {
   const footer = source.footer || {}
   const heroChooser = source.heroChooser || {}
   const betsTable = source.betsTable || {}
+  const authModal = source.authModal || {}
 
   return {
     footer: {
@@ -101,6 +102,15 @@ const withShape = casinoUi => {
         enabled: tab?.enabled !== false,
         order: tab?.order ?? 0,
       })),
+    },
+    authModal: {
+      enabled: authModal.enabled !== false,
+      image: authModal.image || '',
+      title: authModal.title || '',
+      highlight: authModal.highlight || '',
+      subtitle: authModal.subtitle || '',
+      termsText: authModal.termsText || '',
+      showSocialLogins: authModal.showSocialLogins !== false,
     },
   }
 }

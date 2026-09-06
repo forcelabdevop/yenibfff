@@ -856,6 +856,21 @@ const SiteSettingsSchema = new mongoose.Schema(
 					],
 				},
 			},
+
+			// Giriş / kayıt modalı (auth-dialog) sunum içeriği
+			authModal: {
+				enabled: { type: Boolean, default: true },
+				image: { type: String, default: "" },
+				title: { type: String, default: "WELCOME BONUS" },
+				highlight: { type: String, default: "UP TO 590%" },
+				subtitle: { type: String, default: "+ 225 Free Spins" },
+				termsText: {
+					type: String,
+					default:
+						"By accessing you confirm that you are at least 18 years old and agree to the Terms of service",
+				},
+				showSocialLogins: { type: Boolean, default: true },
+			},
 		},
 	},
 	{ timestamps: true }

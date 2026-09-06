@@ -130,6 +130,9 @@ router.get("/site-settings", async (req, res) => {
 
 			originalGames: settings.originalGames || {},
 
+			// Giriş / kayıt modalı sunum içeriği (CMS: Casino Arayüzü → Giriş Modalı)
+			authModal: settings.casinoUi?.authModal || {},
+
 			customCSS: settings.customCSS || "",
 			customJS: settings.customJS || "",
 			customHTML: settings.customHTML || "",

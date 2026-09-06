@@ -49,6 +49,7 @@ router.get("/casino-ui-settings", async (req, res) => {
 					socials: sortByOrder(footer.socials),
 				},
 				heroChooser: casinoUi.heroChooser || {},
+				authModal: casinoUi.authModal || {},
 				betsTable: {
 					...(casinoUi.betsTable || {}),
 					tabs: sortByOrder(casinoUi.betsTable?.tabs),
