@@ -1090,15 +1090,15 @@
     .game-card-hover__fav { display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; flex:0 0 30px; padding:0; border:none; background:none; color:#ff4d63; cursor:pointer; }
     .game-card-hover__fav svg { width:24px; height:24px; }
     .game-card-hover__fav.is-active svg { fill:#ff4d63; }
-    .tournament-drawer { position:fixed; z-index:120; top:64px; right:0; bottom:0; width:var(--drawer-w); overflow-y:auto; border-left:1px solid #263545; background:#0d1823; box-shadow:-22px 0 48px rgba(0,0,0,.34); transform:translateX(105%); transition:transform .25s ease; }
+    .tournament-drawer { position:fixed; z-index:120; top:64px; right:0; bottom:0; width:var(--drawer-w); overflow-y:auto; border-left:1px solid #263545; background:#111923; box-shadow:-22px 0 48px rgba(0,0,0,.34); transform:translateX(105%); transition:transform .25s ease; }
     .tournament-drawer.open { transform:translateX(0); }
     /* Global chat drawer */
-    .chat-drawer { position:fixed; z-index:130; top:64px; right:0; bottom:0; width:var(--chat-w); display:flex; flex-direction:column; border-left:1px solid #263545; background:#0d1924; box-shadow:-22px 0 48px rgba(0,0,0,.38); transform:translateX(105%); transition:transform .25s ease; }
+    .chat-drawer { position:fixed; z-index:130; top:64px; right:0; bottom:0; width:var(--chat-w); display:flex; flex-direction:column; border-left:1px solid #263545; background:#111923; box-shadow:-22px 0 48px rgba(0,0,0,.38); transform:translateX(105%); transition:transform .25s ease; }
     .chat-drawer.open { transform:translateX(0); }
       /* Notification drawer */
-      .notif-drawer { position:fixed; z-index:135; top:64px; right:0; bottom:0; width:var(--notif-w); display:flex; flex-direction:column; border-left:1px solid #263545; background:#0d1722; box-shadow:-22px 0 48px rgba(0,0,0,.4); transform:translateX(105%); transition:transform .25s ease; }
+      .notif-drawer { position:fixed; z-index:135; top:64px; right:0; bottom:0; width:var(--notif-w); display:flex; flex-direction:column; border-left:1px solid #263545; background:#111923; box-shadow:-22px 0 48px rgba(0,0,0,.4); transform:translateX(105%); transition:transform .25s ease; }
       .notif-drawer.open { transform:translateX(0); }
-    .leader-drawer { position:fixed; z-index:130; top:64px; right:0; bottom:0; width:var(--leader-w); display:flex; flex-direction:column; border-left:1px solid #263545; background:#0e1925; box-shadow:-22px 0 48px rgba(0,0,0,.4); transform:translateX(105%); transition:transform .25s ease; }
+    .leader-drawer { position:fixed; z-index:130; top:64px; right:0; bottom:0; width:var(--leader-w); display:flex; flex-direction:column; border-left:1px solid #263545; background:#111923; box-shadow:-22px 0 48px rgba(0,0,0,.4); transform:translateX(105%); transition:transform .25s ease; }
     .leader-drawer.open { transform:translateX(0); }
     .leader-head { height:44px; display:flex; align-items:center; padding:0 12px; border-bottom:1px solid #1c2938; gap:10px; flex:none; }
     .leader-head h2 { font-size:17px; line-height:1; font-weight:800; white-space:nowrap; letter-spacing:-.4px; margin:0; color:#f6f8fb; }
@@ -1298,7 +1298,7 @@
     .chat-pinned.collapsed .fold::after { transform:rotate(45deg); top:2px; }
     .chat-pinned.collapsed p { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 
-    .chat-log { flex:1; min-height:0; overflow-y:auto; padding:12px 8px 14px 6px; display:flex; flex-direction:column; gap:10px; background:#0d1924; }
+    .chat-log { flex:1; min-height:0; overflow-y:auto; padding:12px 8px 14px 6px; display:flex; flex-direction:column; gap:10px; background:#111923; }
     .chat-log::-webkit-scrollbar { width:6px; }
     .chat-log::-webkit-scrollbar-thumb { border-radius:3px; background:#2a3a4c; }
 
@@ -1426,7 +1426,7 @@
     .chat-tip-menu button { display:flex; width:100%; padding:9px 10px; align-items:center; gap:10px; border-radius:8px; color:#dbe6f4; font-size:13.5px; font-weight:700; text-align:left; }
     .chat-tip-menu button:hover { background:#2f3f52; color:#fff; }
     .chat-tip-menu button i { width:18px; color:#f5a623; font-size:14px; text-align:center; }
-    .tournament-head { position:sticky; z-index:4; top:0; display:flex; height:58px; padding:0 14px; align-items:center; gap:9px; border-bottom:1px solid #223141; background:#0d1823; }
+    .tournament-head { position:sticky; z-index:4; top:0; display:flex; height:58px; padding:0 14px; align-items:center; gap:9px; border-bottom:1px solid #223141; background:#111923; }
     .tournament-head h2 { margin:0; flex:1; min-width:0; color:#fff; font-size:17px; white-space:nowrap; }
     .tournament-head button { color:#fff; }
     .tournament-filter { display:flex; align-items:center; gap:9px; font-weight:700; }
