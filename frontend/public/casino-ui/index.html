@@ -47,10 +47,10 @@
       --chat-w: 358px;
       --notif-w: 358px;
     --leader-w: 358px;
-      --header: #0f1218;
-      --sidebar: #0e1116;
-      --page: #0b0e13;
-      --panel: #14171e;
+      --header: #111923;
+      --sidebar: #111923;
+      --page: #0d131c;
+      --panel: #2f353e;
       --panel-2: #191d25;
       --line: #ffffff0a;
       --muted: #a8b6cb;
@@ -71,7 +71,7 @@
     .site-header {
       position: fixed; inset: 0 0 auto 0; height: 63px; z-index: 70;
       display: flex; align-items: center; padding: 0 24px 0 12px;
-      background: #0f1218; border-bottom: 1px solid #1a1e27;
+      background: #111923; border-bottom: 1px solid #1a1e27;
     }
     .header-left, .header-right { display: flex; align-items: center; }
     .header-left { gap: 8px; min-width: 0; }
@@ -127,8 +127,8 @@
  /* "Display in currency" modali -- ayni gorsel dil "Bonus details" (calendar-details-*) modaliyla,
     ama .bn-page'e bagimli olmadan her yerden acilabilsin diye kendi class'lari var. */
  .curr-modal-overlay { position: fixed; z-index: 200; inset: 0; background: rgba(2,10,19,.88); display: flex; align-items: flex-start; justify-content: center; padding-top: 100px; }
- .curr-modal { width: 420px; max-width: calc(100vw - 28px); max-height: min(640px, calc(100vh - 140px)); border-radius: 15px; overflow: hidden; background: #14171e; box-shadow: 0 30px 80px rgba(0,0,0,.6); display: flex; flex-direction: column; }
- .curr-modal-head { flex: none; position: relative; padding: 28px 56px 24px 24px; background: linear-gradient(180deg,#0b4385,#14171e 92%); }
+ .curr-modal { width: 420px; max-width: calc(100vw - 28px); max-height: min(640px, calc(100vh - 140px)); border-radius: 15px; overflow: hidden; background: #2f353e; box-shadow: 0 30px 80px rgba(0,0,0,.6); display: flex; flex-direction: column; }
+ .curr-modal-head { flex: none; position: relative; padding: 28px 56px 24px 24px; background: linear-gradient(180deg,#0b4385,#2f353e 92%); }
  .curr-modal-head h2 { margin: 0; font-size: 24px; line-height: 30px; color: #fff; }
  .curr-modal-x { position: absolute; right: 18px; top: 20px; background: transparent; color: #c2cede; font-size: 20px; cursor: pointer; }
  .curr-modal-main { padding: 18px 24px 0; flex: 1; min-height: 0; display: flex; flex-direction: column; }
@@ -237,7 +237,7 @@
     .user-dropdown__avatar-clip { position: absolute; inset: 4px; width: calc(100% - 8px); height: calc(100% - 8px); border-radius: 50%; overflow: hidden; background: #cfcfcd; }
     .user-dropdown__ring { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); pointer-events: none; }
     .user-dropdown__ring circle { fill: none; stroke-width: 4; stroke-linecap: round; }
-    .user-dropdown__ring .track { stroke: #0f1218; }
+    .user-dropdown__ring .track { stroke: #111923; }
     .user-dropdown__ring .value { stroke: #2fd15e; }
     .user-dropdown__rank { position: absolute; left: 50%; bottom: -8px; transform: translateX(-50%); padding: 2px 10px; border-radius: 7px; background: var(--pink, #f8365c); color: #fff; font-size: 11px; font-weight: 800; white-space: nowrap; }
     .user-dropdown__name { margin: 14px 0 14px; font-size: 17px; font-weight: 800; color: #fff; text-align: center; word-break: break-all; }
@@ -334,8 +334,8 @@
     .main-shell.chat-open { margin-right: var(--chat-w); transition: margin-left .25s ease, margin-right .25s ease; }
     .main-shell.notif-open { margin-right: var(--notif-w); transition: margin-left .25s ease, margin-right .25s ease; }
     .main-shell.leader-open { margin-right: var(--leader-w); transition: margin-left .25s ease, margin-right .25s ease; }
-    .hero { height: 393px; position: relative; overflow: hidden; background: linear-gradient(102deg, #0b0e13 0%, #15131b 24%, #38131f 68%, #641726 100%); }
-    .hero::after { content:''; position:absolute; inset:auto 0 0 0; height:80px; background:linear-gradient(transparent,#0b0e13); pointer-events:none; }
+    .hero { height: 393px; position: relative; overflow: hidden; background: linear-gradient(102deg, #0d131c 0%, #15131b 24%, #38131f 68%, #641726 100%); }
+    .hero::after { content:''; position:absolute; inset:auto 0 0 0; height:80px; background:linear-gradient(transparent,#0d131c); pointer-events:none; }
     .hero-art { position: absolute; z-index: 1; top: 30px; right: 50px; width: 500px; height: 336px; object-fit: contain; object-position: right center; -webkit-mask-image: linear-gradient(to right, transparent 0, #000 9%, #000 100%); mask-image: linear-gradient(to right, transparent 0, #000 9%, #000 100%); }
     .hero-copy { position: relative; z-index: 3; padding: 79px 24px 0; width: 550px; }
     .hero-title { font-size: 37px; line-height: 1.03; text-transform: uppercase; font-weight: 900; letter-spacing: .5px; }
@@ -409,8 +409,8 @@
     .sport-card span.name { color:white; font-size:16px; font-weight:700; }
 
     .staking-strip { margin-top:15px; height:121px; }
-    .staking-card { flex:0 0 249px; height:121px; border-radius:12px; overflow:hidden; background:#14171e; border:1px solid transparent; }
-    .staking-card.featured { background:linear-gradient(120deg,#5f1e2e,#1a1d2b 62%,#14171e); }
+    .staking-card { flex:0 0 249px; height:121px; border-radius:12px; overflow:hidden; background:#2f353e; border:1px solid transparent; }
+    .staking-card.featured { background:linear-gradient(120deg,#5f1e2e,#1a1d2b 62%,#2f353e); }
     .stake-top { height:76px; display:flex; align-items:center; padding:0 14px; }
     .coin-logo { flex:0 0 46px; width:46px; height:46px; border-radius:50%; display:grid; place-items:center; margin-right:12px; color:white; font-size:26px; font-weight:800; border:5px solid rgba(255,255,255,.28); }
     .coin-logo.bnb { background:#f3b80a; } .coin-logo.btc { background:#f7931a; } .coin-logo.eth { background:#687ccf; } .coin-logo.trx { background:#ef1237; } .coin-logo.usdt { background:#2b8f78; }
@@ -696,7 +696,7 @@
     .gl-icon--expand { font-size:19px; }
     .gl-screen-icon { width:22px; height:14px; border:2px solid currentColor; border-radius:2px; }
 
-    .gl-viewport { position:relative; width:100%; aspect-ratio:2590/1374; margin-top:24px; overflow:hidden; border-radius:14px; background:#0b0e13; isolation:isolate; }
+    .gl-viewport { position:relative; width:100%; aspect-ratio:2590/1374; margin-top:24px; overflow:hidden; border-radius:14px; background:#0d131c; isolation:isolate; }
     .gl-viewport__media { position:absolute; inset:0; width:100%; height:100%; display:block; border:0; }
     .gl-cover { position:absolute; inset:0; overflow:hidden; }
     .gl-cover__bg { width:100%; height:100%; object-fit:cover; filter:blur(18px) saturate(1.1); transform:scale(1.12); }
@@ -1130,7 +1130,7 @@
       .notif-card__head { padding:14px 14px 0; }
       .notif-card__date { color:var(--dim); font-size:12px; font-weight:700; letter-spacing:.4px; }
       .notif-card__title { margin:6px 0 0; font-size:16px; font-weight:900; }
-      .notif-card__banner { margin:12px 14px 0; height:118px; border-radius:11px; overflow:hidden; background:#14171e; }
+      .notif-card__banner { margin:12px 14px 0; height:118px; border-radius:11px; overflow:hidden; background:#2f353e; }
       .notif-card__banner img { width:100%; height:100%; object-fit:cover; display:block; }
       .notif-card__desc { position:relative; padding:12px 14px 14px; max-height:74px; overflow:hidden; color:var(--body-text); font-size:13px; line-height:1.5; font-weight:600; transition:max-height .22s ease; }
       .notif-card.expanded .notif-card__desc { max-height:420px; }
@@ -1612,11 +1612,11 @@
        tasarsa kendi icinde kayar. */
     /* max-width backdrop'un 18px'lik yan dolgusunu da dusmeli (2*18=36),
        yoksa dar ekranda modal viewport'u tasip saga kayiyor. */
-    .wm-modal { position:relative; width:490px; max-width:calc(100vw - 36px); max-height:calc(100vh - 90px); overflow-y:auto; overscroll-behavior:contain; border-radius:12px; background:#14171e; box-shadow:0 18px 55px rgba(0,0,0,.38); font-family:'Poppins','Montserrat',Arial,sans-serif; }
+    .wm-modal { position:relative; width:490px; max-width:calc(100vw - 36px); max-height:calc(100vh - 90px); overflow-y:auto; overscroll-behavior:contain; border-radius:12px; background:#2f353e; box-shadow:0 18px 55px rgba(0,0,0,.38); font-family:'Poppins','Montserrat',Arial,sans-serif; }
     .wm-modal::-webkit-scrollbar { width:8px; }
     .wm-modal::-webkit-scrollbar-thumb { border-radius:8px; background:#2c3b4e; }
     .wm-modal__inner { width:100%; height:100%; padding:24px; }
-    .wm-modal--wallet { height:449px; background:linear-gradient(180deg,#0d3a70 0,#122641 54px,#14171e 140px); }
+    .wm-modal--wallet { height:449px; background:linear-gradient(180deg,#0d3a70 0,#122641 54px,#2f353e 140px); }
     .wm-modal--swap { height:561px; }
     /* height DEGIL min-height: sabit 443px, adres + ag uyarisi + onay notu
        birlikte gorununce alt kismi kirpiyordu. Tasarim boyu korunur,
@@ -1955,7 +1955,7 @@
     .ac-summary { margin-top:32px; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; }
     .ac-card { position:relative; height:100px; overflow:hidden; border-radius:14px; background:#182330; }
     .ac-profile { display:flex; align-items:center; padding:0 24px; }
-    .ac-profile__avatar { width:52px; height:52px; flex:0 0 auto; border-radius:50%; object-fit:cover; background:#0e1116; }
+    .ac-profile__avatar { width:52px; height:52px; flex:0 0 auto; border-radius:50%; object-fit:cover; background:#111923; }
     .ac-profile__copy { margin-left:19px; min-width:0; }
     .ac-profile__name { color:#f7f8fb; font-size:20px; line-height:24px; font-weight:900; letter-spacing:.2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     .ac-link { border:0; padding:0; background:transparent; color:#168fff; font-size:13px; font-weight:700; text-decoration:underline; cursor:pointer; }
