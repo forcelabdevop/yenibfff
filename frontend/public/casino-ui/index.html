@@ -312,8 +312,9 @@
       .search-field { margin:16px 16px 0; height:50px; padding:0 14px; }
       .search-section__head, .search-game-row { padding-left:16px; padding-right:16px; }
     }
-    .side-nav { margin-top: 10px; }
-    .side-nav.casino-nav { padding-bottom:10px; border-bottom:1px solid #ffffff0a; }
+ .side-nav { margin-top: 10px; }
+ .side-nav.casino-nav { padding-bottom:10px; border-bottom:1px solid #ffffff0a; }
+ .side-nav-divider { height:1px; margin:8px 4px; background-color:#ffffff0a; }
     .side-nav.account-nav { padding-top:8px; }
     .nav-item { position: relative; height: 44px; width: 100%; display: flex; align-items: center; gap: 8px; padding: 8px; border-radius: 8px; cursor: pointer; color: #a7b5ca; font-size: 14px; font-weight: 600; letter-spacing: -.02em; line-height: 18px; white-space: nowrap; font-variant-numeric: lining-nums tabular-nums; transition: background-color .1s ease-in-out, color .1s ease-in-out; }
     .nav-item:hover { color: #fff; background-color: #172533; }
@@ -2376,7 +2377,10 @@
 </div>
 <button @click="openSearchModal" class="side-search" type="button" v-if="isCasinoPage"><i class="fas fa-search"></i><span>Search</span></button>
 <nav aria-label="Casino navigation" class="side-nav casino-nav" v-if="isCasinoPage">
-<button :key="item.label" @click="openCasinoCategory(item)" class="nav-item" :class="{active:isNavActive(item)}" v-for="item in casinoNavItems"><span class="nav-icon"><img :alt="item.label" :src="item.image" :style="item.label==='Table Games' ? {transform:'translateY(2px)'} : null" class="nav-icon__img" v-if="item.image"/><i :class="item.icon" v-else=""></i></span><span class="nav-label">{{item.label}}</span><i class="fas fa-chevron-right arrow" v-if="item.arrow"></i></button>
+<template :key="item.label || 'divider-'+i" v-for="(item,i) in casinoNavItems">
+<div class="side-nav-divider" v-if="item.divider"></div>
+<button @click="openCasinoCategory(item)" class="nav-item" :class="{active:isNavActive(item)}" v-else=""><span class="nav-icon"><img :alt="item.label" :src="item.image" :style="item.label==='Table Games' ? {transform:'translateY(2px)'} : null" class="nav-icon__img" v-if="item.image"/><i :class="item.icon" v-else=""></i></span><span class="nav-label">{{item.label}}</span><i class="fas fa-chevron-right arrow" v-if="item.arrow"></i></button>
+</template>
 </nav>
 <nav aria-label="Account navigation" class="side-nav account-nav">
 <button :class="{vip:item.vip,active:isNavActive(item)}" :key="item.label" @click="navigate(item.path || '/')" class="nav-item" v-for="item in navItems">
@@ -5385,6 +5389,7 @@
           {label:'Table Games',image:'assets/nav/image-4.png',icon:'fas fa-dice-five',path:'/casino',match:'table'},
           {label:'NFT Lootboxes',image:'assets/nav/image-5.png',icon:'fas fa-box',path:'/casino',match:'nft|loot'},
           {label:'Providers',image:'assets/nav/image-6.png',icon:'fas fa-stamp',path:'/casino',match:'provider'},
+          {divider:true},
           {label:'Hot Picks',image:'assets/nav/image-7.png',icon:'fas fa-fire',path:'/casino',match:'hot|popular'},
           {label:`${WEBSITE_NAME} Exclusives`,image:'assets/nav/image-8.png',icon:'fas fa-star',path:'/casino',match:'exclusive'},
           {label:'Buy Feature',image:'assets/nav/image-9.png',icon:'fas fa-puzzle-piece',path:'/casino',match:'buy'},
