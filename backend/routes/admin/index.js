@@ -9624,10 +9624,34 @@ router.post(
 	},
 );
 
-// Upload logo mini
-router.post(
-	"/site-settings/logo-mini",
-	checkPermission("platform.update"),
+	// Upload casino-ui giriş modalı görseli (URL döner; admin bunu casinoUi.authModal.image'e yazar)
+	router.post(
+		"/site-settings/casino-ui-image",
+		checkPermission("platform.update"),
+		siteSettingsUpload.single("image"),
+		async (req, res) => {
+			try {
+				if (!req.file) {
+					return res
+						.status(400)
+						.json({ success: false, error: "Dosya yüklenmedi." });
+				}
+				const url = `/uploads/${req.file.filename}`;
+				res.status(200).json({ success: true, url });
+			} catch (error) {
+				console.error("Casino-ui görseli yüklenirken hata:", error);
+				res.status(500).json({
+					success: false,
+					error: "Görsel yüklenirken bir hata oluştu.",
+				});
+			}
+		},
+	);
+
+	// Upload logo mini
+	router.post(
+		"/site-settings/logo-mini",
+		checkPermission("platform.update"),
 	siteSettingsUpload.single("logoMini"),
 	async (req, res) => {
 		try {

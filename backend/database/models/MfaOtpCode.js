@@ -6,6 +6,7 @@ const MFA_OTP_SCOPES = [
 	"enable",
 	"disable",
 	"change-phone",
+	"signup-verify",
 ];
 
 const MFA_OTP_STATUSES = [

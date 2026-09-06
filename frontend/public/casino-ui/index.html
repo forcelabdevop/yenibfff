@@ -47,18 +47,18 @@
       --chat-w: 358px;
       --notif-w: 358px;
     --leader-w: 358px;
-      --header: #0d1923;
-      --sidebar: #0f1b26;
-      --page: #0a131e;
-      --panel: #111d29;
-      --panel-2: #17222f;
+      --header: #111923;
+      --sidebar: #111923;
+      --page: #0d131c;
+      --panel: #2f353e;
+      --panel-2: #191d25;
       --line: #ffffff0a;
       --muted: #a8b6cb;
       --dim: #60728e;
       --pink: #f31749;
       --blue: #2689ff;
       --green: #14bd49;
-      --Background-Quaternary: #253241;
+      --Background-Quaternary: #262b34;
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; background: var(--page); }
@@ -71,7 +71,7 @@
     .site-header {
       position: fixed; inset: 0 0 auto 0; height: 63px; z-index: 70;
       display: flex; align-items: center; padding: 0 24px 0 12px;
-      background: #0d1923; border-bottom: 1px solid #1b2834;
+      background: #111923; border-bottom: 1px solid #1a1e27;
     }
     .header-left, .header-right { display: flex; align-items: center; }
     .header-left { gap: 8px; min-width: 0; }
@@ -88,8 +88,16 @@
     .bonus-button.is-active .chest { width: 26px; height: 26px; }
     .search-button { width: 36px; font-size: 18px; }
     .login-button { width: 69px; }
-    .signup-button { width: 79px; color: white; background: linear-gradient(1turn, #c4003b .8%, #fb1949); box-shadow: 0 3px 16px #ff234180, inset 0 4px 3px #ffffff4d; }
-    .signup-button:hover { background: linear-gradient(1turn, #d40040 .8%, #ff2f5b); box-shadow: 0 6px 22px #ff2341a6, inset 0 4px 3px #ffffff66; transform: translateY(-2px); }
+    .signup-button { width: 79px; color: white; position:relative; overflow:visible; background:transparent; }
+    .signup-button:hover { background:transparent; transform:none; }
+    .btn-3d-red { -webkit-user-select:none; -moz-user-select:none; user-select:none; }
+    .btn-3d-red:after { content:""; position:absolute; inset:0; z-index:0; border-radius:inherit; background-color:#61001d; pointer-events:none; }
+    .btn-3d-red__face { position:absolute; top:0; left:0; right:0; bottom:3px; z-index:1; display:flex; align-items:center; justify-content:center; border-radius:inherit; font:inherit; color:inherit; transition:transform .1s ease-in-out, background .1s ease-in-out, box-shadow .1s ease-in-out; }
+    .btn-3d-red:hover .btn-3d-red__face { transform:translateY(-1px); }
+    .btn-3d-red:active .btn-3d-red__face { transform:translateY(2px); }
+    .signup-button .btn-3d-red__face { background: linear-gradient(1turn,#c4003b .8%,#fb1949); box-shadow: 0 3px 16px #ff234180, inset 0 4px 3px #ffffff4d; }
+    .signup-button:hover .btn-3d-red__face { background: linear-gradient(3360deg,#db0a49 .8%,#fb2b57); box-shadow: 0 3px 20px #ff234199, inset 0 4px 4px #ffffff5e; }
+    .signup-button:active .btn-3d-red__face { background: linear-gradient(1turn,#c4003b .8%,#fb1949); box-shadow: 0 3px 16px #ff234166, inset 0 3px 3px #ffffff4d; }
     .locale-button { width: 79px; padding: 0 9px; gap: 10px; margin-left:8px; }
     .locale-button .flag { width: 24px; height: 24px; display: block; flex-shrink: 0; }
     .locale-button .divider { width: 1px; height: 22px; background: #465260; }
@@ -118,7 +126,7 @@
     .bal-dd__opt { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; }
     .bal-dd__opt .lbl { color: #f7f8fb; }
     .bal-dd__opt .right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
-    .bal-switch { width: 38px; height: 22px; border-radius: 999px; background: #3a4655; border: 0; position: relative; cursor: pointer; flex-shrink: 0; transition: .18s; }
+    .bal-switch { width: 38px; height: 22px; border-radius: 999px; background: #333842; border: 0; position: relative; cursor: pointer; flex-shrink: 0; transition: .18s; }
     .bal-switch.on { background: var(--blue); }
     .bal-switch::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #ffffffa3; transition: .18s; }
     .bal-switch.on::after { left: 19px; }
@@ -127,8 +135,8 @@
  /* "Display in currency" modali -- ayni gorsel dil "Bonus details" (calendar-details-*) modaliyla,
     ama .bn-page'e bagimli olmadan her yerden acilabilsin diye kendi class'lari var. */
  .curr-modal-overlay { position: fixed; z-index: 200; inset: 0; background: rgba(2,10,19,.88); display: flex; align-items: flex-start; justify-content: center; padding-top: 100px; }
- .curr-modal { width: 420px; max-width: calc(100vw - 28px); max-height: min(640px, calc(100vh - 140px)); border-radius: 15px; overflow: hidden; background: #111d29; box-shadow: 0 30px 80px rgba(0,0,0,.6); display: flex; flex-direction: column; }
- .curr-modal-head { flex: none; position: relative; padding: 28px 56px 24px 24px; background: linear-gradient(180deg,#0b4385,#111d29 92%); }
+ .curr-modal { width: 420px; max-width: calc(100vw - 28px); max-height: min(640px, calc(100vh - 140px)); border-radius: 15px; overflow: hidden; background: #2f353e; box-shadow: 0 30px 80px rgba(0,0,0,.6); display: flex; flex-direction: column; }
+ .curr-modal-head { flex: none; position: relative; padding: 28px 56px 24px 24px; background: linear-gradient(180deg,#0b4385,#2f353e 92%); }
  .curr-modal-head h2 { margin: 0; font-size: 24px; line-height: 30px; color: #fff; }
  .curr-modal-x { position: absolute; right: 18px; top: 20px; background: transparent; color: #c2cede; font-size: 20px; cursor: pointer; }
  .curr-modal-main { padding: 18px 24px 0; flex: 1; min-height: 0; display: flex; flex-direction: column; }
@@ -237,7 +245,7 @@
     .user-dropdown__avatar-clip { position: absolute; inset: 4px; width: calc(100% - 8px); height: calc(100% - 8px); border-radius: 50%; overflow: hidden; background: #cfcfcd; }
     .user-dropdown__ring { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); pointer-events: none; }
     .user-dropdown__ring circle { fill: none; stroke-width: 4; stroke-linecap: round; }
-    .user-dropdown__ring .track { stroke: #0d1923; }
+    .user-dropdown__ring .track { stroke: #111923; }
     .user-dropdown__ring .value { stroke: #2fd15e; }
     .user-dropdown__rank { position: absolute; left: 50%; bottom: -8px; transform: translateX(-50%); padding: 2px 10px; border-radius: 7px; background: var(--pink, #f8365c); color: #fff; font-size: 11px; font-weight: 800; white-space: nowrap; }
     .user-dropdown__name { margin: 14px 0 14px; font-size: 17px; font-weight: 800; color: #fff; text-align: center; word-break: break-all; }
@@ -304,11 +312,15 @@
       .search-field { margin:16px 16px 0; height:50px; padding:0 14px; }
       .search-section__head, .search-game-row { padding-left:16px; padding-right:16px; }
     }
-    .side-nav { margin-top: 10px; }
-    .side-nav.casino-nav { padding-bottom:10px; border-bottom:1px solid #ffffff0a; }
+ .side-nav { margin-top: 10px; }
+ .side-nav.casino-nav { padding-bottom:10px; border-bottom:1px solid #ffffff0a; }
+ .side-nav-divider { height:1px; margin:8px 4px; background-color:#ffffff0a; }
     .side-nav.account-nav { padding-top:8px; }
     .nav-item { position: relative; height: 44px; width: 100%; display: flex; align-items: center; gap: 8px; padding: 8px; border-radius: 8px; cursor: pointer; color: #a7b5ca; font-size: 14px; font-weight: 600; letter-spacing: -.02em; line-height: 18px; white-space: nowrap; font-variant-numeric: lining-nums tabular-nums; transition: background-color .1s ease-in-out, color .1s ease-in-out; }
     .nav-item:hover { color: #fff; background-color: #172533; }
+    .nav-item.active { color: #fff; background-color: #19212c; }
+    .nav-item.active .nav-icon__img { filter: brightness(1.6); }
+    .nav-item.active::after { content: ""; position: absolute; left: -10px; top: 50%; transform: translateY(-50%); width: 3px; height: 24px; background-color: #fff; border-radius: 0 10px 10px 0; }
     .nav-item .nav-icon { flex: 0 0 24px; width: 24px; height: 24px; text-align: center; color: #617591; font-size: 16px; display: inline-flex; align-items: center; justify-content: center; }
     .nav-item .nav-icon__img { width: 20px; height: 20px; object-fit: contain; display: block; filter: brightness(1.2); transition: filter .1s ease-in-out; }
     .nav-item:hover .nav-icon__img, .nav-item.active .nav-icon__img { filter: brightness(1.6); }
@@ -318,13 +330,11 @@
     .nav-item.vip .vip-word { color: var(--pink); }
     .mini-token { width: 20px; height: 20px; object-fit: contain; border-radius: 50%; }
     .side-bottom { margin-top: auto; }
-    .paymarks { display: flex; align-items: center; gap: 9px; padding: 0 18px 10px; color: #c8cbd0; font-size: 14px; font-weight: 500; white-space: nowrap; }
-    .paymarks .google-g { color: #4285f4; font-weight: 900; }
-    .paymarks .apple { color: #d2d5d9; }
-    .paymarks .mc { display:inline-flex; letter-spacing:-7px; padding-right:5px; }
-    .paymarks .mc b:first-child { color:#eb3f35; } .paymarks .mc b:last-child { color:#f9a31b; }
-    .paymarks .visa { color: #1874c9; font-weight: 800; font-style: italic; }
-    .buy-side { width: 100%; height: 34px; border-radius: 8px; background: #2d3642; color: #e3e6ea; font-size: 12px; font-weight: 700; }
+ .paymarks { display: flex; align-items: center; justify-content: center; gap: 14px; padding: 0 18px 12px; white-space: nowrap; }
+ .paymarks__icon { height: 16px; width: auto; object-fit: contain; }
+ .paymarks__icon--mc { height: 20px; }
+ .buy-side { width: 100%; height: 36px; border:0; border-radius: 8px; background: #2d3642; color: #e3e6ea; font-size: 12px; font-weight: 700; cursor:pointer; transition:background .15s ease; }
+ .buy-side:hover { background: #354154; }
     .app-label { display: flex; align-items: center; justify-content: space-between; padding: 21px 8px 7px; color: #60738f; font-size: 10px; letter-spacing: .7px; font-weight: 800; }
     .app-icons { color: #aeb7c2; display:flex; gap:8px; font-size:12px; }
 
@@ -334,8 +344,8 @@
     .main-shell.chat-open { margin-right: var(--chat-w); transition: margin-left .25s ease, margin-right .25s ease; }
     .main-shell.notif-open { margin-right: var(--notif-w); transition: margin-left .25s ease, margin-right .25s ease; }
     .main-shell.leader-open { margin-right: var(--leader-w); transition: margin-left .25s ease, margin-right .25s ease; }
-    .hero { height: 393px; position: relative; overflow: hidden; background: linear-gradient(102deg, #0a131e 0%, #15131b 24%, #38131f 68%, #641726 100%); }
-    .hero::after { content:''; position:absolute; inset:auto 0 0 0; height:80px; background:linear-gradient(transparent,#0a131e); pointer-events:none; }
+    .hero { height: 393px; position: relative; overflow: hidden; background: linear-gradient(102deg, #0d131c 0%, #15131b 24%, #38131f 68%, #641726 100%); }
+    .hero::after { content:''; position:absolute; inset:auto 0 0 0; height:80px; background:linear-gradient(transparent,#0d131c); pointer-events:none; }
     .hero-art { position: absolute; z-index: 1; top: 30px; right: 50px; width: 500px; height: 336px; object-fit: contain; object-position: right center; -webkit-mask-image: linear-gradient(to right, transparent 0, #000 9%, #000 100%); mask-image: linear-gradient(to right, transparent 0, #000 9%, #000 100%); }
     .hero-copy { position: relative; z-index: 3; padding: 79px 24px 0; width: 550px; }
     .hero-title { font-size: 37px; line-height: 1.03; text-transform: uppercase; font-weight: 900; letter-spacing: .5px; }
@@ -343,7 +353,10 @@
     .hero-title .white { color: #f8f8fa; display: block; margin-top: 0; }
     .hero-sub { margin-top: 9px; color: #b8bac2; font-size: 16px; font-weight: 700; }
     .hero-actions { margin-top: 19px; display: flex; align-items: center; gap: 8px; }
-    .main-cta { width: 158px; height: 47px; margin-right:12px; border-radius: 8px; color: #fff; background: linear-gradient(#ff345f,#e9003d 67%,#b90031); box-shadow: 0 0 17px rgba(247,31,77,.48), inset 0 2px rgba(255,255,255,.28); font-size: 14px; font-weight: 750; }
+    .main-cta { width: 158px; height: 47px; margin-right:12px; border-radius: 8px; color: #fff; font-size: 14px; font-weight: 750; position:relative; overflow:visible; background:transparent; }
+    .main-cta .btn-3d-red__face { background: linear-gradient(#ff345f,#e9003d 67%,#b90031); box-shadow: 0 0 17px rgba(247,31,77,.48), inset 0 2px rgba(255,255,255,.28); }
+    .main-cta:hover .btn-3d-red__face { background: linear-gradient(#ff4a70,#fb1440 67%,#c4003b); box-shadow: 0 0 22px rgba(247,31,77,.65), inset 0 2px rgba(255,255,255,.35); }
+    .main-cta:active .btn-3d-red__face { background: linear-gradient(#ff345f,#e9003d 67%,#b90031); box-shadow: 0 0 14px rgba(247,31,77,.4), inset 0 2px rgba(255,255,255,.2); }
     .provider-button { width: 46px; height: 44px; border-radius: 8px; background: #2b303a; display: grid; place-items: center; color: #f7f7f8; font-size: 19px; font-weight: 800; transition: .2s; }
     .provider-button:hover { background:#383f4a; transform:translateY(-2px); }
     .provider-button img { width:23px; height:23px; object-fit:contain; filter:grayscale(1) brightness(4); }
@@ -353,8 +366,8 @@
     .promo-card { position: relative; overflow: hidden; border-radius: 11px; padding: 26px 24px; background: #101c28; }
     .promo-card.casino { background: linear-gradient(103deg,#101c28 0%,#251923 54%,#9d193e 100%); }
     .promo-card.sport { background: linear-gradient(103deg,#101c28 0%,#17304a 55%,#216db4 100%); }
-    .promo-card h3 { font-size: 23px; line-height: 1; font-weight: 800; }
-    .promo-card p { margin-top: 14px; color: #aeb2bc; font-size: 15px; font-weight: 600; white-space: nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .promo-card h3 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; line-height: 28px; }
+    .promo-card p { margin-top: 14px; color: hsla(0,0%,100%,.64); font-size: 14px; font-weight: 500; line-height: 20px; white-space: nowrap; overflow:hidden; text-overflow:ellipsis; }
     .promo-emoji { position: absolute; right: 18px; top: 13px; width: 101px; height: 101px; object-fit: contain; filter: drop-shadow(0 12px 15px rgba(0,0,0,.4)); -webkit-mask-image:radial-gradient(ellipse 70% 72% at center,#000 68%,transparent 100%); mask-image:radial-gradient(ellipse 70% 72% at center,#000 68%,transparent 100%); }
     .promo-card.sport .promo-emoji { width: 98px; height: 98px; top: 13px; }
     .crypto-strip { height: 72px; margin-top: 12px; border-radius: 11px; background: #101c28; display: flex; align-items: center; padding: 0 27px; gap: 18px; }
@@ -373,7 +386,8 @@
     .section-heading { height: 26px; display:flex; align-items:center; }
     .section-heading h2 { font-size:18px; font-weight:750; letter-spacing:-.3px; }
     .section-tools { margin-left:auto; display:flex; align-items:center; gap:17px; color:#5e718c; }
-    .section-link { color:var(--blue); font-size:14px; font-weight:650; margin-right:4px; }
+    .section-link { color:var(--blue); font-size:14px; font-weight:650; margin-right:4px; transition:color .1s ease-in-out; }
+    .section-link:hover { color:#3793ff; text-shadow:0 -2px 4px rgba(55,147,255,.25); }
     .arrow-button { width:16px; height:24px; display:grid; place-items:center; font-size:15px; transition:.2s; }
     .arrow-button:hover { color:white; }
     .horizontal-strip { display:flex; align-items:stretch; gap:15px; overflow-x:auto; overflow-y:hidden; scroll-behavior:smooth; }
@@ -399,7 +413,10 @@
     .big-paymarks .mc-logo i { width:24px; height:24px; border-radius:50%; position:absolute; }
     .big-paymarks .mc-logo i:first-child{left:0;background:#ef3127}.big-paymarks .mc-logo i:last-child{right:0;background:#ff9d18;mix-blend-mode:screen}
     .big-paymarks .visa { color:#1976d2; font-weight:800; font-style:italic; letter-spacing:-2px; }
-    .buy-cta { flex:0 0 189px; height:48px; border-radius:8px; background:linear-gradient(#ff365f,#eb0042 62%,#b90033); box-shadow:0 0 17px rgba(245,23,72,.45),inset 0 2px rgba(255,255,255,.28); color:white; font-size:14px; font-weight:750; }
+    .buy-cta { flex:0 0 189px; height:48px; border-radius:8px; color:white; font-size:14px; font-weight:750; position:relative; overflow:visible; background:transparent; }
+    .buy-cta .btn-3d-red__face { background:linear-gradient(#ff365f,#eb0042 62%,#b90033); box-shadow:0 0 17px rgba(245,23,72,.45),inset 0 2px rgba(255,255,255,.28); }
+    .buy-cta:hover .btn-3d-red__face { background:linear-gradient(#ff4c73,#fc1a4f 62%,#c4003f); box-shadow:0 0 22px rgba(245,23,72,.6),inset 0 2px rgba(255,255,255,.35); }
+    .buy-cta:active .btn-3d-red__face { background:linear-gradient(#ff365f,#eb0042 62%,#b90033); box-shadow:0 0 14px rgba(245,23,72,.38),inset 0 2px rgba(255,255,255,.22); }
 
     .sports-strip { margin-top:15px; height:105px; }
     .sport-card { flex:0 0 194px; height:105px; position:relative; border-radius:11px; overflow:hidden; display:flex; align-items:center; justify-content:center; flex-direction:column; background:linear-gradient(135deg,#1b4d7d,#101c28 58%); }
@@ -409,8 +426,8 @@
     .sport-card span.name { color:white; font-size:16px; font-weight:700; }
 
     .staking-strip { margin-top:15px; height:121px; }
-    .staking-card { flex:0 0 249px; height:121px; border-radius:12px; overflow:hidden; background:#111d29; border:1px solid transparent; }
-    .staking-card.featured { background:linear-gradient(120deg,#5f1e2e,#1a1d2b 62%,#111d29); }
+    .staking-card { flex:0 0 249px; height:121px; border-radius:12px; overflow:hidden; background:#2f353e; border:1px solid transparent; }
+    .staking-card.featured { background:linear-gradient(120deg,#5f1e2e,#1a1d2b 62%,#2f353e); }
     .stake-top { height:76px; display:flex; align-items:center; padding:0 14px; }
     .coin-logo { flex:0 0 46px; width:46px; height:46px; border-radius:50%; display:grid; place-items:center; margin-right:12px; color:white; font-size:26px; font-weight:800; border:5px solid rgba(255,255,255,.28); }
     .coin-logo.bnb { background:#f3b80a; } .coin-logo.btc { background:#f7931a; } .coin-logo.eth { background:#687ccf; } .coin-logo.trx { background:#ef1237; } .coin-logo.usdt { background:#2b8f78; }
@@ -429,14 +446,14 @@
     .network-logo { font-size:14px; font-weight:650; opacity:.85; }
 
     .activity-section { margin-top:70px; }
-    .activity-tabs { height:52px; border-radius:11px; background:#182433; display:inline-flex; align-items:center; padding:6px; gap:7px; }
+    .activity-tabs { height:52px; border-radius:11px; background:rgba(22, 31, 44, 0.8); display:inline-flex; align-items:center; padding:6px; gap:7px; }
     .activity-tab { height:40px; border-radius:8px; padding:0 18px; display:flex; align-items:center; gap:10px; color:#667995; font-size:14px; font-weight:700; }
     .activity-tab i { font-size:18px; }
     .activity-tab.active { background:#2d87ef; color:white; }
     .row-count { float:right; margin-top:0; height:36px; min-width:61px; border-radius:9px; background:#192536; display:flex; align-items:center; justify-content:center; gap:9px; font-size:12px; font-weight:700; }
     .activity-head, .activity-row { display:grid; grid-template-columns:1.1fr 1fr 1.15fr 1.15fr .82fr .65fr; align-items:center; column-gap:20px; }
     .activity-head { height:43px; padding:0 16px; color:#5d708b; font-size:11px; letter-spacing:.5px; font-weight:800; }
-    .activity-row { height:50px; border-radius:10px; margin-bottom:6px; padding:0 18px; background:#131f2d; color:#aebbd0; font-size:14px; font-weight:650; }
+    .activity-row { height:50px; border-radius:10px; margin-bottom:6px; padding:0 18px; background:#19222f; color:#aebbd0; font-size:14px; font-weight:650; }
     .game-cell, .user-cell { display:flex; align-items:center; gap:10px; min-width:0; }
     .game-cell i { width:20px; text-align:center; }
     .avatar { width:24px; height:24px; border-radius:50%; display:grid; place-items:center; background:linear-gradient(135deg,#f3be3e,#b622bd); font-size:13px; border:2px solid #9152e3; }
@@ -460,7 +477,7 @@
     .seo-fade::after { content:''; position:absolute; inset:auto 0 0 0; height:75px; background:linear-gradient(transparent,#131e2a); }
     .show-more { position:absolute; left:40px; bottom:23px; height:34px; border-radius:8px; padding:0 16px; background:#313b47; color:#e5e7ea; font-size:13px; font-weight:700; display:flex; align-items:center; gap:10px; }
 
-    .site-footer { min-height:700px; background:#18222f; }
+    .site-footer { min-height:700px; background:#19212c; }
     .footer-inner { max-width:1040px; margin:0 auto; padding-top:41px; color:#5d708c; }
     .footer-grid { display:grid; grid-template-columns:1fr 1fr .85fr 1.12fr 1.27fr 1.08fr 1.45fr; gap:28px; }
     .footer-col h4 { color:#aebbd0; font-size:11px; font-weight:750; margin-bottom:20px; }
@@ -502,7 +519,10 @@
     .auth-modal p { color:#8293aa; margin-top:5px; font-size:12px; }
     .close-modal { position:absolute; right:16px; top:14px; width:30px; height:30px; border-radius:8px; background:#263443; }
     .auth-modal input { width:100%; height:43px; border-radius:9px; border:1px solid #2d3d50; outline:none; background:#0c1722; color:white; padding:0 13px; margin-top:13px; font-size:13px; }
-    .modal-submit { margin-top:15px; width:100%; height:44px; border-radius:9px; background:linear-gradient(#ff3560,#dc003c); font-weight:750; }
+    .modal-submit { margin-top:15px; width:100%; height:44px; border-radius:9px; font-weight:750; color:#fff; position:relative; overflow:visible; background:transparent; }
+    .modal-submit .btn-3d-red__face { background:linear-gradient(#ff3560,#dc003c); }
+    .modal-submit:hover .btn-3d-red__face { background:linear-gradient(#ff4a72,#f11144); }
+    .modal-submit:active .btn-3d-red__face { background:linear-gradient(#ff3560,#dc003c); }
     .toast { position:fixed; z-index:150; left:50%; bottom:28px; transform:translateX(-50%); background:#273646; border:1px solid #41546a; color:white; padding:11px 18px; border-radius:10px; font-size:12px; box-shadow:0 15px 35px rgba(0,0,0,.4); }
 
     .route-page { min-height:calc(100vh - 62px); padding:34px 32px 60px; background:#101924; }
@@ -696,7 +716,7 @@
     .gl-icon--expand { font-size:19px; }
     .gl-screen-icon { width:22px; height:14px; border:2px solid currentColor; border-radius:2px; }
 
-    .gl-viewport { position:relative; width:100%; aspect-ratio:2590/1374; margin-top:24px; overflow:hidden; border-radius:14px; background:#0a131e; isolation:isolate; }
+    .gl-viewport { position:relative; width:100%; aspect-ratio:2590/1374; margin-top:24px; overflow:hidden; border-radius:14px; background:#0d131c; isolation:isolate; }
     .gl-viewport__media { position:absolute; inset:0; width:100%; height:100%; display:block; border:0; }
     .gl-cover { position:absolute; inset:0; overflow:hidden; }
     .gl-cover__bg { width:100%; height:100%; object-fit:cover; filter:blur(18px) saturate(1.1); transform:scale(1.12); }
@@ -987,11 +1007,11 @@
     .casino-bets-top { display:flex; align-items:center; justify-content:space-between; gap:16px; }
     .casino-bets-tabs { display:inline-flex; align-items:center; gap:4px; padding:6px; background:rgba(25,38,57,.88); border-radius:12px; overflow-x:auto; scrollbar-width:none; }
     .casino-bets-tabs::-webkit-scrollbar { display:none; }
-    .casino-bets-tab { height:41px; padding:0 16px; border:0; border-radius:9px; background:transparent; color:#657793; display:inline-flex; align-items:center; gap:9px; font-size:15px; font-weight:900; white-space:nowrap; cursor:pointer; transition:.15s; }
-    .casino-bets-tab i { font-size:18px; color:#a9b7cb; }
-    .casino-bets-tab:hover { color:#c7d2e2; }
-    .casino-bets-tab.active { color:#fff; background:#278af0; box-shadow:0 2px 7px rgba(0,81,170,.25); }
-    .casino-bets-tab.active i { color:#fff; }
+ .casino-bets-tab { height:40px; padding:0 20px 0 16px; border:0; border-radius:8px; background:transparent; color:#7c8aa1; display:inline-flex; align-items:center; gap:9px; font-size:14px; font-weight:600; letter-spacing:-.28px; line-height:125%; white-space:nowrap; cursor:pointer; transition:background .1s ease-in-out,color .1s ease-in-out; }
+ .casino-bets-tab i { font-size:18px; color:#a9b7cb; }
+ .casino-bets-tab:hover { color:#c7d2e2; }
+ .casino-bets-tab.active { color:#fff; background:#2283f6; }
+ .casino-bets-tab.active i { color:#fff; }
     .casino-bets-count { position:relative; flex:none; }
     .casino-bets-count-btn { width:66px; height:38px; border:0; border-radius:9px; background:#182536; color:#f6f7fa; display:flex; align-items:center; justify-content:center; gap:10px; font-size:14px; font-weight:900; cursor:pointer; }
     .casino-bets-count-btn i { color:#9badc5; font-size:12px; }
@@ -1024,6 +1044,11 @@
  @media (max-width:720px){ .casino-bets { margin-top:30px; } }
     .casino-game-card { position:relative; flex:0 0 188px; width:188px; height:248px; overflow:hidden; border-radius:13px; background:#152230; }
     .casino-game-card img { width:100%; height:100%; object-fit:cover; }
+.casino-game-card img { opacity:0; transition:opacity .3s ease; position:relative; z-index:1; }
+.casino-game-card img.is-loaded { opacity:1; }
+.casino-game-card::before { content:""; position:absolute; inset:0; z-index:0; background:linear-gradient(100deg,#161d26 25%,#222c39 50%,#161d26 75%); background-size:200% 100%; animation:cardShimmer 1.3s ease-in-out infinite; transition:opacity .35s ease; }
+.casino-game-card.card-loaded::before { opacity:0; animation:none; }
+@keyframes cardShimmer { 0%{background-position:150% 0;} 100%{background-position:-150% 0;} }
     .casino-game-card::after { content:""; position:absolute; inset:auto 0 0; height:96px; background:linear-gradient(transparent,rgba(6,11,18,.55) 40%,rgba(6,11,18,.98) 68%,#060b12 100%); }
     .casino-game-card>b { position:absolute; z-index:2; left:8px; top:8px; padding:5px 12px; border-radius:16px; color:#fff; background:#ff174f; font-size:11px; }
     .casino-game-card { cursor:pointer; text-align:left; transition:box-shadow .28s ease, transform .2s ease; will-change:transform; }
@@ -1051,9 +1076,11 @@
     .rtp-tip__divider { display:block; height:1px; margin:9px 0; background:rgba(147,172,211,.22); }
     .rtp-tip__hint { display:block; color:#fff; font-size:11px; font-weight:700; line-height:1.4; }
     .game-card-hover__center { display:flex; flex:1 1 auto; flex-direction:column; align-items:center; justify-content:center; gap:14px; }
-    .game-card-hover__play { display:grid; place-items:center; width:62px; height:62px; border:1px solid rgba(255,255,255,.3); border-radius:50%; background:linear-gradient(180deg, #ff416c 0%, #f4144e 50%, #d4003d 100%); box-shadow:inset 0 2px 2px rgba(255,255,255,.4), 0 5px 0 #a20034, 0 6px 12px rgba(244,20,78,.4); color:#fff; font-size:20px; cursor:pointer; transition:transform .12s ease-in-out, box-shadow .12s ease-in-out; }
-    .game-card-hover__play:hover { transform:translateY(-1px) scale(1.05); background:linear-gradient(180deg, #ff547b 0%, #f4144e 50%, #d4003d 100%); box-shadow:inset 0 2px 2px rgba(255,255,255,.45), 0 6px 0 #a20034, 0 8px 16px rgba(244,20,78,.5); }
-    .game-card-hover__play svg { width:18px; height:18px; margin-left:3px; fill:currentColor; }
+ .game-card-hover__play { position:relative; display:grid; place-items:center; width:62px; height:62px; border:1px solid rgba(255,255,255,.3); border-radius:50%; background:transparent; overflow:visible; color:#fff; font-size:20px; cursor:pointer; }
+ .game-card-hover__play .btn-3d-red__face { background:linear-gradient(180deg, #ff416c 0%, #f4144e 50%, #d4003d 100%); box-shadow:inset 0 2px 2px rgba(255,255,255,.4), 0 3px 12px rgba(244,20,78,.4); }
+ .game-card-hover__play:hover .btn-3d-red__face { background:linear-gradient(180deg, #ff547b 0%, #f4144e 50%, #d4003d 100%); box-shadow:inset 0 2px 2px rgba(255,255,255,.45), 0 4px 16px rgba(244,20,78,.5); }
+ .game-card-hover__play:active .btn-3d-red__face { background:linear-gradient(180deg, #ff416c 0%, #f4144e 50%, #d4003d 100%); box-shadow:inset 0 2px 2px rgba(255,255,255,.32), 0 2px 8px rgba(244,20,78,.35); }
+ .game-card-hover__play svg { position:relative; z-index:2; width:18px; height:18px; margin-left:3px; fill:currentColor; }
     .game-card-hover__demo { padding:0; border:none; background:none; color:#4e9dff; font-size:15px; font-weight:700; text-decoration:underline; cursor:pointer; }
     .game-card-hover__demo:hover { color:#7ab7ff; }
     .game-card-hover__bottom { display:flex; align-items:center; justify-content:space-between; gap:8px; }
@@ -1063,15 +1090,15 @@
     .game-card-hover__fav { display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; flex:0 0 30px; padding:0; border:none; background:none; color:#ff4d63; cursor:pointer; }
     .game-card-hover__fav svg { width:24px; height:24px; }
     .game-card-hover__fav.is-active svg { fill:#ff4d63; }
-    .tournament-drawer { position:fixed; z-index:120; top:64px; right:0; bottom:0; width:var(--drawer-w); overflow-y:auto; border-left:1px solid #263545; background:#0d1823; box-shadow:-22px 0 48px rgba(0,0,0,.34); transform:translateX(105%); transition:transform .25s ease; }
+    .tournament-drawer { position:fixed; z-index:120; top:64px; right:0; bottom:0; width:var(--drawer-w); overflow-y:auto; border-left:1px solid #263545; background:#111923; box-shadow:-22px 0 48px rgba(0,0,0,.34); transform:translateX(105%); transition:transform .25s ease; }
     .tournament-drawer.open { transform:translateX(0); }
     /* Global chat drawer */
-    .chat-drawer { position:fixed; z-index:130; top:64px; right:0; bottom:0; width:var(--chat-w); display:flex; flex-direction:column; border-left:1px solid #263545; background:#0d1924; box-shadow:-22px 0 48px rgba(0,0,0,.38); transform:translateX(105%); transition:transform .25s ease; }
+    .chat-drawer { position:fixed; z-index:130; top:64px; right:0; bottom:0; width:var(--chat-w); display:flex; flex-direction:column; border-left:1px solid #263545; background:#111923; box-shadow:-22px 0 48px rgba(0,0,0,.38); transform:translateX(105%); transition:transform .25s ease; }
     .chat-drawer.open { transform:translateX(0); }
       /* Notification drawer */
-      .notif-drawer { position:fixed; z-index:135; top:64px; right:0; bottom:0; width:var(--notif-w); display:flex; flex-direction:column; border-left:1px solid #263545; background:#0d1722; box-shadow:-22px 0 48px rgba(0,0,0,.4); transform:translateX(105%); transition:transform .25s ease; }
+      .notif-drawer { position:fixed; z-index:135; top:64px; right:0; bottom:0; width:var(--notif-w); display:flex; flex-direction:column; border-left:1px solid #263545; background:#111923; box-shadow:-22px 0 48px rgba(0,0,0,.4); transform:translateX(105%); transition:transform .25s ease; }
       .notif-drawer.open { transform:translateX(0); }
-    .leader-drawer { position:fixed; z-index:130; top:64px; right:0; bottom:0; width:var(--leader-w); display:flex; flex-direction:column; border-left:1px solid #263545; background:#0e1925; box-shadow:-22px 0 48px rgba(0,0,0,.4); transform:translateX(105%); transition:transform .25s ease; }
+    .leader-drawer { position:fixed; z-index:130; top:64px; right:0; bottom:0; width:var(--leader-w); display:flex; flex-direction:column; border-left:1px solid #263545; background:#111923; box-shadow:-22px 0 48px rgba(0,0,0,.4); transform:translateX(105%); transition:transform .25s ease; }
     .leader-drawer.open { transform:translateX(0); }
     .leader-head { height:44px; display:flex; align-items:center; padding:0 12px; border-bottom:1px solid #1c2938; gap:10px; flex:none; }
     .leader-head h2 { font-size:17px; line-height:1; font-weight:800; white-space:nowrap; letter-spacing:-.4px; margin:0; color:#f6f8fb; }
@@ -1121,23 +1148,23 @@
       .notif-tab-count { min-width:24px; height:22px; padding:0 7px; border-radius:8px; background:#2b87ee; color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:900; }
       .notif-tab.active .notif-tab-count { color:#217ee3; background:#fff; }
       .notif-list { margin:14px 16px 0; display:flex; flex-direction:column; gap:12px; }
-      .notif-card { border-radius:14px; background:#17222f; overflow:hidden; }
+      .notif-card { border-radius:14px; background:#191d25; overflow:hidden; }
       .notif-card__head { padding:14px 14px 0; }
       .notif-card__date { color:var(--dim); font-size:12px; font-weight:700; letter-spacing:.4px; }
       .notif-card__title { margin:6px 0 0; font-size:16px; font-weight:900; }
-      .notif-card__banner { margin:12px 14px 0; height:118px; border-radius:11px; overflow:hidden; background:#111d29; }
+      .notif-card__banner { margin:12px 14px 0; height:118px; border-radius:11px; overflow:hidden; background:#2f353e; }
       .notif-card__banner img { width:100%; height:100%; object-fit:cover; display:block; }
       .notif-card__desc { position:relative; padding:12px 14px 14px; max-height:74px; overflow:hidden; color:var(--body-text); font-size:13px; line-height:1.5; font-weight:600; transition:max-height .22s ease; }
       .notif-card.expanded .notif-card__desc { max-height:420px; }
       .notif-card__desc p { margin:0; }
       .notif-card__desc strong { font-weight:900; color:#eef2f8; }
-      .notif-showall { position:absolute; right:14px; bottom:10px; display:flex; align-items:center; gap:8px; border:0; padding:0 0 0 30px; color:#fff; background:linear-gradient(90deg,rgba(23,34,47,0) 0,#17222f 26px,#17222f 100%); font-size:13px; font-weight:800; cursor:pointer; }
+      .notif-showall { position:absolute; right:14px; bottom:10px; display:flex; align-items:center; gap:8px; border:0; padding:0 0 0 30px; color:#fff; background:linear-gradient(90deg,rgba(23,34,47,0) 0,#191d25 26px,#191d25 100%); font-size:13px; font-weight:800; cursor:pointer; }
       .notif-showall i { font-size:10px; transition:transform .16s ease; }
       .notif-card.expanded .notif-showall { position:static; padding-left:0; margin:2px 14px 12px; background:none; }
       .notif-card.expanded .notif-showall i { transform:rotate(180deg); }
       .notif-card__action { display:flex; align-items:center; gap:9px; width:100%; height:52px; border:0; border-top:1px solid var(--line); padding:0 14px; color:var(--blue); background:#1b2836; font-size:14px; font-weight:800; cursor:pointer; }
       .notif-card__action i { font-size:11px; }
-      .notif-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; height:220px; margin:14px 16px 0; border-radius:14px; color:#7d8da3; background:#17222f; font-size:14px; font-weight:700; }
+      .notif-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; height:220px; margin:14px 16px 0; border-radius:14px; color:#7d8da3; background:#191d25; font-size:14px; font-weight:700; }
       .notif-empty i { font-size:30px; }
       .notif-markread { display:flex; align-items:center; justify-content:center; gap:9px; margin:16px; height:52px; border:1px solid #33414f; border-radius:14px; color:#b3c0d1; background:#232f3c; font-size:14px; font-weight:800; cursor:pointer; }
       .notif-markread:hover { background:#2a3745; }
@@ -1271,7 +1298,7 @@
     .chat-pinned.collapsed .fold::after { transform:rotate(45deg); top:2px; }
     .chat-pinned.collapsed p { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 
-    .chat-log { flex:1; min-height:0; overflow-y:auto; padding:12px 8px 14px 6px; display:flex; flex-direction:column; gap:10px; background:#0d1924; }
+    .chat-log { flex:1; min-height:0; overflow-y:auto; padding:12px 8px 14px 6px; display:flex; flex-direction:column; gap:10px; background:#111923; }
     .chat-log::-webkit-scrollbar { width:6px; }
     .chat-log::-webkit-scrollbar-thumb { border-radius:3px; background:#2a3a4c; }
 
@@ -1399,7 +1426,7 @@
     .chat-tip-menu button { display:flex; width:100%; padding:9px 10px; align-items:center; gap:10px; border-radius:8px; color:#dbe6f4; font-size:13.5px; font-weight:700; text-align:left; }
     .chat-tip-menu button:hover { background:#2f3f52; color:#fff; }
     .chat-tip-menu button i { width:18px; color:#f5a623; font-size:14px; text-align:center; }
-    .tournament-head { position:sticky; z-index:4; top:0; display:flex; height:58px; padding:0 14px; align-items:center; gap:9px; border-bottom:1px solid #223141; background:#0d1823; }
+    .tournament-head { position:sticky; z-index:4; top:0; display:flex; height:58px; padding:0 14px; align-items:center; gap:9px; border-bottom:1px solid #223141; background:#111923; }
     .tournament-head h2 { margin:0; flex:1; min-width:0; color:#fff; font-size:17px; white-space:nowrap; }
     .tournament-head button { color:#fff; }
     .tournament-filter { display:flex; align-items:center; gap:9px; font-weight:700; }
@@ -1458,11 +1485,10 @@
     .nav-item.active, .nav-item:hover { color:#fff; }
     .nav-item .count { font-size:10px; font-weight:700; }
     .app-label { font-size:10px; font-weight:700; letter-spacing:.6px; }
-    .paymarks { font-size:13px; font-weight:600; }
     .top-button { font-size:14px; font-weight:600; letter-spacing:-.28px; }
     .bonus-button { font-size:12px; }
-    .promo-card h3 { font-size:24px; font-weight:800; letter-spacing:-.3px; line-height:1.06; }
-    .promo-card p { font-size:14px; font-weight:600; letter-spacing:-.28px; }
+    .promo-card h3 { font-size:22px; font-weight:700; letter-spacing:-.02em; line-height:28px; }
+    .promo-card p { font-size:14px; font-weight:500; color:hsla(0,0%,100%,.64); line-height:20px; }
     .casino-tabs button { font-size:14px; font-weight:900; letter-spacing:-.28px; color:#9db4d7; }
     .casino-tabs button b { font-size:14px; font-weight:900; }
     .casino-rail-head h2 { font-size:20px; font-weight:700; letter-spacing:-.4px; }
@@ -1607,11 +1633,11 @@
        tasarsa kendi icinde kayar. */
     /* max-width backdrop'un 18px'lik yan dolgusunu da dusmeli (2*18=36),
        yoksa dar ekranda modal viewport'u tasip saga kayiyor. */
-    .wm-modal { position:relative; width:490px; max-width:calc(100vw - 36px); max-height:calc(100vh - 90px); overflow-y:auto; overscroll-behavior:contain; border-radius:12px; background:#111d29; box-shadow:0 18px 55px rgba(0,0,0,.38); font-family:'Poppins','Montserrat',Arial,sans-serif; }
+    .wm-modal { position:relative; width:490px; max-width:calc(100vw - 36px); max-height:calc(100vh - 90px); overflow-y:auto; overscroll-behavior:contain; border-radius:12px; background:#2f353e; box-shadow:0 18px 55px rgba(0,0,0,.38); font-family:'Poppins','Montserrat',Arial,sans-serif; }
     .wm-modal::-webkit-scrollbar { width:8px; }
     .wm-modal::-webkit-scrollbar-thumb { border-radius:8px; background:#2c3b4e; }
     .wm-modal__inner { width:100%; height:100%; padding:24px; }
-    .wm-modal--wallet { height:449px; background:linear-gradient(180deg,#0d3a70 0,#122641 54px,#111d29 140px); }
+    .wm-modal--wallet { height:449px; background:linear-gradient(180deg,#0d3a70 0,#122641 54px,#2f353e 140px); }
     .wm-modal--swap { height:561px; }
     /* height DEGIL min-height: sabit 443px, adres + ag uyarisi + onay notu
        birlikte gorununce alt kismi kirpiyordu. Tasarim boyu korunur,
@@ -1950,7 +1976,7 @@
     .ac-summary { margin-top:32px; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; }
     .ac-card { position:relative; height:100px; overflow:hidden; border-radius:14px; background:#182330; }
     .ac-profile { display:flex; align-items:center; padding:0 24px; }
-    .ac-profile__avatar { width:52px; height:52px; flex:0 0 auto; border-radius:50%; object-fit:cover; background:#0f1b26; }
+    .ac-profile__avatar { width:52px; height:52px; flex:0 0 auto; border-radius:50%; object-fit:cover; background:#111923; }
     .ac-profile__copy { margin-left:19px; min-width:0; }
     .ac-profile__name { color:#f7f8fb; font-size:20px; line-height:24px; font-weight:900; letter-spacing:.2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     .ac-link { border:0; padding:0; background:transparent; color:#168fff; font-size:13px; font-weight:700; text-decoration:underline; cursor:pointer; }
@@ -2220,7 +2246,7 @@
 </div>
 <div class="header-right" v-if="!isAuthenticated">
 <button @click="requestAuth('login')" class="top-button login-button">Log in</button>
-<button @click="requestAuth('register')" class="top-button signup-button">Sign Up</button>
+<button @click="requestAuth('register')" class="top-button signup-button btn-3d-red"><span class="btn-3d-red__face">Sign Up</span></button>
 <button @click="toastMessage('Language: English')" class="top-button locale-button"><img alt="English" class="flag" src="assets/flag-en.svg"/><span class="divider"></span><i class="fas fa-cog" style="font-size:20px"></i></button>
 <button :class="{active:chatOpen}" @click="toggleChat" aria-label="Messages" class="top-button chat-top"><img alt="" class="chat-icon" src="assets/icon-chat.svg"/></button>
 </div>
@@ -2346,12 +2372,15 @@
 <button :class="{active:isCasinoPage}" @click="openCasinoMenu" class="side-switch"><svg aria-hidden="true" class="side-switch__icon casino-spade" viewBox="0 0 24 24"><path d="M12 2.3c-1.2 1.8-3.1 3.7-5.3 5.8C4.4 10.2 3 12 3 14.1c0 2.7 2.1 4.8 4.7 4.8 1.3 0 2.5-.5 3.4-1.4-.2 1.7-.9 3-1.9 3.7-.4.3-.2.9.3.9h5c.5 0 .7-.6.3-.9-1-.7-1.7-2-1.9-3.7.9.9 2.1 1.4 3.4 1.4 2.6 0 4.7-2.1 4.7-4.8 0-2.1-1.4-3.9-3.7-6C15.1 6 13.2 4.1 12 2.3Z"></path></svg><span>Casino</span></button>
 <button :class="{active:currentPage==='sports'}" @click="navigate('/sports')" class="side-switch"><i class="fas fa-basketball-ball side-switch__icon"></i><span>Sports</span></button>
 </div>
-<button @click="openSearchModal" class="side-search" type="button"><i class="fas fa-search"></i><span>Search</span></button>
-<nav aria-label="Casino navigation" class="side-nav casino-nav">
-<button :key="item.label" @click="openCasinoCategory(item)" class="nav-item" v-for="item in casinoNavItems"><span class="nav-icon"><img :alt="item.label" :src="item.image" :style="item.label==='Table Games' ? {transform:'translateY(2px)'} : null" class="nav-icon__img" v-if="item.image"/><i :class="item.icon" v-else=""></i></span><span class="nav-label">{{item.label}}</span><i class="fas fa-chevron-right arrow" v-if="item.arrow"></i></button>
+<button @click="openSearchModal" class="side-search" type="button" v-if="isCasinoPage"><i class="fas fa-search"></i><span>Search</span></button>
+<nav aria-label="Casino navigation" class="side-nav casino-nav" v-if="isCasinoPage">
+<template :key="item.label || 'divider-'+i" v-for="(item,i) in casinoNavItems">
+<div class="side-nav-divider" v-if="item.divider"></div>
+<button @click="openCasinoCategory(item)" class="nav-item" :class="{active:isNavActive(item)}" v-else=""><span class="nav-icon"><img :alt="item.label" :src="item.image" :style="item.label==='Table Games' ? {transform:'translateY(2px)'} : null" class="nav-icon__img" v-if="item.image"/><i :class="item.icon" v-else=""></i></span><span class="nav-label">{{item.label}}</span><i class="fas fa-chevron-right arrow" v-if="item.arrow"></i></button>
+</template>
 </nav>
 <nav aria-label="Account navigation" class="side-nav account-nav">
-<button :class="{vip:item.vip}" :key="item.label" @click="navigate(item.path || '/')" class="nav-item" v-for="item in navItems">
+<button :class="{vip:item.vip,active:isNavActive(item)}" :key="item.label" @click="navigate(item.path || '/')" class="nav-item" v-for="item in navItems">
 <span class="nav-icon" v-if="!item.image"><i :class="item.icon"></i></span>
 <img :src="item.image" :alt="websiteName + ' token'" class="mini-token" v-else=""/>
 <span class="nav-label" v-if="item.vip"><span class="vip-word">VIP</span> Club</span>
@@ -2361,7 +2390,7 @@
 </button>
 </nav>
 <div class="side-bottom">
-<div class="paymarks"><span class="google-g">G</span><span>Pay</span><span class="apple"><i class="fab fa-apple"></i> Pay</span><span class="mc"><b>���</b><b>●</b></span><span class="visa">VISA</span></div>
+<div class="paymarks"><img alt="Google Pay" class="paymarks__icon" src="assets/payments/gpay.svg"/><img alt="Apple Pay" class="paymarks__icon" src="assets/payments/applepay.svg"/><img alt="Mastercard" class="paymarks__icon paymarks__icon--mc" src="assets/payments/mastercard.svg"/><img alt="Visa" class="paymarks__icon" src="assets/payments/visa.svg"/></div>
 <button @click="navigate('/buy-crypto')" class="buy-side">Buy Crypto</button>
 <div class="app-label"><span>{{websiteName.toUpperCase()}} APP</span><span class="app-icons"><i class="fab fa-apple"></i><i class="fab fa-android" style="color:#7ca331"></i><i class="fab fa-windows" style="color:#137bbd"></i></span></div>
 </div>
@@ -3708,7 +3737,7 @@
 <h1 class="hero-title"><span class="pink">Welcome Bonus</span><span class="white">Up to 590%</span></h1>
 <p class="hero-sub">+ 225 Free Spins</p>
 <div class="hero-actions">
-<button @click="requestAuth('register')" class="main-cta">Sign Up and Play</button>
+<button @click="requestAuth('register')" class="main-cta btn-3d-red"><span class="btn-3d-red__face">Sign Up and Play</span></button>
 <button @click="toastMessage('Continue with Google')" class="provider-button">G</button>
 <button @click="toastMessage('Continue with wallet')" class="provider-button"><img alt="wallet" src="assets/image-4.png"/></button>
 <button @click="toastMessage('Continue with Telegram')" class="provider-button"><i class="fab fa-telegram-plane"></i></button>
@@ -3758,7 +3787,7 @@
 <section class="buy-banner" id="buy-crypto">
 <h2>Buy crypto quickly<br/>and easily</h2>
 <div class="big-paymarks"><span class="google"><b>G</b> Pay</span><span class="apple"><i class="fab fa-apple"></i> Pay</span><span class="mc-logo"><i></i><i></i></span><span class="visa">VISA</span></div>
-<button @click="openModal('signup')" class="buy-cta">Sign Up &amp; Buy Crypto</button>
+<button @click="openModal('signup')" class="buy-cta btn-3d-red"><span class="btn-3d-red__face">Sign Up &amp; Buy Crypto</span></button>
 </section>
 <section class="section-block sports-section" id="sports">
 <div class="section-heading"><h2>TOP Sports</h2><div class="section-tools"><button @click="toastMessage('Sportsbook opened')" class="section-link">Go to Sports</button><button @click="slide('sports-strip',-1)" class="arrow-button"><i class="fas fa-chevron-left"></i></button><button @click="slide('sports-strip',1)" class="arrow-button"><i class="fas fa-chevron-right"></i></button></div></div>
@@ -4082,7 +4111,7 @@
 <p>{{modal==='login'?'Log in to continue playing.':'Create your account and claim the welcome bonus.'}}</p>
 <input placeholder="Email address" required="" type="email"/>
 <input placeholder="Password" required="" type="password"/>
-<button class="modal-submit" type="submit">{{modal==='login'?'Log in':'Sign Up'}}</button>
+<button class="modal-submit btn-3d-red" type="submit"><span class="btn-3d-red__face">{{modal==='login'?'Log in':'Sign Up'}}</span></button>
 </form>
 </div>
 <div :class="{'modal-backdrop--chat':chatOpen}" @click.self="closeDropModal" class="modal-backdrop" v-if="dropModalOpen">
@@ -4671,6 +4700,7 @@
       emits: ['select', 'demo'],
       setup(props) {
         const hovered = ref(false);
+        const loaded = ref(false);
         const favorite = ref(false);
         const name = computed(() => props.game.game_name || props.game.name || 'Game');
         const provider = computed(() => {
@@ -4705,11 +4735,11 @@
           if (!base) return '';
           return (base + 0.27).toFixed(2) + '% - ' + (base + 1.1).toFixed(2) + '%';
         });
-        return { hovered, favorite, name, provider, thumb, rtp, eRtp };
+        return { hovered, favorite, name, provider, thumb, rtp, eRtp, loaded };
       },
       template: `
-        <div class="casino-game-card" :class="{'is-hovered':hovered}" role="button" tabindex="0" @mouseenter="hovered=true" @mouseleave="hovered=false" @focusin="hovered=true" @focusout="hovered=false" @click="$emit('select')" @keydown.enter.prevent="$emit('select')" @keydown.space.prevent="$emit('select')">
-          <img :alt="name" :src="thumb" loading="lazy"/>
+        <div class="casino-game-card" :class="{'is-hovered':hovered,'card-loaded':loaded}" role="button" tabindex="0" @mouseenter="hovered=true" @mouseleave="hovered=false" @focusin="hovered=true" @focusout="hovered=false" @click="$emit('select')" @keydown.enter.prevent="$emit('select')" @keydown.space.prevent="$emit('select')">
+          <img :alt="name" :src="thumb" loading="lazy" :class="{'is-loaded':loaded}" @load="loaded=true" @error="loaded=true"/>
           <b v-if="badge">{{badge}}</b>
           <div class="game-card-hover">
             <div class="game-card-hover__top">
@@ -4734,8 +4764,10 @@
               </span>
             </div>
             <div class="game-card-hover__center">
-              <button class="game-card-hover__play" :aria-label="'Play ' + name" type="button" @click.stop="$emit('select')">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              <button class="game-card-hover__play btn-3d-red" :aria-label="'Play ' + name" type="button" @click.stop="$emit('select')">
+                <span class="btn-3d-red__face">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                </span>
               </button>
             </div>
             <div class="game-card-hover__bottom">
@@ -5354,6 +5386,7 @@
           {label:'Table Games',image:'assets/nav/image-4.png',icon:'fas fa-dice-five',path:'/casino',match:'table'},
           {label:'NFT Lootboxes',image:'assets/nav/image-5.png',icon:'fas fa-box',path:'/casino',match:'nft|loot'},
           {label:'Providers',image:'assets/nav/image-6.png',icon:'fas fa-stamp',path:'/casino',match:'provider'},
+          {divider:true},
           {label:'Hot Picks',image:'assets/nav/image-7.png',icon:'fas fa-fire',path:'/casino',match:'hot|popular'},
           {label:`${WEBSITE_NAME} Exclusives`,image:'assets/nav/image-8.png',icon:'fas fa-star',path:'/casino',match:'exclusive'},
           {label:'Buy Feature',image:'assets/nav/image-9.png',icon:'fas fa-puzzle-piece',path:'/casino',match:'buy'},
@@ -5429,7 +5462,7 @@
           {game:'Dice',time:'02:45:13 PM',avatar:'👩',level:'7',user:'User3342680',amount:'₺102.62',multiplier:'x1.834',payout:'₺188.18',win:true},
           {game:'Dice',time:'02:45:10 PM',avatar:'👑',level:'16',user:'CircleKing',amount:'₺3,080.60',multiplier:'x11.002',payout:'₺0.00'},
           {game:'Dice',time:'02:45:10 PM',avatar:'👩‍🦰',level:'5',user:'User3408185',amount:'₺126.88',multiplier:'x2.021',payout:'₺0.00'},
-          {game:'Keno',time:'02:45:06 PM',avatar:'😎',level:'13',user:'YSZ9191',amount:'₺86.03',multiplier:'x2.500',payout:'₺215.07',win:true},
+          {game:'Keno',time:'02:45:06 PM',avatar:'😎',level:'13',user:'YSZ9191',amount:'���86.03',multiplier:'x2.500',payout:'₺215.07',win:true},
           {game:'Limbo',time:'02:45:07 PM',avatar:'🦝',level:'3',user:'User4012624',amount:'₺380.21',multiplier:'x0.000',payout:'₺0.00'},
           {game:'Dice',time:'02:45:04 PM',avatar:'👑',level:'16',user:'CircleKing',amount:'₺3,080.60',multiplier:'x11.002',payout:'₺0.00'},
           {game:'Dice',time:'02:45:04 PM',avatar:'👩🏿',level:'7',user:'User405309',amount:'���51.55',multiplier:'x2.539',payout:'₺130.88',win:true},
@@ -5624,6 +5657,17 @@
         function filterCategory(slug) {
           activeCategory.value = slug;
           routeGames.value = slug === 'all' ? allRouteGames.slice(0,48) : (gameCategories.value.find(category => category.slug === slug)?.games || []).slice(0,48);
+        }
+        // Sidebar secili menuyu isaretler: item.path ilk segmenti currentPage ile
+        // eslesir mi? Casino sayfasinda coklu kategori linki /casino gittigi icin,
+        // orada yalniz aktif kategoriyle (activeCategory) eslesen linki vurgularuz.
+        function isNavActive(item) {
+          const seg = String((item && item.path) || '').replace(/^\/+|\/+$/g, '').split('/')[0].toLowerCase();
+          if (!seg || seg !== currentPage) return false;
+          if (currentPage === 'casino' && item && item.match) {
+            try { return new RegExp(item.match, 'i').test(activeCategory.value || ''); } catch (_) { return false; }
+          }
+          return true;
         }
         function navigate(path) {
           safePostToParent({source:'casino-frame',type:'navigate',path});
@@ -5975,7 +6019,7 @@
         // Zil rozeti cekmece acilmadan da dogru olmali: oturum dolunca yukle.
         watch(authUser, (u) => { if (u) loadNotifications(); }, { immediate: true });
         onBeforeUnmount(()=>{ window.removeEventListener('resize',handleResize); window.removeEventListener('keydown',handleKeydown); window.removeEventListener('storage',handleStorageSync); document.removeEventListener('click',handleDocumentClick); clearTimeout(searchTimer); clearInterval(promoTimer); clearInterval(betsRefreshTimer); });
-        return {...casinoPT,...uiSettings,...leaderboardData,betsRowChoices,betsTab,betsRowCount,betsCountOpen,betsTabs,betsVisibleRows,betsLoading,betsError,betGameIcon,selectBetsTab,setBetsCount,heroSpinning,heroSpin,heroBackdropCards,balanceMenuOpen,balanceSearch,balanceHideZero,balanceShowVault,balanceDisplayFiat,balanceCurrencies,balanceActiveCode,balanceFiltered,toggleBalanceMenu,selectBalanceCurrency,websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,...notificationsData,toggleNotif,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,slideCasinoRow,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
+        return {isNavActive,...casinoPT,...uiSettings,...leaderboardData,betsRowChoices,betsTab,betsRowCount,betsCountOpen,betsTabs,betsVisibleRows,betsLoading,betsError,betGameIcon,selectBetsTab,setBetsCount,heroSpinning,heroSpin,heroBackdropCards,balanceMenuOpen,balanceSearch,balanceHideZero,balanceShowVault,balanceDisplayFiat,balanceCurrencies,balanceActiveCode,balanceFiltered,toggleBalanceMenu,selectBalanceCurrency,websiteName,websiteEmailDomain,sidebarOpen,searchOpen,search,searchFocused,searchLoading,searchResults,searchInput,searchSuggestions,openSearchModal,closeSearchModal,clearSearch,bonusPanelOpen,bonusPanelLeft,promoCode,calendarTimer,cashbackTimer,toggleBonusPanel,closeBonusPanel,activatePromo,claimBonus,modal,toast,showMore,promoIndex,promoBanners,promoCount,promoDelay,syncPromoIndex,goPromo,activeTab,tournamentOpen,rulesOpen,chatOpen,notifOpen,...notificationsData,toggleNotif,leaderOpen,leaderMonth,leaderMonthMenu,leaderMonths,leaderCategory,leaderCategories,leaderPage,leaders,toggleLeaderboard,chatMuted,chatRoom,chatRoomsList,chatRoomKey,selectChatRoom,chatRoomsOpen,chatPinnedCollapsed,chatSettingsOpen,chatGifs,chatSounds,chatLargeFont,toggleChatSettings,chatTipsOpen,chatWagered,chatWagerGoal,toggleChatTips,dropModalOpen,dropMode,isRain,dropCurrency,dropCurrencyOpen,dropAmount,dropPeople,dropMessage,dropTimes,dropTime,dropTimeOpen,canStartDrop,rainAmountHint,walletCurrencySymbol,formatRainAmount,rainCountdownLabel,isRainRunning,rainJoinedIds,rainJoining,joinRain,openDropModal,closeDropModal,selectDropCurrency,startDrop,tipModalOpen,tipTarget,tipCurrencies,tipCurrency,tipCurrencyOpen,tipAmount,tipPublic,canSendTip,openTipModal,closeTipModal,selectTipCurrency,sendTip,chatRulesOpen,openRulesFromDrop,closeChatRules,chatRulesSections,chatInput,chatField,chatEmojiOpen,chatTipMenuOpen,chatEmojis,canSendChat,toggleChatEmoji,toggleChatTipMenu,insertEmoji,startChatAction,chatLog,chatMessages,chatRingLength,chatRingOffset,chatRingProgress,toggleChat,toggleChatLike,replyToChat,replyTarget,clearReply,isMentionMessage,onChatEnter,sendChatMessage,tournamentPlayers,casinoNavItems,navItems,openCasinoMenu,openCasinoCategory,topSlots,originals,slotDisplayGames,catalogTotal,activeRailCategory,visibleCategoryRails,originalDisplayGames,recentWins,sports,staking,activityTabs,rows,currentPage,pageContent,isCasinoPage,gameCategories,routeGames,activeCategory,categoryIcon,categoryIconImage,filterCategory,navigate,scrollTo,slide,slideCasinoRow,toastMessage,openModal,submitAuth,performSearch,requestAuth,selectGame,isAuthenticated,authUser,formattedBalance,userMenuOpen,toggleUserMenu,openUserMenu,closeUserMenu,userRank,rankProgress,bonusCount,rankRingLength,rankRingOffset,dropdownRingLength,dropdownRingOffset,goAccount,logout,
           ...gamePage, ...accountPages, ...walletModal, ...profileModal, ...accountPage, ...missionsPage, ...bonusesPage, ...cryptoEarnPage, ...promotionsPage, ...referralPage, ...vipPage, ...currencyDisplayModalCtx};
       }
     }).component('game-card', GameCard).mount('#app');

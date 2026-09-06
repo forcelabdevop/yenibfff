@@ -1,6 +1,6 @@
 /* Bonus Cabinet — referans tasarimdan birebir port, tamami .bn-page altina scope'lanmistir. */
 .bn-page{
-  --bn-bg:#0c131c;--bn-panel:#121e2a;--bn-line:#263342;--bn-text:#f6f8fb;
+  --bn-bg:#0d131c;--bn-panel:#2f353e;--bn-line:#1a1e27;--bn-text:#f6f8fb;
   --bn-muted:#a9b8ce;--bn-dim:#62738f;--bn-blue:#2688f5;--bn-pink:#f20743;--bn-page-w:1040px;
   margin:-20px -16px 0;background:var(--bn-bg);color:var(--bn-text);
   font-family:'Montserrat Variable','Montserrat',Arial,sans-serif;font-weight:600;letter-spacing:normal;
@@ -13,7 +13,7 @@
 /* ===== Hero ===== */
 .bn-page .hero{height:176px;position:relative;overflow:hidden;background:
   radial-gradient(ellipse 54% 110% at 18% -12%,rgba(3,190,255,.98) 0%,rgba(0,119,236,.92) 25%,rgba(1,69,158,.78) 55%,rgba(5,37,78,.28) 78%,transparent 100%),
-  linear-gradient(100deg,#075bb2 0%,#082c63 40%,#0c1624 71%,#0c131c 100%)}
+  linear-gradient(100deg,#075bb2 0%,#082c63 40%,#0c1624 71%,#0d131c 100%)}
 .bn-page .hero:after{content:"";position:absolute;inset:auto 28% -32px 18%;height:54px;background:rgba(7,129,255,.2);filter:blur(28px);border-radius:50%}
 .bn-page .hero-inner{height:100%;position:relative}
 .bn-page .rank-block{position:absolute;left:154px;top:63px;display:flex;align-items:flex-start;gap:15px}
@@ -64,7 +64,7 @@
 /* Satır sayısı admin kaydına göre değiştiği için sabit yükseklik yerine
    min-height; aksi halde çok satırlı bonuslar overflow:hidden ile kırpılıyordu.
    Alt boşluk mutlak konumlu .special-actions için ayrılır. */
-.bn-page .special-card{position:relative;width:100%;min-height:195px;border-radius:16px;background:radial-gradient(circle at 22% 8%,rgba(139,35,55,.57),transparent 63%),linear-gradient(145deg,#311c29 0%,#111d29 72%);padding:13px 12px 60px;overflow:hidden}
+.bn-page .special-card{position:relative;width:100%;min-height:195px;border-radius:16px;background:radial-gradient(circle at 22% 8%,rgba(139,35,55,.57),transparent 63%),linear-gradient(145deg,#311c29 0%,#2f353e 72%);padding:13px 12px 60px;overflow:hidden}
 .bn-page .special-card:after{content:"";position:absolute;inset:auto 0 0 0;height:52px;background:radial-gradient(circle at 76% 100%,rgba(194,27,59,.13),transparent 60%);pointer-events:none}
 .bn-page .special-top{height:51px;display:flex;align-items:flex-start;border-bottom:1px solid #25303b;position:relative;z-index:1}
 .bn-page .fs-icon{width:49px;height:40px;object-fit:contain;margin:-1px 7px 0 -1px}
@@ -116,7 +116,7 @@
 .bn-page .boost-link{color:#2688f5;font-size:14px;background:transparent}
 .bn-page .boost-link i{font-size:15px;transform:rotate(-22deg);margin-left:3px}
 .bn-page .regular-grid{margin:11px 8px 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-.bn-page .regular-card{height:173px;border-radius:16px;position:relative;overflow:hidden;background:#111d29;color:#fff}
+.bn-page .regular-card{height:173px;border-radius:16px;position:relative;overflow:hidden;background:#2f353e;color:#fff}
 .bn-page .regular-card:before{content:"";position:absolute;inset:0 0 auto 0;height:72px;opacity:.95}
 .bn-page .regular-card.wheel:before{background:linear-gradient(115deg,#312495 0%,#1d2458 53%,rgba(17,29,41,0) 100%)}
 .bn-page .regular-card.rake:before{background:linear-gradient(115deg,#8b1f3c 0%,#4e2234 52%,rgba(17,29,41,0) 100%)}
@@ -200,8 +200,8 @@
 
 /* ===== Special history modal ===== */
 .bn-page .special-history-overlay{position:fixed;z-index:132;inset:0;background:rgba(2,10,19,.88);display:flex;justify-content:center;align-items:flex-start;padding-top:52px}
-.bn-page .special-history-modal{width:360px;max-width:calc(100vw - 28px);height:min(820px,calc(100vh - 104px));border-radius:15px;background:#111d29;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.55);display:flex;flex-direction:column}
-.bn-page .special-history-head{height:119px;flex:none;padding:26px 24px;background:linear-gradient(180deg,#0b417f,#111d29 86%);position:relative}
+.bn-page .special-history-modal{width:360px;max-width:calc(100vw - 28px);height:min(820px,calc(100vh - 104px));border-radius:15px;background:#2f353e;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.55);display:flex;flex-direction:column}
+.bn-page .special-history-head{height:119px;flex:none;padding:26px 24px;background:linear-gradient(180deg,#0b417f,#2f353e 86%);position:relative}
 .bn-page .special-history-head h2{margin:0;font-size:25px}
 .bn-page .special-history-close{position:absolute;right:18px;top:17px;background:transparent;color:#c0cede;font-size:22px}
 .bn-page .special-history-list{flex:1;overflow:auto;padding:0 24px}
@@ -220,7 +220,7 @@
 
 /* ===== Bonus history modal ===== */
 .bn-page .history-overlay{position:fixed;z-index:130;inset:0;background:rgba(2,10,19,.88);display:flex;align-items:flex-start;justify-content:center;padding-top:80px}
-.bn-page .history-modal{width:360px;max-width:calc(100vw - 28px);height:min(735px,calc(100vh - 120px));border-radius:15px;overflow:hidden;background:#111d29;box-shadow:0 30px 80px rgba(0,0,0,.55);display:flex;flex-direction:column}
+.bn-page .history-modal{width:360px;max-width:calc(100vw - 28px);height:min(735px,calc(100vh - 120px));border-radius:15px;overflow:hidden;background:#2f353e;box-shadow:0 30px 80px rgba(0,0,0,.55);display:flex;flex-direction:column}
 .bn-page .history-top{height:150px;flex:none;padding:24px;background:linear-gradient(180deg,#0a3e7d,#122130 80%);position:relative}
 .bn-page .history-top h2{font-size:25px;margin:0}
 .bn-page .history-close{position:absolute;right:17px;top:17px;color:#c3cddd;background:transparent;font-size:22px}
@@ -248,8 +248,8 @@
 
 /* ===== Share modal ===== */
 .bn-page .share-overlay{position:fixed;z-index:150;inset:0;background:rgba(2,10,19,.88);display:flex;justify-content:center;align-items:flex-start;padding-top:92px;overflow-y:auto}
-.bn-page .share-modal{width:360px;max-width:calc(100vw - 28px);border-radius:15px;overflow:hidden;background:#111d29;box-shadow:0 30px 80px rgba(0,0,0,.55);margin-bottom:40px}
-.bn-page .share-header{height:137px;padding:25px 24px;background:linear-gradient(180deg,#0b417f,#111d29 85%);position:relative}
+.bn-page .share-modal{width:360px;max-width:calc(100vw - 28px);border-radius:15px;overflow:hidden;background:#2f353e;box-shadow:0 30px 80px rgba(0,0,0,.55);margin-bottom:40px}
+.bn-page .share-header{height:137px;padding:25px 24px;background:linear-gradient(180deg,#0b417f,#2f353e 85%);position:relative}
 .bn-page .share-header h2{font-size:25px;margin:0}
 .bn-page .share-close{position:absolute;right:18px;top:17px;background:transparent;color:#c0cede;font-size:22px}
 .bn-page .share-content{padding:18px 24px 0}
@@ -272,7 +272,7 @@
 
 /* ===== Statistic modal ===== */
 .bn-page .statistic-overlay{position:fixed;z-index:140;inset:0;background:rgba(2,10,19,.88);display:flex;justify-content:center;align-items:flex-start;padding-top:76px}
-.bn-page .statistic-modal{width:362px;max-width:calc(100vw - 28px);height:min(745px,calc(100vh - 112px));border-radius:15px;background:#111d29;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.55);display:flex;flex-direction:column}
+.bn-page .statistic-modal{width:362px;max-width:calc(100vw - 28px);height:min(745px,calc(100vh - 112px));border-radius:15px;background:#2f353e;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.55);display:flex;flex-direction:column}
 .bn-page .stat-head{height:73px;flex:none;padding:20px 24px;display:flex;align-items:center;border-bottom:1px solid #273544}
 .bn-page .stat-head h2{font-size:20px;margin:0 0 0 10px}
 .bn-page .stat-head button{background:transparent;color:#c0cede;font-size:22px}
@@ -298,8 +298,8 @@
 
 /* ===== Calendar details modal ===== */
 .bn-page .calendar-details-overlay{position:fixed;z-index:160;inset:0;background:rgba(2,10,19,.88);display:flex;align-items:flex-start;justify-content:center;padding-top:141px}
-.bn-page .calendar-details-modal{width:360px;max-width:calc(100vw - 28px);height:min(625px,calc(100vh - 180px));border-radius:15px;overflow:hidden;background:#111d29;box-shadow:0 30px 80px rgba(0,0,0,.6);display:flex;flex-direction:column}
-.bn-page .calendar-details-head{height:170px;flex:none;position:relative;padding:48px 24px 0;background:linear-gradient(180deg,#0b4385,#111d29 92%)}
+.bn-page .calendar-details-modal{width:360px;max-width:calc(100vw - 28px);height:min(625px,calc(100vh - 180px));border-radius:15px;overflow:hidden;background:#2f353e;box-shadow:0 30px 80px rgba(0,0,0,.6);display:flex;flex-direction:column}
+.bn-page .calendar-details-head{height:170px;flex:none;position:relative;padding:48px 24px 0;background:linear-gradient(180deg,#0b4385,#2f353e 92%)}
 .bn-page .calendar-details-head h2{margin:0;font-size:25px;line-height:30px}
 .bn-page .calendar-details-head p{margin:17px 0 0;font-size:14px;color:#9eb9df}
 .bn-page .calendar-details-x{position:absolute;right:18px;top:17px;background:transparent;color:#c2cede;font-size:22px}
@@ -316,7 +316,7 @@
 
 /* ===== Deposit modal ===== */
 .bn-page .deposit-overlay{position:fixed;z-index:120;inset:0;background:rgba(2,10,19,.88);display:flex;align-items:flex-start;justify-content:center;padding-top:144px}
-.bn-page .deposit-modal{width:490px;max-width:calc(100vw - 28px);height:min(620px,calc(100vh - 180px));overflow:auto;border-radius:15px;background:#111d29;padding:20px 24px;box-shadow:0 30px 80px rgba(0,0,0,.55)}
+.bn-page .deposit-modal{width:490px;max-width:calc(100vw - 28px);height:min(620px,calc(100vh - 180px));overflow:auto;border-radius:15px;background:#2f353e;padding:20px 24px;box-shadow:0 30px 80px rgba(0,0,0,.55)}
 .bn-page .deposit-modal-head{height:55px;display:flex;align-items:flex-start}
 .bn-page .deposit-modal-head h2{margin:8px 0 0 12px;font-size:20px}
 .bn-page .modal-back{width:33px;height:33px;border-radius:9px;background:#303a47;color:#d2dce8;font-size:15px}
@@ -364,8 +364,8 @@
 
 /* ===== Regular bonus details modal ===== */
 .bn-page .reg-details-overlay{position:fixed;z-index:170;inset:0;background:rgba(2,10,19,.9);display:flex;align-items:flex-start;justify-content:center;padding-top:60px;overflow-y:auto}
-.bn-page .reg-details-modal{width:400px;max-width:calc(100vw - 32px);background:#111d29;border-radius:16px;box-shadow:0 30px 90px rgba(0,0,0,.6);margin-bottom:60px;display:flex;flex-direction:column;max-height:calc(100vh - 120px)}
-.bn-page .reg-details-head{flex:none;height:120px;padding:32px 24px;background:linear-gradient(180deg,#0b417f,#111d29 90%);position:relative;border-radius:16px 16px 0 0}
+.bn-page .reg-details-modal{width:400px;max-width:calc(100vw - 32px);background:#2f353e;border-radius:16px;box-shadow:0 30px 90px rgba(0,0,0,.6);margin-bottom:60px;display:flex;flex-direction:column;max-height:calc(100vh - 120px)}
+.bn-page .reg-details-head{flex:none;height:120px;padding:32px 24px;background:linear-gradient(180deg,#0b417f,#2f353e 90%);position:relative;border-radius:16px 16px 0 0}
 .bn-page .reg-details-head h2{font-size:24px;margin:0}
 .bn-page .reg-details-head p{font-size:14px;color:#a4bee5;margin-top:8px}
 .bn-page .reg-details-x{position:absolute;right:20px;top:20px;color:#c2cede;background:transparent;font-size:20px}

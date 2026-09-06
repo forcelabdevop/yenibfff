@@ -380,6 +380,11 @@ const userSchema = new mongoose.Schema(
 		anonymous: { type: Boolean, default: false },
 		proxy: { type: String },
 
+		// Kayıt sırasında e-posta doğrulama ekranında sorulan pazarlama
+		// mesajları izni. Sadece bilgilendirici; e-posta gönderim listeleri
+		// bu alana bakarak filtreleme yapabilir.
+		marketingConsent: { type: Boolean, default: false },
+
 		country: {
 			code: { type: String },
 			name: { type: String },
