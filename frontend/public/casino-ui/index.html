@@ -324,6 +324,8 @@
     .nav-item .nav-icon { flex: 0 0 24px; width: 24px; height: 24px; text-align: center; color: #617591; font-size: 16px; display: inline-flex; align-items: center; justify-content: center; }
     .nav-item .nav-icon__img { width: 20px; height: 20px; object-fit: contain; display: block; filter: brightness(1.2); transition: filter .1s ease-in-out; }
     .nav-item:hover .nav-icon__img, .nav-item.active .nav-icon__img { filter: brightness(1.6); }
+    .nav-item .nav-svg { width: 22px; height: 22px; display: block; color: inherit; fill: currentColor; transition: color .1s ease-in-out; }
+    .nav-item:hover .nav-icon, .nav-item.active .nav-icon { color: #fff; }
     .nav-item .nav-label { overflow-x: hidden; text-overflow: ellipsis; white-space: nowrap; transition: color .1s ease-in-out; }
     .nav-item .arrow { margin-left: auto; color: #60738d; }
     .nav-item .count { margin-left: auto; min-width: 30px; height: 20px; border-radius: 12px; background: #0d3a29; color: #12d257; font-size: 10px; display: grid; place-items: center; font-weight: 800; }
@@ -2234,6 +2236,17 @@
   </style>
 </head>
 <body>
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" xmlns="http://www.w3.org/2000/svg"><defs>
+<symbol id="icon-missions-color" viewBox="0 0 24 24"><path fill="#fff" fill-opacity=".48" d="M20.46 12.77q0-.34-.04-.67a1 1 0 0 0-1.13-.9c-.56.06-.97.57-.9 1.13l.02.44a7.19 7.19 0 1 1-7.18-7.18q.23 0 .44.02c.56.07 1.07-.34 1.13-.9a1.03 1.03 0 0 0-.9-1.13l-.67-.04a9.24 9.24 0 0 0 0 18.46 9.24 9.24 0 0 0 9.23-9.23"></path><path fill="#ED1D49" d="M21.96 6.42a.5.5 0 0 0-.47-.32h-3.6V2.51a.51.51 0 0 0-.87-.36L14.4 4.78c-.39.38-.6.9-.6 1.45v2.52l-3.3 3.3a1.02 1.02 0 1 0 1.46 1.44l3.28-3.28h2.53c.54 0 1.07-.22 1.45-.6l2.63-2.63c.15-.15.19-.37.11-.56"></path><path fill="#fff" fill-opacity=".72" d="M11.23 17.9A5.13 5.13 0 0 1 9.95 7.8c.54-.13 1.11.2 1.25.75s-.2 1.1-.74 1.24a3.08 3.08 0 1 0 3.75 3.75 1.02 1.02 0 1 1 1.98.5 5.1 5.1 0 0 1-4.96 3.86"></path></symbol>
+<symbol id="icon-bonus-cabinet" viewBox="0 0 24 24"><path fill="currentColor" d="m9.31 4.7 1.43 2.32h-3a1.7 1.7 0 0 1-1.28-.39 1.54 1.54 0 0 1 0-2.34c.35-.3.81-.44 1.27-.4h.1c.6 0 1.17.31 1.48.81m-5.18.75q0 .84.4 1.57H2.81q-.54.01-.93.37-.37.38-.38.89v2.51q.01.52.38.89.39.37.93.37H21.2q.54 0 .93-.37.37-.37.38-.89V8.28q-.01-.51-.38-.89a1.3 1.3 0 0 0-.93-.37h-1.72a3.3 3.3 0 0 0-.14-3.37A3.6 3.6 0 0 0 16.27 2h-.07c-1.31 0-2.52.66-3.19 1.74L12 5.34l-.99-1.6A3.7 3.7 0 0 0 7.82 2h-.09a3.7 3.7 0 0 0-2.55 1.01 3.4 3.4 0 0 0-1.05 2.44m13.78 0c0 .42-.18.82-.48 1.11-.31.3-.73.46-1.16.46h-3.01l1.43-2.32q.23-.38.64-.6.4-.22.87-.22h.09c.43.01.84.18 1.14.47q.46.47.48 1.1M3.8 14.11a1 1 0 0 0-1 1v5c0 .5.2.98.58 1.34.37.35.87.55 1.39.55H10a1 1 0 0 0 1-1l-.04-5.9a1 1 0 0 0-1-1zm9.2 6.89a1 1 0 0 0 1 1h5.2c.53 0 1.03-.2 1.4-.55q.57-.56.58-1.33V15.1a1 1 0 0 0-1-1H14a1 1 0 0 0-1 1z"></path></symbol>
+<symbol id="icon-bag-dollar" viewBox="0 0 20 20"><path fill="currentColor" d="m14.3 3.43-.62 1.05a.4.4 0 0 1-.32.18H6.64a.4.4 0 0 1-.32-.18L5.7 3.43A.94.94 0 0 1 6.5 2h7a.95.95 0 0 1 .8 1.43m3.2 9.9c0 1.9-.94 5.67-7.5 5.67s-7.5-3.78-7.5-5.67c0-3.13 1.94-5.62 3.47-7.14a.4.4 0 0 1 .27-.1h7.52q.16 0 .27.1c1.53 1.52 3.47 4 3.47 7.14m-5.16.58c0-.97-.64-1.81-1.57-2.06l-1.19-.3a.7.7 0 0 1-.37-.25.7.7 0 0 1-.15-.43c0-.4.3-.71.68-.71h.52a.7.7 0 0 1 .67.63.7.7 0 1 0 1.4-.16A2.1 2.1 0 0 0 10.7 8.8V8.6a.7.7 0 0 0-.7-.7.7.7 0 0 0-.7.7v.18a2.1 2.1 0 0 0-1.64 2.08q0 .73.43 1.3c.28.37.69.64 1.14.75l1.19.3c.3.09.52.37.52.7a.7.7 0 0 1-.2.5.7.7 0 0 1-.48.2h-.52a.7.7 0 0 1-.67-.63.7.7 0 1 0-1.4.16c.1.92.77 1.64 1.63 1.83v.19c0 .39.31.7.7.7a.7.7 0 0 0 .7-.7v-.19a2 2 0 0 0 1.03-.57c.4-.4.61-.93.61-1.5Z"></path></symbol>
+<symbol id="icon-promotions" viewBox="0 0 19 19"><path fill="currentColor" stroke="currentColor" stroke-width="1.35" d="M5.99 5.49c.74 0 1.34.6 1.34 1.34v2.68c0 .74-.6 1.35-1.34 1.35H4.35c-1.26 0-2.38-1.14-2.38-2.69 0-1.54 1.12-2.68 2.38-2.68zM10.17 6.32c0-.55.33-1.04.84-1.25l4.13-1.7c.88-.36 1.85.3 1.85 1.25v7.42c0 .96-.97 1.6-1.86 1.24L11 11.58c-.5-.22-.83-.7-.83-1.25z"></path><path fill="currentColor" d="M7.14 12.77a1.58 1.58 0 0 0-1.46 2.17l.68 1.67a1.58 1.58 0 1 0 2.92-1.19l-.68-1.67c-.24-.6-.82-.98-1.46-.98"></path></symbol>
+<symbol id="icon-referral-2" viewBox="0 0 20 20"><path fill="currentColor" d="M6.7 1.69a3.9 3.9 0 0 0-3.77 3.96A3.87 3.87 0 0 0 6.78 9.6h.06a3.87 3.87 0 0 0 3.64-3.95c0-2.19-1.7-3.96-3.78-3.96"></path><path fill="currentColor" stroke="currentColor" d="M3.28 16.7c-.9-.65-1.37-1.48-1.37-2.34s.46-1.7 1.38-2.36a6.7 6.7 0 0 1 3.8-1.1c1.4 0 2.77.37 3.8 1.1.9.64 1.35 1.48 1.36 2.34 0 .87-.46 1.7-1.37 2.36a6.6 6.6 0 0 1-3.8 1.11c-1.4 0-2.77-.38-3.8-1.11ZM11.73 8.8a5.02 5.02 0 0 0 .53-4.95q.16-.06.34-.07c1.17-.12 2.32.9 2.44 2.42.1 1.5-.81 2.7-1.95 2.88q-.06 0-.22.02-.62.02-1.14-.3Z"></path><path fill="currentColor" d="M17.8 13.97c-.06.84-.6 1.58-1.47 2.08-.85.48-1.92.7-2.98.68.6-.57.96-1.28 1.03-2.03.09-1.08-.41-2.12-1.42-2.95a7 7 0 0 0-1.95-1.1 6.5 6.5 0 0 1 5.69 1.02c.78.65 1.18 1.46 1.1 2.3"></path></symbol>
+<symbol id="icon-crown-2" viewBox="0 0 19 19"><path fill="currentColor" stroke="currentColor" d="M15.4 15.25c.3 0 .5.27.43.54l-.02.01-.1.03H3.3l-.1-.03-.03-.01a.43.43 0 0 1 .42-.54z"></path><path fill="currentColor" d="M18.2 7.6 17.1 12.4a1 1 0 0 1-.98.78H2.87a1 1 0 0 1-.98-.78L.81 7.6a.6.6 0 0 1 .23-.65c.2-.15.47-.17.68-.04l3.03 1.76a1 1 0 0 0 1.34-.32L9 3.95a.62.62 0 0 1 1-.04l3.43 4.49a1 1 0 0 0 1.35.22l2.47-1.68a.6.6 0 0 1 .7 0c.21.15.3.42.25.67"></path></symbol>
+<symbol id="icon-vip" viewBox="0 0 20 20"><path fill="currentColor" stroke="currentColor" d="M2.47 12.88H4.7c.22 0 .34.15.34.29v4.75c0 .13-.12.29-.34.29H1.63c-.21 0-.34-.16-.34-.3v-3.95c0-.57.5-1.08 1.18-1.08Z"></path><path fill="currentColor" d="M10.55 8.42H8.44c-.87 0-1.31.77-1.31 1.71v7.72c0 .47.08.86.52.86h3.7c.43 0 .52-.39.52-.86v-7.72c0-.94-.44-1.71-1.32-1.71m5.98 6.33H14.3c-.46 0-.84.36-.84.8v2.37c0 .43.38.79.84.79h3.07c.46 0 .84-.36.84-.8v-1.58c0-.87-.76-1.58-1.68-1.58m-4.2-10.5c.28-.26.4-.57.3-.84q-.15-.4-.8-.51l-.9-.13c-.03 0-.12-.06-.13-.1l-.5-.87c-.38-.68-1.23-.68-1.6 0l-.5.88c-.01.03-.1.09-.14.09l-.9.13c-.4.06-.7.25-.8.51-.09.27.02.58.32.83l.69.63c.04.02.07.12.06.15l-.2.77c-.15.57.1.83.25.93.16.1.5.23 1.08-.07l.85-.44c.03-.02.16-.02.2 0l.83.44q.4.2.65.18a1 1 0 0 0 .42-.11c.16-.1.4-.36.25-.93l-.2-.77c0-.04.02-.13.06-.15z"></path></symbol>
+<symbol id="icon-box" viewBox="0 0 20 20"><path fill="currentColor" stroke="currentColor" d="M9.62 9.46a.3.3 0 0 1-.3 0L3.4 6.07c-.17-.1-.18-.3-.08-.4q.3-.32.6-.5h.01L8.1 2.9c.36-.2.86-.3 1.38-.3.53 0 1.02.1 1.38.3l4.18 2.28q.32.18.61.5c.09.1.07.3-.1.4zM3.35 15.15a3 3 0 0 1-1.05-1.12 3 3 0 0 1-.45-1.5V8.44c0-.26.25-.38.44-.27l5.68 3.29q.16.1.16.29v5.4c0 .24-.24.37-.43.28a105 105 0 0 1-4.24-2.22l-.09-.05z"></path><path fill="currentColor" d="M10.32 11.75v5.4c0 .6.61 1 1.15.73 1.63-.8 4.38-2.3 4.38-2.3a3.9 3.9 0 0 0 1.76-3.05V8.44a.8.8 0 0 0-1.2-.7l-5.7 3.3a.9.9 0 0 0-.39.7"></path></symbol>
+<symbol id="icon-docs" viewBox="0 0 20 20"><path fill="currentColor" d="M10.95 2.08h-3.3c-.72 0-1.32.5-1.32 1.11v.56c0 .6.6 1.1 1.32 1.1h3.3c.73 0 1.32-.5 1.32-1.1v-.56c0-.61-.59-1.1-1.32-1.1"></path><path fill="currentColor" fill-rule="evenodd" d="M13.79 4.25c0 1.27-1.07 2.3-2.37 2.3H7.58a2.34 2.34 0 0 1-2.37-2.3c0-.44-.49-.72-.9-.51a3.5 3.5 0 0 0-1.93 3.14v7.48a3.6 3.6 0 0 0 3.65 3.56h6.94c2.01 0 3.65-1.6 3.65-3.56V6.88c0-1.36-.78-2.55-1.93-3.14-.41-.21-.9.07-.9.51m-8.25 8.92c0-.44.36-.8.8-.8h3.95a.8.8 0 0 1 0 1.59H6.33a.8.8 0 0 1-.79-.8m.8-3.96a.8.8 0 0 0 0 1.58h5.54a.8.8 0 1 0 0-1.58z" clip-rule="evenodd"></path></symbol>
+</defs></svg>
 <div id="app">
 <header class="site-header">
 <div class="header-left">
@@ -2381,7 +2394,8 @@
 </nav>
 <nav aria-label="Account navigation" class="side-nav account-nav">
 <button :class="{vip:item.vip,active:isNavActive(item)}" :key="item.label" @click="navigate(item.path || '/')" class="nav-item" v-for="item in navItems">
-<span class="nav-icon" v-if="!item.image"><i :class="item.icon"></i></span>
+<span class="nav-icon" v-if="item.svgIcon"><svg class="nav-svg" aria-hidden="true"><use :href="'#'+item.svgIcon"></use></svg></span>
+<span class="nav-icon" v-else-if="!item.image"><i :class="item.icon"></i></span>
 <img :src="item.image" :alt="websiteName + ' token'" class="mini-token" v-else=""/>
 <span class="nav-label" v-if="item.vip"><span class="vip-word">VIP</span> Club</span>
 <span class="nav-label" v-else="">{{item.label}}</span>
@@ -5401,16 +5415,16 @@
           {label:'Drops & Wins',image:'assets/contests/contests-tournament.png',icon:'fas fa-trophy',path:'/casino',match:'drop|win'}
         ];
         const navItems = [
-          {label:'Missions', icon:'fas fa-bullseye', count:'27', path:'/missions'},
-          {label:'Bonuses', icon:'fas fa-gift', path:'/bonuses'},
-          {label:'Crypto & Earn', icon:'fas fa-money-bill-wave', arrow:true, path:'/crypto-and-earn'},
+          {label:'Missions', svgIcon:'icon-missions-color', count:'27', path:'/missions'},
+          {label:'Bonuses', svgIcon:'icon-bonus-cabinet', path:'/bonuses'},
+          {label:'Crypto & Earn', svgIcon:'icon-bag-dollar', arrow:true, path:'/crypto-and-earn'},
           {label:`${WEBSITE_NAME} Token`, image:'/logo.svg', path:'/buy-crypto'},
-          {label:'Promotions', icon:'fas fa-bullhorn', path:'/promotions'},
-          {label:'Refer & Earn', icon:'fas fa-user-friends', path:'/refer-and-earn'},
-          {label:'VIP Club', icon:'fas fa-crown', vip:true, path:'/vip'},
-          {label:'Rank System', icon:'fas fa-chart-bar', path:'/vip'},
-          {label:'Free Crypto Boxes', icon:'fas fa-cube', path:'/crypto-and-earn'},
-          {label:'News', icon:'fas fa-newspaper', path:'/'}
+          {label:'Promotions', svgIcon:'icon-promotions', path:'/promotions'},
+          {label:'Refer & Earn', svgIcon:'icon-referral-2', path:'/refer-and-earn'},
+          {label:'VIP Club', svgIcon:'icon-crown-2', vip:true, path:'/vip'},
+          {label:'Rank System', svgIcon:'icon-vip', path:'/vip'},
+          {label:'Free Crypto Boxes', svgIcon:'icon-box', path:'/crypto-and-earn'},
+          {label:'News', svgIcon:'icon-docs', path:'/'}
         ];
 
         const topSlots = ref([]);
