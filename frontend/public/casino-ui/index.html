@@ -149,12 +149,15 @@
  .curr-modal-row { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 8px; border: 0; border-radius: 9px; background: transparent; color: #f7f8fb; cursor: pointer; text-align: left; }
  .curr-modal-row:hover { background: #1a2734; }
  .curr-modal-row.is-active { background: #17283b; }
+ .curr-modal-row:disabled { opacity: .6; cursor: not-allowed; }
  .curr-modal-flag { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
  .curr-modal-name { font-size: 14px; }
  .curr-modal-name b { font-weight: 800; margin-right: 6px; }
  .curr-modal-radio { margin-left: auto; width: 20px; height: 20px; border-radius: 50%; border: 2px solid #3a4655; flex-shrink: 0; position: relative; transition: .15s; }
  .curr-modal-radio.is-active { border-color: var(--blue); }
  .curr-modal-radio.is-active::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: var(--blue); }
+ .curr-modal-spin { margin-left: auto; color: var(--dim); flex-shrink: 0; }
+ .curr-modal-error { margin: 0; padding: 10px 12px; border-radius: 9px; background: rgba(240,80,90,.12); color: #f0505a; font-size: 12px; line-height: 16px; }
  .curr-modal-empty { padding: 24px 8px; text-align: center; color: var(--dim); font-size: 13px; }
  .curr-modal-foot { flex: none; padding: 16px 24px; background: #202d3d; }
  .curr-modal-foot button { width: 100%; height: 44px; border-radius: 9px; background: #3d4654; color: #fff; font-size: 14px; cursor: pointer; }
@@ -2300,12 +2303,14 @@
 <header class="curr-modal-head"><h2>Display in currency</h2><button @click="closeCurrencyDisplayModal" class="curr-modal-x" type="button"><i class="fas fa-times"></i></button></header>
 <div class="curr-modal-main">
 <div class="curr-modal-notice"><i class="fas fa-info-circle"></i><span>All bets &amp; transactions are settled in crypto and fiat equivalent. The currency rate is indicative and may change for each transaction. For any questions, contact Live Support.</span></div>
+<p class="curr-modal-error" v-if="currencyDisplayError">{{currencyDisplayError}}</p>
 <div class="curr-modal-search"><label><i class="fas fa-search"></i><input placeholder="Search" type="text" v-model="currencyDisplaySearch"/></label></div>
 <div class="curr-modal-list no-scrollbar">
-<button :class="['curr-modal-row',{'is-active':c.code===currencyDisplayActive}]" :key="c.code" @click="selectDisplayCurrency(c)" type="button" v-for="c in currencyDisplayFiltered">
+<button :class="['curr-modal-row',{'is-active':c.code===currencyDisplayActive}]" :disabled="currencyDisplaySwitching" :key="c.code" @click="selectDisplayCurrency(c)" type="button" v-for="c in currencyDisplayFiltered">
 <img :src="c.flag" alt="" class="curr-modal-flag"/>
 <span class="curr-modal-name"><b>{{c.code}}</b> {{c.name}}</span>
-<span :class="['curr-modal-radio',{'is-active':c.code===currencyDisplayActive}]"></span>
+<i class="fas fa-spinner fa-spin curr-modal-spin" v-if="currencyDisplaySwitching && c.code!==currencyDisplayActive"></i>
+<span :class="['curr-modal-radio',{'is-active':c.code===currencyDisplayActive}]" v-else></span>
 </button>
 <p class="curr-modal-empty" v-if="!currencyDisplayFiltered.length">No currencies found.</p>
 </div>
@@ -3889,7 +3894,7 @@
 <div class="partners no-scrollbar" v-if="footerPartners"><template v-for="(p,pi) in footerPartners" :key="'fp'+pi"><a v-if="p.url" :href="p.url" class="partner" :class="{big:p.big}" target="_blank" rel="noopener">{{p.label}}</a><span v-else class="partner" :class="{big:p.big}">{{p.label}}</span></template></div><div class="partners no-scrollbar" v-else><span class="partner big">bitcoin</span><span class="partner">ethereum</span><span class="partner">tether</span><span class="partner">TRON</span><span class="partner">CRYPTO<br/>RANK ↗</span><span class="partner">CoinGecko</span><span class="partner">CoinMarketCap</span><span class="partner">DappRadar</span><span class="partner">COIN98</span></div>
 <div class="footer-social">
 <template v-if="footerSocials"><template v-for="(s,si) in footerSocials" :key="'fs'+si"><a v-if="s.url" :href="s.url" class="social-square" :class="s.variant" target="_blank" rel="noopener"><i v-if="s.icon" :class="s.icon"></i><span v-else>{{s.text}}</span></a><button v-else @click="toastMessage(s.name)" class="social-square" :class="s.variant" type="button"><i v-if="s.icon" :class="s.icon"></i><span v-else>{{s.text}}</span></button></template></template><template v-else><button @click="toastMessage('Telegram')" class="social-square tg"><i class="fab fa-telegram-plane"></i></button><button @click="toastMessage('X')" class="social-square xnet" aria-label="X"><i class="fab fa-twitter"></i></button><button @click="toastMessage('Instagram')" class="social-square ig"><i class="fab fa-instagram"></i></button><button @click="toastMessage('Bitcoin Talk')" class="social-square orange">₿</button><button @click="toastMessage('Discord')" class="social-square discord"><i class="fab fa-discord"></i></button><button @click="toastMessage('Reddit')" class="social-square reddit"><i class="fab fa-reddit-alien"></i></button><button @click="toastMessage('TikTok')" class="social-square tiktok"><i class="fab fa-tiktok"></i></button><button @click="toastMessage('YouTube')" class="social-square youtube"><i class="fab fa-youtube"></i></button><button @click="toastMessage(websiteName)" class="social-square bicon">B</button></template>
-<div class="token-widgets" v-if="footerTokenWidgets"><span class="token-widget" v-if="footerTokenWidgets.walletLabel"><img :alt="websiteName + ' token'" src="/logo.svg"/> {{footerTokenWidgets.walletLabel}}</span><span class="token-widget" v-if="footerTokenWidgets.rateLabel">{{footerTokenWidgets.rateLabel}}</span></div><div class="token-widgets" v-else-if="!casinoUiSettings"><span class="token-widget"><img :alt="websiteName + ' token'" src="/logo.svg"/> SITE　›　🦊 Metamask</span><span class="token-widget">🇹🇷 1 ₺ = $0.02　ⓘ</span></div>
+<div class="token-widgets" v-if="footerTokenWidgets"><span class="token-widget" v-if="footerTokenWidgets.walletLabel"><img :alt="websiteName + ' token'" src="/logo.svg"/> {{footerTokenWidgets.walletLabel}}</span><span class="token-widget" v-if="footerTokenWidgets.rateLabel">{{footerTokenWidgets.rateLabel}}</span></div><div class="token-widgets" v-else-if="!casinoUiSettings"><span class="token-widget"><img :alt="websiteName + ' token'" src="/logo.svg"/> SITE　›　🦊 Metamask</span><span class="token-widget">🇹🇷 1 ₺ = $0.02���ⓘ</span></div>
 </div>
 <p class="copyright" v-if="footerCopyright">{{footerCopyright}}</p><p class="copyright" v-else>Copyright © 2019-2026 {{websiteName}}. All rights reserved.</p>
 </div>
@@ -5562,6 +5567,7 @@
         // "Display in currency" modali mantigi ayri dosyada: casino-ui/currency-display-modal.js
         const currencyDisplayModalCtx = window.createCurrencyDisplayModal({
           ref, computed, walletFiat, apiUrl, storageKey: () => STORAGE_NAMESPACE + '.displayCurrency',
+          getAuthToken: readAuthToken, isAuthenticated: () => isAuthenticated.value, onFiatSwitched: refreshAuthUser,
         });
         // Ust bar'daki bakiye pili artik gercek cuzdan para birimini (walletFiat)
         // degil, kullanicinin "Display in Fiat" ile sectigi goruntu para
@@ -5718,6 +5724,8 @@
           currencyDisplayActive: currencyDisplayModalCtx.currencyDisplayActive,
           currencyDisplayActiveMeta: currencyDisplayModalCtx.currencyDisplayActiveMeta,
           selectDisplayCurrency: currencyDisplayModalCtx.selectDisplayCurrency,
+          currencyDisplaySwitching: currencyDisplayModalCtx.currencyDisplaySwitching,
+          currencyDisplayError: currencyDisplayModalCtx.currencyDisplayError,
         });
         const isGamePage = gamePage.isGamePage;
 
