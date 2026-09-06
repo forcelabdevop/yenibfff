@@ -330,13 +330,11 @@
     .nav-item.vip .vip-word { color: var(--pink); }
     .mini-token { width: 20px; height: 20px; object-fit: contain; border-radius: 50%; }
     .side-bottom { margin-top: auto; }
-    .paymarks { display: flex; align-items: center; gap: 9px; padding: 0 18px 10px; color: #c8cbd0; font-size: 14px; font-weight: 500; white-space: nowrap; }
-    .paymarks .google-g { color: #4285f4; font-weight: 900; }
-    .paymarks .apple { color: #d2d5d9; }
-    .paymarks .mc { display:inline-flex; letter-spacing:-7px; padding-right:5px; }
-    .paymarks .mc b:first-child { color:#eb3f35; } .paymarks .mc b:last-child { color:#f9a31b; }
-    .paymarks .visa { color: #1874c9; font-weight: 800; font-style: italic; }
-    .buy-side { width: 100%; height: 34px; border-radius: 8px; background: #2d3642; color: #e3e6ea; font-size: 12px; font-weight: 700; }
+ .paymarks { display: flex; align-items: center; justify-content: center; gap: 14px; padding: 0 18px 12px; white-space: nowrap; }
+ .paymarks__icon { height: 16px; width: auto; object-fit: contain; }
+ .paymarks__icon--mc { height: 20px; }
+ .buy-side { width: 100%; height: 36px; border:0; border-radius: 8px; background: #2d3642; color: #e3e6ea; font-size: 12px; font-weight: 700; cursor:pointer; transition:background .15s ease; }
+ .buy-side:hover { background: #354154; }
     .app-label { display: flex; align-items: center; justify-content: space-between; padding: 21px 8px 7px; color: #60738f; font-size: 10px; letter-spacing: .7px; font-weight: 800; }
     .app-icons { color: #aeb7c2; display:flex; gap:8px; font-size:12px; }
 
@@ -1487,7 +1485,6 @@
     .nav-item.active, .nav-item:hover { color:#fff; }
     .nav-item .count { font-size:10px; font-weight:700; }
     .app-label { font-size:10px; font-weight:700; letter-spacing:.6px; }
-    .paymarks { font-size:13px; font-weight:600; }
     .top-button { font-size:14px; font-weight:600; letter-spacing:-.28px; }
     .bonus-button { font-size:12px; }
     .promo-card h3 { font-size:22px; font-weight:700; letter-spacing:-.02em; line-height:28px; }
@@ -2393,7 +2390,7 @@
 </button>
 </nav>
 <div class="side-bottom">
-<div class="paymarks"><span class="google-g">G</span><span>Pay</span><span class="apple"><i class="fab fa-apple"></i> Pay</span><span class="mc"><b>���</b><b>●</b></span><span class="visa">VISA</span></div>
+<div class="paymarks"><img alt="Google Pay" class="paymarks__icon" src="assets/payments/gpay.svg"/><img alt="Apple Pay" class="paymarks__icon" src="assets/payments/applepay.svg"/><img alt="Mastercard" class="paymarks__icon paymarks__icon--mc" src="assets/payments/mastercard.svg"/><img alt="Visa" class="paymarks__icon" src="assets/payments/visa.svg"/></div>
 <button @click="navigate('/buy-crypto')" class="buy-side">Buy Crypto</button>
 <div class="app-label"><span>{{websiteName.toUpperCase()}} APP</span><span class="app-icons"><i class="fab fa-apple"></i><i class="fab fa-android" style="color:#7ca331"></i><i class="fab fa-windows" style="color:#137bbd"></i></span></div>
 </div>
