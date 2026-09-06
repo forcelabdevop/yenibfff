@@ -97,6 +97,17 @@ export interface PaymentProvider {
   currencies?: Record<string, boolean>
 }
 
+/** Giriş / kayıt modalının CMS'ten yönetilen sunum içeriği. */
+export interface AuthModalSettings {
+  enabled?: boolean
+  image?: string
+  title?: string
+  highlight?: string
+  subtitle?: string
+  termsText?: string
+  showSocialLogins?: boolean
+}
+
 /** GET /site-settings — sanitize edilmiş public yanıt. */
 export interface SiteSettings {
   logo?: string
@@ -120,6 +131,7 @@ export interface SiteSettings {
   fluxKripto: PaymentProvider
   xPayments: PaymentProvider
   sportsbookProvider: "betcolabs" | "nexusggr"
+  authModal?: AuthModalSettings
 }
 
 export interface Game {

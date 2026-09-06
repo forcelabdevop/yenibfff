@@ -487,6 +487,12 @@ export default [
         action: "read",
         subject: "platform",
       },
+      {
+        title: "Giriş Modalı",
+        to: "apps-casino-ui-auth-modal",
+        action: "read",
+        subject: "platform",
+      },
     ],
   },
   {
