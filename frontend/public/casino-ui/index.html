@@ -2354,8 +2354,8 @@
 <button :class="{active:isCasinoPage}" @click="openCasinoMenu" class="side-switch"><svg aria-hidden="true" class="side-switch__icon casino-spade" viewBox="0 0 24 24"><path d="M12 2.3c-1.2 1.8-3.1 3.7-5.3 5.8C4.4 10.2 3 12 3 14.1c0 2.7 2.1 4.8 4.7 4.8 1.3 0 2.5-.5 3.4-1.4-.2 1.7-.9 3-1.9 3.7-.4.3-.2.9.3.9h5c.5 0 .7-.6.3-.9-1-.7-1.7-2-1.9-3.7.9.9 2.1 1.4 3.4 1.4 2.6 0 4.7-2.1 4.7-4.8 0-2.1-1.4-3.9-3.7-6C15.1 6 13.2 4.1 12 2.3Z"></path></svg><span>Casino</span></button>
 <button :class="{active:currentPage==='sports'}" @click="navigate('/sports')" class="side-switch"><i class="fas fa-basketball-ball side-switch__icon"></i><span>Sports</span></button>
 </div>
-<button @click="openSearchModal" class="side-search" type="button"><i class="fas fa-search"></i><span>Search</span></button>
-<nav aria-label="Casino navigation" class="side-nav casino-nav">
+<button @click="openSearchModal" class="side-search" type="button" v-if="isCasinoPage"><i class="fas fa-search"></i><span>Search</span></button>
+<nav aria-label="Casino navigation" class="side-nav casino-nav" v-if="isCasinoPage">
 <button :key="item.label" @click="openCasinoCategory(item)" class="nav-item" :class="{active:isNavActive(item)}" v-for="item in casinoNavItems"><span class="nav-icon"><img :alt="item.label" :src="item.image" :style="item.label==='Table Games' ? {transform:'translateY(2px)'} : null" class="nav-icon__img" v-if="item.image"/><i :class="item.icon" v-else=""></i></span><span class="nav-label">{{item.label}}</span><i class="fas fa-chevron-right arrow" v-if="item.arrow"></i></button>
 </nav>
 <nav aria-label="Account navigation" class="side-nav account-nav">
