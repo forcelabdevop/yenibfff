@@ -4866,7 +4866,13 @@
           if (cashbackSeconds.value > 0) cashbackSeconds.value -= 1;
         }, 1000);
         const closeBonusPanel = () => { bonusPanelOpen.value = false; };
+        // Ust sol "Bonuses" (hazine) dugmesi: giris yapilmamis kullanicida
+        // acilir bir dropdown'un icerigi (aktif bonuslar) olamayacagi icin
+        // henuz icerigi olusturulacak /bonus-cabinet sayfasina yonlendirir.
+        // Giris yapilmis kullanicida ise mevcut davranis (Available Bonuses
+        // dropdown'u) devam eder.
         const toggleBonusPanel = (event) => {
+          if (!authUser.value) { navigate('/bonus-cabinet'); return; }
           if (bonusPanelOpen.value) { closeBonusPanel(); return; }
           const btn = event && event.currentTarget;
           if (btn) {
@@ -5368,7 +5374,7 @@
         // degistiriyor; artik o adres yenilendiginde de dogru sekme aciliyor.
         const KNOWN_PAGES = [
           'home','casino','slots','originals','live-casino','sports','game',
-          'missions','bonuses','vip','buy-crypto','crypto-and-earn','promotions',
+          'missions','bonuses','bonus-cabinet','vip','buy-crypto','crypto-and-earn','promotions',
           'refer-and-earn',
           'wallet','profile','account','transactions','game-history','sessions',
           'vault','verification',
@@ -5402,6 +5408,10 @@
           'live-casino':{kicker:'Live',title:'Live Casino',description:'Join live dealers and real-time tables through supported casino providers.',badge:'Live Tables',icon:'fas fa-video',emptyTitle:'Live tables are loading',emptyText:'Live casino games are temporarily unavailable.'},
           sports:{kicker:'Sportsbook',title:'Sports Betting',description:'Sports markets and live events will appear here when the sportsbook provider is available.',badge:'Coming Online',icon:'fas fa-basketball-ball',emptyTitle:'Sportsbook is currently unavailable',emptyText:'We are preparing the sportsbook connection. No demo odds or fictional events are being shown.'},
           bonuses:{kicker:'Rewards',title:'Bonuses & Promotions',description:'Your eligible rewards, missions and active promotions will be collected here.',badge:'Rewards',icon:'fas fa-gift',emptyTitle:'No active bonuses available',emptyText:'There are no eligible promotions to display for this session right now.'},
+          // Ust sol "Bonuses" hazine dugmesine giris yapilmamis kullanicida
+          // yonlendirilen sayfa. Icerik daha sonra eklenecek; simdilik jenerik
+          // empty-panel ile placeholder gosterir.
+          'bonus-cabinet':{kicker:'Rewards',title:'Bonus Cabinet',description:'Sign up and log in to unlock deposit bonuses, free spins and other rewards.',badge:'Bonus Cabinet',icon:'fas fa-gift',emptyTitle:'Bonus Cabinet is coming soon',emptyText:'Sign up or log in to see your available bonuses here.'},
           vip:{kicker:'Loyalty',title:'VIP Club',description:'Track exclusive VIP benefits and rank progress when account data is available.',badge:'VIP',icon:'fas fa-crown',emptyTitle:'VIP progress is not available',emptyText:'Sign in with an eligible account to access supported VIP data and benefits.'},
           'buy-crypto':{kicker:'Payments',title:'Buy Crypto',description:'Purchase supported cryptocurrencies through connected and verified payment partners.',badge:'Secure Payments',icon:'fas fa-wallet',emptyTitle:'Payment provider is unavailable',emptyText:'Crypto purchasing is temporarily unavailable. No transaction will be created.'}
           ,
@@ -5565,10 +5575,22 @@
           return wallets.find(w => w.coinType === user.currency?.coinType && w.chain === user.currency?.chain && w.type === user.currency?.type) || wallets[0] || null;
         });
         const walletFiat = computed(() => (authUser.value && authUser.value.currency && authUser.value.currency.fiatCurrency) || 'EUR');
+        // Saglayici oyun oturumu, GetGameUrl cagrildigi anda gonderilen
+        // currencyCode'u kullanicinin geri kalan session'i icin sabitler --
+        // yani zaten ACIK olan bir oyun, fiat degistirildikten SONRA bile
+        // eski para biriminde kalir (bkz. proje hafizasi: "EUR seciyorum
+        // hala TRY bakiyesi gonderiyor"). Bunu cozmek icin fiat basariyla
+        // degistiginde, o an bir oyun ekrandaysa (isGamePage && launchState
+        // 'ready') startGame() tekrar cagrilip iframe YENI currencyCode ile
+        // yeniden baslatilir. gamePage nesnesi bu noktada henuz olusmadigi
+        // icin (asagida createGameDetail ile kuruluyor), dolayli bir "kutu"
+        // (restartActiveGameRef) kullanilir; gamePage hazir olunca doldurulur.
+        const restartActiveGameRef = { current: () => {} };
         // "Display in currency" modali mantigi ayri dosyada: casino-ui/currency-display-modal.js
         const currencyDisplayModalCtx = window.createCurrencyDisplayModal({
           ref, computed, walletFiat, apiUrl, storageKey: () => STORAGE_NAMESPACE + '.displayCurrency',
-          getAuthToken: readAuthToken, isAuthenticated: () => isAuthenticated.value, onFiatSwitched: refreshAuthUser,
+          getAuthToken: readAuthToken, isAuthenticated: () => isAuthenticated.value,
+          onFiatSwitched: async () => { await refreshAuthUser(); restartActiveGameRef.current(); },
         });
         // Ust bar'daki bakiye pili artik gercek cuzdan para birimini (walletFiat)
         // degil, kullanicinin "Display in Fiat" ile sectigi goruntu para
@@ -5729,6 +5751,13 @@
           currencyDisplayError: currencyDisplayModalCtx.currencyDisplayError,
         });
         const isGamePage = gamePage.isGamePage;
+        // Yukarida onFiatSwitched icin ayrilmis kutuyu simdi dolduruyoruz:
+        // aktif bir oyun oturumu varsa (launchState 'ready'), fiat basariyla
+        // degisince oyunu YENI settlement para birimiyle yeniden baslat --
+        // aksi halde iframe eski currencyCode'la acilmis oturumda kalir.
+        restartActiveGameRef.current = () => {
+          if (isGamePage && gamePage.launchState.value === 'ready') gamePage.startGame();
+        };
 
         // Providers + Battles bloklari ayri dosyada: casino-ui/casino-providers-battles.js
  const casinoPT = window.createCasinoProvidersBattles({

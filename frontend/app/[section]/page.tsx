@@ -13,6 +13,7 @@ const sections = {
   sports: "Sports Betting",
   missions: "Missions",
   bonuses: "Bonuses & Promotions",
+  "bonus-cabinet": "Bonus Cabinet",
   vip: "VIP Club",
   "buy-crypto": "Buy Crypto",
   "crypto-and-earn": "Crypto & Earn",
