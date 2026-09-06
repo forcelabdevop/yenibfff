@@ -92,9 +92,9 @@
     .signup-button:hover { background:transparent; transform:none; }
     .btn-3d-red { -webkit-user-select:none; -moz-user-select:none; user-select:none; }
     .btn-3d-red:after { content:""; position:absolute; inset:0; z-index:0; border-radius:inherit; background-color:#61001d; pointer-events:none; }
-    .btn-3d-red__face { position:absolute; inset:0; z-index:1; display:flex; align-items:center; justify-content:center; border-radius:inherit; font:inherit; color:inherit; transition:transform .1s ease-in-out, background .1s ease-in-out, box-shadow .1s ease-in-out; }
-    .btn-3d-red:hover .btn-3d-red__face { transform:translateY(-2px); }
-    .btn-3d-red:active .btn-3d-red__face { transform:translateY(1px); }
+    .btn-3d-red__face { position:absolute; top:0; left:0; right:0; bottom:3px; z-index:1; display:flex; align-items:center; justify-content:center; border-radius:inherit; font:inherit; color:inherit; transition:transform .1s ease-in-out, background .1s ease-in-out, box-shadow .1s ease-in-out; }
+    .btn-3d-red:hover .btn-3d-red__face { transform:translateY(-1px); }
+    .btn-3d-red:active .btn-3d-red__face { transform:translateY(2px); }
     .signup-button .btn-3d-red__face { background: linear-gradient(1turn,#c4003b .8%,#fb1949); box-shadow: 0 3px 16px #ff234180, inset 0 4px 3px #ffffff4d; }
     .signup-button:hover .btn-3d-red__face { background: linear-gradient(3360deg,#db0a49 .8%,#fb2b57); box-shadow: 0 3px 20px #ff234199, inset 0 4px 4px #ffffff5e; }
     .signup-button:active .btn-3d-red__face { background: linear-gradient(1turn,#c4003b .8%,#fb1949); box-shadow: 0 3px 16px #ff234166, inset 0 3px 3px #ffffff4d; }
