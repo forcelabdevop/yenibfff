@@ -1077,9 +1077,11 @@
     .rtp-tip__divider { display:block; height:1px; margin:9px 0; background:rgba(147,172,211,.22); }
     .rtp-tip__hint { display:block; color:#fff; font-size:11px; font-weight:700; line-height:1.4; }
     .game-card-hover__center { display:flex; flex:1 1 auto; flex-direction:column; align-items:center; justify-content:center; gap:14px; }
-    .game-card-hover__play { display:grid; place-items:center; width:62px; height:62px; border:1px solid rgba(255,255,255,.3); border-radius:50%; background:linear-gradient(180deg, #ff416c 0%, #f4144e 50%, #d4003d 100%); box-shadow:inset 0 2px 2px rgba(255,255,255,.4), 0 5px 0 #a20034, 0 6px 12px rgba(244,20,78,.4); color:#fff; font-size:20px; cursor:pointer; transition:transform .12s ease-in-out, box-shadow .12s ease-in-out; }
-    .game-card-hover__play:hover { transform:translateY(-1px) scale(1.05); background:linear-gradient(180deg, #ff547b 0%, #f4144e 50%, #d4003d 100%); box-shadow:inset 0 2px 2px rgba(255,255,255,.45), 0 6px 0 #a20034, 0 8px 16px rgba(244,20,78,.5); }
-    .game-card-hover__play svg { width:18px; height:18px; margin-left:3px; fill:currentColor; }
+ .game-card-hover__play { position:relative; display:grid; place-items:center; width:62px; height:62px; border:1px solid rgba(255,255,255,.3); border-radius:50%; background:transparent; overflow:visible; color:#fff; font-size:20px; cursor:pointer; }
+ .game-card-hover__play .btn-3d-red__face { background:linear-gradient(180deg, #ff416c 0%, #f4144e 50%, #d4003d 100%); box-shadow:inset 0 2px 2px rgba(255,255,255,.4), 0 3px 12px rgba(244,20,78,.4); }
+ .game-card-hover__play:hover .btn-3d-red__face { background:linear-gradient(180deg, #ff547b 0%, #f4144e 50%, #d4003d 100%); box-shadow:inset 0 2px 2px rgba(255,255,255,.45), 0 4px 16px rgba(244,20,78,.5); }
+ .game-card-hover__play:active .btn-3d-red__face { background:linear-gradient(180deg, #ff416c 0%, #f4144e 50%, #d4003d 100%); box-shadow:inset 0 2px 2px rgba(255,255,255,.32), 0 2px 8px rgba(244,20,78,.35); }
+ .game-card-hover__play svg { position:relative; z-index:2; width:18px; height:18px; margin-left:3px; fill:currentColor; }
     .game-card-hover__demo { padding:0; border:none; background:none; color:#4e9dff; font-size:15px; font-weight:700; text-decoration:underline; cursor:pointer; }
     .game-card-hover__demo:hover { color:#7ab7ff; }
     .game-card-hover__bottom { display:flex; align-items:center; justify-content:space-between; gap:8px; }
@@ -4761,8 +4763,10 @@
               </span>
             </div>
             <div class="game-card-hover__center">
-              <button class="game-card-hover__play" :aria-label="'Play ' + name" type="button" @click.stop="$emit('select')">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              <button class="game-card-hover__play btn-3d-red" :aria-label="'Play ' + name" type="button" @click.stop="$emit('select')">
+                <span class="btn-3d-red__face">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                </span>
               </button>
             </div>
             <div class="game-card-hover__bottom">
@@ -5456,7 +5460,7 @@
           {game:'Dice',time:'02:45:13 PM',avatar:'👩',level:'7',user:'User3342680',amount:'₺102.62',multiplier:'x1.834',payout:'₺188.18',win:true},
           {game:'Dice',time:'02:45:10 PM',avatar:'👑',level:'16',user:'CircleKing',amount:'₺3,080.60',multiplier:'x11.002',payout:'₺0.00'},
           {game:'Dice',time:'02:45:10 PM',avatar:'👩‍🦰',level:'5',user:'User3408185',amount:'₺126.88',multiplier:'x2.021',payout:'₺0.00'},
-          {game:'Keno',time:'02:45:06 PM',avatar:'😎',level:'13',user:'YSZ9191',amount:'₺86.03',multiplier:'x2.500',payout:'₺215.07',win:true},
+          {game:'Keno',time:'02:45:06 PM',avatar:'😎',level:'13',user:'YSZ9191',amount:'���86.03',multiplier:'x2.500',payout:'₺215.07',win:true},
           {game:'Limbo',time:'02:45:07 PM',avatar:'🦝',level:'3',user:'User4012624',amount:'₺380.21',multiplier:'x0.000',payout:'₺0.00'},
           {game:'Dice',time:'02:45:04 PM',avatar:'👑',level:'16',user:'CircleKing',amount:'₺3,080.60',multiplier:'x11.002',payout:'₺0.00'},
           {game:'Dice',time:'02:45:04 PM',avatar:'👩🏿',level:'7',user:'User405309',amount:'���51.55',multiplier:'x2.539',payout:'₺130.88',win:true},
