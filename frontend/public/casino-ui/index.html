@@ -1024,6 +1024,11 @@
  @media (max-width:720px){ .casino-bets { margin-top:30px; } }
     .casino-game-card { position:relative; flex:0 0 188px; width:188px; height:248px; overflow:hidden; border-radius:13px; background:#152230; }
     .casino-game-card img { width:100%; height:100%; object-fit:cover; }
+.casino-game-card img { opacity:0; transition:opacity .3s ease; position:relative; z-index:1; }
+.casino-game-card img.is-loaded { opacity:1; }
+.casino-game-card::before { content:""; position:absolute; inset:0; z-index:0; background:linear-gradient(100deg,#161d26 25%,#222c39 50%,#161d26 75%); background-size:200% 100%; animation:cardShimmer 1.3s ease-in-out infinite; transition:opacity .35s ease; }
+.casino-game-card.card-loaded::before { opacity:0; animation:none; }
+@keyframes cardShimmer { 0%{background-position:150% 0;} 100%{background-position:-150% 0;} }
     .casino-game-card::after { content:""; position:absolute; inset:auto 0 0; height:96px; background:linear-gradient(transparent,rgba(6,11,18,.55) 40%,rgba(6,11,18,.98) 68%,#060b12 100%); }
     .casino-game-card>b { position:absolute; z-index:2; left:8px; top:8px; padding:5px 12px; border-radius:16px; color:#fff; background:#ff174f; font-size:11px; }
     .casino-game-card { cursor:pointer; text-align:left; transition:box-shadow .28s ease, transform .2s ease; will-change:transform; }
@@ -4671,6 +4676,7 @@
       emits: ['select', 'demo'],
       setup(props) {
         const hovered = ref(false);
+        const loaded = ref(false);
         const favorite = ref(false);
         const name = computed(() => props.game.game_name || props.game.name || 'Game');
         const provider = computed(() => {
@@ -4705,11 +4711,11 @@
           if (!base) return '';
           return (base + 0.27).toFixed(2) + '% - ' + (base + 1.1).toFixed(2) + '%';
         });
-        return { hovered, favorite, name, provider, thumb, rtp, eRtp };
+        return { hovered, favorite, name, provider, thumb, rtp, eRtp, loaded };
       },
       template: `
-        <div class="casino-game-card" :class="{'is-hovered':hovered}" role="button" tabindex="0" @mouseenter="hovered=true" @mouseleave="hovered=false" @focusin="hovered=true" @focusout="hovered=false" @click="$emit('select')" @keydown.enter.prevent="$emit('select')" @keydown.space.prevent="$emit('select')">
-          <img :alt="name" :src="thumb" loading="lazy"/>
+        <div class="casino-game-card" :class="{'is-hovered':hovered,'card-loaded':loaded}" role="button" tabindex="0" @mouseenter="hovered=true" @mouseleave="hovered=false" @focusin="hovered=true" @focusout="hovered=false" @click="$emit('select')" @keydown.enter.prevent="$emit('select')" @keydown.space.prevent="$emit('select')">
+          <img :alt="name" :src="thumb" loading="lazy" :class="{'is-loaded':loaded}" @load="loaded=true" @error="loaded=true"/>
           <b v-if="badge">{{badge}}</b>
           <div class="game-card-hover">
             <div class="game-card-hover__top">
