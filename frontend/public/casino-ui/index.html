@@ -88,8 +88,16 @@
     .bonus-button.is-active .chest { width: 26px; height: 26px; }
     .search-button { width: 36px; font-size: 18px; }
     .login-button { width: 69px; }
-    .signup-button { width: 79px; color: white; background: linear-gradient(1turn, #c4003b .8%, #fb1949); box-shadow: 0 3px 16px #ff234180, inset 0 4px 3px #ffffff4d; }
-    .signup-button:hover { background: linear-gradient(1turn, #d40040 .8%, #ff2f5b); box-shadow: 0 6px 22px #ff2341a6, inset 0 4px 3px #ffffff66; transform: translateY(-2px); }
+    .signup-button { width: 79px; color: white; position:relative; overflow:visible; background:transparent; }
+    .signup-button:hover { background:transparent; transform:none; }
+    .btn-3d-red { -webkit-user-select:none; -moz-user-select:none; user-select:none; }
+    .btn-3d-red:after { content:""; position:absolute; inset:0; z-index:0; border-radius:inherit; background-color:#61001d; pointer-events:none; }
+    .btn-3d-red__face { position:absolute; top:0; left:0; right:0; bottom:3px; z-index:1; display:flex; align-items:center; justify-content:center; border-radius:inherit; font:inherit; color:inherit; transition:transform .1s ease-in-out, background .1s ease-in-out, box-shadow .1s ease-in-out; }
+    .btn-3d-red:hover .btn-3d-red__face { transform:translateY(-1px); }
+    .btn-3d-red:active .btn-3d-red__face { transform:translateY(2px); }
+    .signup-button .btn-3d-red__face { background: linear-gradient(1turn,#c4003b .8%,#fb1949); box-shadow: 0 3px 16px #ff234180, inset 0 4px 3px #ffffff4d; }
+    .signup-button:hover .btn-3d-red__face { background: linear-gradient(3360deg,#db0a49 .8%,#fb2b57); box-shadow: 0 3px 20px #ff234199, inset 0 4px 4px #ffffff5e; }
+    .signup-button:active .btn-3d-red__face { background: linear-gradient(1turn,#c4003b .8%,#fb1949); box-shadow: 0 3px 16px #ff234166, inset 0 3px 3px #ffffff4d; }
     .locale-button { width: 79px; padding: 0 9px; gap: 10px; margin-left:8px; }
     .locale-button .flag { width: 24px; height: 24px; display: block; flex-shrink: 0; }
     .locale-button .divider { width: 1px; height: 22px; background: #465260; }
@@ -304,8 +312,9 @@
       .search-field { margin:16px 16px 0; height:50px; padding:0 14px; }
       .search-section__head, .search-game-row { padding-left:16px; padding-right:16px; }
     }
-    .side-nav { margin-top: 10px; }
-    .side-nav.casino-nav { padding-bottom:10px; border-bottom:1px solid #ffffff0a; }
+ .side-nav { margin-top: 10px; }
+ .side-nav.casino-nav { padding-bottom:10px; border-bottom:1px solid #ffffff0a; }
+ .side-nav-divider { height:1px; margin:8px 4px; background-color:#ffffff0a; }
     .side-nav.account-nav { padding-top:8px; }
     .nav-item { position: relative; height: 44px; width: 100%; display: flex; align-items: center; gap: 8px; padding: 8px; border-radius: 8px; cursor: pointer; color: #a7b5ca; font-size: 14px; font-weight: 600; letter-spacing: -.02em; line-height: 18px; white-space: nowrap; font-variant-numeric: lining-nums tabular-nums; transition: background-color .1s ease-in-out, color .1s ease-in-out; }
     .nav-item:hover { color: #fff; background-color: #172533; }
@@ -315,19 +324,19 @@
     .nav-item .nav-icon { flex: 0 0 24px; width: 24px; height: 24px; text-align: center; color: #617591; font-size: 16px; display: inline-flex; align-items: center; justify-content: center; }
     .nav-item .nav-icon__img { width: 20px; height: 20px; object-fit: contain; display: block; filter: brightness(1.2); transition: filter .1s ease-in-out; }
     .nav-item:hover .nav-icon__img, .nav-item.active .nav-icon__img { filter: brightness(1.6); }
+    .nav-item .nav-svg { width: 22px; height: 22px; display: block; color: inherit; fill: currentColor; transition: color .1s ease-in-out; }
+    .nav-item:hover .nav-icon, .nav-item.active .nav-icon { color: #fff; }
     .nav-item .nav-label { overflow-x: hidden; text-overflow: ellipsis; white-space: nowrap; transition: color .1s ease-in-out; }
     .nav-item .arrow { margin-left: auto; color: #60738d; }
     .nav-item .count { margin-left: auto; min-width: 30px; height: 20px; border-radius: 12px; background: #0d3a29; color: #12d257; font-size: 10px; display: grid; place-items: center; font-weight: 800; }
     .nav-item.vip .vip-word { color: var(--pink); }
     .mini-token { width: 20px; height: 20px; object-fit: contain; border-radius: 50%; }
     .side-bottom { margin-top: auto; }
-    .paymarks { display: flex; align-items: center; gap: 9px; padding: 0 18px 10px; color: #c8cbd0; font-size: 14px; font-weight: 500; white-space: nowrap; }
-    .paymarks .google-g { color: #4285f4; font-weight: 900; }
-    .paymarks .apple { color: #d2d5d9; }
-    .paymarks .mc { display:inline-flex; letter-spacing:-7px; padding-right:5px; }
-    .paymarks .mc b:first-child { color:#eb3f35; } .paymarks .mc b:last-child { color:#f9a31b; }
-    .paymarks .visa { color: #1874c9; font-weight: 800; font-style: italic; }
-    .buy-side { width: 100%; height: 34px; border-radius: 8px; background: #2d3642; color: #e3e6ea; font-size: 12px; font-weight: 700; }
+ .paymarks { display: flex; align-items: center; justify-content: center; gap: 14px; padding: 0 18px 12px; white-space: nowrap; }
+ .paymarks__icon { height: 16px; width: auto; object-fit: contain; }
+ .paymarks__icon--mc { height: 20px; }
+ .buy-side { width: 100%; height: 36px; border:0; border-radius: 8px; background: #2d3642; color: #e3e6ea; font-size: 12px; font-weight: 700; cursor:pointer; transition:background .15s ease; }
+ .buy-side:hover { background: #354154; }
     .app-label { display: flex; align-items: center; justify-content: space-between; padding: 21px 8px 7px; color: #60738f; font-size: 10px; letter-spacing: .7px; font-weight: 800; }
     .app-icons { color: #aeb7c2; display:flex; gap:8px; font-size:12px; }
 
@@ -346,7 +355,10 @@
     .hero-title .white { color: #f8f8fa; display: block; margin-top: 0; }
     .hero-sub { margin-top: 9px; color: #b8bac2; font-size: 16px; font-weight: 700; }
     .hero-actions { margin-top: 19px; display: flex; align-items: center; gap: 8px; }
-    .main-cta { width: 158px; height: 47px; margin-right:12px; border-radius: 8px; color: #fff; background: linear-gradient(#ff345f,#e9003d 67%,#b90031); box-shadow: 0 0 17px rgba(247,31,77,.48), inset 0 2px rgba(255,255,255,.28); font-size: 14px; font-weight: 750; }
+    .main-cta { width: 158px; height: 47px; margin-right:12px; border-radius: 8px; color: #fff; font-size: 14px; font-weight: 750; position:relative; overflow:visible; background:transparent; }
+    .main-cta .btn-3d-red__face { background: linear-gradient(#ff345f,#e9003d 67%,#b90031); box-shadow: 0 0 17px rgba(247,31,77,.48), inset 0 2px rgba(255,255,255,.28); }
+    .main-cta:hover .btn-3d-red__face { background: linear-gradient(#ff4a70,#fb1440 67%,#c4003b); box-shadow: 0 0 22px rgba(247,31,77,.65), inset 0 2px rgba(255,255,255,.35); }
+    .main-cta:active .btn-3d-red__face { background: linear-gradient(#ff345f,#e9003d 67%,#b90031); box-shadow: 0 0 14px rgba(247,31,77,.4), inset 0 2px rgba(255,255,255,.2); }
     .provider-button { width: 46px; height: 44px; border-radius: 8px; background: #2b303a; display: grid; place-items: center; color: #f7f7f8; font-size: 19px; font-weight: 800; transition: .2s; }
     .provider-button:hover { background:#383f4a; transform:translateY(-2px); }
     .provider-button img { width:23px; height:23px; object-fit:contain; filter:grayscale(1) brightness(4); }
@@ -356,8 +368,8 @@
     .promo-card { position: relative; overflow: hidden; border-radius: 11px; padding: 26px 24px; background: #101c28; }
     .promo-card.casino { background: linear-gradient(103deg,#101c28 0%,#251923 54%,#9d193e 100%); }
     .promo-card.sport { background: linear-gradient(103deg,#101c28 0%,#17304a 55%,#216db4 100%); }
-    .promo-card h3 { font-size: 23px; line-height: 1; font-weight: 800; }
-    .promo-card p { margin-top: 14px; color: #aeb2bc; font-size: 15px; font-weight: 600; white-space: nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .promo-card h3 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; line-height: 28px; }
+    .promo-card p { margin-top: 14px; color: hsla(0,0%,100%,.64); font-size: 14px; font-weight: 500; line-height: 20px; white-space: nowrap; overflow:hidden; text-overflow:ellipsis; }
     .promo-emoji { position: absolute; right: 18px; top: 13px; width: 101px; height: 101px; object-fit: contain; filter: drop-shadow(0 12px 15px rgba(0,0,0,.4)); -webkit-mask-image:radial-gradient(ellipse 70% 72% at center,#000 68%,transparent 100%); mask-image:radial-gradient(ellipse 70% 72% at center,#000 68%,transparent 100%); }
     .promo-card.sport .promo-emoji { width: 98px; height: 98px; top: 13px; }
     .crypto-strip { height: 72px; margin-top: 12px; border-radius: 11px; background: #101c28; display: flex; align-items: center; padding: 0 27px; gap: 18px; }
@@ -376,7 +388,8 @@
     .section-heading { height: 26px; display:flex; align-items:center; }
     .section-heading h2 { font-size:18px; font-weight:750; letter-spacing:-.3px; }
     .section-tools { margin-left:auto; display:flex; align-items:center; gap:17px; color:#5e718c; }
-    .section-link { color:var(--blue); font-size:14px; font-weight:650; margin-right:4px; }
+    .section-link { color:var(--blue); font-size:14px; font-weight:650; margin-right:4px; transition:color .1s ease-in-out; }
+    .section-link:hover { color:#3793ff; text-shadow:0 -2px 4px rgba(55,147,255,.25); }
     .arrow-button { width:16px; height:24px; display:grid; place-items:center; font-size:15px; transition:.2s; }
     .arrow-button:hover { color:white; }
     .horizontal-strip { display:flex; align-items:stretch; gap:15px; overflow-x:auto; overflow-y:hidden; scroll-behavior:smooth; }
@@ -402,7 +415,10 @@
     .big-paymarks .mc-logo i { width:24px; height:24px; border-radius:50%; position:absolute; }
     .big-paymarks .mc-logo i:first-child{left:0;background:#ef3127}.big-paymarks .mc-logo i:last-child{right:0;background:#ff9d18;mix-blend-mode:screen}
     .big-paymarks .visa { color:#1976d2; font-weight:800; font-style:italic; letter-spacing:-2px; }
-    .buy-cta { flex:0 0 189px; height:48px; border-radius:8px; background:linear-gradient(#ff365f,#eb0042 62%,#b90033); box-shadow:0 0 17px rgba(245,23,72,.45),inset 0 2px rgba(255,255,255,.28); color:white; font-size:14px; font-weight:750; }
+    .buy-cta { flex:0 0 189px; height:48px; border-radius:8px; color:white; font-size:14px; font-weight:750; position:relative; overflow:visible; background:transparent; }
+    .buy-cta .btn-3d-red__face { background:linear-gradient(#ff365f,#eb0042 62%,#b90033); box-shadow:0 0 17px rgba(245,23,72,.45),inset 0 2px rgba(255,255,255,.28); }
+    .buy-cta:hover .btn-3d-red__face { background:linear-gradient(#ff4c73,#fc1a4f 62%,#c4003f); box-shadow:0 0 22px rgba(245,23,72,.6),inset 0 2px rgba(255,255,255,.35); }
+    .buy-cta:active .btn-3d-red__face { background:linear-gradient(#ff365f,#eb0042 62%,#b90033); box-shadow:0 0 14px rgba(245,23,72,.38),inset 0 2px rgba(255,255,255,.22); }
 
     .sports-strip { margin-top:15px; height:105px; }
     .sport-card { flex:0 0 194px; height:105px; position:relative; border-radius:11px; overflow:hidden; display:flex; align-items:center; justify-content:center; flex-direction:column; background:linear-gradient(135deg,#1b4d7d,#101c28 58%); }
@@ -432,14 +448,14 @@
     .network-logo { font-size:14px; font-weight:650; opacity:.85; }
 
     .activity-section { margin-top:70px; }
-    .activity-tabs { height:52px; border-radius:11px; background:#182433; display:inline-flex; align-items:center; padding:6px; gap:7px; }
+    .activity-tabs { height:52px; border-radius:11px; background:rgba(22, 31, 44, 0.8); display:inline-flex; align-items:center; padding:6px; gap:7px; }
     .activity-tab { height:40px; border-radius:8px; padding:0 18px; display:flex; align-items:center; gap:10px; color:#667995; font-size:14px; font-weight:700; }
     .activity-tab i { font-size:18px; }
     .activity-tab.active { background:#2d87ef; color:white; }
     .row-count { float:right; margin-top:0; height:36px; min-width:61px; border-radius:9px; background:#192536; display:flex; align-items:center; justify-content:center; gap:9px; font-size:12px; font-weight:700; }
     .activity-head, .activity-row { display:grid; grid-template-columns:1.1fr 1fr 1.15fr 1.15fr .82fr .65fr; align-items:center; column-gap:20px; }
     .activity-head { height:43px; padding:0 16px; color:#5d708b; font-size:11px; letter-spacing:.5px; font-weight:800; }
-    .activity-row { height:50px; border-radius:10px; margin-bottom:6px; padding:0 18px; background:#131f2d; color:#aebbd0; font-size:14px; font-weight:650; }
+    .activity-row { height:50px; border-radius:10px; margin-bottom:6px; padding:0 18px; background:#19222f; color:#aebbd0; font-size:14px; font-weight:650; }
     .game-cell, .user-cell { display:flex; align-items:center; gap:10px; min-width:0; }
     .game-cell i { width:20px; text-align:center; }
     .avatar { width:24px; height:24px; border-radius:50%; display:grid; place-items:center; background:linear-gradient(135deg,#f3be3e,#b622bd); font-size:13px; border:2px solid #9152e3; }
@@ -505,7 +521,10 @@
     .auth-modal p { color:#8293aa; margin-top:5px; font-size:12px; }
     .close-modal { position:absolute; right:16px; top:14px; width:30px; height:30px; border-radius:8px; background:#263443; }
     .auth-modal input { width:100%; height:43px; border-radius:9px; border:1px solid #2d3d50; outline:none; background:#0c1722; color:white; padding:0 13px; margin-top:13px; font-size:13px; }
-    .modal-submit { margin-top:15px; width:100%; height:44px; border-radius:9px; background:linear-gradient(#ff3560,#dc003c); font-weight:750; }
+    .modal-submit { margin-top:15px; width:100%; height:44px; border-radius:9px; font-weight:750; color:#fff; position:relative; overflow:visible; background:transparent; }
+    .modal-submit .btn-3d-red__face { background:linear-gradient(#ff3560,#dc003c); }
+    .modal-submit:hover .btn-3d-red__face { background:linear-gradient(#ff4a72,#f11144); }
+    .modal-submit:active .btn-3d-red__face { background:linear-gradient(#ff3560,#dc003c); }
     .toast { position:fixed; z-index:150; left:50%; bottom:28px; transform:translateX(-50%); background:#273646; border:1px solid #41546a; color:white; padding:11px 18px; border-radius:10px; font-size:12px; box-shadow:0 15px 35px rgba(0,0,0,.4); }
 
     .route-page { min-height:calc(100vh - 62px); padding:34px 32px 60px; background:#101924; }
@@ -990,11 +1009,11 @@
     .casino-bets-top { display:flex; align-items:center; justify-content:space-between; gap:16px; }
     .casino-bets-tabs { display:inline-flex; align-items:center; gap:4px; padding:6px; background:rgba(25,38,57,.88); border-radius:12px; overflow-x:auto; scrollbar-width:none; }
     .casino-bets-tabs::-webkit-scrollbar { display:none; }
-    .casino-bets-tab { height:41px; padding:0 16px; border:0; border-radius:9px; background:transparent; color:#657793; display:inline-flex; align-items:center; gap:9px; font-size:15px; font-weight:900; white-space:nowrap; cursor:pointer; transition:.15s; }
-    .casino-bets-tab i { font-size:18px; color:#a9b7cb; }
-    .casino-bets-tab:hover { color:#c7d2e2; }
-    .casino-bets-tab.active { color:#fff; background:#278af0; box-shadow:0 2px 7px rgba(0,81,170,.25); }
-    .casino-bets-tab.active i { color:#fff; }
+ .casino-bets-tab { height:40px; padding:0 20px 0 16px; border:0; border-radius:8px; background:transparent; color:#7c8aa1; display:inline-flex; align-items:center; gap:9px; font-size:14px; font-weight:600; letter-spacing:-.28px; line-height:125%; white-space:nowrap; cursor:pointer; transition:background .1s ease-in-out,color .1s ease-in-out; }
+ .casino-bets-tab i { font-size:18px; color:#a9b7cb; }
+ .casino-bets-tab:hover { color:#c7d2e2; }
+ .casino-bets-tab.active { color:#fff; background:#2283f6; }
+ .casino-bets-tab.active i { color:#fff; }
     .casino-bets-count { position:relative; flex:none; }
     .casino-bets-count-btn { width:66px; height:38px; border:0; border-radius:9px; background:#182536; color:#f6f7fa; display:flex; align-items:center; justify-content:center; gap:10px; font-size:14px; font-weight:900; cursor:pointer; }
     .casino-bets-count-btn i { color:#9badc5; font-size:12px; }
@@ -1059,9 +1078,11 @@
     .rtp-tip__divider { display:block; height:1px; margin:9px 0; background:rgba(147,172,211,.22); }
     .rtp-tip__hint { display:block; color:#fff; font-size:11px; font-weight:700; line-height:1.4; }
     .game-card-hover__center { display:flex; flex:1 1 auto; flex-direction:column; align-items:center; justify-content:center; gap:14px; }
-    .game-card-hover__play { display:grid; place-items:center; width:62px; height:62px; border:1px solid rgba(255,255,255,.3); border-radius:50%; background:linear-gradient(180deg, #ff416c 0%, #f4144e 50%, #d4003d 100%); box-shadow:inset 0 2px 2px rgba(255,255,255,.4), 0 5px 0 #a20034, 0 6px 12px rgba(244,20,78,.4); color:#fff; font-size:20px; cursor:pointer; transition:transform .12s ease-in-out, box-shadow .12s ease-in-out; }
-    .game-card-hover__play:hover { transform:translateY(-1px) scale(1.05); background:linear-gradient(180deg, #ff547b 0%, #f4144e 50%, #d4003d 100%); box-shadow:inset 0 2px 2px rgba(255,255,255,.45), 0 6px 0 #a20034, 0 8px 16px rgba(244,20,78,.5); }
-    .game-card-hover__play svg { width:18px; height:18px; margin-left:3px; fill:currentColor; }
+ .game-card-hover__play { position:relative; display:grid; place-items:center; width:62px; height:62px; border:1px solid rgba(255,255,255,.3); border-radius:50%; background:transparent; overflow:visible; color:#fff; font-size:20px; cursor:pointer; }
+ .game-card-hover__play .btn-3d-red__face { background:linear-gradient(180deg, #ff416c 0%, #f4144e 50%, #d4003d 100%); box-shadow:inset 0 2px 2px rgba(255,255,255,.4), 0 3px 12px rgba(244,20,78,.4); }
+ .game-card-hover__play:hover .btn-3d-red__face { background:linear-gradient(180deg, #ff547b 0%, #f4144e 50%, #d4003d 100%); box-shadow:inset 0 2px 2px rgba(255,255,255,.45), 0 4px 16px rgba(244,20,78,.5); }
+ .game-card-hover__play:active .btn-3d-red__face { background:linear-gradient(180deg, #ff416c 0%, #f4144e 50%, #d4003d 100%); box-shadow:inset 0 2px 2px rgba(255,255,255,.32), 0 2px 8px rgba(244,20,78,.35); }
+ .game-card-hover__play svg { position:relative; z-index:2; width:18px; height:18px; margin-left:3px; fill:currentColor; }
     .game-card-hover__demo { padding:0; border:none; background:none; color:#4e9dff; font-size:15px; font-weight:700; text-decoration:underline; cursor:pointer; }
     .game-card-hover__demo:hover { color:#7ab7ff; }
     .game-card-hover__bottom { display:flex; align-items:center; justify-content:space-between; gap:8px; }
@@ -1071,15 +1092,15 @@
     .game-card-hover__fav { display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; flex:0 0 30px; padding:0; border:none; background:none; color:#ff4d63; cursor:pointer; }
     .game-card-hover__fav svg { width:24px; height:24px; }
     .game-card-hover__fav.is-active svg { fill:#ff4d63; }
-    .tournament-drawer { position:fixed; z-index:120; top:64px; right:0; bottom:0; width:var(--drawer-w); overflow-y:auto; border-left:1px solid #263545; background:#0d1823; box-shadow:-22px 0 48px rgba(0,0,0,.34); transform:translateX(105%); transition:transform .25s ease; }
+    .tournament-drawer { position:fixed; z-index:120; top:64px; right:0; bottom:0; width:var(--drawer-w); overflow-y:auto; border-left:1px solid #263545; background:#111923; box-shadow:-22px 0 48px rgba(0,0,0,.34); transform:translateX(105%); transition:transform .25s ease; }
     .tournament-drawer.open { transform:translateX(0); }
     /* Global chat drawer */
-    .chat-drawer { position:fixed; z-index:130; top:64px; right:0; bottom:0; width:var(--chat-w); display:flex; flex-direction:column; border-left:1px solid #263545; background:#0d1924; box-shadow:-22px 0 48px rgba(0,0,0,.38); transform:translateX(105%); transition:transform .25s ease; }
+    .chat-drawer { position:fixed; z-index:130; top:64px; right:0; bottom:0; width:var(--chat-w); display:flex; flex-direction:column; border-left:1px solid #263545; background:#111923; box-shadow:-22px 0 48px rgba(0,0,0,.38); transform:translateX(105%); transition:transform .25s ease; }
     .chat-drawer.open { transform:translateX(0); }
       /* Notification drawer */
-      .notif-drawer { position:fixed; z-index:135; top:64px; right:0; bottom:0; width:var(--notif-w); display:flex; flex-direction:column; border-left:1px solid #263545; background:#0d1722; box-shadow:-22px 0 48px rgba(0,0,0,.4); transform:translateX(105%); transition:transform .25s ease; }
+      .notif-drawer { position:fixed; z-index:135; top:64px; right:0; bottom:0; width:var(--notif-w); display:flex; flex-direction:column; border-left:1px solid #263545; background:#111923; box-shadow:-22px 0 48px rgba(0,0,0,.4); transform:translateX(105%); transition:transform .25s ease; }
       .notif-drawer.open { transform:translateX(0); }
-    .leader-drawer { position:fixed; z-index:130; top:64px; right:0; bottom:0; width:var(--leader-w); display:flex; flex-direction:column; border-left:1px solid #263545; background:#0e1925; box-shadow:-22px 0 48px rgba(0,0,0,.4); transform:translateX(105%); transition:transform .25s ease; }
+    .leader-drawer { position:fixed; z-index:130; top:64px; right:0; bottom:0; width:var(--leader-w); display:flex; flex-direction:column; border-left:1px solid #263545; background:#111923; box-shadow:-22px 0 48px rgba(0,0,0,.4); transform:translateX(105%); transition:transform .25s ease; }
     .leader-drawer.open { transform:translateX(0); }
     .leader-head { height:44px; display:flex; align-items:center; padding:0 12px; border-bottom:1px solid #1c2938; gap:10px; flex:none; }
     .leader-head h2 { font-size:17px; line-height:1; font-weight:800; white-space:nowrap; letter-spacing:-.4px; margin:0; color:#f6f8fb; }
@@ -1279,7 +1300,7 @@
     .chat-pinned.collapsed .fold::after { transform:rotate(45deg); top:2px; }
     .chat-pinned.collapsed p { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 
-    .chat-log { flex:1; min-height:0; overflow-y:auto; padding:12px 8px 14px 6px; display:flex; flex-direction:column; gap:10px; background:#0d1924; }
+    .chat-log { flex:1; min-height:0; overflow-y:auto; padding:12px 8px 14px 6px; display:flex; flex-direction:column; gap:10px; background:#111923; }
     .chat-log::-webkit-scrollbar { width:6px; }
     .chat-log::-webkit-scrollbar-thumb { border-radius:3px; background:#2a3a4c; }
 
@@ -1407,7 +1428,7 @@
     .chat-tip-menu button { display:flex; width:100%; padding:9px 10px; align-items:center; gap:10px; border-radius:8px; color:#dbe6f4; font-size:13.5px; font-weight:700; text-align:left; }
     .chat-tip-menu button:hover { background:#2f3f52; color:#fff; }
     .chat-tip-menu button i { width:18px; color:#f5a623; font-size:14px; text-align:center; }
-    .tournament-head { position:sticky; z-index:4; top:0; display:flex; height:58px; padding:0 14px; align-items:center; gap:9px; border-bottom:1px solid #223141; background:#0d1823; }
+    .tournament-head { position:sticky; z-index:4; top:0; display:flex; height:58px; padding:0 14px; align-items:center; gap:9px; border-bottom:1px solid #223141; background:#111923; }
     .tournament-head h2 { margin:0; flex:1; min-width:0; color:#fff; font-size:17px; white-space:nowrap; }
     .tournament-head button { color:#fff; }
     .tournament-filter { display:flex; align-items:center; gap:9px; font-weight:700; }
@@ -1466,11 +1487,10 @@
     .nav-item.active, .nav-item:hover { color:#fff; }
     .nav-item .count { font-size:10px; font-weight:700; }
     .app-label { font-size:10px; font-weight:700; letter-spacing:.6px; }
-    .paymarks { font-size:13px; font-weight:600; }
     .top-button { font-size:14px; font-weight:600; letter-spacing:-.28px; }
     .bonus-button { font-size:12px; }
-    .promo-card h3 { font-size:24px; font-weight:800; letter-spacing:-.3px; line-height:1.06; }
-    .promo-card p { font-size:14px; font-weight:600; letter-spacing:-.28px; }
+    .promo-card h3 { font-size:22px; font-weight:700; letter-spacing:-.02em; line-height:28px; }
+    .promo-card p { font-size:14px; font-weight:500; color:hsla(0,0%,100%,.64); line-height:20px; }
     .casino-tabs button { font-size:14px; font-weight:900; letter-spacing:-.28px; color:#9db4d7; }
     .casino-tabs button b { font-size:14px; font-weight:900; }
     .casino-rail-head h2 { font-size:20px; font-weight:700; letter-spacing:-.4px; }
@@ -2216,6 +2236,32 @@
   </style>
 </head>
 <body>
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" xmlns="http://www.w3.org/2000/svg"><defs>
+<symbol id="icon-missions-color" viewBox="0 0 24 24"><path fill="#fff" fill-opacity=".48" d="M20.46 12.77q0-.34-.04-.67a1 1 0 0 0-1.13-.9c-.56.06-.97.57-.9 1.13l.02.44a7.19 7.19 0 1 1-7.18-7.18q.23 0 .44.02c.56.07 1.07-.34 1.13-.9a1.03 1.03 0 0 0-.9-1.13l-.67-.04a9.24 9.24 0 0 0 0 18.46 9.24 9.24 0 0 0 9.23-9.23"></path><path fill="#ED1D49" d="M21.96 6.42a.5.5 0 0 0-.47-.32h-3.6V2.51a.51.51 0 0 0-.87-.36L14.4 4.78c-.39.38-.6.9-.6 1.45v2.52l-3.3 3.3a1.02 1.02 0 1 0 1.46 1.44l3.28-3.28h2.53c.54 0 1.07-.22 1.45-.6l2.63-2.63c.15-.15.19-.37.11-.56"></path><path fill="#fff" fill-opacity=".72" d="M11.23 17.9A5.13 5.13 0 0 1 9.95 7.8c.54-.13 1.11.2 1.25.75s-.2 1.1-.74 1.24a3.08 3.08 0 1 0 3.75 3.75 1.02 1.02 0 1 1 1.98.5 5.1 5.1 0 0 1-4.96 3.86"></path></symbol>
+<symbol id="icon-bonus-cabinet" viewBox="0 0 24 24"><path fill="currentColor" d="m9.31 4.7 1.43 2.32h-3a1.7 1.7 0 0 1-1.28-.39 1.54 1.54 0 0 1 0-2.34c.35-.3.81-.44 1.27-.4h.1c.6 0 1.17.31 1.48.81m-5.18.75q0 .84.4 1.57H2.81q-.54.01-.93.37-.37.38-.38.89v2.51q.01.52.38.89.39.37.93.37H21.2q.54 0 .93-.37.37-.37.38-.89V8.28q-.01-.51-.38-.89a1.3 1.3 0 0 0-.93-.37h-1.72a3.3 3.3 0 0 0-.14-3.37A3.6 3.6 0 0 0 16.27 2h-.07c-1.31 0-2.52.66-3.19 1.74L12 5.34l-.99-1.6A3.7 3.7 0 0 0 7.82 2h-.09a3.7 3.7 0 0 0-2.55 1.01 3.4 3.4 0 0 0-1.05 2.44m13.78 0c0 .42-.18.82-.48 1.11-.31.3-.73.46-1.16.46h-3.01l1.43-2.32q.23-.38.64-.6.4-.22.87-.22h.09c.43.01.84.18 1.14.47q.46.47.48 1.1M3.8 14.11a1 1 0 0 0-1 1v5c0 .5.2.98.58 1.34.37.35.87.55 1.39.55H10a1 1 0 0 0 1-1l-.04-5.9a1 1 0 0 0-1-1zm9.2 6.89a1 1 0 0 0 1 1h5.2c.53 0 1.03-.2 1.4-.55q.57-.56.58-1.33V15.1a1 1 0 0 0-1-1H14a1 1 0 0 0-1 1z"></path></symbol>
+<symbol id="icon-bag-dollar" viewBox="0 0 20 20"><path fill="currentColor" d="m14.3 3.43-.62 1.05a.4.4 0 0 1-.32.18H6.64a.4.4 0 0 1-.32-.18L5.7 3.43A.94.94 0 0 1 6.5 2h7a.95.95 0 0 1 .8 1.43m3.2 9.9c0 1.9-.94 5.67-7.5 5.67s-7.5-3.78-7.5-5.67c0-3.13 1.94-5.62 3.47-7.14a.4.4 0 0 1 .27-.1h7.52q.16 0 .27.1c1.53 1.52 3.47 4 3.47 7.14m-5.16.58c0-.97-.64-1.81-1.57-2.06l-1.19-.3a.7.7 0 0 1-.37-.25.7.7 0 0 1-.15-.43c0-.4.3-.71.68-.71h.52a.7.7 0 0 1 .67.63.7.7 0 1 0 1.4-.16A2.1 2.1 0 0 0 10.7 8.8V8.6a.7.7 0 0 0-.7-.7.7.7 0 0 0-.7.7v.18a2.1 2.1 0 0 0-1.64 2.08q0 .73.43 1.3c.28.37.69.64 1.14.75l1.19.3c.3.09.52.37.52.7a.7.7 0 0 1-.2.5.7.7 0 0 1-.48.2h-.52a.7.7 0 0 1-.67-.63.7.7 0 1 0-1.4.16c.1.92.77 1.64 1.63 1.83v.19c0 .39.31.7.7.7a.7.7 0 0 0 .7-.7v-.19a2 2 0 0 0 1.03-.57c.4-.4.61-.93.61-1.5Z"></path></symbol>
+<symbol id="icon-promotions" viewBox="0 0 19 19"><path fill="currentColor" stroke="currentColor" stroke-width="1.35" d="M5.99 5.49c.74 0 1.34.6 1.34 1.34v2.68c0 .74-.6 1.35-1.34 1.35H4.35c-1.26 0-2.38-1.14-2.38-2.69 0-1.54 1.12-2.68 2.38-2.68zM10.17 6.32c0-.55.33-1.04.84-1.25l4.13-1.7c.88-.36 1.85.3 1.85 1.25v7.42c0 .96-.97 1.6-1.86 1.24L11 11.58c-.5-.22-.83-.7-.83-1.25z"></path><path fill="currentColor" d="M7.14 12.77a1.58 1.58 0 0 0-1.46 2.17l.68 1.67a1.58 1.58 0 1 0 2.92-1.19l-.68-1.67c-.24-.6-.82-.98-1.46-.98"></path></symbol>
+<symbol id="icon-referral-2" viewBox="0 0 20 20"><path fill="currentColor" d="M6.7 1.69a3.9 3.9 0 0 0-3.77 3.96A3.87 3.87 0 0 0 6.78 9.6h.06a3.87 3.87 0 0 0 3.64-3.95c0-2.19-1.7-3.96-3.78-3.96"></path><path fill="currentColor" stroke="currentColor" d="M3.28 16.7c-.9-.65-1.37-1.48-1.37-2.34s.46-1.7 1.38-2.36a6.7 6.7 0 0 1 3.8-1.1c1.4 0 2.77.37 3.8 1.1.9.64 1.35 1.48 1.36 2.34 0 .87-.46 1.7-1.37 2.36a6.6 6.6 0 0 1-3.8 1.11c-1.4 0-2.77-.38-3.8-1.11ZM11.73 8.8a5.02 5.02 0 0 0 .53-4.95q.16-.06.34-.07c1.17-.12 2.32.9 2.44 2.42.1 1.5-.81 2.7-1.95 2.88q-.06 0-.22.02-.62.02-1.14-.3Z"></path><path fill="currentColor" d="M17.8 13.97c-.06.84-.6 1.58-1.47 2.08-.85.48-1.92.7-2.98.68.6-.57.96-1.28 1.03-2.03.09-1.08-.41-2.12-1.42-2.95a7 7 0 0 0-1.95-1.1 6.5 6.5 0 0 1 5.69 1.02c.78.65 1.18 1.46 1.1 2.3"></path></symbol>
+<symbol id="icon-crown-2" viewBox="0 0 19 19"><path fill="currentColor" stroke="currentColor" d="M15.4 15.25c.3 0 .5.27.43.54l-.02.01-.1.03H3.3l-.1-.03-.03-.01a.43.43 0 0 1 .42-.54z"></path><path fill="currentColor" d="M18.2 7.6 17.1 12.4a1 1 0 0 1-.98.78H2.87a1 1 0 0 1-.98-.78L.81 7.6a.6.6 0 0 1 .23-.65c.2-.15.47-.17.68-.04l3.03 1.76a1 1 0 0 0 1.34-.32L9 3.95a.62.62 0 0 1 1-.04l3.43 4.49a1 1 0 0 0 1.35.22l2.47-1.68a.6.6 0 0 1 .7 0c.21.15.3.42.25.67"></path></symbol>
+<symbol id="icon-vip" viewBox="0 0 20 20"><path fill="currentColor" stroke="currentColor" d="M2.47 12.88H4.7c.22 0 .34.15.34.29v4.75c0 .13-.12.29-.34.29H1.63c-.21 0-.34-.16-.34-.3v-3.95c0-.57.5-1.08 1.18-1.08Z"></path><path fill="currentColor" d="M10.55 8.42H8.44c-.87 0-1.31.77-1.31 1.71v7.72c0 .47.08.86.52.86h3.7c.43 0 .52-.39.52-.86v-7.72c0-.94-.44-1.71-1.32-1.71m5.98 6.33H14.3c-.46 0-.84.36-.84.8v2.37c0 .43.38.79.84.79h3.07c.46 0 .84-.36.84-.8v-1.58c0-.87-.76-1.58-1.68-1.58m-4.2-10.5c.28-.26.4-.57.3-.84q-.15-.4-.8-.51l-.9-.13c-.03 0-.12-.06-.13-.1l-.5-.87c-.38-.68-1.23-.68-1.6 0l-.5.88c-.01.03-.1.09-.14.09l-.9.13c-.4.06-.7.25-.8.51-.09.27.02.58.32.83l.69.63c.04.02.07.12.06.15l-.2.77c-.15.57.1.83.25.93.16.1.5.23 1.08-.07l.85-.44c.03-.02.16-.02.2 0l.83.44q.4.2.65.18a1 1 0 0 0 .42-.11c.16-.1.4-.36.25-.93l-.2-.77c0-.04.02-.13.06-.15z"></path></symbol>
+<symbol id="icon-box" viewBox="0 0 20 20"><path fill="currentColor" stroke="currentColor" d="M9.62 9.46a.3.3 0 0 1-.3 0L3.4 6.07c-.17-.1-.18-.3-.08-.4q.3-.32.6-.5h.01L8.1 2.9c.36-.2.86-.3 1.38-.3.53 0 1.02.1 1.38.3l4.18 2.28q.32.18.61.5c.09.1.07.3-.1.4zM3.35 15.15a3 3 0 0 1-1.05-1.12 3 3 0 0 1-.45-1.5V8.44c0-.26.25-.38.44-.27l5.68 3.29q.16.1.16.29v5.4c0 .24-.24.37-.43.28a105 105 0 0 1-4.24-2.22l-.09-.05z"></path><path fill="currentColor" d="M10.32 11.75v5.4c0 .6.61 1 1.15.73 1.63-.8 4.38-2.3 4.38-2.3a3.9 3.9 0 0 0 1.76-3.05V8.44a.8.8 0 0 0-1.2-.7l-5.7 3.3a.9.9 0 0 0-.39.7"></path></symbol>
+<symbol id="icon-docs" viewBox="0 0 20 20"><path fill="currentColor" d="M10.95 2.08h-3.3c-.72 0-1.32.5-1.32 1.11v.56c0 .6.6 1.1 1.32 1.1h3.3c.73 0 1.32-.5 1.32-1.1v-.56c0-.61-.59-1.1-1.32-1.1"></path><path fill="currentColor" fill-rule="evenodd" d="M13.79 4.25c0 1.27-1.07 2.3-2.37 2.3H7.58a2.34 2.34 0 0 1-2.37-2.3c0-.44-.49-.72-.9-.51a3.5 3.5 0 0 0-1.93 3.14v7.48a3.6 3.6 0 0 0 3.65 3.56h6.94c2.01 0 3.65-1.6 3.65-3.56V6.88c0-1.36-.78-2.55-1.93-3.14-.41-.21-.9.07-.9.51m-8.25 8.92c0-.44.36-.8.8-.8h3.95a.8.8 0 0 1 0 1.59H6.33a.8.8 0 0 1-.79-.8m.8-3.96a.8.8 0 0 0 0 1.58h5.54a.8.8 0 1 0 0-1.58z" clip-rule="evenodd"></path></symbol>
+<symbol id="icon-cherries" viewBox="0 0 24 24"><g fill="none"><path fill="currentColor" d="M2 17.3a4.8 4.8 0 0 0 9.5 0c0-2.6-2.4-4.8-4.8-2.9-2.4-1.9-4.8.2-4.8 2.9Zm9.5 0a4.8 4.8 0 1 0 9.5 0c0-2.6-2.4-4.8-4.8-2.9-2.4-1.9-4.8.2-4.8 2.9Z"></path><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.53" d="M6.8 14.4c3-2.8 4-8.3 4.7-11.4 1.6 2.3 4.7 8.6 4.8 11.4"></path><path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.53" d="M21 9.7c-4.1 0-6.8-2.2-9.5-6.7C16.9 3 21 7.4 21 9.7"></path></g></symbol>
+<symbol id="icon-chip" viewBox="0 0 24 24"><path fill="currentColor" d="M17.76 19.27c.4.41.38 1.08-.09 1.41A9.8 9.8 0 0 1 12 22.5a9.8 9.8 0 0 1-5.67-1.82c-.47-.33-.5-1-.1-1.4l.12-.12c.36-.37.95-.4 1.4-.1A7.7 7.7 0 0 0 12 20.35a7.7 7.7 0 0 0 4.26-1.3 1.1 1.1 0 0 1 1.4.11zM13.04 5.6a6.5 6.5 0 1 1-2.08 12.83 6.5 6.5 0 0 1 2.08-12.84"></path><path fill="currentColor" d="M22.5 12a9.8 9.8 0 0 1-1.82 5.68c-.33.46-1 .48-1.4.08l-.12-.1a1.1 1.1 0 0 1-.1-1.4A7.7 7.7 0 0 0 20.35 12a7.7 7.7 0 0 0-1.3-4.26 1.1 1.1 0 0 1 .11-1.4l.11-.1c.41-.4 1.08-.38 1.41.09A9.8 9.8 0 0 1 22.5 12m-4.83-8.68c.47.33.5 1 .1 1.4l-.12.12c-.36.37-.95.4-1.4.1A7.7 7.7 0 0 0 12 3.65a7.7 7.7 0 0 0-4.26 1.3 1.1 1.1 0 0 1-1.4-.11l-.1-.11c-.4-.41-.38-1.08.09-1.41A9.8 9.8 0 0 1 12 1.5c2.1 0 4.06.67 5.67 1.82M3.65 12a7.7 7.7 0 0 0 1.3 4.26 1.1 1.1 0 0 1-.11 1.4l-.11.1c-.41.4-1.08.38-1.41-.09A9.8 9.8 0 0 1 1.5 12c0-2.1.67-4.07 1.82-5.67.33-.47 1-.5 1.4-.1l.12.12c.37.36.4.95.1 1.4A7.7 7.7 0 0 0 3.65 12"></path></symbol>
+<symbol id="icon-cube-2" viewBox="0 0 24 24"><path fill="currentColor" d="M2.25 19.43a2.33 2.33 0 0 0 2.32 2.32h14.87a2.33 2.33 0 0 0 2.31-2.32V4.56a2.33 2.33 0 0 0-2.32-2.31H4.56a2.33 2.33 0 0 0-2.31 2.32zM16.88 4.98a2.06 2.06 0 1 1 0 4.11 2.06 2.06 0 0 1 0-4.1Zm0 9.85a2.06 2.06 0 1 1 0 4.11 2.06 2.06 0 0 1 0-4.1M12 9.94a2.06 2.06 0 1 1 0 4.11 2.06 2.06 0 0 1 0-4.1M7.24 4.98a2.06 2.06 0 1 1 0 4.11 2.06 2.06 0 0 1 0-4.1m0 9.93a2.06 2.06 0 1 1 0 4.1 2.06 2.06 0 0 1 0-4.1"></path></symbol>
+<symbol id="icon-lootboxes" viewBox="0 0 20 20"><path fill="currentColor" d="M17.72 8.82H1.28A.3.3 0 0 0 1 9.1v6.57q0 2.83 2.83 2.83h11.34q2.83 0 2.83-2.83V9.1a.3.3 0 0 0-.28-.28m-5.03 3.92-1.19 1.13a.4.4 0 0 0-.1.32l.27 1.56c.06.31-.28.55-.57.4l-1.43-.73a.4.4 0 0 0-.34 0l-1.43.73c-.29.15-.62-.09-.57-.4l.27-1.56a.4.4 0 0 0-.1-.32l-1.2-1.13a.36.36 0 0 1 .21-.62l1.65-.23q.19-.04.27-.2l.72-1.41a.4.4 0 0 1 .7 0l.72 1.41q.08.16.27.2l1.65.23c.3.05.42.41.2.62M1.31 7.04l1-3.48c.34-1.22.58-2.06 2.71-2.06h3.49c.16 0 .28.13.28.28v5.34q-.02.26-.28.28H1.58a.28.28 0 0 1-.27-.36m8.9.08V1.78c0-.15.12-.28.28-.28h3.49c2.13 0 2.37.84 2.72 2.06l1 3.48a.28.28 0 0 1-.28.36h-6.93a.3.3 0 0 1-.28-.28"></path></symbol>
+<symbol id="icon-providers" viewBox="0 0 24 24"><path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M16.25 14h-8.5C6.79 14 6 13.74 6 13.42v-.84c0-.32.79-.58 1.75-.58h8.5c.96 0 1.75.26 1.75.58v.84c0 .32-.79.58-1.75.58M19.08 22H4.92C3.32 22 2 21.47 2 20.83v-1.66C2 18.53 3.32 18 4.92 18h14.16c1.6 0 2.92.53 2.92 1.17v1.66c0 .64-1.32 1.17-2.92 1.17"></path><path stroke="currentColor" stroke-width="2" d="m12 12-1.7-5.98"></path><circle cx="10" cy="4" r="3" fill="currentColor" stroke="currentColor" stroke-width="2"></circle></symbol>
+<symbol id="icon-star-move" viewBox="0 0 24 24"><path fill="currentColor" d="m16.56 4.3 1.59 3.2c.21.44.79.86 1.27.95l2.87.47c1.83.3 2.26 1.65.95 2.98L21 14.15a2 2 0 0 0-.46 1.65l.64 2.78c.5 2.2-.67 3.06-2.6 1.9l-2.68-1.6a1.9 1.9 0 0 0-1.78 0l-2.69 1.6c-1.92 1.15-3.09.3-2.58-1.9l.64-2.78c.1-.55-.12-1.28-.49-1.66L6.76 11.9c-1.31-1.32-.88-2.66.95-2.98l2.87-.47a2 2 0 0 0 1.27-.96l1.59-3.19c.86-1.72 2.26-1.72 3.12.01M8.2 5H1.8C1.36 5 1 4.55 1 4s.36-1 .8-1h6.4c.44 0 .8.45.8 1s-.36 1-.8 1M5.17 21H1.83c-.45 0-.83-.45-.83-1s.38-1 .83-1h3.34c.45 0 .83.45.83 1s-.38 1-.83 1M3.1 13H1.9c-.5 0-.9-.45-.9-1s.4-1 .9-1h1.2c.5 0 .9.45.9 1s-.4 1-.9 1"></path></symbol>
+<symbol id="icon-bonus-buy" viewBox="0 0 20 20"><path fill="currentColor" d="M14.26 2.08v1.2a2 2 0 0 1 1.38.56 2 2 0 0 1 .59 1.41v1.92q.02.86-.86.85h-1.52V3.68c0-.23.19-.4.4-.4zm0 0c-.88 0-1.6.72-1.6 1.6V9.2h2.71c1.25 0 2.05-.8 2.05-2.04V5.25c0-.87-.36-1.66-.93-2.24a3.2 3.2 0 0 0-2.23-.93"></path><path fill="currentColor" fill-rule="evenodd" d="M5.54 2.08h-.79c-2.37 0-3.17 1.42-3.17 3.17v11.88a.79.79 0 0 0 1.27.63l1.35-1.02a.8.8 0 0 1 1.05.09l1.31 1.32a.8.8 0 0 0 1.13 0l1.33-1.33a.8.8 0 0 1 1.03-.07l1.35 1a.8.8 0 0 0 1.27-.62V3.66c0-.87.7-1.59 1.58-1.59zm2.59 7.34h2.16a1 1 0 0 0 0-2H8.13V5.25a1 1 0 1 0-2 0v2.17H3.96a1 1 0 1 0 0 2h2.17v2.16a1 1 0 1 0 2 0z" clip-rule="evenodd"></path></symbol>
+<symbol id="icon-show" viewBox="0 0 24 24"><path fill="currentColor" d="M16.4 1.5H7.6c-3.82 0-6.1 2.28-6.1 6.1v8.79c0 3.83 2.28 6.11 6.1 6.11h8.8c3.82 0 6.1-2.28 6.1-6.1V7.6c.01-3.82-2.27-6.1-6.1-6.1m-1.6 12.32-1.34.77-1.35.78c-1.73 1-3.15.18-3.15-1.82v-3.1c0-2 1.42-2.82 3.15-1.82l1.35.78 1.34.77c1.73 1 1.73 2.64 0 3.64"></path></symbol>
+<symbol id="icon-roulette" viewBox="0 0 20 20"><path fill="currentColor" fill-rule="evenodd" d="M12.41 11a2.7 2.7 0 0 0-.37-2.92l1.58-1.9h.06a1 1 0 1 0-.93-.64L11.19 7.4a2.7 2.7 0 0 0-2.78.24l-2-1.39a1 1 0 1 0-.59.9l.55.4 1.27.99a2.7 2.7 0 0 0 .26 2.94L6.49 13.4h-.07a1 1 0 1 0 .93.66l1.38-1.87a2.7 2.7 0 0 0 3.02-.33l1.87 1.48-.01.17a1 1 0 1 0 .75-.97zm-3.25-.1" clip-rule="evenodd"></path><path fill="currentColor" fill-rule="evenodd" d="M10 18.33a8.33 8.33 0 1 0 0-16.66 8.33 8.33 0 0 0 0 16.66m4.76-6.8-.02.01a5 5 0 0 0-.66-4.4 1.97 1.97 0 1 0-2.38-1.82 5 5 0 0 0-4.4.5 1.97 1.97 0 1 0-1.94 2.36 5 5 0 0 0 .42 4.46 1.97 1.97 0 1 0 2.6 2.07 5 5 0 0 0 4.36-.55 1.97 1.97 0 0 0 3.13.85 1.97 1.97 0 0 0-1.11-3.47m.94-1.57.02.04h-.02z" clip-rule="evenodd"></path></symbol>
+<symbol id="icon-cards" viewBox="0 0 24 24"><g fill="currentColor" clip-path="url(#cards-clip)"><path d="M20.56-.57h-2.84c.53.57.92 1.43 1.01 2.43l1.75 17.74c.09.96-.08 1.9-.47 2.68h.55c.95 0 1.73-1.1 1.73-2.47V1.9c0-1.37-.78-2.47-1.73-2.47m-1.72 20.45L16.52 3.15a2.3 2.3 0 0 0-2.6-1.98L3.7 2.63a2.3 2.3 0 0 0-1.95 2.63l2.31 16.73a2.3 2.3 0 0 0 2.6 1.99l10.23-1.46a2.33 2.33 0 0 0 1.96-2.64M6.28 6.9a.57.57 0 0 1-.8-.15l-.44-.65-.25.75a.57.57 0 0 1-.72.37.6.6 0 0 1-.36-.74l.61-1.85c.14-.42.77-.51 1.02-.15L6.43 6.1a.6.6 0 0 1-.15.81m6.9 5.8-1.73 2.34a1.14 1.14 0 0 1-1.61.23l-2.3-1.76a2.07 2.07 0 0 1-.4-2.87 2 2 0 0 1 2.82-.4 2 2 0 0 1 2.83-.4c.89.68 1.07 1.96.4 2.86m3.69 5.96-.62 1.86a.57.57 0 0 1-1.02.14l-1.09-1.61a.6.6 0 0 1 .15-.81.57.57 0 0 1 .8.15l.44.65.25-.75a.57.57 0 0 1 .72-.37c.3.1.47.44.36.74Z"></path></g><defs><clipPath id="cards-clip"><path fill="currentColor" d="M0 0h24v24H0z"></path></clipPath></defs></symbol>
+<symbol id="icon-cards-2" viewBox="0 0 24 24"><path fill="currentColor" d="M2.73 5.06c0-2.17 1.8-3.94 4.01-3.94h12.59A2.9 2.9 0 0 0 17.05 0H4.45a2.84 2.84 0 0 0-2.86 2.81v16.87c0 .91.45 1.72 1.14 2.23z"></path><path fill="currentColor" d="M18.8 3.13H7.32a2.6 2.6 0 0 0-2.6 2.61v15.65A2.6 2.6 0 0 0 7.32 24H18.8a2.6 2.6 0 0 0 2.61-2.6V5.73a2.6 2.6 0 0 0-2.6-2.61M8.6 7.25a.5.5 0 0 1-.7-.23l-.31-.63-.32.63a.52.52 0 0 1-.93-.47l.78-1.56c.18-.36.76-.36.93 0l.79 1.56a.5.5 0 0 1-.24.7m7.7 6.88-2.5 2.5a1.04 1.04 0 0 1-1.47 0l-2.5-2.5a2.3 2.3 0 1 1 3.24-3.24 2.3 2.3 0 1 1 3.24 3.24m3.5 6.45L19 22.15a.52.52 0 0 1-.93 0l-.79-1.57a.52.52 0 1 1 .94-.46l.31.63.32-.64a.52.52 0 0 1 .93.47"></path></symbol>
+<symbol id="icon-play-new" viewBox="0 0 26 24"><path fill="currentColor" d="M20.83 10.07c1.56.86 1.56 3 0 3.86L8.52 20.7C6.95 21.56 5 20.48 5 18.76V5.24c0-1.72 1.95-2.8 3.52-1.94z"></path></symbol>
+<symbol id="icon-rocket" viewBox="0 0 24 24"><path fill="currentColor" d="M11.53.33c.42-.24.92-.24 1.34 0 1.7.95 6.05 4.21 6.05 12.6 0 2.5-1.04 5.49-1.87 7.46-.3.7-1.01 1.15-1.78 1.15H9.13c-.77 0-1.48-.44-1.78-1.15-.83-1.97-1.87-4.96-1.87-7.47 0-8.38 4.35-11.64 6.05-12.6m3.66 10.13c0-1.35-1.35-2.96-2.99-2.96s-2.99 1.6-2.99 2.96 1.35 3.04 2.99 3.04 2.99-1.68 2.99-3.04M3.53 23.82a2.05 2.05 0 0 0 1.28-2.73 27 27 0 0 1-1.27-4.14c-.21-.98-1.37-1.54-2.2-.98-.4.26-.62.7-.6 1.17l.31 4.93a1.94 1.94 0 0 0 2.48 1.75m16.58-.01a1.8 1.8 0 0 0 2.35-1.5l.64-5.43a1.3 1.3 0 0 0-.69-1.28c-.8-.42-1.8.13-1.97 1.03-.34 1.71-.92 3.39-1.44 4.7-.4 1 .1 2.14 1.11 2.48"></path></symbol>
+<symbol id="icon-flame" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M7.79 7.04c.25-.69.57-1.44.9-2.01a18 18 0 0 1 2.8-3.24 1 1 0 0 1 1.2-.1c1.19.76 3.72 2.48 5.13 4.05l.59.65c1.32 1.45 2.29 2.5 2.76 4.54.54 2.33.47 4-.75 6.08-1 1.72-2.07 2.5-3.9 3.4a9.3 9.3 0 0 1-6.15.89c-2.7-.4-4.5-1.13-6.14-3.22-1.46-1.85-1.8-3.4-1.68-5.72.09-1.63 1.18-3.65 1.92-4.85a.94.94 0 0 1 1.52-.1c.53.59 1.52.37 1.8-.37m3.6.29s-4.44 2.88-4.62 5.52c-.1 1.47.03 2.5 1.09 3.67a5.1 5.1 0 0 0 3.53 1.84c2.16.28 3.96-.29 5.16-1.84.93-1.21.8-2.24.54-3.67-.5-2.83-5.7-5.52-5.7-5.52" clip-rule="evenodd"></path></symbol>
+<symbol id="icon-bolt" viewBox="0 0 24 24"><path fill="currentColor" d="M14.23 2.26a.9.9 0 0 1 1.7.65l-1.55 6.4h4.68a.9.9 0 0 1 .7 1.47l-9.6 11.7a.9.9 0 0 1-1.6-.77l1.56-6.66H5.24a.9.9 0 0 1-.7-1.46l9.69-11.33z"></path></symbol>
+</defs></svg>
 <div id="app">
 <header class="site-header">
 <div class="header-left">
@@ -2228,7 +2274,7 @@
 </div>
 <div class="header-right" v-if="!isAuthenticated">
 <button @click="requestAuth('login')" class="top-button login-button">Log in</button>
-<button @click="requestAuth('register')" class="top-button signup-button">Sign Up</button>
+<button @click="requestAuth('register')" class="top-button signup-button btn-3d-red"><span class="btn-3d-red__face">Sign Up</span></button>
 <button @click="toastMessage('Language: English')" class="top-button locale-button"><img alt="English" class="flag" src="assets/flag-en.svg"/><span class="divider"></span><i class="fas fa-cog" style="font-size:20px"></i></button>
 <button :class="{active:chatOpen}" @click="toggleChat" aria-label="Messages" class="top-button chat-top"><img alt="" class="chat-icon" src="assets/icon-chat.svg"/></button>
 </div>
@@ -2354,13 +2400,17 @@
 <button :class="{active:isCasinoPage}" @click="openCasinoMenu" class="side-switch"><svg aria-hidden="true" class="side-switch__icon casino-spade" viewBox="0 0 24 24"><path d="M12 2.3c-1.2 1.8-3.1 3.7-5.3 5.8C4.4 10.2 3 12 3 14.1c0 2.7 2.1 4.8 4.7 4.8 1.3 0 2.5-.5 3.4-1.4-.2 1.7-.9 3-1.9 3.7-.4.3-.2.9.3.9h5c.5 0 .7-.6.3-.9-1-.7-1.7-2-1.9-3.7.9.9 2.1 1.4 3.4 1.4 2.6 0 4.7-2.1 4.7-4.8 0-2.1-1.4-3.9-3.7-6C15.1 6 13.2 4.1 12 2.3Z"></path></svg><span>Casino</span></button>
 <button :class="{active:currentPage==='sports'}" @click="navigate('/sports')" class="side-switch"><i class="fas fa-basketball-ball side-switch__icon"></i><span>Sports</span></button>
 </div>
-<button @click="openSearchModal" class="side-search" type="button"><i class="fas fa-search"></i><span>Search</span></button>
-<nav aria-label="Casino navigation" class="side-nav casino-nav">
-<button :key="item.label" @click="openCasinoCategory(item)" class="nav-item" :class="{active:isNavActive(item)}" v-for="item in casinoNavItems"><span class="nav-icon"><img :alt="item.label" :src="item.image" :style="item.label==='Table Games' ? {transform:'translateY(2px)'} : null" class="nav-icon__img" v-if="item.image"/><i :class="item.icon" v-else=""></i></span><span class="nav-label">{{item.label}}</span><i class="fas fa-chevron-right arrow" v-if="item.arrow"></i></button>
+<button @click="openSearchModal" class="side-search" type="button" v-if="isCasinoPage"><i class="fas fa-search"></i><span>Search</span></button>
+<nav aria-label="Casino navigation" class="side-nav casino-nav" v-if="isCasinoPage">
+<template :key="item.label || 'divider-'+i" v-for="(item,i) in casinoNavItems">
+<div class="side-nav-divider" v-if="item.divider"></div>
+<button @click="openCasinoCategory(item)" class="nav-item" :class="{active:isNavActive(item)}" v-else=""><span class="nav-icon"><svg class="nav-svg" aria-hidden="true" v-if="item.svgIcon"><use :href="'#'+item.svgIcon"></use></svg><img :alt="item.label" :src="item.image" :style="item.label==='Table Games' ? {transform:'translateY(2px)'} : null" class="nav-icon__img" v-else-if="item.image"/><i :class="item.icon" v-else=""></i></span><span class="nav-label">{{item.label}}</span><i class="fas fa-chevron-right arrow" v-if="item.arrow"></i></button>
+</template>
 </nav>
 <nav aria-label="Account navigation" class="side-nav account-nav">
 <button :class="{vip:item.vip,active:isNavActive(item)}" :key="item.label" @click="navigate(item.path || '/')" class="nav-item" v-for="item in navItems">
-<span class="nav-icon" v-if="!item.image"><i :class="item.icon"></i></span>
+<span class="nav-icon" v-if="item.svgIcon"><svg class="nav-svg" aria-hidden="true"><use :href="'#'+item.svgIcon"></use></svg></span>
+<span class="nav-icon" v-else-if="!item.image"><i :class="item.icon"></i></span>
 <img :src="item.image" :alt="websiteName + ' token'" class="mini-token" v-else=""/>
 <span class="nav-label" v-if="item.vip"><span class="vip-word">VIP</span> Club</span>
 <span class="nav-label" v-else="">{{item.label}}</span>
@@ -2369,7 +2419,7 @@
 </button>
 </nav>
 <div class="side-bottom">
-<div class="paymarks"><span class="google-g">G</span><span>Pay</span><span class="apple"><i class="fab fa-apple"></i> Pay</span><span class="mc"><b>���</b><b>●</b></span><span class="visa">VISA</span></div>
+<div class="paymarks"><img alt="Google Pay" class="paymarks__icon" src="assets/payments/gpay.svg"/><img alt="Apple Pay" class="paymarks__icon" src="assets/payments/applepay.svg"/><img alt="Mastercard" class="paymarks__icon paymarks__icon--mc" src="assets/payments/mastercard.svg"/><img alt="Visa" class="paymarks__icon" src="assets/payments/visa.svg"/></div>
 <button @click="navigate('/buy-crypto')" class="buy-side">Buy Crypto</button>
 <div class="app-label"><span>{{websiteName.toUpperCase()}} APP</span><span class="app-icons"><i class="fab fa-apple"></i><i class="fab fa-android" style="color:#7ca331"></i><i class="fab fa-windows" style="color:#137bbd"></i></span></div>
 </div>
@@ -3716,7 +3766,7 @@
 <h1 class="hero-title"><span class="pink">Welcome Bonus</span><span class="white">Up to 590%</span></h1>
 <p class="hero-sub">+ 225 Free Spins</p>
 <div class="hero-actions">
-<button @click="requestAuth('register')" class="main-cta">Sign Up and Play</button>
+<button @click="requestAuth('register')" class="main-cta btn-3d-red"><span class="btn-3d-red__face">Sign Up and Play</span></button>
 <button @click="toastMessage('Continue with Google')" class="provider-button">G</button>
 <button @click="toastMessage('Continue with wallet')" class="provider-button"><img alt="wallet" src="assets/image-4.png"/></button>
 <button @click="toastMessage('Continue with Telegram')" class="provider-button"><i class="fab fa-telegram-plane"></i></button>
@@ -3766,7 +3816,7 @@
 <section class="buy-banner" id="buy-crypto">
 <h2>Buy crypto quickly<br/>and easily</h2>
 <div class="big-paymarks"><span class="google"><b>G</b> Pay</span><span class="apple"><i class="fab fa-apple"></i> Pay</span><span class="mc-logo"><i></i><i></i></span><span class="visa">VISA</span></div>
-<button @click="openModal('signup')" class="buy-cta">Sign Up &amp; Buy Crypto</button>
+<button @click="openModal('signup')" class="buy-cta btn-3d-red"><span class="btn-3d-red__face">Sign Up &amp; Buy Crypto</span></button>
 </section>
 <section class="section-block sports-section" id="sports">
 <div class="section-heading"><h2>TOP Sports</h2><div class="section-tools"><button @click="toastMessage('Sportsbook opened')" class="section-link">Go to Sports</button><button @click="slide('sports-strip',-1)" class="arrow-button"><i class="fas fa-chevron-left"></i></button><button @click="slide('sports-strip',1)" class="arrow-button"><i class="fas fa-chevron-right"></i></button></div></div>
@@ -4090,7 +4140,7 @@
 <p>{{modal==='login'?'Log in to continue playing.':'Create your account and claim the welcome bonus.'}}</p>
 <input placeholder="Email address" required="" type="email"/>
 <input placeholder="Password" required="" type="password"/>
-<button class="modal-submit" type="submit">{{modal==='login'?'Log in':'Sign Up'}}</button>
+<button class="modal-submit btn-3d-red" type="submit"><span class="btn-3d-red__face">{{modal==='login'?'Log in':'Sign Up'}}</span></button>
 </form>
 </div>
 <div :class="{'modal-backdrop--chat':chatOpen}" @click.self="closeDropModal" class="modal-backdrop" v-if="dropModalOpen">
@@ -4743,8 +4793,10 @@
               </span>
             </div>
             <div class="game-card-hover__center">
-              <button class="game-card-hover__play" :aria-label="'Play ' + name" type="button" @click.stop="$emit('select')">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              <button class="game-card-hover__play btn-3d-red" :aria-label="'Play ' + name" type="button" @click.stop="$emit('select')">
+                <span class="btn-3d-red__face">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                </span>
               </button>
             </div>
             <div class="game-card-hover__bottom">
@@ -5358,35 +5410,36 @@
 
         const casinoNavItems = [
           {label:`${WEBSITE_NAME} Originals`,image:'assets/nav/image-1.png',icon:'fas fa-dragon',path:'/originals',match:'original',arrow:true},
-          {label:'Slots',image:'assets/nav/image-2.png',icon:'fas fa-cherries',path:'/slots',match:'slot'},
-          {label:'Live Casino',image:'assets/nav/image-3.png',icon:'fas fa-broadcast-tower',path:'/live-casino',match:'live'},
-          {label:'Table Games',image:'assets/nav/image-4.png',icon:'fas fa-dice-five',path:'/casino',match:'table'},
-          {label:'NFT Lootboxes',image:'assets/nav/image-5.png',icon:'fas fa-box',path:'/casino',match:'nft|loot'},
-          {label:'Providers',image:'assets/nav/image-6.png',icon:'fas fa-stamp',path:'/casino',match:'provider'},
-          {label:'Hot Picks',image:'assets/nav/image-7.png',icon:'fas fa-fire',path:'/casino',match:'hot|popular'},
-          {label:`${WEBSITE_NAME} Exclusives`,image:'assets/nav/image-8.png',icon:'fas fa-star',path:'/casino',match:'exclusive'},
-          {label:'Buy Feature',image:'assets/nav/image-9.png',icon:'fas fa-puzzle-piece',path:'/casino',match:'buy'},
+          {label:'Slots',svgIcon:'icon-cherries',path:'/slots',match:'slot'},
+          {label:'Live Casino',svgIcon:'icon-chip',path:'/live-casino',match:'live'},
+          {label:'Table Games',svgIcon:'icon-cube-2',path:'/casino',match:'table'},
+          {label:'NFT Lootboxes',svgIcon:'icon-lootboxes',path:'/casino',match:'nft|loot'},
+          {label:'Providers',svgIcon:'icon-providers',path:'/casino',match:'provider'},
+          {divider:true},
+          {label:'Hot Picks',svgIcon:'icon-flame',path:'/casino',match:'hot|popular'},
+          {label:`${WEBSITE_NAME} Exclusives`,svgIcon:'icon-star-move',path:'/casino',match:'exclusive'},
+          {label:'Buy Feature',svgIcon:'icon-bonus-buy',path:'/casino',match:'buy'},
           {label:'Themes',image:'assets/nav/image-10.png',icon:'fas fa-palette',path:'/casino',match:'theme'},
-          {label:'New Releases',image:'assets/nav/image-11.png',icon:'fas fa-rocket',path:'/casino',match:'new'},
+          {label:'New Releases',svgIcon:'icon-rocket',path:'/casino',match:'new'},
           {label:'Highroller Hall',image:'assets/nav/image-12.png',icon:'fas fa-crown',path:'/casino',match:'high'},
-          {label:'Game Shows',image:'assets/nav/image-13.png',icon:'fas fa-play-square',path:'/live-casino',match:'show'},
-          {label:'Roulette',image:'assets/nav/image-14.png',icon:'fas fa-dharmachakra',path:'/casino',match:'roulette'},
-          {label:'Blackjack',image:'assets/nav/image-15.png',icon:'fas fa-id-card',path:'/casino',match:'blackjack'},
-          {label:'Baccarat',image:'assets/nav/image-16.png',icon:'fas fa-clone',path:'/casino',match:'baccarat'},
-          {label:'Instant Games',image:'assets/nav/image-17.png',icon:'fas fa-bolt',path:'/originals',match:'instant|crash'},
+          {label:'Game Shows',svgIcon:'icon-show',path:'/live-casino',match:'show'},
+          {label:'Roulette',svgIcon:'icon-roulette',path:'/casino',match:'roulette'},
+          {label:'Blackjack',svgIcon:'icon-cards',path:'/casino',match:'blackjack'},
+          {label:'Baccarat',svgIcon:'icon-cards-2',path:'/casino',match:'baccarat'},
+          {label:'Instant Games',svgIcon:'icon-bolt',path:'/originals',match:'instant|crash'},
           {label:'Drops & Wins',image:'assets/contests/contests-tournament.png',icon:'fas fa-trophy',path:'/casino',match:'drop|win'}
         ];
         const navItems = [
-          {label:'Missions', icon:'fas fa-bullseye', count:'27', path:'/missions'},
-          {label:'Bonuses', icon:'fas fa-gift', path:'/bonuses'},
-          {label:'Crypto & Earn', icon:'fas fa-money-bill-wave', arrow:true, path:'/crypto-and-earn'},
+          {label:'Missions', svgIcon:'icon-missions-color', count:'27', path:'/missions'},
+          {label:'Bonuses', svgIcon:'icon-bonus-cabinet', path:'/bonuses'},
+          {label:'Crypto & Earn', svgIcon:'icon-bag-dollar', arrow:true, path:'/crypto-and-earn'},
           {label:`${WEBSITE_NAME} Token`, image:'/logo.svg', path:'/buy-crypto'},
-          {label:'Promotions', icon:'fas fa-bullhorn', path:'/promotions'},
-          {label:'Refer & Earn', icon:'fas fa-user-friends', path:'/refer-and-earn'},
-          {label:'VIP Club', icon:'fas fa-crown', vip:true, path:'/vip'},
-          {label:'Rank System', icon:'fas fa-chart-bar', path:'/vip'},
-          {label:'Free Crypto Boxes', icon:'fas fa-cube', path:'/crypto-and-earn'},
-          {label:'News', icon:'fas fa-newspaper', path:'/'}
+          {label:'Promotions', svgIcon:'icon-promotions', path:'/promotions'},
+          {label:'Refer & Earn', svgIcon:'icon-referral-2', path:'/refer-and-earn'},
+          {label:'VIP Club', svgIcon:'icon-crown-2', vip:true, path:'/vip'},
+          {label:'Rank System', svgIcon:'icon-vip', path:'/vip'},
+          {label:'Free Crypto Boxes', svgIcon:'icon-box', path:'/crypto-and-earn'},
+          {label:'News', svgIcon:'icon-docs', path:'/'}
         ];
 
         const topSlots = ref([]);
@@ -5438,7 +5491,7 @@
           {game:'Dice',time:'02:45:13 PM',avatar:'👩',level:'7',user:'User3342680',amount:'₺102.62',multiplier:'x1.834',payout:'₺188.18',win:true},
           {game:'Dice',time:'02:45:10 PM',avatar:'👑',level:'16',user:'CircleKing',amount:'₺3,080.60',multiplier:'x11.002',payout:'₺0.00'},
           {game:'Dice',time:'02:45:10 PM',avatar:'👩‍🦰',level:'5',user:'User3408185',amount:'₺126.88',multiplier:'x2.021',payout:'₺0.00'},
-          {game:'Keno',time:'02:45:06 PM',avatar:'😎',level:'13',user:'YSZ9191',amount:'₺86.03',multiplier:'x2.500',payout:'₺215.07',win:true},
+          {game:'Keno',time:'02:45:06 PM',avatar:'😎',level:'13',user:'YSZ9191',amount:'���86.03',multiplier:'x2.500',payout:'₺215.07',win:true},
           {game:'Limbo',time:'02:45:07 PM',avatar:'🦝',level:'3',user:'User4012624',amount:'₺380.21',multiplier:'x0.000',payout:'₺0.00'},
           {game:'Dice',time:'02:45:04 PM',avatar:'👑',level:'16',user:'CircleKing',amount:'₺3,080.60',multiplier:'x11.002',payout:'₺0.00'},
           {game:'Dice',time:'02:45:04 PM',avatar:'👩🏿',level:'7',user:'User405309',amount:'���51.55',multiplier:'x2.539',payout:'₺130.88',win:true},

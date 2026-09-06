@@ -353,13 +353,15 @@ export function AuthDialog({ open, onOpenChange, initialMode = "login" }: AuthDi
               />
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-medium text-muted-foreground">Telefon (opsiyonel)</label>
+                <label htmlFor="field-phoneNumber" className="sr-only">
+                  Telefon (opsiyonel)
+                </label>
                 <div className="flex gap-2">
                   <select
                     name="phoneCode"
                     defaultValue="+90"
                     aria-label="Ülke kodu"
-                    className="w-24 shrink-0 rounded-lg border border-input bg-background px-2 py-2.5 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-1 focus:ring-ring"
+                    className="w-24 shrink-0 rounded-lg border border-input bg-background px-2 py-3 text-sm text-foreground outline-none transition-colors focus:border-accent focus:ring-1 focus:ring-accent"
                   >
                     {PHONE_DIAL_CODES.map((entry) => (
                       <option key={entry.code} value={entry.code}>
@@ -368,12 +370,13 @@ export function AuthDialog({ open, onOpenChange, initialMode = "login" }: AuthDi
                     ))}
                   </select>
                   <input
+                    id="field-phoneNumber"
                     name="phoneNumber"
                     type="tel"
                     inputMode="numeric"
                     autoComplete="tel"
-                    placeholder="Telefon numarası"
-                    className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-1 focus:ring-ring"
+                    placeholder="Telefon numarası (opsiyonel)"
+                    className="w-full rounded-lg border border-input bg-background px-3 py-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-accent focus:ring-1 focus:ring-accent"
                   />
                 </div>
               </div>
@@ -479,8 +482,8 @@ function TabButton({
       type="button"
       onClick={onClick}
       className={cn(
-        "relative -mb-px border-b-2 pb-3 text-base font-semibold transition-colors",
-        active ? "border-foreground text-foreground" : "border-transparent text-muted-foreground hover:text-foreground",
+        "relative -mb-px border-b-2 pb-3 text-xl font-bold transition-colors",
+        active ? "border-foreground text-foreground" : "border-transparent text-foreground/55 hover:text-foreground/80",
       )}
     >
       {children}
@@ -498,7 +501,7 @@ function IconField({
   const id = `field-${props.name}`
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-xs font-medium text-muted-foreground">
+      <label htmlFor={id} className="sr-only">
         {label}
       </label>
       <div className="relative">
@@ -508,7 +511,7 @@ function IconField({
         <input
           id={id}
           className={cn(
-            "w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-1 focus:ring-ring",
+            "w-full rounded-lg border border-input bg-background px-3 py-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-accent focus:ring-1 focus:ring-accent",
             icon && "pl-9",
             className,
           )}
@@ -539,7 +542,7 @@ function EmailAutocompleteField({ value, onChange }: { value: string; onChange: 
 
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor="field-email" className="text-xs font-medium text-muted-foreground">
+      <label htmlFor="field-email" className="sr-only">
         E-posta
       </label>
       <div className="relative">
@@ -557,7 +560,7 @@ function EmailAutocompleteField({ value, onChange }: { value: string; onChange: 
           onChange={(e) => onChange(e.target.value)}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          className="w-full rounded-lg border border-input bg-background px-3 py-2.5 pl-9 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-1 focus:ring-ring"
+          className="w-full rounded-lg border border-input bg-background px-3 py-3 pl-9 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-accent focus:ring-1 focus:ring-accent"
         />
         {showSuggestions && (
           <ul className="absolute inset-x-0 top-full z-10 mt-1 overflow-hidden rounded-lg border border-border bg-card shadow-lg">
@@ -651,16 +654,23 @@ function OtpBoxes({ length = 6, onComplete }: { length?: number; onComplete: (co
   )
 }
 
+const PASSWORD_RULE = /^(?=.*[A-Z])(?=.*\d).{8,}$/
+
 function PasswordField({
   label,
   hint,
+  minLength,
   ...props
 }: React.InputHTMLAttributes<HTMLInputElement> & { label: string; hint?: string }) {
   const [visible, setVisible] = useState(false)
+  const [value, setValue] = useState("")
   const id = `field-${props.name}`
+  // Sadece kayıt formunda (minLength verilince) canlı doğrulama gösterilir; giriş
+  // formunda şifre kuralı kontrolü anlamsız olduğu için hint hep sessiz kalır.
+  const invalid = Boolean(minLength) && value.length > 0 && !PASSWORD_RULE.test(value)
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-xs font-medium text-muted-foreground">
+      <label htmlFor={id} className="sr-only">
         {label}
       </label>
       <div className="relative">
@@ -670,7 +680,14 @@ function PasswordField({
         <input
           id={id}
           type={visible ? "text" : "password"}
-          className="w-full rounded-lg border border-input bg-background px-3 py-2.5 pl-9 pr-10 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-1 focus:ring-ring"
+          minLength={minLength}
+          onChange={(e) => setValue(e.target.value)}
+          className={cn(
+            "w-full rounded-lg border bg-background px-3 py-3 pl-9 pr-10 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground",
+            invalid
+              ? "border-destructive focus:border-destructive focus:ring-1 focus:ring-destructive"
+              : "border-input focus:border-accent focus:ring-1 focus:ring-accent",
+          )}
           {...props}
         />
         <button
@@ -682,7 +699,11 @@ function PasswordField({
           {visible ? <EyeOff className="size-4" aria-hidden="true" /> : <Eye className="size-4" aria-hidden="true" />}
         </button>
       </div>
-      {hint && <span className="text-xs text-muted-foreground">{hint}</span>}
+      {invalid ? (
+        <span className="text-xs text-destructive">Şifre gereksinimleri karşılamıyor.</span>
+      ) : (
+        hint && <span className="text-xs text-muted-foreground">{hint}</span>
+      )}
     </div>
   )
 }
