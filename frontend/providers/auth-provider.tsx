@@ -19,12 +19,26 @@ interface LoginResult {
   mfaRequired: boolean
 }
 
+/**
+ * Aşamalı kayıt akışının 1. aşaması (e-posta+şifre) başarılı olunca backend
+ * bir e-posta doğrulama kodu gönderir ve bu meydan okuma bilgisini döner.
+ * Hesap tam olarak bu kod /register/verify ile onaylanana kadar aktif değildir.
+ */
+export interface RegisterChallenge {
+  challengeId: string
+  maskedDestination: string
+  cooldownRemainingSeconds: number
+  expiresInSeconds: number
+}
+
 interface AuthContextValue {
   user: User | null
   isLoading: boolean
   isAuthenticated: boolean
   login: (identifier: string, password: string) => Promise<LoginResult>
-  register: (payload: Record<string, unknown>) => Promise<void>
+  register: (payload: Record<string, unknown>) => Promise<RegisterChallenge>
+  confirmRegistration: (challengeId: string, code: string, marketingConsent?: boolean) => Promise<void>
+  resendRegistrationOtp: (challengeId: string) => Promise<RegisterChallenge>
   validateOtp: (code: string) => Promise<void>
   logout: () => void
   refresh: () => void
@@ -49,6 +63,17 @@ function extractUserId(res: unknown): string | null {
   const user = obj.user as Record<string, unknown> | undefined
   if (user && typeof user._id === "string") return user._id
   return null
+}
+
+/** /register ve /register/resend yanıtlarını RegisterChallenge şekline indirger. */
+function extractChallenge(res: unknown): RegisterChallenge {
+  const obj = (typeof res === "object" && res !== null ? res : {}) as Record<string, unknown>
+  return {
+    challengeId: String(obj.challengeId ?? ""),
+    maskedDestination: String(obj.maskedDestination ?? ""),
+    cooldownRemainingSeconds: Number(obj.cooldownRemainingSeconds ?? 0),
+    expiresInSeconds: Number(obj.expiresInSeconds ?? 0),
+  }
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -118,14 +143,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [persistSession],
   )
 
-  const register = useCallback(async (payload: Record<string, unknown>) => {
+  const register = useCallback(async (payload: Record<string, unknown>): Promise<RegisterChallenge> => {
     const res = await apiFetch<unknown>("/auth/credentials/register", {
       method: "POST",
       body: payload,
     })
-    const token = extractToken(res)
-    if (token) persistSession(token, extractUserId(res))
-  }, [persistSession])
+    return extractChallenge(res)
+  }, [])
+
+  const confirmRegistration = useCallback(
+    async (challengeId: string, code: string, marketingConsent?: boolean) => {
+      const res = await apiFetch<unknown>("/auth/credentials/register/verify", {
+        method: "POST",
+        body: { challengeId, code, marketingConsent },
+      })
+      const token = extractToken(res)
+      if (!token) throw new Error("otp_failed")
+      persistSession(token, extractUserId(res))
+    },
+    [persistSession],
+  )
+
+  const resendRegistrationOtp = useCallback(async (challengeId: string): Promise<RegisterChallenge> => {
+    const res = await apiFetch<unknown>("/auth/credentials/register/resend", {
+      method: "POST",
+      body: { challengeId },
+    })
+    return extractChallenge(res)
+  }, [])
 
   const validateOtp = useCallback(
     async (code: string) => {
@@ -153,6 +198,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isAuthenticated: !!user,
       login,
       register,
+      confirmRegistration,
+      resendRegistrationOtp,
       validateOtp,
       logout,
       refresh: () => void mutate(),
@@ -164,6 +211,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isLoading,
       login,
       register,
+      confirmRegistration,
+      resendRegistrationOtp,
       validateOtp,
       logout,
       mutate,
