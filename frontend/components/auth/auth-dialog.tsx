@@ -38,7 +38,7 @@ export function AuthDialog({ open, onOpenChange, initialMode = "login" }: AuthDi
   const promo = settings?.authModal ?? {}
   const promoEnabled = promo.enabled !== false && mode !== "otp"
   const showSocials = promo.showSocialLogins !== false && mode !== "otp"
-  const promoImage = promo.image ? backendUrl(promo.image) : ""
+  const promoImage = promo.image ? backendUrl(promo.image) : "/images/auth-promo-default.png"
   const brandLogo = settings?.logo ? backendUrl(settings.logo) : ""
   const promoTitle = fill(promo.title, "WELCOME BONUS")
   const promoHighlight = fill(promo.highlight, "UP TO 590%")
@@ -153,7 +153,13 @@ export function AuthDialog({ open, onOpenChange, initialMode = "login" }: AuthDi
 
         {/* Sol tanıtım paneli (CMS'ten) */}
         {promoEnabled && (
-          <aside className="relative hidden flex-col items-center justify-center gap-6 overflow-hidden bg-gradient-to-br from-primary/35 via-card to-card p-8 text-center md:flex">
+          <aside
+            className="relative hidden flex-col items-center justify-center gap-6 overflow-hidden p-8 text-center md:flex"
+            style={{
+              background:
+                "radial-gradient(192.24% 100% at 100% 0, #ff003666 0, #ff003629 35.87%, #ff003600 55.93% 100%), #151d28",
+            }}
+          >
             {brandLogo ? (
               <img src={brandLogo || "/placeholder.svg"} alt={WEBSITE_NAME} className="h-8 w-auto object-contain" />
             ) : (
