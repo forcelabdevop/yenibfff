@@ -1,17 +1,25 @@
 /**
  * "Display in currency" modali (bakiye dropdown'undaki "Display in Fiat"
- * satirina tiklaninca acilir). Kullanici gosterim para birimini (USD/EUR/...)
- * secer; bu SADECE goruntu tercihidir, gercek bakiye/islemler backend'de
- * hep kullanicinin gercek cuzdan para biriminde tutulur (walletFiat).
+ * satirina tiklaninca acilir). Kullanici burada bir fiat (USD/EUR/...) secince
+ * -- kullanici giris yapmissa -- bu artik SADECE goruntu tercihi degil,
+ * GERCEK cuzdan para birimini degistirir: backend'in
+ * POST /exchange/switch-fiat-currency ucuna gidilir (bkz.
+ * backend/routes/exchangeRates.js), tum cuzdan bakiyeleri o anki kurla
+ * cevrilip kullanicinin user.currency.fiatCurrency alani guncellenir.
+ * Oyun baslatma (betinoviApi.js -> GetGameUrl -> settlementCurrencyCode)
+ * bu alani okudugu icin secim sonrasinda oyunlar da secilen fiat ile acilir.
+ *
+ * Giris yapilmamissa (henuz gercek bir cuzdan yoksa) secim SADECE
+ * localStorage'a yazilan bir goruntu tercihidir.
  *
  * casino-ui/index.html icindeki Vue setup() fonksiyonundan cagrilir.
  * Buyuk mantik ayri dosyada tutuluyor cunku setup() icine yapilan buyuk
  * cok satirli Edit'ler sandbox yeniden olusturmalarinda sessizce kayboluyor
  * (bkz. proje hafizasi). Sadece kucuk bir "wiring" satiri index.html'de kalir.
  *
- * Persist: secim tarayicida localStorage'da tutulur (STORAGE_NAMESPACE +
- * '.displayCurrency'), backend'e yazilmaz -- cunku bu alan hicbir API
- * modelinde yok, sadece istemci tarafi bir goruntu tercihi.
+ * Persist: secim ayrica tarayicida localStorage'da tutulur (STORAGE_NAMESPACE
+ * + '.displayCurrency') ki sayfa yenilendiginde/giris yapilmadan once de
+ * modal son secimi hatirlasin.
  *
  * NOT: Liste kasitli olarak sadece USD/EUR/TRY/BRL ile sinirli -- bu,
  * backend'in gercek donusum endpoint'inin (GET /exchange/rates,
@@ -21,7 +29,7 @@
  * yanlis olur -- bu yuzden iki liste senkron tutulmali.
  */
 window.createCurrencyDisplayModal = function createCurrencyDisplayModal(ctx) {
-  const { ref, computed, walletFiat, storageKey, apiUrl } = ctx
+  const { ref, computed, walletFiat, storageKey, apiUrl, getAuthToken, isAuthenticated, onFiatSwitched } = ctx
 
   const FIAT_LIST = [
     { code: "USD", name: "US Dollar", flag: "assets/flag-usd.png", symbol: "$", locale: "en-US" },
@@ -93,6 +101,8 @@ window.createCurrencyDisplayModal = function createCurrencyDisplayModal(ctx) {
   const currencyDisplayModal = ref(false)
   const currencyDisplaySearch = ref("")
   const currencyDisplayActive = ref(readStoredCode() || (walletFiat && walletFiat.value) || "USD")
+  const currencyDisplaySwitching = ref(false)
+  const currencyDisplayError = ref("")
 
   const currencyDisplayFiltered = computed(() => {
     const q = currencyDisplaySearch.value.trim().toUpperCase()
@@ -111,14 +121,56 @@ window.createCurrencyDisplayModal = function createCurrencyDisplayModal(ctx) {
   function closeCurrencyDisplayModal() {
     currencyDisplayModal.value = false
   }
-  function selectDisplayCurrency(currency) {
-    currencyDisplayActive.value = currency.code
+  function persistDisplayCode(code) {
     try {
       const key = (typeof storageKey === "function" ? storageKey() : storageKey) || "displayCurrency"
-      window.localStorage.setItem(key, currency.code)
+      window.localStorage.setItem(key, code)
     } catch (e) {
-      /* yut */
+      /* localStorage kapali olabilir -- yut */
     }
+  }
+
+  // Kullanici giris yapmissa ve secilen kod gercek cuzdan fiat'indan farkliysa,
+  // backend'e /exchange/switch-fiat-currency cagrisi yapip GERCEK cuzdani
+  // (bakiyeleri o anki kurla cevirerek) secilen fiat'a tasir -- bu sayede
+  // sonraki oyun launch'lari (settlementCurrencyCode) da bu fiat ile acilir.
+  // Giris yapilmamissa (henuz gercek cuzdan yok) sadece goruntu tercihi olarak
+  // kalir.
+  async function selectDisplayCurrency(currency) {
+    if (currencyDisplaySwitching.value) return
+    currencyDisplayError.value = ""
+
+    const loggedIn = typeof isAuthenticated === "function" ? isAuthenticated() : !!(isAuthenticated && isAuthenticated.value)
+    const currentReal = (walletFiat && walletFiat.value) || null
+
+    if (loggedIn && currentReal && currentReal !== currency.code) {
+      currencyDisplaySwitching.value = true
+      try {
+        const token = typeof getAuthToken === "function" ? getAuthToken() : null
+        const url = typeof apiUrl === "function" ? apiUrl("/exchange/switch-fiat-currency") : "/exchange/switch-fiat-currency"
+        const response = await fetch(url, {
+          method: "POST",
+          headers: Object.assign({ "Content-Type": "application/json" }, token ? { Authorization: `Bearer ${token}` } : {}),
+          credentials: "include",
+          body: JSON.stringify({ newFiat: currency.code }),
+        })
+        const payload = await response.json().catch(() => null)
+        if (!response.ok || !payload || !payload.success) {
+          currencyDisplayError.value = (payload && payload.message) || "Para birimi değiştirilemedi."
+          currencyDisplaySwitching.value = false
+          return
+        }
+        if (typeof onFiatSwitched === "function") await onFiatSwitched()
+      } catch (e) {
+        currencyDisplayError.value = "Para birimi değiştirilemedi. Lütfen tekrar deneyin."
+        currencyDisplaySwitching.value = false
+        return
+      }
+      currencyDisplaySwitching.value = false
+    }
+
+    currencyDisplayActive.value = currency.code
+    persistDisplayCode(currency.code)
     closeCurrencyDisplayModal()
   }
 
@@ -131,6 +183,8 @@ window.createCurrencyDisplayModal = function createCurrencyDisplayModal(ctx) {
     currencyDisplayList: FIAT_LIST,
     currencyDisplayRates,
     currencyDisplayRatesLoaded,
+    currencyDisplaySwitching,
+    currencyDisplayError,
     formatDisplayFiat,
     openCurrencyDisplayModal,
     closeCurrencyDisplayModal,
