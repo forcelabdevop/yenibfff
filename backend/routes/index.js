@@ -827,6 +827,9 @@ module.exports = (io) => {
 	router.use("/captcha", require("./captcha")());
 	router.use("/auth", require("./auth")());
 	router.use("/callback", require("./callback")(io));
+	// Sportsbook settlement (x-sportsbook-key). Admin JWT zincirinden ÖNCE
+	// bağlanmalı; header yoksa istek normal admin akışına devam eder.
+	router.use("/admin/sports-bets", require("./sportsbookSettlement"));
 	router.use("/admin", require("./admin/index"));
 	router.use("/notices", require("./notice/index"));
 	router.use("/users", require("./user/index"));
