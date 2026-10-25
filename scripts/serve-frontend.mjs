@@ -4,7 +4,7 @@ import { extname, join, normalize, resolve, sep } from "node:path"
 import { fileURLToPath } from "node:url"
 
 const variant = process.argv[2] === "mobile" ? "mobile" : "desktop"
-const port = Number(process.env.PORT || 3000)
+const port = Number(process.env.PORT || process.env.DEV_PORT || 5173)
 const root = resolve(fileURLToPath(new URL(`../frontend/${variant}`, import.meta.url)))
 
 const MIME = {
