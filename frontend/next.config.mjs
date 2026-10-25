@@ -22,7 +22,12 @@ const nextConfig = {
   // Frontend yalnızca statik dosya olarak yayınlanır.
   // output: "export" ciktisi standart "out/" klasorune yazilir; Vercel'in
   // Next.js preset'i bunu otomatik bulur. Ozel distDir vermiyoruz.
-  output: "export",
+  //
+  // Yalnizca production build'inde aktif. Dev sunucusunda "output: export"
+  // acikken [section] rotasi, generateStaticParams listesinde olmayan her
+  // istekte (ornegin /favicon.ico, tarayici/preview probe'lari) hata firlatir;
+  // dev'de bu istekler normal 404'e dusmeli.
+  ...(process.env.NODE_ENV === "production" ? { output: "export" } : {}),
 
   // trailingSlash KULLANMIYORUZ — bilerek.
   //

@@ -44,6 +44,8 @@ const privateSections = new Set<string>([
 
 type Section = keyof typeof sections
 
+export const dynamicParams = false
+
 export function generateStaticParams() {
   return Object.keys(sections).map((section) => ({ section }))
 }
