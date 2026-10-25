@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime.2Bc2s-6V.js";import{w as t}from"./route.NTcRGCEQ.js";import{t as n}from"./IncidentalGame.DrA0n-Zz.js";var r=e(),i=()=>(0,r.jsx)(n,{product:t.Vmania});export{i as default};

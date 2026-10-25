@@ -1,0 +1,1 @@
+import{o as e}from"./rolldown-runtime.C_s2cVnS.js";import{t}from"./react.o0Ha7HZ1.js";var n=e(t()),r=(e,t=[],r)=>{(0,n.useEffect)(()=>{if(!r){if(typeof t==`string`){e(t,{required:{message:`This field is required`}});return}t.forEach(t=>{e(t,{required:{message:`This field is required`}})})}},[e,t,r])};export{r as t};

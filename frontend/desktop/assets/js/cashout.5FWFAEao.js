@@ -1,0 +1,1 @@
+var e=function(e){return e[e.Manual=0]=`Manual`,e[e.Auto=1]=`Auto`,e}({}),t=function(e){return e.Full=`full`,e.Partial=`partial`,e}({});export{t as n,e as t};

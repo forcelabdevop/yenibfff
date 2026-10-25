@@ -1,0 +1,1 @@
+import{d as e}from"./uiKit.C1Eo2rj1.js";import{t}from"./jsx-runtime.2Bc2s-6V.js";import{t as n}from"./useIntersectionObserver.a2FUlOR5.js";var r=t(),i=({src:t,alt:i,checkScrollableItemsLength:a,...o})=>{let[s,c]=n();return(0,r.jsx)(e,{ref:s,src:a||c?t:``,alt:i,...o})};export{i as t};

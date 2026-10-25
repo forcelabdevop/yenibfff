@@ -1,0 +1,1 @@
+.casinoProvidersWidget{flex-direction:column;display:flex;overflow:hidden}[class*=is-web] .casinoProvidersWidget{gap:var(--fds-ref-spacing-large)}[class*=is-mobile] .casinoProvidersWidget{gap:var(--fds-ref-spacing-xsmall)}[class*=is-mobile] .casinoProvidersWidgetHorizontalScroll{padding:0 var(--fds-ref-spacing-xsmall)}.casinoProvidersWidgetCarousel .swiper-slide{width:auto}

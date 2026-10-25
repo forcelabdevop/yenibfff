@@ -1,0 +1,1 @@
+var e=e=>String(e||``).normalize(`NFC`).replace(/\s+/g,` `).trim(),t=(t,n,r)=>{let i=new Intl.Collator(r,{sensitivity:`base`});return[...t].sort((t,r)=>{let a=e(t[n]),o=e(r[n]);return i.compare(a,o)})};export{t};

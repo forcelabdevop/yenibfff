@@ -1,0 +1,1 @@
+import{b as e}from"./uiKit.C1Eo2rj1.js";import{Fi as t}from"./useUserData.Dt9agGMg.js";var n=()=>t(()=>{let t=new Date,[n,r,i]=[t.getFullYear(),t.getMonth(),t.getDate()];return{minDate:new Date(n-110,r,i),maxDate:new Date(n-e.getInstance().minimumAllowedAge,r,i)}});export{n as t};

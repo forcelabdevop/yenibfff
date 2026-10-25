@@ -1,0 +1,1 @@
+import{o as e}from"./rolldown-runtime.C_s2cVnS.js";import{t}from"./react.o0Ha7HZ1.js";import{d as n}from"./utils.DJl4aHUk.js";var r=e(t()),i=(e=3e3)=>{let[t,i]=(0,r.useState)(!1);return(0,r.useEffect)(function(){if(t){let t=setTimeout(()=>i(!1),e);return()=>clearTimeout(t)}},[t,e]),{isTextCopied:t,copyTextToClipboard:e=>{t||(n(e),i(!0))}}};export{i as t};

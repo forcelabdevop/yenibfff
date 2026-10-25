@@ -1,0 +1,1 @@
+import{t as e}from"./EventDispatcher.DYXHGhTy.js";var t=new e;export{t};

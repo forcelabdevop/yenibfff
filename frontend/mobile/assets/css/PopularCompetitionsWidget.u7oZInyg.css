@@ -1,0 +1,1 @@
+.popularCompetitionsWrapper{gap:8px}[class*=is-web] .popularCompetitionsWrapper{grid-template-columns:repeat(auto-fit,minmax(300px,1fr));display:grid}[class*=is-mobile] .popularCompetitionsWrapper{flex-direction:column;display:flex}[class*=is-mobile] .popularCompetitions.isWidget{will-change:scroll-position;-webkit-overflow-scrolling:touch;max-height:430px;overflow:hidden auto}

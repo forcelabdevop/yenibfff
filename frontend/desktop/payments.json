@@ -1,0 +1,766 @@
+[
+ {
+  "paymentId": 900101,
+  "backendId": 900101,
+  "name": "BetssenHavale",
+  "displayName": "Betssen Havale",
+  "order": 1,
+  "paymentGroup": [
+   5
+  ],
+  "badge": "popular",
+  "cryptoPayment": null,
+  "disableConfirmPopUp": true,
+  "hidePaymentInFooter": false,
+  "image": "/betssen/payments/betssen-havale.svg",
+  "src": "/betssen/payments/betssen-havale.svg",
+  "info": {
+   "TRY": {
+    "depositProcessTime": 0,
+    "depositFee": 0,
+    "minDeposit": 1000,
+    "maxDeposit": 250000,
+    "withdrawProcessTime": "0-12",
+    "withdrawProcessTimeType": "hours",
+    "withdrawFee": 0,
+    "minWithdraw": 500,
+    "maxWithdraw": 250000
+   }
+  },
+  "depositFormFields": [
+   [
+    [
+     {
+      "name": "amount",
+      "type": "number",
+      "label": "Yatırım Tutarı (TRY)",
+      "placeholder": "Tutarı gir",
+      "className": "",
+      "customAttrs": [],
+      "rules": {
+       "required": {
+        "message": "Tutar zorunludur"
+       }
+      }
+     },
+     {
+      "name": "_ignore__amount_buttons",
+      "type": "custom",
+      "label": "",
+      "className": "",
+      "props": {
+       "component": "AmountButtons",
+       "type": "replace",
+       "amounts": {
+        "TRY": [
+         1000,
+         2500,
+         5000,
+         10000
+        ]
+       }
+      }
+     },
+     {
+      "name": "",
+      "type": "submit",
+      "label": "Para Yatır",
+      "className": "deposit"
+     }
+    ]
+   ]
+  ],
+  "withdrawFormFields": [
+   [
+    [
+     {
+      "name": "accountHolder",
+      "type": "text",
+      "label": "Hesap Sahibinin Adı Soyadı",
+      "placeholder": "Hesaptaki ad soyad",
+      "className": "",
+      "customAttrs": [],
+      "rules": {
+       "required": {
+        "message": "Bu alan zorunludur"
+       },
+       "pattern": {
+        "value": "^.{2,}$",
+        "message": "Hesap sahibinin adını ve soyadını girin"
+       }
+      }
+     },
+     {
+      "name": "iban",
+      "type": "text",
+      "label": "IBAN",
+      "placeholder": "TR00 0000 0000 0000 0000 0000 00",
+      "className": "",
+      "customAttrs": [],
+      "rules": {
+       "required": {
+        "message": "Bu alan zorunludur"
+       },
+       "pattern": {
+        "value": "^\\s*TR[0-9A-Za-z ]{24,34}\\s*$",
+        "message": "Türkiye IBAN'ı 26 karakterdir: TR ve ardından 24 rakam."
+       }
+      }
+     },
+     {
+      "name": "amount",
+      "type": "number",
+      "label": "Çekim Tutarı (TRY)",
+      "placeholder": "Tutarı gir",
+      "className": "",
+      "customAttrs": [],
+      "rules": {
+       "required": {
+        "message": "Tutar zorunludur"
+       }
+      }
+     },
+     {
+      "name": "",
+      "type": "submit",
+      "label": "Para Çek",
+      "className": "withdraw"
+     }
+    ]
+   ]
+  ],
+  "depositInfoTextKey": "transfer_payment_group_info",
+  "withdrawInfoTextKey": "transfer_payment_group_info",
+  "translations": {
+   "default": {
+    "displayName": "Betssen Havale",
+    "deposit": "<p>Havale/FAST ile 7/24 yatırım. Minimum ₺1.000. Gösterilen IBAN'a kendi adınıza kayıtlı bir hesaptan, açıklama yazmadan, tam tutarı gönderin; onaylandığında bakiyeniz otomatik güncellenir.</p>",
+    "withdraw": "<p>Kendi adınıza kayıtlı IBAN'a çekim. Talepler ödeme ekibi tarafından incelenir; tutar talep anında bakiyenizden ayrılır.</p>",
+    "badge": "Popüler"
+   },
+   "tur": {
+    "displayName": "Betssen Havale",
+    "deposit": "<p>Havale/FAST ile 7/24 yatırım. Minimum ₺1.000. Gösterilen IBAN'a kendi adınıza kayıtlı bir hesaptan, açıklama yazmadan, tam tutarı gönderin; onaylandığında bakiyeniz otomatik güncellenir.</p>",
+    "withdraw": "<p>Kendi adınıza kayıtlı IBAN'a çekim. Talepler ödeme ekibi tarafından incelenir; tutar talep anında bakiyenizden ayrılır.</p>",
+    "badge": "Popüler"
+   },
+   "eng": {
+    "displayName": "Betssen Havale",
+    "deposit": "<p>Havale/FAST ile 7/24 yatırım. Minimum ₺1.000. Gösterilen IBAN'a kendi adınıza kayıtlı bir hesaptan, açıklama yazmadan, tam tutarı gönderin; onaylandığında bakiyeniz otomatik güncellenir.</p>",
+    "withdraw": "<p>Kendi adınıza kayıtlı IBAN'a çekim. Talepler ödeme ekibi tarafından incelenir; tutar talep anında bakiyenizden ayrılır.</p>",
+    "badge": "Popüler"
+   }
+  }
+ },
+ {
+  "paymentId": 900102,
+  "backendId": 900102,
+  "name": "JetPay",
+  "displayName": "JetPay",
+  "order": 2,
+  "paymentGroup": [
+   5
+  ],
+  "badge": null,
+  "cryptoPayment": null,
+  "disableConfirmPopUp": true,
+  "hidePaymentInFooter": false,
+  "image": "/betssen/payments/jetpay.svg",
+  "src": "/betssen/payments/jetpay.svg",
+  "info": {
+   "TRY": {
+    "depositProcessTime": 0,
+    "depositFee": 0,
+    "minDeposit": 1000,
+    "maxDeposit": 250000,
+    "withdrawProcessTime": "0-12",
+    "withdrawProcessTimeType": "hours",
+    "withdrawFee": 0,
+    "minWithdraw": 500,
+    "maxWithdraw": 250000
+   }
+  },
+  "depositFormFields": [
+   [
+    [
+     {
+      "name": "amount",
+      "type": "number",
+      "label": "Yatırım Tutarı (TRY)",
+      "placeholder": "Tutarı gir",
+      "className": "",
+      "customAttrs": [],
+      "rules": {
+       "required": {
+        "message": "Tutar zorunludur"
+       }
+      }
+     },
+     {
+      "name": "_ignore__amount_buttons",
+      "type": "custom",
+      "label": "",
+      "className": "",
+      "props": {
+       "component": "AmountButtons",
+       "type": "replace",
+       "amounts": {
+        "TRY": [
+         1000,
+         2500,
+         5000,
+         10000
+        ]
+       }
+      }
+     },
+     {
+      "name": "",
+      "type": "submit",
+      "label": "Para Yatır",
+      "className": "deposit"
+     }
+    ]
+   ]
+  ],
+  "withdrawFormFields": [
+   [
+    [
+     {
+      "name": "accountHolder",
+      "type": "text",
+      "label": "Hesap Sahibinin Adı Soyadı",
+      "placeholder": "Hesaptaki ad soyad",
+      "className": "",
+      "customAttrs": [],
+      "rules": {
+       "required": {
+        "message": "Bu alan zorunludur"
+       },
+       "pattern": {
+        "value": "^.{2,}$",
+        "message": "Hesap sahibinin adını ve soyadını girin"
+       }
+      }
+     },
+     {
+      "name": "iban",
+      "type": "text",
+      "label": "IBAN",
+      "placeholder": "TR00 0000 0000 0000 0000 0000 00",
+      "className": "",
+      "customAttrs": [],
+      "rules": {
+       "required": {
+        "message": "Bu alan zorunludur"
+       },
+       "pattern": {
+        "value": "^\\s*TR[0-9A-Za-z ]{24,34}\\s*$",
+        "message": "Türkiye IBAN'ı 26 karakterdir: TR ve ardından 24 rakam."
+       }
+      }
+     },
+     {
+      "name": "amount",
+      "type": "number",
+      "label": "Çekim Tutarı (TRY)",
+      "placeholder": "Tutarı gir",
+      "className": "",
+      "customAttrs": [],
+      "rules": {
+       "required": {
+        "message": "Tutar zorunludur"
+       }
+      }
+     },
+     {
+      "name": "",
+      "type": "submit",
+      "label": "Para Çek",
+      "className": "withdraw"
+     }
+    ]
+   ]
+  ],
+  "depositInfoTextKey": "transfer_payment_group_info",
+  "withdrawInfoTextKey": "transfer_payment_group_info",
+  "translations": {
+   "default": {
+    "displayName": "JetPay",
+    "deposit": "<p>Havale/FAST ile 7/24 yatırım. Minimum ₺1.000. Gösterilen IBAN'a kendi adınıza kayıtlı bir hesaptan, açıklama yazmadan, tam tutarı gönderin; onaylandığında bakiyeniz otomatik güncellenir.</p>",
+    "withdraw": "<p>Kendi adınıza kayıtlı IBAN'a çekim. Talepler ödeme ekibi tarafından incelenir; tutar talep anında bakiyenizden ayrılır.</p>"
+   },
+   "tur": {
+    "displayName": "JetPay",
+    "deposit": "<p>Havale/FAST ile 7/24 yatırım. Minimum ₺1.000. Gösterilen IBAN'a kendi adınıza kayıtlı bir hesaptan, açıklama yazmadan, tam tutarı gönderin; onaylandığında bakiyeniz otomatik güncellenir.</p>",
+    "withdraw": "<p>Kendi adınıza kayıtlı IBAN'a çekim. Talepler ödeme ekibi tarafından incelenir; tutar talep anında bakiyenizden ayrılır.</p>"
+   },
+   "eng": {
+    "displayName": "JetPay",
+    "deposit": "<p>Havale/FAST ile 7/24 yatırım. Minimum ₺1.000. Gösterilen IBAN'a kendi adınıza kayıtlı bir hesaptan, açıklama yazmadan, tam tutarı gönderin; onaylandığında bakiyeniz otomatik güncellenir.</p>",
+    "withdraw": "<p>Kendi adınıza kayıtlı IBAN'a çekim. Talepler ödeme ekibi tarafından incelenir; tutar talep anında bakiyenizden ayrılır.</p>"
+   }
+  }
+ },
+ {
+  "paymentId": 900103,
+  "backendId": 900103,
+  "name": "AnindaHavale",
+  "displayName": "AnındaHavale",
+  "order": 3,
+  "paymentGroup": [
+   5
+  ],
+  "badge": null,
+  "cryptoPayment": null,
+  "disableConfirmPopUp": true,
+  "hidePaymentInFooter": false,
+  "image": "/betssen/payments/aninda-havale.svg",
+  "src": "/betssen/payments/aninda-havale.svg",
+  "info": {
+   "TRY": {
+    "depositProcessTime": 0,
+    "depositFee": 0,
+    "minDeposit": 1000,
+    "maxDeposit": 250000,
+    "withdrawProcessTime": "0-12",
+    "withdrawProcessTimeType": "hours",
+    "withdrawFee": 0,
+    "minWithdraw": 500,
+    "maxWithdraw": 250000
+   }
+  },
+  "depositFormFields": [
+   [
+    [
+     {
+      "name": "amount",
+      "type": "number",
+      "label": "Yatırım Tutarı (TRY)",
+      "placeholder": "Tutarı gir",
+      "className": "",
+      "customAttrs": [],
+      "rules": {
+       "required": {
+        "message": "Tutar zorunludur"
+       }
+      }
+     },
+     {
+      "name": "_ignore__amount_buttons",
+      "type": "custom",
+      "label": "",
+      "className": "",
+      "props": {
+       "component": "AmountButtons",
+       "type": "replace",
+       "amounts": {
+        "TRY": [
+         1000,
+         2500,
+         5000,
+         10000
+        ]
+       }
+      }
+     },
+     {
+      "name": "",
+      "type": "submit",
+      "label": "Para Yatır",
+      "className": "deposit"
+     }
+    ]
+   ]
+  ],
+  "withdrawFormFields": [
+   [
+    [
+     {
+      "name": "accountHolder",
+      "type": "text",
+      "label": "Hesap Sahibinin Adı Soyadı",
+      "placeholder": "Hesaptaki ad soyad",
+      "className": "",
+      "customAttrs": [],
+      "rules": {
+       "required": {
+        "message": "Bu alan zorunludur"
+       },
+       "pattern": {
+        "value": "^.{2,}$",
+        "message": "Hesap sahibinin adını ve soyadını girin"
+       }
+      }
+     },
+     {
+      "name": "iban",
+      "type": "text",
+      "label": "IBAN",
+      "placeholder": "TR00 0000 0000 0000 0000 0000 00",
+      "className": "",
+      "customAttrs": [],
+      "rules": {
+       "required": {
+        "message": "Bu alan zorunludur"
+       },
+       "pattern": {
+        "value": "^\\s*TR[0-9A-Za-z ]{24,34}\\s*$",
+        "message": "Türkiye IBAN'ı 26 karakterdir: TR ve ardından 24 rakam."
+       }
+      }
+     },
+     {
+      "name": "amount",
+      "type": "number",
+      "label": "Çekim Tutarı (TRY)",
+      "placeholder": "Tutarı gir",
+      "className": "",
+      "customAttrs": [],
+      "rules": {
+       "required": {
+        "message": "Tutar zorunludur"
+       }
+      }
+     },
+     {
+      "name": "",
+      "type": "submit",
+      "label": "Para Çek",
+      "className": "withdraw"
+     }
+    ]
+   ]
+  ],
+  "depositInfoTextKey": "transfer_payment_group_info",
+  "withdrawInfoTextKey": "transfer_payment_group_info",
+  "translations": {
+   "default": {
+    "displayName": "AnındaHavale",
+    "deposit": "<p>Havale/FAST ile 7/24 yatırım. Minimum ₺1.000. Gösterilen IBAN'a kendi adınıza kayıtlı bir hesaptan, açıklama yazmadan, tam tutarı gönderin; onaylandığında bakiyeniz otomatik güncellenir.</p>",
+    "withdraw": "<p>Kendi adınıza kayıtlı IBAN'a çekim. Talepler ödeme ekibi tarafından incelenir; tutar talep anında bakiyenizden ayrılır.</p>"
+   },
+   "tur": {
+    "displayName": "AnındaHavale",
+    "deposit": "<p>Havale/FAST ile 7/24 yatırım. Minimum ₺1.000. Gösterilen IBAN'a kendi adınıza kayıtlı bir hesaptan, açıklama yazmadan, tam tutarı gönderin; onaylandığında bakiyeniz otomatik güncellenir.</p>",
+    "withdraw": "<p>Kendi adınıza kayıtlı IBAN'a çekim. Talepler ödeme ekibi tarafından incelenir; tutar talep anında bakiyenizden ayrılır.</p>"
+   },
+   "eng": {
+    "displayName": "AnındaHavale",
+    "deposit": "<p>Havale/FAST ile 7/24 yatırım. Minimum ₺1.000. Gösterilen IBAN'a kendi adınıza kayıtlı bir hesaptan, açıklama yazmadan, tam tutarı gönderin; onaylandığında bakiyeniz otomatik güncellenir.</p>",
+    "withdraw": "<p>Kendi adınıza kayıtlı IBAN'a çekim. Talepler ödeme ekibi tarafından incelenir; tutar talep anında bakiyenizden ayrılır.</p>"
+   }
+  }
+ },
+ {
+  "paymentId": 900104,
+  "backendId": 900104,
+  "name": "SafirPay",
+  "displayName": "SafırPay",
+  "order": 4,
+  "paymentGroup": [
+   5
+  ],
+  "badge": null,
+  "cryptoPayment": null,
+  "disableConfirmPopUp": true,
+  "hidePaymentInFooter": false,
+  "image": "/betssen/payments/safirpay.svg",
+  "src": "/betssen/payments/safirpay.svg",
+  "info": {
+   "TRY": {
+    "depositProcessTime": 0,
+    "depositFee": 0,
+    "minDeposit": 1000,
+    "maxDeposit": 250000,
+    "withdrawProcessTime": "0-12",
+    "withdrawProcessTimeType": "hours",
+    "withdrawFee": 0,
+    "minWithdraw": 500,
+    "maxWithdraw": 250000
+   }
+  },
+  "depositFormFields": [
+   [
+    [
+     {
+      "name": "amount",
+      "type": "number",
+      "label": "Yatırım Tutarı (TRY)",
+      "placeholder": "Tutarı gir",
+      "className": "",
+      "customAttrs": [],
+      "rules": {
+       "required": {
+        "message": "Tutar zorunludur"
+       }
+      }
+     },
+     {
+      "name": "_ignore__amount_buttons",
+      "type": "custom",
+      "label": "",
+      "className": "",
+      "props": {
+       "component": "AmountButtons",
+       "type": "replace",
+       "amounts": {
+        "TRY": [
+         1000,
+         2500,
+         5000,
+         10000
+        ]
+       }
+      }
+     },
+     {
+      "name": "",
+      "type": "submit",
+      "label": "Para Yatır",
+      "className": "deposit"
+     }
+    ]
+   ]
+  ],
+  "withdrawFormFields": [
+   [
+    [
+     {
+      "name": "accountHolder",
+      "type": "text",
+      "label": "Hesap Sahibinin Adı Soyadı",
+      "placeholder": "Hesaptaki ad soyad",
+      "className": "",
+      "customAttrs": [],
+      "rules": {
+       "required": {
+        "message": "Bu alan zorunludur"
+       },
+       "pattern": {
+        "value": "^.{2,}$",
+        "message": "Hesap sahibinin adını ve soyadını girin"
+       }
+      }
+     },
+     {
+      "name": "iban",
+      "type": "text",
+      "label": "IBAN",
+      "placeholder": "TR00 0000 0000 0000 0000 0000 00",
+      "className": "",
+      "customAttrs": [],
+      "rules": {
+       "required": {
+        "message": "Bu alan zorunludur"
+       },
+       "pattern": {
+        "value": "^\\s*TR[0-9A-Za-z ]{24,34}\\s*$",
+        "message": "Türkiye IBAN'ı 26 karakterdir: TR ve ardından 24 rakam."
+       }
+      }
+     },
+     {
+      "name": "amount",
+      "type": "number",
+      "label": "Çekim Tutarı (TRY)",
+      "placeholder": "Tutarı gir",
+      "className": "",
+      "customAttrs": [],
+      "rules": {
+       "required": {
+        "message": "Tutar zorunludur"
+       }
+      }
+     },
+     {
+      "name": "",
+      "type": "submit",
+      "label": "Para Çek",
+      "className": "withdraw"
+     }
+    ]
+   ]
+  ],
+  "depositInfoTextKey": "transfer_payment_group_info",
+  "withdrawInfoTextKey": "transfer_payment_group_info",
+  "translations": {
+   "default": {
+    "displayName": "SafırPay",
+    "deposit": "<p>Havale/FAST ile 7/24 yatırım. Minimum ₺1.000. Gösterilen IBAN'a kendi adınıza kayıtlı bir hesaptan, açıklama yazmadan, tam tutarı gönderin; onaylandığında bakiyeniz otomatik güncellenir.</p>",
+    "withdraw": "<p>Kendi adınıza kayıtlı IBAN'a çekim. Talepler ödeme ekibi tarafından incelenir; tutar talep anında bakiyenizden ayrılır.</p>"
+   },
+   "tur": {
+    "displayName": "SafırPay",
+    "deposit": "<p>Havale/FAST ile 7/24 yatırım. Minimum ₺1.000. Gösterilen IBAN'a kendi adınıza kayıtlı bir hesaptan, açıklama yazmadan, tam tutarı gönderin; onaylandığında bakiyeniz otomatik güncellenir.</p>",
+    "withdraw": "<p>Kendi adınıza kayıtlı IBAN'a çekim. Talepler ödeme ekibi tarafından incelenir; tutar talep anında bakiyenizden ayrılır.</p>"
+   },
+   "eng": {
+    "displayName": "SafırPay",
+    "deposit": "<p>Havale/FAST ile 7/24 yatırım. Minimum ₺1.000. Gösterilen IBAN'a kendi adınıza kayıtlı bir hesaptan, açıklama yazmadan, tam tutarı gönderin; onaylandığında bakiyeniz otomatik güncellenir.</p>",
+    "withdraw": "<p>Kendi adınıza kayıtlı IBAN'a çekim. Talepler ödeme ekibi tarafından incelenir; tutar talep anında bakiyenizden ayrılır.</p>"
+   }
+  }
+ },
+ {
+  "paymentId": 900201,
+  "backendId": 900201,
+  "name": "BetssenCrypto",
+  "displayName": "Betssen Crypto",
+  "order": 10,
+  "paymentGroup": [
+   4
+  ],
+  "badge": null,
+  "cryptoPayment": null,
+  "disableConfirmPopUp": true,
+  "hidePaymentInFooter": false,
+  "image": "/betssen/payments/betssen-crypto.svg",
+  "src": "/betssen/payments/betssen-crypto.svg",
+  "info": {
+   "TRY": {
+    "depositProcessTime": 0,
+    "depositFee": 0,
+    "minDeposit": 100,
+    "maxDeposit": 250000,
+    "withdrawProcessTime": "0-12",
+    "withdrawProcessTimeType": "hours",
+    "withdrawFee": 0,
+    "minWithdraw": 100,
+    "maxWithdraw": 250000
+   }
+  },
+  "depositFormFields": [
+   [
+    [
+     {
+      "name": "currency",
+      "type": "select",
+      "label": "Kripto Para (TRON ağı)",
+      "className": "",
+      "customAttrs": [],
+      "defaultValue": "USDT",
+      "options": [
+       {
+        "label": "USDT (TRC-20)",
+        "value": "USDT"
+       },
+       {
+        "label": "TRX",
+        "value": "TRX"
+       }
+      ],
+      "rules": {
+       "required": {
+        "message": "Bu alan zorunludur"
+       }
+      }
+     },
+     {
+      "name": "amount",
+      "type": "number",
+      "label": "Yatırım Tutarı (TRY karşılığı)",
+      "placeholder": "Tutarı gir",
+      "className": "",
+      "customAttrs": [],
+      "rules": {
+       "required": {
+        "message": "Tutar zorunludur"
+       }
+      }
+     },
+     {
+      "name": "",
+      "type": "submit",
+      "label": "Para Yatır",
+      "className": "deposit"
+     }
+    ]
+   ]
+  ],
+  "withdrawFormFields": [
+   [
+    [
+     {
+      "name": "currency",
+      "type": "select",
+      "label": "Kripto Para (TRON ağı)",
+      "className": "",
+      "customAttrs": [],
+      "defaultValue": "USDT",
+      "options": [
+       {
+        "label": "USDT (TRC-20)",
+        "value": "USDT"
+       },
+       {
+        "label": "TRX",
+        "value": "TRX"
+       }
+      ],
+      "rules": {
+       "required": {
+        "message": "Bu alan zorunludur"
+       }
+      }
+     },
+     {
+      "name": "receiverWallet",
+      "type": "text",
+      "label": "TRON Cüzdan Adresi (T…)",
+      "placeholder": "T…",
+      "className": "",
+      "customAttrs": [],
+      "rules": {
+       "required": {
+        "message": "Bu alan zorunludur"
+       },
+       "pattern": {
+        "value": "^\\s*T[1-9A-HJ-NP-Za-km-z]{33}\\s*$",
+        "message": "Geçerli bir TRON cüzdan adresi girin"
+       }
+      }
+     },
+     {
+      "name": "amount",
+      "type": "number",
+      "label": "Çekim Tutarı (TRY)",
+      "placeholder": "Tutarı gir",
+      "className": "",
+      "customAttrs": [],
+      "rules": {
+       "required": {
+        "message": "Tutar zorunludur"
+       }
+      }
+     },
+     {
+      "name": "",
+      "type": "submit",
+      "label": "Para Çek",
+      "className": "withdraw"
+     }
+    ]
+   ]
+  ],
+  "depositInfoTextKey": "crypto_payment_group_info",
+  "withdrawInfoTextKey": "crypto_payment_group_info",
+  "translations": {
+   "default": {
+    "displayName": "Betssen Crypto",
+    "deposit": "<p>USDT (TRC-20) veya TRX ile yatırım. Size ayrılan adrese, süre dolmadan, gösterilen miktarı tam olarak gönderin; ağ onayından sonra bakiyeniz güncellenir.</p>",
+    "withdraw": "<p>TRON (TRC-20) cüzdanınıza çekim; talepler ödeme ekibi tarafından incelenir.</p>"
+   },
+   "tur": {
+    "displayName": "Betssen Crypto",
+    "deposit": "<p>USDT (TRC-20) veya TRX ile yatırım. Size ayrılan adrese, süre dolmadan, gösterilen miktarı tam olarak gönderin; ağ onayından sonra bakiyeniz güncellenir.</p>",
+    "withdraw": "<p>TRON (TRC-20) cüzdanınıza çekim; talepler ödeme ekibi tarafından incelenir.</p>"
+   },
+   "eng": {
+    "displayName": "Betssen Crypto",
+    "deposit": "<p>USDT (TRC-20) veya TRX ile yatırım. Size ayrılan adrese, süre dolmadan, gösterilen miktarı tam olarak gönderin; ağ onayından sonra bakiyeniz güncellenir.</p>",
+    "withdraw": "<p>TRON (TRC-20) cüzdanınıza çekim; talepler ödeme ekibi tarafından incelenir.</p>"
+   }
+  }
+ }
+]

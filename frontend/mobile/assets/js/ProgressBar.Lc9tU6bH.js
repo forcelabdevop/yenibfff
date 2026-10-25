@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime.2Bc2s-6V.js";var t=e(),n=({percentage:e,className:n,children:r})=>(0,t.jsx)(`span`,{className:`progress-bar ${n||``}`,style:{width:`${e}%`},children:r});export{n as t};

@@ -1,0 +1,1 @@
+import{n as e}from"./Swarm.rTPwuUgc.js";var t=`powerbank`,n=function(e){return e.Balance=`/api/v1/jet/balance`,e.Buy=`/api/v1/jet/buy`,e.BetsData=`/api/v1/jet/betsData`,e.TopUsers=`/api/v1/jet/topUsers`,e}({}),r=(n,r={})=>e.get({method:`POST`,path:n,params:r},t);export{r as n,n as t};

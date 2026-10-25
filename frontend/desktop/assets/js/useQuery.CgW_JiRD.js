@@ -1,0 +1,1 @@
+import{l as e}from"./react-router.BcscCjdh.js";var t=()=>new URLSearchParams(e().search);export{t};

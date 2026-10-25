@@ -1,0 +1,1 @@
+import{t as e}from"./configs.CCUW7hBk.js";import{t}from"./jsx-runtime.2Bc2s-6V.js";import{n}from"./useTranslationTool.BJIZXx9f.js";import{t as r}from"./IntegratedIframeProduct.BbGC6dw9.js";var i=t(),a=()=>{let{pmu:{url:t}}=e,a=n();return(0,i.jsx)(r,{className:`pmu`,url:t,title:a(`PMU Page`)})};export{a as default};

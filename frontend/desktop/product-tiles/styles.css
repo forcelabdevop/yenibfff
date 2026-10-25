@@ -1,0 +1,331 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap');
+
+@font-face {
+  font-family: 'Gotham-Black';
+  src: url('fonts/Gotham-Black.otf') format('opentype');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'Gotham-Book';
+  src: url('fonts/Gotham-Book.otf') format('opentype');
+  font-weight: normal;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+body, html {
+    font-family: 'Montserrat', sans-serif;
+    max-width: 500px;
+}
+
+.pb-item {
+    width: 100%;
+    position: relative;
+    margin-top: 16%;
+    cursor: pointer;
+    transition: all 0.7s ease-in-out;
+}
+
+.pb-background {
+    width: 100%;
+    display: flex;
+}
+
+.pb-background img {
+    width: 100%;
+    border-radius: 20px;
+}
+
+.pb-character {
+    transition: all 0.7s ease-in-out;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}
+
+.pb-character-img {
+    position: absolute;
+    width: 100%;
+    transition: all 0.7s ease-in-out;
+    opacity: 1;
+    top: 0;
+}
+
+.aviatrix-airplane {
+    width: 150%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    transition: all 0.7s ease-in-out;
+}
+
+.pb-item:hover .aviatrix-airplane {
+    left: -12.5%;
+    bottom: -12.5%;
+}
+
+.pb-character-img.character-hover {
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+}
+
+.pb-item:hover .pb-character {
+    top: -12.5%;
+}
+
+/* Specific slower transition for promo item */
+.pb-item.pb-promo .pb-character {
+    transition: all 0.7s ease-in-out;
+}
+
+.pb-item.pb-promo:hover .pb-character {
+    left: -12.5%;
+}
+
+.pb-item.pb-promo:hover .pb-character {
+    top: -11.8%;
+}
+
+.pb-item:hover .pb-character-img.character-hover {
+    opacity: 1;
+}
+
+.pb-info-section {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    border-radius: 20px;
+}
+
+/* Background gradient for each theme */
+.pb-slot-casino .pb-info-section {
+    background-image: url(assets/slot/gradient.png);
+}
+
+.pb-aviatrix .pb-info-section {
+    background-image: url(assets/aviatrix/gradient.png);
+}
+
+.pb-live .pb-info-section {
+    background-image: url(assets/live/gradient.png);
+}
+
+.pb-loyalty .pb-info-section {
+    background-image: url(assets/loyalty/gradient.png);
+}
+
+.pb-promo .pb-info-section {
+    background-image: url(assets/promo/gradient.png);
+}
+
+.pb-sports .pb-info-section {
+    background-image: url(assets/sports/gradient.png);
+}
+
+.pb-info-section .info-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    color:white;
+}
+
+.pb-info-section .info-block > div {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.pb-info-section .info-block .title {
+    font-family: Gotham-Black, sans-serif;
+    font-weight: 700;
+    font-size: 40px;
+    color: #FFFFFF;
+    transition: all 0.5s ease-in-out;
+}
+
+.pb-loyalty .pb-info-section .info-block .title {
+    letter-spacing: -1px;
+}
+
+
+.pb-info-section .info-block .title-hover {
+    font-family: Gotham-Book, sans-serif;
+    font-size: 20px;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.5s ease-in-out;
+    width: 100%;
+    text-align: center;
+}
+.pb-slot-casino .pb-info-section .info-block .title-hover {
+    color: #023433;
+}
+
+.pb-live .pb-info-section .info-block .title-hover {
+    color: #541E04;
+}
+
+.pb-sports .pb-info-section .info-block .title-hover {
+    color: #510F00;
+}
+
+.pb-aviatrix .pb-info-section .info-block .title-hover {
+    color: #451A62;
+}
+
+.pb-loyalty .pb-info-section .info-block .title-hover {
+    color: #184939;
+}
+
+.pb-promo .pb-info-section .info-block .title-hover {
+    color: #513A0F;
+}
+
+
+.pb-slot-casino.pb-item:hover .pb-info-section .info-block .title {
+    color: #023433;
+}
+
+.pb-live.pb-item:hover .pb-info-section .info-block .title {
+    color: #541E04;
+}
+
+.pb-sports.pb-item:hover .pb-info-section .info-block .title {
+    color: #510F00;
+}
+
+.pb-aviatrix.pb-item:hover .pb-info-section .info-block .title {
+    color: #451A62;
+}
+
+.pb-loyalty.pb-item:hover .pb-info-section .info-block .title {
+    color: #184939;
+}
+
+.pb-promo.pb-item:hover .pb-info-section .info-block .title {
+    color: #513A0F;
+}
+
+.pb-item:hover .title-hover {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.pb-info-section .info-block .logo {
+    width: 100%;
+    margin-top: 10px;
+    padding-bottom: 2.7%;
+}
+
+.pb-info-section .info-block .logo img {
+    max-height: 37px;
+    max-width: 80%;
+}
+
+@media screen and (max-width: 310px) {
+    .pb-info-section .info-block .title  {
+        font-size: 38px;
+    }
+    
+    .pb-info-section .info-block .title-hover  {
+        font-size: 12px;
+    }
+}
+
+
+@media screen and (max-width: 297px) {
+    .pb-info-section .info-block .title  {
+        font-size: 36px;
+    }
+    
+    .pb-info-section .info-block .title-hover  {
+        font-size: 12px;
+    }
+}
+
+@media screen and (max-width: 272px) {
+    .pb-info-section .info-block .title  {
+        font-size: 32px;
+    }
+    
+}
+
+@media screen and (max-width: 240px) {
+    .pb-info-section .info-block .title  {
+        font-size: 28px;
+    }
+    
+}
+
+@media screen and (max-width: 210px) {
+    .pb-info-section .info-block .title  {
+        font-size: 24px;
+    }
+    
+    .pb-info-section .info-block .logo {
+        margin-top: 5px;
+    }
+    
+    .pb-info-section .info-block .title-hover  {
+        font-size: 10px;
+    }
+    
+    .pb-info-section .info-block .logo img {
+        max-height: 30px;
+    }
+    
+    .pb-info-section .info-block .title  {
+        font-size: 19px;
+    }
+}
+
+@media screen and (max-width: 150px) {
+    
+    .pb-info-section .info-block .title-hover  {
+        font-size: 8px;
+    }
+    
+    .pb-info-section .info-block .logo img {
+        max-height: 25px;
+    }
+    
+    .pb-info-section .info-block .title  {
+        font-size: 15px;
+    }
+}
+
+@media screen and (max-width: 110px) {
+    
+    .pb-info-section .info-block .title  {
+        font-size: 14px;
+    }
+    
+    .pb-info-section .info-block .title-hover  {
+        font-size: 7px;
+    }
+    
+    .pb-info-section .info-block .logo img {
+        max-height: 23px;
+    }
+}
+

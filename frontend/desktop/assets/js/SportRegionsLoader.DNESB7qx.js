@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime.2Bc2s-6V.js";/* empty css                        */import"./HorizontalNavigationListContainerLoader.CHFAuJ2_.js";var t=e(),n=()=>(0,t.jsx)(`div`,{className:`sp-sub-list-bc`,children:(0,t.jsx)(`div`,{className:`sp-s-l-head-bc`,children:(0,t.jsx)(`span`,{className:`sp-s-l-h-title-bc skeleton-loader-text`})})});export{n as t};

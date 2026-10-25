@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime.2Bc2s-6V.js";import{w as t}from"./route.HeGzDbpd.js";import{t as n}from"./IncidentalGame.ClytySD6.js";var r=e(),i=()=>(0,r.jsx)(n,{product:t.WonderWheelWorldCup});export{i as default};

@@ -1,0 +1,628 @@
+{
+    "enabledProducts": {
+        "live": true,
+        "pre_match": true,
+        "live_calendar": true,
+        "statistics": true,
+        "casino": true,
+        "live_casino": true,
+        "tournaments": true,
+        "jackpots": true,
+        "games": true,
+        "e_sports": true,
+        "virtual_sports": true,
+        "tv_games": true,
+        "horse_racing": true,
+        "wonder_wheel": true,
+        "promotions": true,
+        "results": true,
+        "poker": true,
+        "pinnacle": true,
+        "sport_tournaments": true,
+        "casino_tournaments": true,
+        "tv_game_atm": true,
+        "exchange_shop": true,
+        "win_wheel": true,
+        "wonder_wheel_harmony": true,
+        "horse_racing_bc": true,
+        "pinnacle_esports": true,
+        "asian_view": true,
+        "wonder_wheel_world_cup": true,
+        "popular_bets": true,
+        "crypto_exchange": true,
+        "vmania": true,
+        "sport": true,
+        "invest_book": true,
+        "vivaro_social": true,
+        "casino_live_rtp": true
+    },
+    "cms": {
+        "cacheLayerSubdomain": "go"
+    },
+    "app": {
+        "liveChat": {
+            "enabled": true,
+            "showRegularButton": true,
+            "liveChatInc": {
+                "license": 14673606
+            }
+        },
+        "footer": {
+            "showAgeRestriction": true,
+            "customContentAboveFooter": true
+        },
+        "preferences": {
+            "language": "eng",
+            "timeFormat": "24h",
+            "oddFormat": 0,
+            "theme": "default"
+        },
+        "availableLanguages": {
+            "eng": {
+                "short": "EN",
+                "full": "English",
+                "order": 3
+            },
+            "kor": {
+                "short": "KR",
+                "full": "한국어",
+                "order": 1
+            },
+            "arb": {
+                "short": "AR",
+                "full": "Arabic",
+                "order": 11,
+                "rtl": true
+            }
+        },
+        "site_id": 398,
+        "siteName": "sensation.com",
+        "swarm": {
+            "socketUrl": "wss:\/\/eu-swarm-newm.24btcoservice.com"
+        },
+        "licences": [
+            [
+                {
+                    "config": {
+                        "src": "https:\/\/cmsbetconstruct.com\/storage\/medias\/b-sensation\/media_398_d6591afb6bc97f3858a726d9c471a9d7.png",
+                        "href": "https:\/\/cert.cga.cw\/certificate?id=ZXlKcGRpSTZJa0pIYWtWRFdpOUtSSGxWVkU1UldYTTFiRWRGVFdjOVBTSXNJblpoYkhWbElqb2lTRXBXUW5CaFZsVkxVUzk0WW1STlkxQjVhblZUUVQwOUlpd2liV0ZqSWpvaVlXTmhZVGhpTkRnd016YzVZMk13WWpaaFltTTRaakk1WTJZNE16Z3pPV1JoT1Rnek5tSTFZemRsTkdNMk4yVXlPV0ptTW1ZM01tSmxZalZpTWpsbU1pSXNJblJoWnlJNklpSjk="
+                    },
+                    "type": "image"
+                }
+            ],
+            [
+                {
+                    "config": {
+                        "eng": "<p style=\"margin-left:0px;\">The website betssen.com is operated by Great BDG Randon Entertainment N.V., a company incorporated under the laws of Curaçao with Company Number 146093 (registered address Seru Loraweg 17C, Curaçao). It is licensed by the Curaçao Gaming Authority to offer games of chance under license number OGL\/2024\/544\/0557 in accordance with the National Ordinance on Games of Chance (Landsverordening op de kansspelen, P.B.2024, no.157).<\/p> <p style=\"margin-left:0px;\">&nbsp;<\/p> <p style=\"margin-left:0px;\">Great BDG Entertainment LP, located at Office 115, Commerce House, 14 Washington Street West, Cork City, Cork, Republic of IRELAND, provides wallet\/card holders with payment services. The license holder is not authorized to offer its services in the territories of the United States of America, the Netherlands, France, the United Kingdom, Australia, Spain, the Dutch West Indies, Aruba, Bonaire, Statia, Dutch St Martin, and Curacao. Play&nbsp;responsibly.<\/p>",
+                        "tur": "<p style=\"margin-left:0px;\">The website betssen.com is operated by Great BDG Randon Entertainment N.V., a company incorporated under the laws of Curaçao with Company Number 146093 (registered address Seru Loraweg 17C, Curaçao). It is licensed by the Curaçao Gaming Authority to offer games of chance under license number OGL\/2024\/544\/0557 in accordance with the National Ordinance on Games of Chance (Landsverordening op de kansspelen, P.B.2024, no.157).<\/p> <p style=\"margin-left:0px;\">&nbsp;<\/p> <p style=\"margin-left:0px;\">Great BDG Entertainment LP, located at Office 115, Commerce House, 14 Washington Street West, Cork City, Cork, Republic of IRELAND, provides wallet\/card holders with payment services. The license holder is not authorized to offer its services in the territories of the United States of America, the Netherlands, France, the United Kingdom, Australia, Spain, the Dutch West Indies, Aruba, Bonaire, Statia, Dutch St Martin, and Curacao. Play&nbsp;responsibly.<\/p>",
+                        "rus": "<p style=\"margin-left:0px;\">The website betssen.com is operated by Great BDG Randon Entertainment N.V., a company incorporated under the laws of Curaçao with Company Number 146093 (registered address Seru Loraweg 17C, Curaçao). It is licensed by the Curaçao Gaming Authority to offer games of chance under license number OGL\/2024\/544\/0557 in accordance with the National Ordinance on Games of Chance (Landsverordening op de kansspelen, P.B.2024, no.157).<\/p> <p style=\"margin-left:0px;\">&nbsp;<\/p> <p style=\"margin-left:0px;\">Great BDG Entertainment LP, located at Office 115, Commerce House, 14 Washington Street West, Cork City, Cork, Republic of IRELAND, provides wallet\/card holders with payment services. The license holder is not authorized to offer its services in the territories of the United States of America, the Netherlands, France, the United Kingdom, Australia, Spain, the Dutch West Indies, Aruba, Bonaire, Statia, Dutch St Martin, and Curacao. Play&nbsp;responsibly.<\/p>",
+                        "default": "<p style=\"margin-left:0px;\">The website betssen.com is operated by Great BDG Randon Entertainment N.V., a company incorporated under the laws of Curaçao with Company Number 146093 (registered address Seru Loraweg 17C, Curaçao). It is licensed by the Curaçao Gaming Authority to offer games of chance under license number OGL\/2024\/544\/0557 in accordance with the National Ordinance on Games of Chance (Landsverordening op de kansspelen, P.B.2024, no.157).<\/p> <p style=\"margin-left:0px;\">&nbsp;<\/p> <p style=\"margin-left:0px;\">Great BDG Entertainment LP, located at Office 115, Commerce House, 14 Washington Street West, Cork City, Cork, Republic of IRELAND, provides wallet\/card holders with payment services. The license holder is not authorized to offer its services in the territories of the United States of America, the Netherlands, France, the United Kingdom, Australia, Spain, the Dutch West Indies, Aruba, Bonaire, Statia, Dutch St Martin, and Curacao. Play&nbsp;responsibly.<\/p>",
+                        "jpn": "<p style=\"margin-left:0px;\">The website betssen.com is operated by Great BDG Randon Entertainment N.V., a company incorporated under the laws of Curaçao with Company Number 146093 (registered address Seru Loraweg 17C, Curaçao). It is licensed by the Curaçao Gaming Authority to offer games of chance under license number OGL\/2024\/544\/0557 in accordance with the National Ordinance on Games of Chance (Landsverordening op de kansspelen, P.B.2024, no.157).<\/p> <p style=\"margin-left:0px;\">&nbsp;<\/p> <p style=\"margin-left:0px;\">Great BDG Entertainment LP, located at Office 115, Commerce House, 14 Washington Street West, Cork City, Cork, Republic of IRELAND, provides wallet\/card holders with payment services. The license holder is not authorized to offer its services in the territories of the United States of America, the Netherlands, France, the United Kingdom, Australia, Spain, the Dutch West Indies, Aruba, Bonaire, Statia, Dutch St Martin, and Curacao. Play&nbsp;responsibly.<\/p>",
+                        "kor": "<p style=\"margin-left:0px;\">The website betssen.com is operated by Great BDG Randon Entertainment N.V., a company incorporated under the laws of Curaçao with Company Number 146093 (registered address Seru Loraweg 17C, Curaçao). It is licensed by the Curaçao Gaming Authority to offer games of chance under license number OGL\/2024\/544\/0557 in accordance with the National Ordinance on Games of Chance (Landsverordening op de kansspelen, P.B.2024, no.157).<\/p> <p style=\"margin-left:0px;\">&nbsp;<\/p> <p style=\"margin-left:0px;\">Great BDG Entertainment LP, located at Office 115, Commerce House, 14 Washington Street West, Cork City, Cork, Republic of IRELAND, provides wallet\/card holders with payment services. The license holder is not authorized to offer its services in the territories of the United States of America, the Netherlands, France, the United Kingdom, Australia, Spain, the Dutch West Indies, Aruba, Bonaire, Statia, Dutch St Martin, and Curacao. Play&nbsp;responsibly.<\/p>"
+                    },
+                    "type": "text"
+                }
+            ],
+            [
+                {
+                    "config": {
+                        "src": "https:\/\/cmsbetconstruct.com\/storage\/medias\/b-sensation\/media_398_bae25d40121f2a72254127ecbdd98f14.svg"
+                    },
+                    "type": "image"
+                },
+                {
+                    "config": {
+                        "src": "https:\/\/cmsbetconstruct.com\/storage\/medias\/b-sensation\/media_398_fae13f8ff6c8a99d4c89c3913778b32f.svg"
+                    },
+                    "type": "image"
+                },
+                {
+                    "config": {
+                        "src": "https:\/\/cmsbetconstruct.com\/storage\/medias\/b-sensation\/media_398_aec15d2fae867835fb56d4c7a07bcc04.svg"
+                    },
+                    "type": "image"
+                },
+                {
+                    "config": {
+                        "src": "https:\/\/cmsbetconstruct.com\/storage\/medias\/b-sensation\/media_398_006d2a051cd71e573768c51a92fc9c92.svg"
+                    },
+                    "type": "image"
+                },
+                {
+                    "config": {
+                        "src": "https:\/\/cmsbetconstruct.com\/storage\/medias\/b-sensation\/media_398_9f1305c880c4ac5f8914ea65cd46b29d.svg"
+                    },
+                    "type": "image"
+                },
+                {
+                    "config": {
+                        "src": "https:\/\/cmsbetconstruct.com\/storage\/medias\/b-sensation\/media_398_9721831ca6689424f86706e96368f231.svg"
+                    },
+                    "type": "image"
+                },
+                {
+                    "config": {
+                        "src": "https:\/\/cmsbetconstruct.com\/storage\/medias\/b-sensation\/media_398_b7a55f4d08401b2378def2d9a21a160a.svg"
+                    },
+                    "type": "image"
+                },
+                {
+                    "config": {
+                        "src": "https:\/\/cmsbetconstruct.com\/storage\/medias\/b-sensation\/media_398_192fb66232c2c10f8b9b5ac0a9e74945.svg"
+                    },
+                    "type": "image"
+                },
+                {
+                    "config": {
+                        "src": "https:\/\/cmsbetconstruct.com\/storage\/medias\/b-sensation\/media_398_1fc7a76fea974b6a43a16247a40262cc.svg"
+                    },
+                    "type": "image"
+                },
+                {
+                    "config": {
+                        "src": "https:\/\/cmsbetconstruct.com\/storage\/medias\/b-sensation\/media_398_30121d89f97ae9c0ce1c55708b35026f.svg"
+                    },
+                    "type": "image"
+                },
+                {
+                    "type": "image",
+                    "config": {
+                        "src": "https:\/\/cmsbetconstruct.com\/storage\/medias\/b-sensation\/media_398_f790624062351ce236fd195e3b93935a.svg"
+                    }
+                },
+                {
+                    "config": {
+                        "src": "https:\/\/cmsbetconstruct.com\/storage\/medias\/b-sensation\/media_398_70381715a010d8d769541b247357fb29.svg"
+                    },
+                    "type": "image"
+                },
+                {
+                    "type": "image",
+                    "config": {
+                        "src": "https:\/\/cmsbetconstruct.com\/storage\/medias\/b-sensation\/media_398_5796ca209378bd81829a212b6014d38f.svg"
+                    }
+                },
+                {
+                    "type": "image",
+                    "config": {
+                        "src": "https:\/\/cmsbetconstruct.com\/storage\/medias\/b-sensation\/media_398_e7376839181b4624b626d62ff4a2a34a.svg"
+                    }
+                },
+                {
+                    "type": "image",
+                    "config": {
+                        "src": "https:\/\/cmsbetconstruct.com\/storage\/medias\/b-sensation\/media_398_48e5c7a7137f5a8ccf2ba689cc4300ef.svg"
+                    }
+                },
+                {
+                    "type": "image",
+                    "config": {
+                        "src": "https:\/\/cmsbetconstruct.com\/storage\/medias\/b-sensation\/media_398_e5be77fb8cb832838f2b90129cd119b7.svg"
+                    }
+                },
+                {
+                    "type": "image",
+                    "config": {
+                        "src": "https:\/\/cmsbetconstruct.com\/storage\/medias\/b-sensation\/media_398_d44388c170571c2daae54ae282f2cebd.svg"
+                    }
+                },
+                {
+                    "type": "image",
+                    "config": {
+                        "src": "https:\/\/cmsbetconstruct.com\/storage\/medias\/b-sensation\/media_398_60c2bab9f59a8bec6b4a17cc3ac71e51.png"
+                    }
+                }
+            ]
+        ],
+        "logo": {
+            "source": "\/logo.png"
+        },
+        "socialIcons": [
+            {
+                "network": "facebook",
+                "url": {
+                    "default": "https:\/\/www.facebook.com\/Bsensationcom"
+                }
+            },
+            {
+                "url": {
+                    "default": "https:\/\/www.instagram.com\/betsensation_\/"
+                },
+                "network": "instagram"
+            },
+            {
+                "url": {
+                    "default": "https:\/\/t.me\/BETSSENCASINO"
+                },
+                "network": "telegram"
+            }
+        ],
+        "themes": [
+            {
+                "title": "Default theme",
+                "theme": "default",
+                "scheme": {
+                    "b": "#040404",
+                    "hero": "#ECA33B",
+                    "accent": "#AC8333",
+                    "oc-1": "#2A65EB",
+                    "oc-2": "#CDAA3F"
+                }
+            }
+        ],
+        "defaultLanguageByIP": {
+            "enabled": true,
+            "regions": {
+                "TR": "tur",
+                "CA": "en-ca",
+                "AE": "arb",
+                "BH": "arb",
+                "KW": "arb",
+                "OM": "arb",
+                "QA": "arb",
+                "SA": "arb",
+                "KR": "kor"
+            }
+        },
+        "restrictedCountriesList": [
+            "AI",
+            "AW",
+            "BQ",
+            "IO",
+            "GI",
+            "GG",
+            "JE",
+            "MH",
+            "MS",
+            "MP",
+            "BL",
+            "PN",
+            "SH",
+            "PM",
+            "SX",
+            "GS",
+            "VG",
+            "VI",
+            "WF",
+            "KY",
+            "CW",
+            "FR",
+            "MF",
+            "GF",
+            "PF",
+            "TF",
+            "IM",
+            "KP",
+            "NL",
+            "GB",
+            "US",
+            "TC",
+            "SE",
+            "MT",
+            "CH",
+            "XC",
+            "RU",
+            "ES",
+            "UA",
+            "AM",
+            "AU",
+            "CU",
+            "IR",
+            "SY",
+            "TR",
+            "DE"
+        ],
+        "tracking": {
+            "googleTagManagerId": "GTM-TTXW5CD3"
+        },
+        "header": {
+            "headerIcons": [
+                {
+                    "href": "\/promotions\/all",
+                    "target": "_self",
+                    "showTo": 0,
+                    "className": "bc-i-promotions-3"
+                },
+                {
+                    "href": "?profile=open&account=balance&page=deposit",
+                    "className": "bc-i-wallet",
+                    "target": "_self",
+                    "showTo": 0
+                },
+                {
+                    "target": "_self",
+                    "href": "\/?profile=open&account=bonuses&page=exchange-shop",
+                    "className": "bc-i-loyalityshop",
+                    "showTo": 0
+                }
+            ],
+            "navigation": {
+                "mobile": {
+                    "genericMenu": true
+                }
+            }
+        },
+        "promotionalBonuses": {
+            "showClaimableInfoBeforeDeposit": true
+        },
+        "downloadPrintButtons": true,
+        "getFormsConfigFromCms": true,
+        "availableCountriesList": [
+            "FR",
+            "FM",
+            "GF",
+            "GY",
+            "PF",
+            "TF",
+            "AU",
+            "GR",
+            "HK",
+            "HU",
+            "IR",
+            "IQ",
+            "IE",
+            "IM",
+            "IL",
+            "IT",
+            "JP",
+            "BE",
+            "LV",
+            "LT",
+            "MO",
+            "MT",
+            "MC",
+            "MM",
+            "NL",
+            "BG",
+            "AN",
+            "KP",
+            "PH",
+            "PL",
+            "PT",
+            "RU",
+            "SA",
+            "RS",
+            "SG",
+            "KY",
+            "SI",
+            "ZA",
+            "ES",
+            "SE",
+            "CH",
+            "SY",
+            "TR",
+            "GB",
+            "HR",
+            "UK",
+            "US",
+            "YE",
+            "CU",
+            "CY",
+            "CZ",
+            "DK",
+            "BR",
+            "AT",
+            "CA",
+            "NZ",
+            "IN",
+            "MX",
+            "CL",
+            "PE",
+            "NO",
+            "GE",
+            "AE",
+            "AL",
+            "AM",
+            "AW",
+            "BA",
+            "BF",
+            "BH",
+            "BI",
+            "BN",
+            "CO",
+            "CR",
+            "DJ",
+            "DZ",
+            "EG",
+            "GA",
+            "GM",
+            "ID",
+            "JM",
+            "JO",
+            "KE",
+            "KG",
+            "KH",
+            "KI",
+            "KR",
+            "KW",
+            "KZ",
+            "LB",
+            "LI",
+            "MA",
+            "MD",
+            "ME",
+            "MK",
+            "MN",
+            "MY",
+            "NP",
+            "OM",
+            "PA",
+            "PR",
+            "PS",
+            "PW",
+            "QA",
+            "SB",
+            "SC",
+            "SM",
+            "SN",
+            "SO",
+            "TH",
+            "TM",
+            "TN",
+            "TT",
+            "UY",
+            "VC",
+            "VG",
+            "VI",
+            "VN",
+            "ZW",
+            "MH",
+            "AI",
+            "CX",
+            "CC",
+            "LA",
+            "MS",
+            "MP",
+            "PN",
+            "SH",
+            "TC",
+            "EH",
+            "BQ",
+            "HM",
+            "GS",
+            "AR",
+            "BO",
+            "EC",
+            "SV",
+            "HN",
+            "NI",
+            "PY",
+            "VE",
+            "UA",
+            "AD",
+            "GI",
+            "IS",
+            "SK",
+            "TW",
+            "LU",
+            "BY",
+            "JE",
+            "RO",
+            "XC",
+            "EE",
+            "CI",
+            "GH",
+            "NG",
+            "PK"
+        ],
+        "pageBuilderLayouts": [
+            "homepage"
+        ],
+        "enableDynamicDomains": 1
+    },
+    "sportsbook": {
+        "specialOptions": [
+            {
+                "label": "Upcoming Matches",
+                "value": "upcoming-matches"
+            },
+            {
+                "label": "Popular Matches",
+                "value": "popular-matches"
+            },
+            {
+                "label": "Popular competitions",
+                "value": "popular-competitions"
+            },
+            {
+                "label": "Boosted bets",
+                "value": "boosted-bets"
+            }
+        ],
+        "betBuilder": {
+            "enabled": false,
+            "apiUrl": "https:\/\/betconstruct-prod-gen2.sportcastlive.com\/markets",
+            "apiKey": "a6aa080b-cea9-4e3f-aa02-9fef8d1f0c8f"
+        }
+    },
+    "virtualSports": {
+        "integrationMode": true
+    },
+    "releaseDate": "2026-09-22 16:05:39",
+    "accountNavigation": {
+        "history": {
+            "order": 4,
+            "pages": [
+                "open-bets",
+                "bets",
+                "cashed-out"
+            ]
+        },
+        "balance": {
+            "order": 1,
+            "pages": [
+                "deposit",
+                "withdraw",
+                "history",
+                "withdraws"
+            ]
+        },
+        "bonuses": {
+            "order": 2,
+            "pages": [
+                "sport",
+                "bonus-history",
+                "casino-free-spins",
+                "casino",
+                "promo-code",
+                "loyalty-points",
+                "refer-to-friend"
+            ]
+        },
+        "profile": {
+            "order": 3,
+            "pages": [
+                "details",
+                "change-password",
+                "verify-account",
+                "two-factor-authentication"
+            ]
+        },
+        "messages": {
+            "order": 5,
+            "pages": [
+                "inbox",
+                "sent",
+                "new"
+            ]
+        }
+    },
+    "statistics": {
+        "enabled": true,
+        "showTeamLogos": true
+    },
+    "userAuthentication": {
+        "registration": {
+            "autoSetCurrency": {
+                "enabled": true,
+                "availableList": {
+                    "KR": "KRW",
+                    "IN": "INR",
+                    "TR": "TRY",
+                    "BR": "BRL",
+                    "VN": "VND",
+                    "Jap": "JPY",
+                    "Can": "CAD",
+                    "TH": "THB",
+                    "PH": "PHP",
+                    "MY": "MYR",
+                    "Mex": "MXN",
+                    "AE": "USD",
+                    "OM": "USD",
+                    "QA": "USD",
+                    "BH": "USD",
+                    "KW": "USD",
+                    "SA": "USD",
+                    "ZA": "USD"
+                }
+            },
+            "redirectOnSuccessUrl": "?action=deposit"
+        }
+    },
+    "liveCasino": {
+        "enableCategoriesFilter": true
+    },
+    "payment": {
+        "showDisplayNames": true
+    }
+}

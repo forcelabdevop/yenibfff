@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime.2Bc2s-6V.js";import{t}from"./contants.dHlZ8GgG.js";import{PopularCompetitions as n}from"./PopularCompetitions.CJa0a3sr.js";var r=e(),i=({settings:e,isWidget:i=t.Widget,handleNavigationStateChange:a})=>(0,r.jsx)(n,{settings:{...e,hideTitle:i!==t.Widget},handleNavigationStateChange:a,isWidget:!0});export{i as PopularCompetitionsWidget,i as default};

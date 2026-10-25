@@ -1,0 +1,1 @@
+import{o as e}from"./rolldown-runtime.C_s2cVnS.js";import{t}from"./react.o0Ha7HZ1.js";var n=e(t()),r=(e,t=!1)=>{let r=(0,n.useRef)(null),[i,a]=(0,n.useState)(!1);return(0,n.useEffect)(function(){if(r.current){let t=new ResizeObserver(([{target:t}])=>{a(t.clientWidth<=e)});return t.observe(r.current),()=>{t.disconnect()}}},[e,t]),{container:r,compactView:i}};export{r as t};

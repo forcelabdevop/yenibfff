@@ -243,14 +243,10 @@ run bash -c "cd '${REPO_DIR}/backend' && '${PNPM}' install --prod --frozen-lockf
 # Build ONCE tamamlanir, ANCAK sonra canliya takas edilir. Boylece build
 # suresince (dakikalarca) site eski haliyle calismaya devam eder.
 # ---------------------------------------------------------------------------
-log "→ Frontend bagimliliklari"
-run bash -c "cd '${REPO_DIR}/frontend' && '${PNPM}' install --frozen-lockfile"
+log "→ Frontend (statik paket, derleme yok): ${REPO_DIR}/frontend/desktop"
 
-log "→ Frontend derleniyor (birkac dakika surebilir)"
-run bash -c "cd '${REPO_DIR}/frontend' && '${PNPM}' run build"
-
-if [[ ${DRY_RUN} -eq 0 && ! -f "${REPO_DIR}/frontend/out/index.html" ]]; then
-	die "Build cikti uretmedi (frontend/out/index.html yok)."
+if [[ ${DRY_RUN} -eq 0 && ! -f "${REPO_DIR}/frontend/desktop/index.html" ]]; then
+	die "frontend/desktop/index.html yok."
 fi
 
 if [[ -n "${WEB_ROOT}" ]]; then
@@ -258,7 +254,7 @@ if [[ -n "${WEB_ROOT}" ]]; then
 	if [[ ${DRY_RUN} -eq 0 ]]; then
 		rm -rf "${WEB_ROOT}.new"
 		mkdir -p "${WEB_ROOT}.new"
-		cp -a "${REPO_DIR}/frontend/out/." "${WEB_ROOT}.new/"
+		cp -a "${REPO_DIR}/frontend/desktop/." "${WEB_ROOT}.new/"
 		rm -rf "${WEB_ROOT}.bak"
 		[[ -d "${WEB_ROOT}" ]] && mv "${WEB_ROOT}" "${WEB_ROOT}.bak"
 		mv "${WEB_ROOT}.new" "${WEB_ROOT}"

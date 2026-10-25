@@ -1,0 +1,1 @@
+import{o as e}from"./rolldown-runtime.C_s2cVnS.js";import{t}from"./react.o0Ha7HZ1.js";var n=e(t());function r(e,t,r=!1){let[i,a]=(0,n.useState)(e);return(0,n.useEffect)(()=>{let n=setTimeout(()=>{a(e)},t);return()=>{clearTimeout(n)}},[e,t]),r?e:i}export{r as t};

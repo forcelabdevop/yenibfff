@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime.2Bc2s-6V.js";import{t}from"./GenericSearchContainer.Cs0vRY-n.js";var n=e(),r=()=>(0,n.jsx)(`div`,{className:`smart-panel-tabs-bc generic-search-content`,children:(0,n.jsx)(t,{})});export{r as default};

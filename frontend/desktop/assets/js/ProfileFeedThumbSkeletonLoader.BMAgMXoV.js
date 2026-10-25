@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime.2Bc2s-6V.js";/* empty css                        */import"./HorizontalNavigationListContainerLoader.CHFAuJ2_.js";var t=e(),n=()=>(0,t.jsx)(`div`,{style:{width:`100%`,aspectRatio:`1 / 1`,overflow:`hidden`},children:(0,t.jsx)(`div`,{className:`skeleton-loader-banner-height`,style:{width:`100%`,height:`100%`}})});export{n as t};

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promo</title>
+    <link rel="stylesheet" href="/product-tiles/styles.css?v=a81e8de5">
+</head>
+<body>
+    <div class="pb-item pb-promo">
+        <div class="pb-background">
+            <img src="../assets/promo/background.jpg" alt="">
+        </div>
+        <div class="pb-character">
+            <img class="pb-character-img" src="../assets/promo/character.png" alt="">
+            <!-- Note: promo folder doesn't have a character-hover.png, so using the same character.png -->
+            <img class="pb-character-img character-hover" src="../assets/promo/character.png" alt="">
+        </div>
+        <div class="pb-info-section">
+            <div class="info-block">
+                <div class="title">
+                    <span>PROMO</span>
+                </div>
+                <div class="title-hover">
+                    <span>EXCLUSIVE BONUS</span>
+                </div>
+                <div class="logo">
+                    <img src="../assets/promo/logo.png" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
