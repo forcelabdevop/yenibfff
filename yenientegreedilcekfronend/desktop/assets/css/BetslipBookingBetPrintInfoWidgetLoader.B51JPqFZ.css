@@ -1,0 +1,1 @@
+.error-page{height:100%;padding:40px 20px;display:flex}.error-page.full{height:100vh}.error-page-content{flex-direction:column;align-items:center;margin:auto;display:flex}.error-page-content>.btn{width:auto}.error-page-icon{height:220px}.error-page-info{color:rgba(var(--b-sc), .35);text-align:center;margin:10px 0 25px;font-size:14px;line-height:20px}

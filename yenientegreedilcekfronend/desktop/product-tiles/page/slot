@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/product-tiles/styles.css?v=0cce7ff7">
+</head>
+<body>
+    <div class="pb-item pb-slot-casino">
+        <div class="pb-background">
+            <img src="../assets/slot/background1.png" alt="">
+        </div>
+        <div class="pb-character">
+            <img class="pb-character-img" src="../assets/slot/character.png" alt="">
+            <img class="pb-character-img character-hover" src="../assets/slot/character-hover.png" alt="">
+        </div>
+        <div class="pb-info-section">
+            <div class="info-block">
+                <div class="title">
+                    <span>SLOT CASINO</span>
+                </div>
+                <div class="title-hover">
+                    <span>BEST GAMES</span>
+                </div>
+                <div class="logo">
+                    <img src="../assets/slot/logo.png" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

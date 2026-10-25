@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime.2Bc2s-6V.js";var t=e(),n=({type:e=`text`,autoFocus:n=!0,...r})=>(0,t.jsx)(`input`,{type:e,autoFocus:n,...r});export{n as t};

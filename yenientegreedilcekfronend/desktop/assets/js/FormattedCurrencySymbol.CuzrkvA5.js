@@ -1,0 +1,1 @@
+import{t as e}from"./configs.CCUW7hBk.js";var t=(t,n)=>{let{currencySymbolBeforeAmount:r}=e.app;return r?`${t} ${n}`:`${n} ${t}`};export{t};

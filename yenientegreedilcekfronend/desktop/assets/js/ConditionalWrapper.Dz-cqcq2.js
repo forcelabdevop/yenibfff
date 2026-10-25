@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime.2Bc2s-6V.js";var t=e(),n=({condition:e,wrapper:n,children:r})=>(0,t.jsx)(t.Fragment,{children:e?n(r):r});export{n as t};

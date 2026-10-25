@@ -1,0 +1,1266 @@
+/* div .hdr-smart-panel-holder-arrow-bc~.overlay-sliding-wrapper-bc {
+    z-index: 2147483640!important;
+} */
+
+.jackpot-banner.jackpot-widget-full {
+    display: none;
+}
+
+.storiesWidgetListItem:not(.storiesItemSkeleton):not(.visited):before {
+    background-image: linear-gradient(140deg, #f2c94c, #e88a31) !important;
+}
+
+.historyLayoutWrapper-bc.withdrawLayout .tooltipIconWrapper {
+    display: none;
+}
+
+.user-nav-icon+.user-nav-icon.bc-i-loyalityshop {
+    display: none !important;
+}
+
+.overlay-sliding-is-visible ~ #chat-widget-container {
+    display: none;
+}
+
+/* FIXED: Consolidated .btn.register rules to prevent overrides */
+.btn.register { 
+    margin-inline-start: 7px;
+    background: linear-gradient(180deg, #f9bb42 0%, #f29a1a 100%) !important; 
+    color: #000000 !important; 
+    border: none !important;
+    padding: 0px 7px !important;
+    font-size: 9.5px;
+    width: 65px !important;
+}
+
+.intercom-lightweight-app-launcher {
+    margin-bottom: 70px !important;
+}
+
+div#apg-seal-container div {
+    max-width: 60px !important;
+}
+
+.ftr-partners-row-inner-bc>a:only-child img, 
+.ftr-partners-row-inner-bc>div:only-child img {
+    height: 125px !important;
+    width: 125px !important;
+    max-height: 70px !important;
+}
+
+.hdr-user-bc .header-custom-buttons {
+    display: none;
+}
+
+.ftr-g-content-bc.featuredGames-sport .horizontal-sl-list-container {
+    display: none;
+}
+
+.has-header-info:not(.world-cup) .layout-content-holder-bc {
+    padding-top: calc(var(--mobile-header-navigation-height) + var(--dynamic-header) + 15px) !important;
+}
+
+.has-header-info.wide-horizontal-menu:not(.world-cup) .layout-content-holder-bc {
+    padding-top: calc(var(--mobile-header-navigation-height) + var(--dynamic-header) + 55px) !important;
+}
+
+.is-home-page .popular-matches-bc {
+    display: none;
+}
+
+/* .hdr-additional-info {
+    position: absolute;
+    top: 10px;
+    height: 0px !important;
+    z-index: 999999;
+    right: 192px;
+    background: transparent !important;
+    border: 0 !important;
+} */
+
+.hdr-main-content-bc{
+    height: 65px !important;
+}
+
+/* FIXED: Grouped all scattered .product-banner-without-titles rules */
+.product-banner-container-bc.col-1.product-banner-without-titles {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    background: transparent !important;    
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    padding: 0 var(--padding-page-aside);
+    margin-top: 15px;
+}
+.product-banner-container-bc.col-1.product-banner-without-titles img {
+    width: 100%;
+}
+.product-banner-container-bc.col-1.product-banner-without-titles::-webkit-scrollbar {
+    display: none;
+}
+.product-banner-container-bc.col-1.product-banner-without-titles a {
+    flex-shrink: 0;
+    width: 150px;
+}
+
+.promotion-page.has-header-info:not(.world-cup) .layout-content-holder-bc {
+    padding-top: calc(var(--mobile-header-navigation-height) + var(--dynamic-header) + 15px) !important;
+    background: #111;
+}
+
+.promotionsList-bc {
+    gap: 30px;
+}
+
+.promotions-article-title {
+    background: transparent;
+}
+
+.promotionsList-bc article.promotionsListEl-bc {
+    border-radius: 10px;
+} 
+
+img.promotionsArticleThumbnail-bc {
+    border-radius: 10px;
+}
+
+.ftr-g-content-bc.featuredGames-sport {
+    display: none;
+}
+
+h3.promotions-article-title.ellipsis {
+    background: transparent !important;
+}
+
+.hdr-navigation-link-bc .nav-menu-title {
+    font-size: 10px !important;
+}
+
+.btn.sign-in {
+    border: 1px solid #f6c30b !important;
+    background: transparent !important;
+    color: #ffffff !important;
+    text-decoration: none !important;
+    padding: 0px 7px !important;
+    font-size: 9.5px !important;
+    width: 65px !important;
+}
+
+.user-nav-icon {
+    width: 27px !important;
+    height: 27px !important;
+    line-height: 27px !important;
+}
+
+.has-header-info:not(.world-cup,.has-wallet).header-bc-hide .hdr-additional-info {
+    transform: translateY(0%) !important;
+}
+
+/* FIXED: Resolved conflict for promotions button background (keeping the transparent one as it was placed lower in your original code) */
+.header-custom-buttons a[class*=promotions], 
+.hdr-user-bc a[class*=promotions] {
+    background: transparent !important;
+}
+
+.hdr-user-bc .bc-i-deposit, 
+.hdr-user-bc .bc-i-wallet, 
+.hdr-user-bc .bc-i-community, 
+.hdr-user-bc .deposit-btn {
+    background: linear-gradient(140deg, #1fddfe 0%, #0a97b0 100%) !important;
+}
+
+.hm-row-bc:nth-child(2) {
+    overflow: hidden;
+}
+
+.form-sign-in-slider-wrapper {
+    order: 1;
+}
+
+.form-sign-bc {
+    order: 2;
+}
+
+.live-chat-adviser-bc {
+    order: 3;
+}
+
+.carousel-count {
+    display: none;
+}
+
+.promotion-page.header-bc-hide .horizontal-sl-list-container {
+    position: fixed;
+    top: 60px;
+    z-index: 98;
+    background: #111;
+    width: 100%;
+}
+
+.sg-n-text-row-1-bc,
+.sg-n-text-row-2-bc {
+    display: none;
+}
+
+.entrance-form-bc.popup.login {
+    padding: 15px 15px;
+}
+
+.form-control-input-bc:not([name=phoneCode],[name=phoneNumber]) {
+    border-radius: 8px;
+    background: #292929;
+}
+
+span.form-control-title-bc.ellipsis {
+    color: #fff;
+}
+
+.checkbox-control-icon-bc {
+    border-radius: 50%;
+}
+
+button.btn.a-color {
+    background: linear-gradient(140deg, #f2c94c 0%, #e88a31 100%) !important;
+    border-radius: 8px !important;
+}
+
+html[lang="ar"] .layout-header-holder-bc {
+    direction: ltr;
+}
+
+.hdr-toggle-button-bc {
+    background: transparent !important;
+}
+
+span.e-p-section-title-bc {
+    border: 1px solid #e8be5c;
+    text-decoration: none !important;
+    padding: 5px 7px !important;
+    font-size: 9.5px !important;
+    width: 65px !important;
+}
+
+.e-p-section-item-bc:last-child {
+    text-align: center;
+}
+
+/* FIXED: Merged duplicate .u-i-p-links-lists-holder-bc classes */
+.u-i-p-links-lists-holder-bc {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.u-i-p-links-lists-holder-bc .user-nav-icon:after {
+    background: transparent !important;
+}
+.u-i-p-links-lists-holder-bc .user-nav-icon{
+    background: #232222 !important;
+    font-size: 20px !important;
+}
+
+.u-i-p-l-head-bc {
+    background: #232222 !important;
+    height: 50px !important;
+    border-radius: 10px !important;
+}
+
+.u-i-profile-page-bc .count-odd-animation {
+    right: 50px !important;
+    top: 30% !important;
+}
+
+.u-i-profile-page-bc .count-odd-animation:before {
+    border: 0 !important;
+}
+
+.u-i-profile-page-bc .count-odd-animation:after {
+    background: linear-gradient(140deg, #f2c94c 0%, #e88a31 100%) !important;
+    height: 20px !important;
+    width: 20px !important;
+    border-radius: 20px !important;
+    line-height: 20px !important;
+    padding: 0 !important;
+}
+
+.account-verified-button {
+    box-shadow: none !important;
+    background: linear-gradient(140deg, #00D656 0%, #015733 100%) !important;
+    height: 45px !important;
+    font-size: 18px !important;
+    border-radius: 8px !important;
+}
+
+.u-i-p-l-h-title-bc {
+    text-transform: uppercase !important;
+}
+
+a.bc-i-promotions-3:before {
+    background: url(https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_c7e233c29097ac80761177e39bc5df7a.gif);
+    content: "";
+    width: 45px;
+    height: 45px;
+    position: absolute;
+    left: -10px;
+    top: -10px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.sdr-item-bc:before {
+    content: "";
+    background: transparent !important;
+}
+
+.betslip-bc.full {
+    z-index: 9999999999 !important;
+}
+
+html[lang="ar"] label.checkbox-control-content-bc[data-option-value="AUD"],
+html[lang="ar"] label.checkbox-control-content-bc[data-option-value="BRL"],
+html[lang="ar"] label.checkbox-control-content-bc[data-option-value="CAD"],
+html[lang="ar"] label.checkbox-control-content-bc[data-option-value="CNY"],
+html[lang="ar"] label.checkbox-control-content-bc[data-option-value="INR"],
+html[lang="ar"] label.checkbox-control-content-bc[data-option-value="IDR"],
+html[lang="ar"] label.checkbox-control-content-bc[data-option-value="JPY"],
+html[lang="ar"] label.checkbox-control-content-bc[data-option-value="MYR"],
+html[lang="ar"] label.checkbox-control-content-bc[data-option-value="MXN"],
+html[lang="ar"] label.checkbox-control-content-bc[data-option-value="NZD"],
+html[lang="ar"] label.checkbox-control-content-bc[data-option-value="PHP"],
+html[lang="ar"] label.checkbox-control-content-bc[data-option-value="KRW"],
+html[lang="ar"] label.checkbox-control-content-bc[data-option-value="THB"],
+html[lang="ar"] label.checkbox-control-content-bc[data-option-value="VND"]{
+    display: none;
+}
+
+.payment-info-bc {
+    height: auto !important;
+}
+
+/* --- 1. EXACT ORIGINAL SIZE RESET --- */
+header .sign-in-btn,
+header .register-btn,
+header .deposit-btn,
+.btn.sign-in,
+.btn.register,
+.btn.a-color {
+    box-sizing: border-box !important; 
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    
+    height: 26px !important; 
+    min-width: 75px !important; 
+    width: auto !important;
+    
+    padding: 0 10px !important; 
+    font-size: 12px !important; 
+    font-weight: 500 !important; 
+    text-transform: uppercase !important;
+    white-space: nowrap !important;
+    border-radius: 4px !important; 
+    
+    text-overflow: clip !important;
+    overflow: visible !important;
+}
+
+/* --- 4. DEPOSIT BUTTON (BLUE) --- */
+header .deposit-btn,
+.btn.a-color,
+.deposit-btn {
+    background: linear-gradient(140deg, #1fddfe 0%, #0a97b0 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    min-width: 85px !important; 
+}
+
+/* --- 5. STABILIZER (PREVENTS SIZE CHANGE ON PAGES) --- */
+header .active, 
+header .current-menu-item, 
+header .selected,
+header [class*="active"],
+.section-active .btn {
+    height: 26px !important;
+    width: auto !important;
+    font-weight: 500 !important;
+    padding: 0 10px !important;
+}
+
+/* ============================================================
+   REMOVE FLOATING BOTTOM BUTTON & DOUBLE ARROW
+   ============================================================ */
+
+.header-bc .center-bottom-btn, 
+.header-bc .center-bottom-btn > button,
+.layout-bc .nav-floating-btn, 
+.bc-i-double-arrow-top,
+.nav-floating-btn-hide {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    height: 0 !important;
+    width: 0 !important;
+    position: absolute !important;
+    overflow: hidden !important;
+}
+
+.header-bc .center-bottom-btn > button {
+    transition: none !important;
+    bottom: -500px !important;
+}
+
+.header-bc button,
+.header-bc a,
+.header-bc div {
+    text-decoration: none !important;
+    box-shadow: none !important;
+    border-bottom: none !important;
+}
+
+.header-bc .active::after,
+.header-bc [class*="active"]::after,
+.header-bc .selected::after {
+    display: none !important;
+}
+
+/* --- 1. HEADER ONLY: Fixes Sign-In, Register, Deposit in Top Bar --- */
+header .sign-in-btn,
+header .register-btn,
+header .deposit-btn,
+header .btn.sign-in,
+header .btn.register,
+header .btn.a-color {
+    box-sizing: border-box !important; 
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    height: 26px !important; 
+    min-width: 80px !important; 
+    width: auto !important;
+    padding: 0 10px !important; 
+    font-size: 12px !important; 
+    text-transform: uppercase !important;
+    white-space: nowrap !important;
+    text-overflow: clip !important;
+    overflow: visible !important;
+}
+
+header .btn.sign-in { border: 1px solid #f6c30b !important; background: transparent !important; }
+header .btn.register { background: linear-gradient(180deg, #f9bb42 0%, #f29a1a 100%) !important; color: #000000 !important; border: none !important; }
+
+/* --- 2. POPUP & MODAL FIX: Forces Buttons to Center and Expand --- */
+.modal-content .btn, 
+.popup-content .btn, 
+.form-buttons .btn,
+[class*="modal"] .btn,
+[class*="popup"] .btn {
+    display: flex !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: auto !important;     
+    min-width: 120px !important;
+    height: 36px !important;     
+    justify-content: center !important;
+    align-items: center !important;
+    text-overflow: clip !important;
+    overflow: visible !important;
+    white-space: nowrap !important;
+}
+
+.modal-content .btn.register, 
+.popup-content .btn.register {
+    padding: 0 20px !important; 
+}
+
+/* --- FIX FOR QUICK ACCESS SECTION --- */
+.quick-access, 
+[class*="quick-access"] {
+    display: flex !important;
+    flex-direction: column !important; 
+    align-items: center !important;    
+    justify-content: center !important;
+    gap: 15px !important;              
+    width: 100% !important;
+    margin: 20px 0 !important;
+}
+
+.quick-access-title,
+.quick-access > span,
+.quick-access > div:first-child {
+    text-align: center !important;
+    width: 100% !important;
+    display: block !important;
+}
+
+.quick-access .btn-wrap, 
+.quick-access .buttons-container {
+    display: flex !important;
+    flex-direction: row !important;    
+    justify-content: center !important;
+    gap: 10px !important;              
+}
+
+.quick-access .btn,
+[class*="quick-access"] .btn {
+    min-width: 120px !important;
+    height: 38px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 20px !important;
+}
+
+/* Arabic Skin Fixes: */
+
+/* --- ARABIC DROPDOWN OVERLAP FIX --- */
+html[lang="ar"] .hdr-toggle-button-bc {
+    z-index: 99999 !important; 
+    position: relative !important;
+}
+
+html[lang="ar"] .nav-menu-sub, 
+html[lang="ar"] .dropdown-container-bc {
+    z-index: 100000 !important;
+    position: absolute !important;
+}
+
+html[lang="ar"] .asideMenuCompact, 
+html[lang="ar"] .asideMenu-bc,
+html[lang="ar"] #root.hasLeftMenu .asideMenuCompact {
+    z-index: 100 !important; 
+}
+
+html[lang="ar"] .layout-header-holder-bc {
+    overflow: visible !important;
+    z-index: 9999 !important;
+}
+
+/* 1. MAKE BUTTONS FULL WIDTH */
+.sportBonusListTable-bc .btn.a-color, 
+.sportBonusListTable-bc .btn.deposit-btn,
+.sportBonusListTable-bc > button,
+.sportBonusListTable-bc > a.btn {
+    display: flex !important;
+    width: 100% !important;      
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-top: 10px !important;
+    justify-content: center !important; 
+    align-items: center !important;
+    float: none !important;
+}
+
+.sportBonusListTable-bc {
+    display: block !important;
+    width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+@media screen and (max-width: 768px) {
+    .sportBonusListTable-bc {
+        padding: 0 10px !important; 
+    }
+}
+
+/* Neteller/Payment Form Button Fix */
+.u-i-p-c-footer-bc, 
+.entrance-form-actions-holder-bc {
+    display: flex !important;
+    justify-content: center !important;
+    width: 100% !important;
+    margin-top: 30px !important;
+    padding: 0 10px !important; 
+    float: none !important;
+}
+
+.u-i-p-c-footer-bc .btn,
+.entrance-form-actions-holder-bc .btn,
+.u-i-p-c-footer-bc .btn.a-color {
+    display: flex !important;
+    width: 100% !important;      
+    max-width: 100% !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: 0 auto !important;
+    height: 40px !important;     
+    float: none !important;
+}
+
+/* .form-sign-in-slider-wrapper { display: none !important; } */
+/* html[lang="ar"] .u-i-profile-page-bc .count-odd-animation { right: auto !important; left: 50px !important; } */
+
+html[lang="ar"] .hdr-smart-panel-holder-bc,
+html[lang="ar"] .hdr-smart-panel-holder-arrow-bc {
+    right: 0 !important;
+    left: auto !important;
+}
+
+html[lang="ar"] .overlay-sliding-wrapper-bc {
+    right: 0 !important;
+    left: auto !important;
+    transform: translateX(100%); 
+}
+
+html[lang="ar"] .smart-panel-is-visible .overlay-sliding-wrapper-bc {
+    transform: translateX(0) !important;
+    right: 56px !important; 
+}
+
+/* FORCE NEW MESSAGE BUTTON TO BE LARGE AND CENTERED */
+.layout-bc a.btn.a-color[href*="messages&page=new"] {
+    height: 50px !important;
+    width: 90% !important;
+    min-width: 90% !important;
+    display: flex !important;
+    margin: 30px auto !important;
+    position: relative !important;
+    left: auto !important;
+    float: none !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    justify-content: center !important;
+    align-items: center !important;
+    border-radius: 8px !important;
+}
+
+.messages-page-bc .messages-container-bc, 
+.messages-page-bc .no-data-bc {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    min-height: 40vh !important;
+    text-align: center !important;
+}
+
+/* ============================================================
+   1. PROMO CODE & APPLY BUTTON ALIGNMENT
+   ============================================================ */
+
+.u-i-profile-page-bc .promo-code-bc {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-end !important; 
+    gap: 0 !important;
+}
+
+.u-i-profile-page-bc .promo-code-bc .form-control-bc {
+    flex: 1 !important;
+    margin-bottom: 0 !important;
+}
+
+.u-i-profile-page-bc .u-i-p-c-footer-bc {
+    width: auto !important;
+    margin-top: 0 !important; 
+    margin-inline-start: 10px !important;
+    padding: 0 !important;
+}
+
+.u-i-profile-page-bc .u-i-p-c-footer-bc button {
+    height: 52px !important; 
+    border-radius: 8px !important;
+    margin: 0 !important;
+}
+
+/* ============================================================
+   2. NEW MESSAGE BUTTON CENTERED & FULL SCREEN
+   ============================================================ */
+.messages-page-bc .btn-bc, 
+.messages-page-bc button[class*="new-message"] {
+    width: 90% !important;
+    max-width: 400px !important;
+    height: 55px !important;
+    margin: 20px auto !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    position: static !important; 
+}
+
+/* Hide the redundant promotion title text to fix overlap */
+html[lang="ar"] .promotion-details-popup .back-nav-title-bc-h1,
+html[lang="ar"] .promotion-details-popup .back-nav-title-bc {
+    display: none !important;
+}
+
+html[lang="ar"] .promotion-details-popup .back-nav-bc {
+    background: #000c24 !important; 
+    height: 45px !important;
+    min-height: 45px !important;
+    display: flex !important;
+    align-items: center !important; 
+    padding: 0 15px !important;
+    overflow: hidden !important;
+}
+
+html[lang="ar"] .promotion-details-popup .back-nav-icon-bc {
+    margin: 0 !important;
+    top: 0 !important;
+    position: static !important;
+    font-size: 20px !important;
+}
+
+html[lang="ar"] .promotion-details-popup .back-nav-icon-bc,
+html[lang="ar"] .promotion-details-popup .back-nav-title-bc-h1 {
+    transform: translateY(3px) !important; 
+}
+
+html[lang="ar"] .u-i-profile-page-bc .u-i-p-l-head-bc {
+    position: relative !important; 
+}
+
+html[lang="ar"] .u-i-profile-page-bc .count-odd-animation:after, 
+html[lang="ar"] .u-i-profile-page-bc .count-blink-even:after {
+    position: absolute !important;
+    right: auto !important;
+    left: 45px !important; 
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    margin: 0 !important;
+    z-index: 10 !important;
+}
+
+html[lang="ar"] .u-i-profile-page-bc .user-nav-icon:after {
+    background: transparent !important;
+}
+
+/* --- HIDE HEADER BAR ON PROFILE & PROMO PAGES ONLY --- */
+
+/* FIXED: Grouped all the padding fixes for Arabic side-menus */
+html[lang="ar"] #root:has(.u-i-profile-page-bc) .has-header-info:not(.world-cup) .layout-content-holder-bc,
+html[lang="ar"] .overlay-sliding-is-visible .has-header-info:not(.world-cup) .layout-content-holder-bc,
+html[lang="ar"] #root:has(.promotionsList-bc) .has-header-info:not(.world-cup) .layout-content-holder-bc,
+html[lang="ar"] #root.promotion-page .has-header-info:not(.world-cup) .layout-content-holder-bc {
+    padding-top: 65px !important; 
+}
+
+html[lang="ar"] #root:has(.u-i-profile-page-bc) .hdr-additional-info,
+html[lang="ar"] #root:has(.promotion-details-popup) .hdr-additional-info,
+html[lang="ar"] #root.promotion-page .hdr-additional-info,
+html[lang="ar"] .overlay-sliding-is-visible .hdr-additional-info,
+html[lang="ar"] .overlay-sliding-is-visible .header-bc .loyaltyBonusHeader,
+html[lang="ar"] .overlay-sliding-is-visible .header-bc .header-custom-buttons,
+html[lang="ar"] .overlay-sliding-is-visible .header-bc .bc-i-promotions-3,
+html[lang="ar"] .overlay-sliding-is-visible .header-bc .bc-i-wallet,
+html[lang="ar"] #root:has(.promotionsList-bc) .hdr-additional-info,
+html[lang="ar"] #root:has(.bonuses-bc) .hdr-additional-info,
+html[lang="ar"] #root:has(.promotionsList-bc) .header-bc .loyaltyBonusHeader,
+html[lang="ar"] #root:has(.promotionsList-bc) .header-bc .header-custom-buttons,
+html[lang="ar"] #root:has(.promotionsList-bc) .header-bc .bc-i-promotions-3,
+html[lang="ar"] #root:has(.promotionsList-bc) .header-bc .bc-i-wallet {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* --- SAFE DOWNWARD NUDGE ONLY (NO CLIPPING) --- */
+html[lang="ar"] .back-nav-bc .back-nav-title-bc,
+html[lang="ar"] .back-nav-bc .back-nav-title-bc-h1,
+html[lang="ar"] .back-nav-bc .back-nav-icon-bc {
+    transform: none !important; 
+    margin-top: 18px !important; 
+}
+
+html[lang="ar"] .back-nav-bc {
+    align-items: flex-start !important;
+    overflow: visible !important;
+}
+
+/* =============================================================== */
+/* --- ARABIC: FIX 3-DOTS Z-INDEX AND ARROW POINTER ---            */
+/* =============================================================== */
+
+html[lang="ar"] .hdr-smart-panel-holder-arrow-bc {
+    right: 5px !important;
+    left: auto !important;
+    margin: 0 !important;
+    z-index: 999999 !important; 
+}
+
+html[lang="ar"] .hdr-smart-panel-holder-arrow-bc:before,
+html[lang="ar"] .hdr-smart-panel-holder-arrow-bc:after {
+    left: 50% !important;
+    right: auto !important;
+}
+
+html[lang="ar"] .layout-bc.smart-panel-is-visible .hdr-smart-panel-holder-arrow-bc:before,
+html[lang="ar"] .layout-bc.smart-panel-is-visible .hdr-smart-panel-holder-arrow-bc:after {
+    transform: translate(-50%, 0) !important; 
+}
+
+html[lang="ar"] .layout-bc.smart-panel-is-visible .hdr-smart-panel-holder-arrow-bc {
+    transform: translateY(0) !important;
+}
+/* ============================================================
+   1. BET NOW BUTTON (Full Width)
+   ============================================================ */
+
+/* Target the exact wrapper you provided */
+.bet-button-wrapper-bc {
+    display: flex !important;
+    justify-content: center !important;
+    width: 100% !important;
+    /* Keeps the padding you already have from var(--padding-page-aside) */
+}
+
+/* Force the button inside to stretch 100% */
+.bet-button-wrapper-bc .btn {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: 0 !important;
+}
+
+
+/* ============================================================
+   2. RESET BUTTON (Centered)
+   ============================================================ */
+
+/* Override the ".right" alignment class on the container */
+.entrance-form-action-item-bc.right {
+    display: flex !important;
+    justify-content: center !important;
+    width: 100% !important;
+    float: none !important;
+    text-align: center !important;
+}
+
+/* Center the button inside */
+.entrance-form-action-item-bc.right .btn {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: 0 auto !important;
+    min-width: 150px !important; /* You can increase this if you want the reset button wider too */
+}
+
+
+/* ============================================================
+   3. HIDE "reset_password_info_message"
+   ============================================================ */
+
+/* Target the translation string and surrounding info text containers */
+[title="reset_password_info_message"],
+[data-i18n="reset_password_info_message"],
+.reset_password_info_message,
+.entrance-form-bc .info-message-bc {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+}
+/* ============================================================
+   HIDE "reset_password_info_message" & ICON
+   ============================================================ */
+
+.reset-tooltip-info,
+.reset-tooltip-content {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    pointer-events: none !important;
+}
+/* =========================================
+   HIDE "DOWNLOAD AND PRINT" BUTTON
+   (Only triggers if .custom-prime-page exists)
+   ========================================= */
+body:has(.custom-prime-page) button[title="Download and print"] {
+    display: none !important;
+}
+/* =========================================
+   HIDE "DOWNLOAD AND PRINT" BUTTON
+   ========================================= */
+body:has(.betssen-apps-page) button[title="Download and print"],
+body:has(.betssen-apps-page) [title*="DOWNLOAD AND PRINT"],
+body:has(.betssen-apps-page) [title*="Download and print"] {
+    display: none !important;
+}
+/* 1. Target and hide the Title text */
+.toast-notification-title {
+    font-size: 0 !important; 
+    color: transparent !important;
+}
+
+/* 2. Inject the New Title */
+.toast-notification-title::before {
+    content: "Unlock Exclusive Promos 🎁";
+    font-size: 16px !important; 
+    color: #ffffff !important; 
+    display: block;
+}
+
+/* 3. Target and hide the Description text */
+.toast-notification-description {
+    font-size: 0 !important;
+    color: transparent !important;
+}
+
+/* 4. Inject the New Description */
+.toast-notification-description::before {
+    content: "Enable push notifications to be the first to claim limited-time bonuses and tailored rewards.";
+    font-size: 14px !important; 
+    color: rgba(255, 255, 255, 0.56) !important; 
+    display: block;
+}
+/* =========================================
+   1. STORY BASE STYLES & INSTAGRAM RING
+   ========================================= */
+
+/* Remove default platform circles ONLY inside stories */
+.storiesWidgetWrapper .horizontal-sl-item-bc {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.storiesWidgetWrapper .horizontal-sl-item-bc::before,
+.storiesWidgetWrapper .horizontal-sl-item-bc::after {
+    display: none !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* ALL Stories Uniform Size with EXACT Instagram Ring */
+.storiesWidgetWrapper .horizontal-sl-icon-bc {
+    width: 95px !important;
+    height: 70px !important;
+    border-radius: 16px !important; 
+    padding: 3px !important; 
+    border: 2px solid transparent !important; 
+    background: 
+        linear-gradient(#111111, #111111) padding-box, 
+        linear-gradient(45deg, #feda75 10%, #fa7e1e 30%, #d62976 60%, #962fbf 80%, #4f5bd5 100%) border-box !important;
+    object-fit: cover !important; 
+    object-position: center !important;
+}
+
+
+/* =========================================
+   2. SLIDESHOW TRIGGERS
+   ========================================= */
+
+/* HOT SLOTS (ID 755402) - 14 images (42s) */
+.storiesWidgetWrapper .horizontal-sl-item-bc[data-id="755402"] .horizontal-sl-icon-bc {
+    animation: top-games-slideshow 42s infinite;
+}
+
+/* GAMES (ID 1050852) - 3 images (9s) */
+.storiesWidgetWrapper .horizontal-sl-item-bc[data-id="1050852"] .horizontal-sl-icon-bc {
+    animation: games-slideshow 9s infinite;
+}
+
+/* LIVE (ID 691532) - 3 images (9s) */
+.storiesWidgetWrapper .horizontal-sl-item-bc[data-id="691532"] .horizontal-sl-icon-bc {
+    animation: live-slideshow 9s infinite;
+}
+
+/* SHOW (ID 691520) - 4 images (12s) */
+.storiesWidgetWrapper .horizontal-sl-item-bc[data-id="691520"] .horizontal-sl-icon-bc {
+    animation: show-slideshow 12s infinite;
+}
+
+
+/* =========================================
+   3. KEYFRAMES ANIMATIONS
+   ========================================= */
+
+/* HOT SLOTS (14 Images Mixed) */
+@keyframes top-games-slideshow {
+    0%, 7% { content: url('https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_1fa57d8f10efea5f08a5b2a77bcdb5bf.png'); }
+    7.1%, 14.2% { content: url('https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_fdc077db8df887ff4478d9135a183723.gif'); }
+    14.3%, 21.4% { content: url('https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_cef487d6caec51c7d72566eaa13ea504.png'); }
+    21.5%, 28.5% { content: url('https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_8173ddf1edc3d538975e92780619d73d.png'); }
+    28.6%, 35.7% { content: url('https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_e53ffb7d240ed2579c16d1d462e92a6d.gif'); }
+    35.8%, 42.8% { content: url('https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_b4d4c990cce38c6cfcc08a6fa8060682.png'); }
+    42.9%, 50% { content: url('https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_1cf86922078226e35238123fe91c5f70.png'); }
+    50.1%, 57.1% { content: url('https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_005cb2a10cb388fbd2295415389b8f2d.gif'); }
+    57.2%, 64.2% { content: url('https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_cb8f7bf02271a74be9b23443a49dc477.png'); }
+    64.3%, 71.4% { content: url('https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_830cbbaf86cd3832c88363ecac355082.png'); }
+    71.5%, 78.5% { content: url('https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_2afb44d81b053589f2560920246c3024.png'); }
+    78.6%, 85.7% { content: url('https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_6fe91692c8f8b69edf9ad67e6e74b34d.png'); }
+    85.8%, 92.8% { content: url('https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_07471a5e4cf69387aeb34423003756e9.png'); }
+    92.9%, 100% { content: url('https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_912e4db0ea87bc7db606c2767f986351.png'); }
+}
+
+/* GAMES (3 Images) */
+@keyframes games-slideshow {
+    0%, 32% { content: url('https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_844b7e5ad967e33968339ce117c4653a.png'); }
+    33%, 65% { content: url('https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_57740c3aeb23688dd3a2ec0306b25bde.gif'); }
+    66%, 100% { content: url('https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_0e4931c113bf33b0187585621cb4d9af.gif'); }
+}
+
+/* LIVE (3 Images) */
+@keyframes live-slideshow {
+    0%, 32% { content: url('https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_3020b8fd1a1744406fbc551de0756bba.png'); }
+    33%, 65% { content: url('https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_50590c845bfbe4dc1c63e67da9d8197d.gif'); }
+    66%, 100% { content: url('https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_5579463c0bae491637690a992cd4b717.gif'); }
+}
+
+/* SHOW (4 Images) */
+@keyframes show-slideshow {
+    0%, 24% { content: url('https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_52356b82da4fc37248a3a4cb47daf823.gif'); }
+    25%, 49% { content: url('https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_092cfe02a458506c67281f87e16f021a.gif'); }
+    50%, 74% { content: url('https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_5b890d9d9ae564d138ef50419f402a07.png'); }
+    75%, 100% { content: url('https://cmsbetconstruct.com/storage/medias/b-sensation/media_398_f565136ad9c70f8331853e32b4b29446.png'); }
+}
+
+/* Shared app spacing, existing overlays and APP badge */
+@media screen and (display-mode: standalone) {
+
+    :root {
+        --betssen-edge-gap: 0px;
+        --betssen-app-top: calc(env(safe-area-inset-top, 0px) + var(--betssen-edge-gap));
+    }
+
+    input,
+    textarea,
+    select {
+        font-size: 16px !important;
+    }
+
+    html, body {
+        background-color: rgb(0, 12, 36) !important;
+    }
+
+    body #root .header-bc {
+        top: 0 !important;
+        padding-top: var(--betssen-app-top) !important;
+        background-color: rgba(var(--header), 1) !important;
+    }
+
+    body #root .layout-content-holder-bc {
+        padding-top: calc(49px + var(--betssen-app-top)) !important;
+    }
+
+    body #root .overlay-sliding-wrapper-bc {
+        top: calc(49px + var(--betssen-app-top)) !important;
+        height: calc(100vh - 49px - var(--betssen-app-top)) !important;
+    }
+
+    body #root .overlay-sliding-wrapper-bc .overlay-sliding-wrapper-bc {
+        top: 0 !important;
+        height: 100% !important;
+    }
+
+    body #root .popup-holder-bc,
+    [class*="popup-holder"],
+    [class*="modal-"],
+    [class*="drawer-"] {
+        padding-top: env(safe-area-inset-top, 20px) !important;
+    }
+
+    body #root .popup-holder-bc:not(.popup-holder-bc .popup-holder-bc),
+    body .popup-holder-bc:not(.popup-holder-bc .popup-holder-bc) {
+        box-sizing: border-box !important;
+        padding-top: var(--betssen-app-top) !important;
+    }
+
+    .layout-betslip-holder-bc .bs-f-header-bc {
+        padding-top: var(--betssen-app-top) !important;
+        height: auto !important;
+    }
+
+    #chat-widget-container:has(#chat-widget-minimized[style*="display: block"]) {
+        top: auto !important;
+        bottom: calc(40px + env(safe-area-inset-bottom, 0px)) !important;
+        height: 84px !important;
+        max-height: 84px !important;
+    }
+
+    #chat-widget-container:has(#chat-widget:not([style*="display: none"])) {
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        max-height: 100vh !important;
+        z-index: 2147483647 !important;
+    }
+}
+
+@media screen and (display-mode: standalone) {
+
+    .hdr-additional-info {
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    .hdr-additional-info::after {
+        content: "APP";
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        margin-left: auto !important;
+
+        background:
+            radial-gradient(
+                circle at 10px 50%,
+                #4BFFD1 2.5px,
+                rgba(75, 255, 209, 0.4) 5px,
+                transparent 6px
+            ),
+            rgba(22, 153, 35, 0.15) !important;
+
+        border: 1px solid rgba(22, 153, 35, 0.5) !important;
+        color: #FFFFFF !important;
+
+        font-family: 'Montserrat', sans-serif !important;
+        font-size: 9px !important;
+        font-weight: 800 !important;
+        letter-spacing: 0.5px !important;
+
+        padding: 3px 6px 3px 18px !important;
+        border-radius: 12px !important;
+        pointer-events: none !important;
+        line-height: 1 !important;
+        z-index: 99 !important;
+    }
+
+    body #root .layout-content-holder-bc:has(.live-page-sections-bc, .prematch-page-bc, .dashboard-page-bc, .sport-layout-bc, .sportsbook-layout-bc, .esports-layout-bc, .virtual-sports-layout-bc, .live-calendar) {
+        padding-top: calc(89px + var(--betssen-app-top)) !important;
+    }
+}
+
+@supports (-webkit-touch-callout: none) {
+    @media screen and (display-mode: standalone) and (orientation: portrait) {
+        :root {
+            --betssen-edge-gap: 16px;
+        }
+    }
+}
+
+/* Confirmed three-dot menu positioning */
+@media screen and (display-mode: standalone) {
+    body #root.smart-panel-is-visible > .hdr-smart-panel-holder-arrow-bc {
+        translate: 0 var(
+            --betssen-app-top,
+            env(safe-area-inset-top, 0px)
+        ) !important;
+    }
+}
+
+/* Current LiveChat placement */
+@media screen and (display-mode: standalone) {
+
+    body > #chat-widget-container:has(> #chat-widget:is(
+        [style*="display: block"], [style*="display:block"]
+    )) {
+        --betssen-chat-top: var(
+            --betssen-app-top,
+            env(safe-area-inset-top, 0px)
+        );
+
+        position: fixed !important;
+        top: var(--betssen-chat-top) !important;
+        right: env(safe-area-inset-right, 0px) !important;
+        bottom: env(safe-area-inset-bottom, 0px) !important;
+        left: env(safe-area-inset-left, 0px) !important;
+
+        width: auto !important;
+        height: auto !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        max-width: 100% !important;
+        max-height: calc(
+            100dvh - var(--betssen-chat-top) - env(safe-area-inset-bottom, 0px)
+        ) !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+    }
+
+}
+
+/* Confirmed compact betslip header */
+@media screen and (display-mode: standalone) {
+    body #root .layout-betslip-holder-bc > .betslip-bc.full .bs-f-header-bc {
+        --betssen-betslip-top: var(--betssen-app-top, env(safe-area-inset-top, 0px));
+        position: relative !important;
+        padding-top: var(--betssen-betslip-top) !important;
+        height: auto !important;
+        box-sizing: border-box !important;
+    }
+
+    body #root .layout-betslip-holder-bc > .betslip-bc.full .bs-f-header-top-stage-bc {
+        position: absolute !important;
+        inset: auto !important;
+        inset-block-start: var(--betssen-betslip-top) !important;
+        inset-inline-end: 0 !important;
+        width: 44px !important;
+        height: 44px !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
+        z-index: 1 !important;
+    }
+
+    body #root .layout-betslip-holder-bc > .betslip-bc.full .bs-f-h-t-close-icon-bc {
+        position: static !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 44px !important;
+        height: 44px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        font-size: 20px !important;
+        line-height: 1 !important;
+    }
+
+    body #root .layout-betslip-holder-bc > .betslip-bc.full .bs-f-header-bc > .second-tabs-bc {
+        height: auto !important;
+        min-height: 44px !important;
+        margin-top: 0 !important;
+        padding-inline: 44px !important;
+        box-sizing: border-box !important;
+    }
+
+    body #root .layout-betslip-holder-bc > .betslip-bc.full .bs-f-header-bc > .second-tabs-bc > .tab-bc {
+        min-height: 44px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
+    }
+}
+
+/* Confirmed Sports Results tab clearance */
+@media screen and (display-mode: standalone) {
+    body #root:has(
+        .hdr-navigation-link-bc[href*="/sports/"][href*="/results"]:is(.active, [aria-current="page"])
+    ) > .layout-content-holder-bc {
+        padding-top: calc(
+            var(--mobile-header-main-section-height, 49px)
+            + var(--mobile-header-navigation-height, 40px)
+            + var(--betssen-app-top, env(safe-area-inset-top, 0px))
+        ) !important;
+    }
+}

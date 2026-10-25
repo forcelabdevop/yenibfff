@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports</title>
+    <link rel="stylesheet" href="/product-tiles/styles.css?v=d9871982">
+</head>
+<body>
+    <div class="pb-item pb-sports">
+        <div class="pb-background">
+            <img src="../assets/sports/background.jpg" alt="">
+        </div>
+        <div class="pb-character">
+            <img class="pb-character-img" src="../assets/sports/character.png" alt="">
+            <!-- Note: sports folder doesn't have a character-hover.png, so using the same character.png -->
+            <img class="pb-character-img character-hover" src="../assets/sports/character.png" alt="">
+        </div>
+        <div class="pb-info-section">
+            <div class="info-block">
+                <div class="title">
+                    <span>SPORTS</span>
+                </div>
+                <div class="title-hover">
+                    <span>BEST MATCHES</span>
+                </div>
+                <div class="logo">
+                    <img src="../assets/sports/logo.png" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

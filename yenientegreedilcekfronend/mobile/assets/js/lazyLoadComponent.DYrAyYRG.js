@@ -1,0 +1,1 @@
+import{o as e}from"./rolldown-runtime.C_s2cVnS.js";import{t}from"./react.o0Ha7HZ1.js";import{ct as n}from"./lodash.CnA-TDo5.js";var r=e(t()),i=e(n());function a(e){return typeof e==`function`&&e.toString().includes(`import(`)}var o=(0,i.default)(e=>a(e)?(0,r.lazy)(e):e);export{o as t};

@@ -1,0 +1,1 @@
+import{n as e}from"./Swarm.DJx-y2cd.js";var t=()=>e.get({token_type:`JWT`,alg:`HS256`},`get_jwe_info`).then(({result:e,details:{jwe:t}})=>{if(e===0)return t;throw Error()});export{t};

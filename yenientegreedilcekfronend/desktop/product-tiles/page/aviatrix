@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviatrix</title>
+    <link rel="stylesheet" href="/product-tiles/styles.css?v=d8f064ae">
+</head>
+<body>
+    <div class="pb-item pb-aviatrix">
+        <div class="pb-background">
+            <img src="../assets/aviatrix/background.jpg" alt="">
+        </div>
+        <div class="pb-character">
+            <img class="aviatrix-airplane" src="../assets/aviatrix/airplane.png" alt="">
+            <img class="pb-character-img" src="../assets/aviatrix/character.png" alt="">
+            <!-- Note: aviatrix folder doesn't have a character-hover.png, so using the same character.png -->
+            <img class="pb-character-img character-hover" src="../assets/aviatrix/character.png" alt="">
+        </div>
+        <div class="pb-info-section">
+            <div class="info-block">
+                <div class="title">
+                    <span>AVIATRIX</span>
+                </div>
+                <div class="title-hover">
+                    <span>CRASH GAMES</span>
+                </div>
+                <div class="logo">
+                    <img src="../assets/aviatrix/logo.png" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

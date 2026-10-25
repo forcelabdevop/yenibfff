@@ -1,0 +1,1 @@
+var e=new Map([[`RestOfTheMatchWinner`,`rest_of_match_winner`],[`MatchResult1Up`,`match_result_1up`],[`Woodworks:Result`,`woodworks_info`],[`PostOrCrossbarTotal`,`woodworks_info`],[`Woodworks:Team1Total`,`woodworks_info`],[`Woodworks:Team2Total`,`woodworks_info`],[`MedicalStafftoEntertheField`,`medical_staff_info`],[`HalfTimeResult`,`half_time_result`]]),t=t=>e.get(t);export{t};

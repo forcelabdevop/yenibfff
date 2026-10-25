@@ -1,0 +1,1 @@
+var e=`/assets/images/vpCoin.png`;export{e as t};

@@ -1,0 +1,1 @@
+import{o as e}from"./rolldown-runtime.C_s2cVnS.js";import{t}from"./react.o0Ha7HZ1.js";import{t as n}from"./jsx-runtime.2Bc2s-6V.js";import{t as r}from"./withPanelButton.Wupj0ccb.js";var i=e(t()),a=n(),o=(0,i.memo)(function({iconClass:e}){return(0,a.jsx)(`i`,{className:`sp-button-icon-bc ${e}`})}),s=r(o,{persistent:!1});export{s as default};

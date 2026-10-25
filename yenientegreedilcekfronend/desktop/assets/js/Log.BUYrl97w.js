@@ -1,0 +1,1 @@
+function e(e){console.info(`%c${e}`,`background: green;color: white;padding: 2px`)}function t(e){console.error(e)}function n(e){console.warn(e)}var r={success:e,error:t,warning:n};export{r as t};

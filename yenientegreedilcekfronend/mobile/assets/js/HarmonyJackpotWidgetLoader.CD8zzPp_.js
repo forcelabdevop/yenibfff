@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime.2Bc2s-6V.js";import{t}from"./Loader.FB6NdCE8.js";import"./loaders.CQ0LkniO.js";var n=e(),r=()=>(0,n.jsx)(`div`,{children:(0,n.jsx)(t,{size:`small`})});export{r as t};

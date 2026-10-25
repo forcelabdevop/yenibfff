@@ -1,0 +1,1 @@
+import"./rolldown-runtime.C_s2cVnS.js";import{t as e}from"./react.o0Ha7HZ1.js";import{t}from"./jsx-runtime.2Bc2s-6V.js";e();var n=t(),r=({onClose:e})=>(0,n.jsx)(`div`,{className:`bs-bet-i-h-c-icon-holder-bc`,children:(0,n.jsx)(`i`,{className:`bs-bet-i-h-c-icon-bc remove bc-i-close-remove`,onClick:e})});export{r as t};

@@ -1,0 +1,1 @@
+var e={facebook:`https://www.facebook.com/sharer/sharer.php?u=`,twitter:`https://twitter.com/intent/tweet?url=`,telegram:`https://t.me/share/url?url=`,whatsapp:`https://wa.me/?text=`,vk:`https://vk.com/share.php?url=`,instagram:`download`,vivarome:`vivarome`};export{e as t};

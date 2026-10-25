@@ -1,0 +1,1 @@
+import{o as e}from"./rolldown-runtime.C_s2cVnS.js";import{t}from"./react.o0Ha7HZ1.js";var n=(0,e(t()).memo)(function(e){return null});export{n as RecommendedCompetitions,n as default};
